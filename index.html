@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RankRise — Portfolio</title>
+<meta name="description" content="RankRise portfolio — a collection of live websites and projects. Click any project to enter it.">
+<meta name="theme-color" content="#6d28d9">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════
+   DESIGN TOKENS  (shared with RankRise site)
+═══════════════════════════════════════ */
+:root {
+  --bg: #0b0814;
+  --bg2: #100d1e;
+  --surface: #150f28;
+  --surface2: #1c1535;
+  --border: rgba(139,92,246,0.13);
+  --border2: rgba(139,92,246,0.28);
+  --p3: #8b5cf6;
+  --p4: #a78bfa;
+  --p5: #c4b5fd;
+  --grad: linear-gradient(135deg, #4c1d95, #7c3aed, #a855f7);
+  --grad2: linear-gradient(135deg, #6d28d9, #8b5cf6, #c084fc);
+  --grad3: linear-gradient(135deg, #a78bfa, #c4b5fd, #e9d5ff);
+  --glow: rgba(109,40,217,0.4);
+  --text: #f5f3ff;
+  --text-dim: rgba(245,243,255,0.68);
+  --text-muted: rgba(245,243,255,0.42);
+  --green: #4ade80;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--p3); border-radius: 4px; }
+a { color: inherit; text-decoration: none; }
+
+/* background orbs */
+.bg-layer { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.bg-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(139,92,246,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,92,246,.04) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+.orb { position: absolute; border-radius: 50%; filter: blur(110px); animation: float 18s ease-in-out infinite; }
+.o1 { width: 640px; height: 640px; background: radial-gradient(circle, rgba(76,29,149,.5), transparent 70%); top: -220px; right: -160px; }
+.o2 { width: 480px; height: 480px; background: radial-gradient(circle, rgba(168,85,247,.28), transparent 70%); bottom: -160px; left: -80px; animation-delay: -7s; }
+.o3 { width: 340px; height: 340px; background: radial-gradient(circle, rgba(196,130,252,.2), transparent 70%); top: 40%; left: 40%; animation-delay: -12s; }
+@keyframes float { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(22px,-22px) scale(1.05)} 66%{transform:translate(-16px,16px) scale(.97)} }
+
+/* ═══════════════════════════════════════
+   HEADER
+═══════════════════════════════════════ */
+.wrap { position: relative; z-index: 1; max-width: 1320px; margin: 0 auto; padding: 0 48px; }
+
+header.top {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 48px;
+  background: linear-gradient(to bottom, rgba(11,8,20,.96), transparent);
+  backdrop-filter: blur(8px);
+}
+.brand { display: inline-flex; align-items: center; gap: 11px; }
+.brand svg { width: 32px; height: 32px; flex-shrink: 0; }
+.brand-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -.4px; background: var(--grad3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.brand-sub { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--text-muted); margin-top: 1px; }
+.top-right { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+.pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--grad); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:.55} }
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero { padding: 70px 0 54px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--border2); background: rgba(139,92,246,.07);
+  padding: 8px 16px; border-radius: 100px;
+  font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--p4); margin-bottom: 26px;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: clamp(40px, 6vw, 82px); line-height: .95; letter-spacing: -.03em;
+  max-width: 900px;
+}
+.hero h1 .g { background: var(--grad2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero p { margin-top: 24px; font-size: 18px; font-weight: 300; color: var(--text-dim); max-width: 560px; line-height: 1.7; }
+.hero-meta { margin-top: 34px; display: flex; gap: 40px; flex-wrap: wrap; }
+.hm-num { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; background: var(--grad2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+.hm-label { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); margin-top: 5px; }
+
+/* ═══════════════════════════════════════
+   PROJECT GRID
+═══════════════════════════════════════ */
+.section-tag { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: var(--p4); margin-bottom: 30px; }
+.section-tag::before { content: ''; display: block; width: 24px; height: 1px; background: var(--grad2); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 26px;
+  padding-bottom: 90px;
+}
+
+.card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .4s cubic-bezier(.2,.7,.2,1), border-color .3s, box-shadow .4s;
+  opacity: 0; transform: translateY(24px);
+  animation: cardIn .7s cubic-bezier(.2,.7,.2,1) forwards;
+}
+@keyframes cardIn { to { opacity: 1; transform: translateY(0); } }
+.card:hover { transform: translateY(-6px); border-color: var(--border2); box-shadow: 0 22px 60px rgba(76,29,149,.35); }
+.card:focus-visible { outline: 2px solid var(--p4); outline-offset: 3px; }
+
+/* live-preview thumbnail */
+.thumb { position: relative; width: 100%; aspect-ratio: 16/10; overflow: hidden; background: var(--bg2); border-bottom: 1px solid var(--border); }
+.thumb-frame {
+  position: absolute; top: 0; left: 0;
+  width: 1440px; height: 900px;
+  transform: scale(.2764); /* 398px / 1440px — recalced per card width via JS */
+  transform-origin: top left;
+  border: 0; pointer-events: none; background: var(--bg);
+}
+.thumb-fallback {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.thumb-fallback svg { width: 74px; height: 74px; opacity: .5; }
+.thumb-shine { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(139,92,246,.10), transparent 55%); pointer-events: none; }
+
+/* hover "enter" overlay */
+.enter-overlay {
+  position: absolute; inset: 0;
+  background: rgba(11,8,20,.72);
+  backdrop-filter: blur(2px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  opacity: 0; transition: opacity .3s;
+}
+.card:hover .enter-overlay, .card:focus-visible .enter-overlay { opacity: 1; }
+.enter-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--grad); color: #fff;
+  padding: 13px 26px; border-radius: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  box-shadow: 0 6px 28px var(--glow);
+}
+.enter-hint { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--p5); }
+
+/* card meta */
+.card-info { padding: 22px 24px 24px; }
+.card-cat { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--p4); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.status { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; font-size: 10px; color: var(--green); letter-spacing: .1em; }
+.status i { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+.card-title { font-family: 'Syne', sans-serif; font-size: 21px; font-weight: 700; letter-spacing: -.01em; line-height: 1.2; }
+.card-desc { font-size: 14px; color: var(--text-dim); font-weight: 300; margin-top: 9px; line-height: 1.6; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+.tag { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); border: 1px solid var(--border); padding: 4px 9px; border-radius: 3px; }
+
+/* "coming soon / add more" placeholder card */
+.card.soon { cursor: default; border-style: dashed; background: transparent; display: flex; align-items: center; justify-content: center; min-height: 260px; text-align: center; }
+.card.soon:hover { transform: none; box-shadow: none; border-color: var(--border2); }
+.soon-inner { padding: 40px 28px; }
+.soon-plus { font-size: 34px; color: var(--p4); margin-bottom: 12px; }
+.soon-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+.soon-desc { font-size: 13px; color: var(--text-muted); font-weight: 300; max-width: 240px; margin: 0 auto; line-height: 1.6; }
+
+/* ═══════════════════════════════════════
+   FULL-SCREEN VIEWER
+═══════════════════════════════════════ */
+.viewer { position: fixed; inset: 0; z-index: 500; background: var(--bg); display: none; }
+.viewer.open { display: block; animation: viewerIn .45s cubic-bezier(.6,0,.2,1); }
+@keyframes viewerIn { from { opacity: 0; transform: scale(.985); } to { opacity: 1; transform: scale(1); } }
+.viewer-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: var(--bg); }
+.viewer-bar {
+  position: fixed; top: 18px; left: 18px; z-index: 510;
+  display: flex; align-items: center; gap: 12px;
+}
+.back-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: rgba(21,15,40,.82); backdrop-filter: blur(14px);
+  border: 1px solid var(--border2); color: var(--text);
+  padding: 11px 18px; border-radius: 100px;
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  cursor: pointer; transition: all .2s;
+  box-shadow: 0 8px 30px rgba(0,0,0,.4);
+}
+.back-btn:hover { border-color: var(--p4); background: rgba(28,21,53,.92); transform: translateX(-2px); }
+.viewer-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--p4); background: rgba(21,15,40,.72); backdrop-filter: blur(14px); border: 1px solid var(--border); padding: 10px 16px; border-radius: 100px; }
+.open-tab {
+  margin-left: auto; position: fixed; top: 18px; right: 18px; z-index: 510;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(21,15,40,.82); backdrop-filter: blur(14px);
+  border: 1px solid var(--border2); color: var(--text-dim);
+  padding: 11px 18px; border-radius: 100px;
+  font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  cursor: pointer; transition: all .2s;
+}
+.open-tab:hover { border-color: var(--p4); color: var(--text); }
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer { border-top: 1px solid var(--border); padding: 34px 0 40px; }
+.foot-in { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.foot-in p { font-size: 13px; color: var(--text-muted); font-weight: 300; }
+.foot-in .g { background: var(--grad2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600; }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 720px) {
+  .wrap { padding: 0 22px; }
+  header.top { padding: 18px 22px; }
+  .grid { grid-template-columns: 1fr; gap: 20px; }
+  .hero { padding: 44px 0 40px; }
+  .hero-meta { gap: 28px; }
+  .brand-sub { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-layer" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+</div>
+
+<!-- HEADER -->
+<header class="top">
+  <a class="brand" href="./index.html" aria-label="RankRise Portfolio Home">
+    <svg viewBox="0 0 100 100" fill="none" aria-hidden="true">
+      <defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#e9d5ff"/><stop offset="60%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
+      <path d="M50 8 L16 50 L27 50 L27 90 L41 90 L41 62 L50 52 L59 62 L59 90 L73 90 L73 50 L84 50 Z" fill="url(#lg)"/>
+      <path d="M50 8 L16 50 L27 50 L27 63 L41 50 L50 38 L59 50 L73 63 L73 50 L84 50 Z" fill="rgba(255,255,255,0.16)"/>
+    </svg>
+    <div>
+      <div class="brand-name">RankRise</div>
+      <div class="brand-sub">Portfolio</div>
+    </div>
+  </a>
+  <div class="top-right"><span class="pulse-dot"></span> Live Showcase</div>
+</header>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge"><span class="pulse-dot"></span> Selected Work · Lebanon & Beyond</div>
+    <h1>Our <span class="g">Portfolio</span> of Live Projects.</h1>
+    <p>A curated collection of websites and brand experiences we've built. Click any project to <strong>enter it full-screen</strong> and explore the real thing.</p>
+    <div class="hero-meta">
+      <div>
+        <div class="hm-num" id="count-projects">1</div>
+        <div class="hm-label">Live Projects</div>
+      </div>
+      <div>
+        <div class="hm-num">100%</div>
+        <div class="hm-label">Hand-Crafted</div>
+      </div>
+      <div>
+        <div class="hm-num">∞</div>
+        <div class="hm-label">More Coming</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECT GRID -->
+  <section>
+    <div class="section-tag">All Projects</div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap foot-in">
+    <p>© 2026 <span class="g">RankRise</span> Agency — Lebanon. Portfolio showcase.</p>
+    <p>Built for brands that dare to rise.</p>
+  </div>
+</footer>
+
+<!-- FULL-SCREEN VIEWER -->
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Project viewer">
+  <div class="viewer-bar">
+    <button class="back-btn" id="backBtn" aria-label="Back to portfolio">← Back to Portfolio</button>
+    <span class="viewer-title" id="viewerTitle"></span>
+  </div>
+  <a class="open-tab" id="openTab" target="_blank" rel="noopener">Open in new tab ↗</a>
+  <iframe class="viewer-frame" id="viewerFrame" title="Project" src="about:blank"></iframe>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   PROJECTS  —  ★ ADD NEW PROJECTS HERE ★
+   ───────────────────────────────────────────────────────────────
+   To add another site to the portfolio:
+     1. Drop its HTML file anywhere in the repo (e.g. projects/my-site.html)
+     2. Copy one block below and edit the fields.
+   That's it — the card, live preview and full-screen viewer are automatic.
+
+   Fields:
+     url    : path to the project's HTML file  (required)
+     title  : project name shown on the card
+     cat     : short category label (e.g. "Agency Website")
+     desc    : one-line description
+     tags   : array of small tags
+     preview: true  -> show a live scaled preview of the real site
+              false -> show the RankRise logo placeholder instead
+═══════════════════════════════════════════════════════════════ */
+const PROJECTS = [
+  {
+    url: "projects/rankrise.html",
+    title: "RankRise Agency",
+    cat: "Agency Website",
+    desc: "Full-service digital marketing & production agency site — hero, services, portfolio & admin dashboard.",
+    tags: ["Branding", "Marketing", "Dashboard", "Lebanon"],
+    preview: true
+  },
+
+  // ── Add your next project below (uncomment & edit) ──
+  // {
+  //   url: "projects/my-next-site.html",
+  //   title: "My Next Project",
+  //   cat: "Landing Page",
+  //   desc: "Short description of the project.",
+  //   tags: ["Tag One", "Tag Two"],
+  //   preview: true
+  // },
+];
+
+/* ─── RankRise logo placeholder (used when preview:false) ─── */
+const LOGO_SVG = `<svg viewBox="0 0 100 100" fill="none"><defs><linearGradient id="ph" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c4b5fd"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs><path d="M50 8 L16 50 L27 50 L27 90 L41 90 L41 62 L50 52 L59 62 L59 90 L73 90 L73 50 L84 50 Z" fill="url(#ph)"/></svg>`;
+
+const grid = document.getElementById('grid');
+const PREVIEW_BASE_W = 1440; // logical width the preview iframe is rendered at
+
+function makeCard(p, i) {
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.style.animationDelay = (i * 0.08) + 's';
+  card.tabIndex = 0;
+  card.setAttribute('role', 'button');
+  card.setAttribute('aria-label', 'Enter ' + p.title);
+
+  const thumbInner = p.preview
+    ? `<iframe class="thumb-frame" loading="lazy" tabindex="-1" aria-hidden="true" scrolling="no" src="${p.url}"></iframe>`
+    : `<div class="thumb-fallback">${LOGO_SVG}</div>`;
+
+  card.innerHTML = `
+    <div class="thumb">
+      ${thumbInner}
+      <div class="thumb-shine"></div>
+      <div class="enter-overlay">
+        <span class="enter-btn">Enter Project →</span>
+        <span class="enter-hint">Click to explore full-screen</span>
+      </div>
+    </div>
+    <div class="card-info">
+      <div class="card-cat">${p.cat || 'Project'}
+        <span class="status"><i></i> Live</span>
+      </div>
+      <div class="card-title">${p.title}</div>
+      ${p.desc ? `<div class="card-desc">${p.desc}</div>` : ''}
+      ${p.tags && p.tags.length ? `<div class="card-tags">${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
+    </div>`;
+
+  card.addEventListener('click', () => openViewer(p));
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openViewer(p); }
+  });
+  return card;
+}
+
+/* scale the live-preview iframes to fit their card width */
+function scaleThumbs() {
+  document.querySelectorAll('.thumb').forEach(thumb => {
+    const frame = thumb.querySelector('.thumb-frame');
+    if (!frame) return;
+    const scale = thumb.clientWidth / PREVIEW_BASE_W;
+    frame.style.transform = 'scale(' + scale + ')';
+    // make the tall render fill the 16:10 thumb height for a clean crop
+    frame.style.height = (thumb.clientHeight / scale) + 'px';
+  });
+}
+
+/* build the "add more" placeholder card */
+function makeSoonCard() {
+  const el = document.createElement('article');
+  el.className = 'card soon';
+  el.innerHTML = `
+    <div class="soon-inner">
+      <div class="soon-plus">＋</div>
+      <div class="soon-title">More Projects Coming</div>
+      <div class="soon-desc">New websites are added here as they launch. Edit the <b>PROJECTS</b> list in index.html to add your own.</div>
+    </div>`;
+  return el;
+}
+
+/* ─── FULL-SCREEN VIEWER ─── */
+const viewer = document.getElementById('viewer');
+const viewerFrame = document.getElementById('viewerFrame');
+const viewerTitle = document.getElementById('viewerTitle');
+const openTab = document.getElementById('openTab');
+
+function openViewer(p) {
+  viewerTitle.textContent = p.title;
+  openTab.href = p.url;
+  viewerFrame.src = p.url;      // load fresh each time (intro animation replays)
+  viewer.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('backBtn').focus();
+}
+function closeViewer() {
+  viewer.classList.remove('open');
+  viewerFrame.src = 'about:blank'; // stop the site (audio/timers) when leaving
+  document.body.style.overflow = '';
+}
+document.getElementById('backBtn').addEventListener('click', closeViewer);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && viewer.classList.contains('open')) closeViewer(); });
+
+/* ─── INIT ─── */
+PROJECTS.forEach((p, i) => grid.appendChild(makeCard(p, i)));
+grid.appendChild(makeSoonCard());
+document.getElementById('count-projects').textContent = PROJECTS.length;
+
+window.addEventListener('load', scaleThumbs);
+window.addEventListener('resize', scaleThumbs);
+// re-scale once fonts/layout settle and after lazy frames attach
+setTimeout(scaleThumbs, 300);
+setTimeout(scaleThumbs, 1200);
+</script>
+</body>
+</html>
