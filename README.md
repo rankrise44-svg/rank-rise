@@ -33,12 +33,27 @@ projects/
      cat: "Landing Page",
      desc: "One-line description of the project.",
      tags: ["Tag One", "Tag Two"],
-     preview: true   // live preview thumbnail; set false to show the logo placeholder
+     preview: true,  // live preview thumbnail; set false to show the logo placeholder
+     // cover: "projects/my-new-cover.jpg"  // optional static image (see below)
    },
    ```
 
 3. Save. The card, live preview, and full-screen viewer are generated
    automatically — no other changes needed.
+
+### Card thumbnail options
+
+Each card's thumbnail is chosen in this priority order:
+
+| Field         | Result                                                            |
+| ------------- | ----------------------------------------------------------------- |
+| `cover: "…"`  | Shows that image (any path or URL). Best for a polished, fast card |
+| `preview: true` | Live, scaled-down preview of the real site (auto-updates)        |
+| neither       | RankRise logo placeholder                                         |
+
+`cover` always wins over `preview`, so a project with a cover image won't run a
+live iframe in the grid. The full-screen viewer always opens the real site
+regardless of the thumbnail choice.
 
 ## Running locally
 
