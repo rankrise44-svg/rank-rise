@@ -920,6 +920,43 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
 /* skip link (accessibility) */
 .skip-link { position: fixed; top: -60px; left: 12px; z-index: 100000; background: var(--p3); color: #fff; padding: 10px 18px; border-radius: 4px; font-size: 13px; font-weight: 600; text-decoration: none; transition: top .2s; }
 .skip-link:focus { top: 12px; }
+
+/* ═══════════════════════════════════════
+   PROJECT MANAGER  (hidden — open with #admin or Ctrl+Alt+A)
+═══════════════════════════════════════ */
+body.pm-open .cursor, body.pm-open .cursor-ring { display: none; }
+.pm-ov { position: fixed; inset: 0; z-index: 9800; background: rgba(25,20,48,.55); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; padding: 20px; cursor: auto; }
+.pm-ov.open { display: flex; }
+.pm-ov * { cursor: auto; }
+.pm { background: #fff; border: 1px solid var(--border2); border-radius: 14px; width: 560px; max-width: 96vw; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 30px 80px rgba(25,20,48,.3); }
+.pm-head { padding: 20px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.pm-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: var(--text); }
+.pm-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.pm-x { width: 30px; height: 30px; border: 1px solid var(--border); background: none; border-radius: 7px; color: var(--text-muted); font-size: 15px; }
+.pm-x:hover { border-color: var(--red); color: var(--red); }
+.pm-body { padding: 18px 22px; overflow-y: auto; }
+.pm-list { display: flex; flex-direction: column; gap: 8px; }
+.pm-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface2); }
+.pm-thumb { width: 54px; height: 34px; border-radius: 5px; background: #eee center/cover no-repeat; flex-shrink: 0; border: 1px solid var(--border); }
+.pm-it-info { flex: 1; min-width: 0; }
+.pm-it-title { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pm-it-meta { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pm-mini { border: 1px solid var(--border); background: #fff; border-radius: 7px; padding: 6px 10px; font-size: 11px; font-weight: 600; color: var(--text-dim); }
+.pm-mini:hover { border-color: var(--p3); color: var(--p3); }
+.pm-mini.del:hover { border-color: var(--red); color: var(--red); }
+.pm-add { width: 100%; margin-top: 12px; padding: 12px; border: 1px dashed var(--border2); background: none; border-radius: 9px; color: var(--p3); font-weight: 700; font-size: 13px; }
+.pm-add:hover { background: rgba(112,98,240,.06); }
+.pm-foot { padding: 16px 22px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
+.pm-btn { padding: 11px 18px; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; border: none; }
+.pm-primary { background: var(--grad); color: #fff; box-shadow: 0 6px 20px var(--glow); }
+.pm-ghost { background: none; border: 1px solid var(--border); color: var(--text-dim); }
+.pm-form-fields label { display: block; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin: 14px 0 6px; }
+.pm-form-fields input, .pm-form-fields select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; }
+.pm-form-fields input:focus, .pm-form-fields select:focus { border-color: var(--p3); box-shadow: 0 0 0 3px rgba(112,98,240,.12); }
+.pm-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pm-hint { font-size: 11px; color: var(--text-muted); margin-top: 5px; line-height: 1.5; }
+.pm-toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--text); color: #fff; padding: 12px 22px; border-radius: 100px; font-size: 13px; font-weight: 600; z-index: 9900; opacity: 0; transition: all .3s; pointer-events: none; }
+.pm-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 .footer-bottom { display: flex; justify-content: space-between; align-items: center; }
 .cr { font-size: 13px; color: var(--text-muted); font-weight: 300; }
 .cr-g { background: var(--grad2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600; }
@@ -1990,6 +2027,64 @@ document.getElementById('portfolioGrid').addEventListener('click',e=>{
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&projectViewer.classList.contains('open'))closeProject();});
 
+// ─────────────── PROJECT MANAGER (open with #admin or Ctrl+Alt+A) ───────────────
+(function(){
+  const LS='rr_projects';
+  // load saved projects synchronously so the grid renders them on first paint
+  try{const s=JSON.parse(localStorage.getItem(LS)||'null');if(Array.isArray(s)&&s.length){data=s.map(x=>({grad:GRADS[0],mVal:'Open ↗',...x}));}}catch(e){}
+  function init(){
+    const $=id=>document.getElementById(id);
+    const ov=$('pmOverlay'),fov=$('pmFormOverlay'),list=$('pmList');
+    if(!ov||!fov||!list)return;
+    let editId=null;
+    const save=()=>{try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){}renderPortfolio();};
+    const nid=()=>data.reduce((m,p)=>Math.max(m,p.id||0),0)+1;
+    const openMgr=()=>{renderList();ov.classList.add('open');document.body.classList.add('pm-open');};
+    const closeMgr=()=>{ov.classList.remove('open');if(!fov.classList.contains('open'))document.body.classList.remove('pm-open');};
+    function renderList(){
+      list.innerHTML=data.map(p=>`<div class="pm-item"><div class="pm-thumb" style="background-image:url('${(p.cover||'').replace(/'/g,"%27")}')"></div><div class="pm-it-info"><div class="pm-it-title">${p.title||'—'}</div><div class="pm-it-meta">${catLabel(p.cat)} · ${p.link||'no link'}</div></div><button class="pm-mini" data-edit="${p.id}">Edit</button><button class="pm-mini del" data-del="${p.id}" aria-label="Delete">✕</button></div>`).join('')||'<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:24px">No projects yet — add one below.</div>';
+    }
+    const setF=(k,v)=>{$('pf-'+k).value=v||'';};
+    const getF=k=>$('pf-'+k).value.trim();
+    function openForm(id){
+      editId=id;
+      const p=id?data.find(x=>x.id===id):{cat:'Brand',size:'normal',mLabel:'Case Study'};
+      $('pmFormTitle').textContent=id?'Edit Project':'Add Project';
+      setF('title',p.title);setF('client',p.client);setF('cat',p.cat||'Brand');setF('size',p.size||'normal');setF('link',p.link);setF('cover',p.cover);setF('mlabel',p.mLabel);
+      fov.classList.add('open');document.body.classList.add('pm-open');
+    }
+    const closeForm=()=>{fov.classList.remove('open');if(!ov.classList.contains('open'))document.body.classList.remove('pm-open');};
+    function saveForm(){
+      const t=getF('title');if(!t){toast('Please enter a project title');return;}
+      const o={title:t,client:getF('client')||'—',cat:getF('cat'),size:getF('size'),link:getF('link'),cover:getF('cover'),mLabel:getF('mlabel')||'View',mVal:'Open ↗'};
+      if(editId){const i=data.findIndex(x=>x.id===editId);data[i]={...data[i],...o};}
+      else{data.push({id:nid(),grad:GRADS[data.length%GRADS.length],...o});}
+      closeForm();save();renderList();toast('Saved ✓');
+    }
+    const del=id=>{data=data.filter(x=>x.id!==id);save();renderList();toast('Project removed');};
+    function copyCode(){
+      const code='let data=[\n'+data.map(p=>'  '+JSON.stringify(p)).join(',\n')+'\n];';
+      const done=()=>toast('Code copied! Paste it into index.html to publish');
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(done,()=>prompt('Copy this code into index.html:',code));}
+      else prompt('Copy this code into index.html:',code);
+    }
+    let tt;function toast(m){const el=$('pmToast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400);}
+    $('pmClose').onclick=closeMgr;
+    $('pmAdd').onclick=()=>openForm(null);
+    $('pmReset').onclick=()=>{if(confirm('Reset to the original projects? This clears your saved changes on this device.')){try{localStorage.removeItem(LS);}catch(e){}location.reload();}};
+    $('pmCopy').onclick=copyCode;
+    $('pmFormClose').onclick=closeForm;$('pfCancel').onclick=closeForm;$('pfSave').onclick=saveForm;
+    list.addEventListener('click',e=>{const ed=e.target.closest('[data-edit]'),dl=e.target.closest('[data-del]');if(ed)openForm(+ed.dataset.edit);if(dl)del(+dl.dataset.del);});
+    ov.addEventListener('click',e=>{if(e.target===ov)closeMgr();});
+    fov.addEventListener('click',e=>{if(e.target===fov)closeForm();});
+    document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.altKey&&(e.key==='a'||e.key==='A')){e.preventDefault();openMgr();}if(e.key==='Escape'){if(fov.classList.contains('open'))closeForm();else if(ov.classList.contains('open'))closeMgr();}});
+    if(location.hash==='#admin')openMgr();
+    window.addEventListener('hashchange',()=>{if(location.hash==='#admin')openMgr();});
+    window.manageProjects=openMgr;
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+
 // INIT
 renderPortfolio();
 
@@ -2079,5 +2174,49 @@ renderPortfolio();
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.336-1.26-2.478-1.26zM12.058 21.588a9.5 9.5 0 0 1-5.062-1.46l-3.54.925.945-3.443a9.48 9.48 0 0 1-1.834-5.617c0-5.25 4.276-9.526 9.526-9.526s9.526 4.276 9.526 9.526-4.277 9.526-9.527 9.526zm0-20.797C6.096.79 1.246 5.64 1.246 11.602c0 1.898.487 3.767 1.418 5.406L.774 23.21l6.343-1.662a10.76 10.76 0 0 0 5.406 1.418c5.962 0 10.812-4.85 10.812-10.812S18.02.79 12.058.79z"/></svg>
   <span class="wa-fab-txt">Chat on WhatsApp</span>
 </a>
+<!-- ══════════════════════ PROJECT MANAGER ══════════════════════ -->
+<div class="pm-ov" id="pmOverlay" role="dialog" aria-modal="true" aria-label="Manage projects">
+  <div class="pm">
+    <div class="pm-head">
+      <div><div class="pm-title">Manage Projects</div><div class="pm-sub">Add, edit or remove your portfolio projects</div></div>
+      <button class="pm-x" id="pmClose" aria-label="Close">✕</button>
+    </div>
+    <div class="pm-body">
+      <div class="pm-list" id="pmList"></div>
+      <button class="pm-add" id="pmAdd">＋ Add Project</button>
+    </div>
+    <div class="pm-foot">
+      <button class="pm-btn pm-ghost" id="pmReset">↺ Reset to default</button>
+      <button class="pm-btn pm-primary" id="pmCopy">📋 Copy code to publish</button>
+    </div>
+  </div>
+</div>
+
+<div class="pm-ov" id="pmFormOverlay" role="dialog" aria-modal="true" aria-label="Edit project">
+  <div class="pm">
+    <div class="pm-head">
+      <div class="pm-title" id="pmFormTitle">Add Project</div>
+      <button class="pm-x" id="pmFormClose" aria-label="Close">✕</button>
+    </div>
+    <div class="pm-body pm-form-fields">
+      <label>Project title</label><input id="pf-title" placeholder="Client — Project name">
+      <label>Client name</label><input id="pf-client" placeholder="Client name">
+      <div class="pm-row">
+        <div><label>Category</label><select id="pf-cat"><option value="Social">Social Media</option><option value="Prod">Production</option><option value="Brand">Branding</option><option value="Paid">Paid Advertising</option><option value="SEO">SEO &amp; Content</option></select></div>
+        <div><label>Card size</label><select id="pf-size"><option value="normal">Normal</option><option value="wide">Wide</option><option value="third">Small</option></select></div>
+      </div>
+      <label>Link / URL (opens on click)</label><input id="pf-link" placeholder="projects/my-project.html  or  https://site.com">
+      <div class="pm-hint">Use a file in <b>projects/</b>, or a full <b>https://</b> link to a live site.</div>
+      <label>Cover image URL</label><input id="pf-cover" placeholder="assets/covers/my.jpg  or  https://.../logo.png">
+      <label>Hover label</label><input id="pf-mlabel" placeholder="Case Study">
+    </div>
+    <div class="pm-foot">
+      <button class="pm-btn pm-ghost" id="pfCancel">Cancel</button>
+      <button class="pm-btn pm-primary" id="pfSave">Save Project</button>
+    </div>
+  </div>
+</div>
+
+<div class="pm-toast" id="pmToast"></div>
 </body>
 </html>
