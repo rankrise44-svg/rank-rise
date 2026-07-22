@@ -1,64 +1,54 @@
-# RankRise — Portfolio
+# RankRise — Website & Portfolio
 
-A portfolio hub that showcases live websites/projects. Each project appears as a
-card; **clicking a card opens that site full-screen** with a floating
-**← Back to Portfolio** button. Designed so you can **add more projects in the
-future** by editing a single list.
+The **RankRise agency website is the main site** (`index.html`). Its **Portfolio**
+section showcases client case-study projects; **clicking a project opens it
+full-screen** with a **← Back to RankRise** button (`Esc` also closes).
 
 ## Structure
 
 ```
-index.html              →  the portfolio hub (grid of project cards + viewer)
+index.html          →  the full RankRise agency website (main site)
 projects/
-  rankrise.html         →  the RankRise agency website (kept 100% unchanged)
+  mariam-jammoul-branding.html        →  Mariam Jammoul — brand identity
+  farhat-services-case-study.html     →  Farhat Services — case study
+  deir-qanoun-sorting-campaign.html   →  #ضروري_نكفّي — Deir Qanoun El Nahr campaign
 ```
 
-## How it works
+## How the portfolio works
 
-- The hub reads a `PROJECTS` list in `index.html` and builds a card for each one.
-- Each card shows a **live scaled preview** of the real site.
-- Clicking a card loads the project in a full-screen `<iframe>` overlay — the
-  original project files are never modified, so any site works as-is.
-- **Esc** or the **← Back to Portfolio** button returns to the grid.
+- The Portfolio section is driven by the `data` array inside `index.html`.
+- Each entry with a `link` becomes a clickable card; clicking it opens that
+  project in a full-screen `<iframe>` viewer — the project files are loaded
+  as-is and never modified.
+- You can also manage cards from the site's built-in **Dashboard** (top-right
+  nav) — note that projects added there are display-only and won't have a link
+  unless you add one in the `data` array.
 
-## ➕ Adding a new project (future work)
+## ➕ Adding a new portfolio project
 
-1. Put the new site's HTML file in the repo, e.g. `projects/my-new-site.html`.
-2. Open `index.html`, find the `PROJECTS` list near the bottom, and add a block:
+1. Put the project's HTML file in `projects/`, e.g. `projects/new-project.html`.
+2. In `index.html`, find the `data` array and add an entry:
 
    ```js
    {
-     url: "projects/my-new-site.html",
-     title: "My New Site",
-     cat: "Landing Page",
-     desc: "One-line description of the project.",
-     tags: ["Tag One", "Tag Two"],
-     preview: true,  // live preview thumbnail; set false to show the logo placeholder
-     // cover: "projects/my-new-cover.jpg"  // optional static image (see below)
+     id: 4,
+     title: 'New Project — Short Result',
+     client: 'Client Name',
+     cat: 'Brand',                 // SEO | Paid | Brand | Social | Prod (drives the filter)
+     mLabel: 'Case Study',
+     mVal: 'Open ↗',
+     size: 'third',                // wide (7 cols) | normal (5) | third (4)
+     grad: GRADS[2],               // background gradient (GRADS array above)
+     link: 'projects/new-project.html'
    },
    ```
 
-3. Save. The card, live preview, and full-screen viewer are generated
-   automatically — no other changes needed.
-
-### Card thumbnail options
-
-Each card's thumbnail is chosen in this priority order:
-
-| Field         | Result                                                            |
-| ------------- | ----------------------------------------------------------------- |
-| `cover: "…"`  | Shows that image (any path or URL). Best for a polished, fast card |
-| `preview: true` | Live, scaled-down preview of the real site (auto-updates)        |
-| neither       | RankRise logo placeholder                                         |
-
-`cover` always wins over `preview`, so a project with a cover image won't run a
-live iframe in the grid. The full-screen viewer always opens the real site
-regardless of the thumbnail choice.
+3. Save. The card appears in the Portfolio grid and opens full-screen on click.
 
 ## Running locally
 
-Because the hub loads project files via `<iframe>`, open it through a local
-web server (not `file://`) so previews load correctly:
+The portfolio viewer loads project files via `<iframe>`, so open the site
+through a local web server (not `file://`):
 
 ```bash
 python3 -m http.server 8000
