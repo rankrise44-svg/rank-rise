@@ -27,7 +27,7 @@
   position: absolute;
   top: -200px; right: -200px;
   width: 700px; height: 700px;
-  background: radial-gradient(circle, rgba(76,29,149,.45), transparent 65%);
+  background: radial-gradient(circle, rgba(46,35,158,.45), transparent 65%);
   animation: introOrb1 4s ease-in-out infinite;
   pointer-events: none;
 }
@@ -36,7 +36,7 @@
   position: absolute;
   bottom: -150px; left: -150px;
   width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(168,85,247,.3), transparent 65%);
+  background: radial-gradient(circle, rgba(133,119,243,.3), transparent 65%);
   animation: introOrb2 5s ease-in-out infinite;
   pointer-events: none;
 }
@@ -47,8 +47,8 @@
 .intro-grid {
   position: absolute; inset: 0;
   background-image:
-    linear-gradient(rgba(139,92,246,.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(139,92,246,.05) 1px, transparent 1px);
+    linear-gradient(rgba(112,98,240,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(112,98,240,.05) 1px, transparent 1px);
   background-size: 60px 60px;
   pointer-events: none;
 }
@@ -66,7 +66,7 @@
 /* ── SPEECH BUBBLE ── */
 .speech-bubble {
   background: rgba(21,15,40,.95);
-  border: 1.5px solid rgba(139,92,246,.4);
+  border: 1.5px solid rgba(112,98,240,.4);
   border-radius: 18px 18px 18px 4px;
   padding: 14px 22px;
   position: relative;
@@ -75,7 +75,7 @@
   opacity: 0;
   transform: translateY(10px) scale(.92);
   animation: bubblePop .5s cubic-bezier(.34,1.56,.64,1) 0.8s forwards;
-  box-shadow: 0 0 0 1px rgba(139,92,246,.1), 0 8px 32px rgba(76,29,149,.3);
+  box-shadow: 0 0 0 1px rgba(112,98,240,.1), 0 8px 32px rgba(46,35,158,.3);
   max-width: 340px;
   text-align: center;
 }
@@ -86,7 +86,7 @@
   width: 0; height: 0;
   border-left: 10px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 10px solid rgba(139,92,246,.4);
+  border-top: 10px solid rgba(112,98,240,.4);
 }
 .speech-bubble::before {
   content: '';
@@ -125,7 +125,7 @@
   font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: rgba(167,139,250,.75);
+  color: rgba(154,142,245,.75);
   margin-top: 6px;
   opacity: 0;
   animation: fadeUp .5s .1s forwards;
@@ -228,7 +228,7 @@
   font-family: 'Syne', sans-serif;
   font-size: 28px;
   font-weight: 800;
-  background: linear-gradient(135deg, #a78bfa, #c4b5fd, #e9d5ff);
+  background: linear-gradient(135deg, #9a8ef5, #cbc4fb, #e6e2fd);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -237,7 +237,7 @@
 .intro-tagline {
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
-  color: rgba(167,139,250,.6);
+  color: rgba(154,142,245,.6);
   letter-spacing: .18em;
   text-transform: uppercase;
   font-weight: 400;
@@ -247,7 +247,7 @@
 .intro-loader {
   width: 180px;
   height: 2px;
-  background: rgba(139,92,246,.15);
+  background: rgba(112,98,240,.15);
   border-radius: 2px;
   overflow: hidden;
   margin-top: 6px;
@@ -256,7 +256,7 @@
 }
 .intro-loader-fill {
   height: 100%;
-  background: linear-gradient(90deg, #6d28d9, #a855f7, #c084fc);
+  background: linear-gradient(90deg, #4a3ad9, #8577f3, #a99bf7);
   border-radius: 2px;
   width: 0%;
   animation: loadFill 1.6s cubic-bezier(.4,0,.2,1) 2.7s forwards;
@@ -273,8 +273,8 @@
   font-weight: 500;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: rgba(167,139,250,.5);
-  border: 1px solid rgba(139,92,246,.2);
+  color: rgba(154,142,245,.5);
+  border: 1px solid rgba(112,98,240,.2);
   background: none;
   padding: 7px 16px;
   border-radius: 100px;
@@ -284,7 +284,7 @@
   opacity: 0;
   animation: fadeIn .5s 1s forwards;
 }
-.skip-btn:hover { color: #a78bfa; border-color: rgba(139,92,246,.5); background: rgba(139,92,246,.07); }
+.skip-btn:hover { color: #9a8ef5; border-color: rgba(112,98,240,.5); background: rgba(112,98,240,.07); }
 
 /* ── EXIT ANIMATION ── */
 #intro-screen.exit {
@@ -317,7 +317,7 @@
 <meta name="keywords" content="digital marketing agency Lebanon, branding agency Lebanon, social media management Lebanon, content production Lebanon, paid advertising Lebanon, SEO Lebanon, Sin El Fil marketing agency, RankRise">
 <meta name="author" content="RankRise Agency">
 <meta name="robots" content="index, follow">
-<meta name="theme-color" content="#6d28d9">
+<meta name="theme-color" content="#4a3ad9">
 <link rel="canonical" href="https://rankrise.agency/">
 
 <!-- Open Graph -->
@@ -375,20 +375,20 @@
   --surface: #150f28;
   --surface2: #1c1535;
   --surface3: #241d42;
-  --border: rgba(139,92,246,0.13);
-  --border2: rgba(139,92,246,0.28);
-  --border3: rgba(139,92,246,0.45);
-  --p1: #4c1d95;
-  --p2: #6d28d9;
-  --p3: #8b5cf6;
-  --p4: #a78bfa;
-  --p5: #c4b5fd;
-  --grad: linear-gradient(135deg, #4c1d95, #7c3aed, #a855f7);
-  --grad2: linear-gradient(135deg, #6d28d9, #8b5cf6, #c084fc);
-  --grad3: linear-gradient(135deg, #a78bfa, #c4b5fd, #e9d5ff);
+  --border: rgba(112,98,240,0.13);
+  --border2: rgba(112,98,240,0.28);
+  --border3: rgba(112,98,240,0.45);
+  --p1: #2e239e;
+  --p2: #4a3ad9;
+  --p3: #7062f0;
+  --p4: #9a8ef5;
+  --p5: #cbc4fb;
+  --grad: linear-gradient(135deg, #2e239e, #5b4bea, #8577f3);
+  --grad2: linear-gradient(135deg, #4a3ad9, #7062f0, #a99bf7);
+  --grad3: linear-gradient(135deg, #9a8ef5, #cbc4fb, #e6e2fd);
   --grad-bg: linear-gradient(135deg, #1a0840 0%, #0b0814 50%, #0d1040 100%);
-  --glow: rgba(109,40,217,0.4);
-  --glow2: rgba(139,92,246,0.25);
+  --glow: rgba(74,58,217,0.4);
+  --glow2: rgba(112,98,240,0.25);
   --text: #f5f3ff;
   --text-dim: rgba(245,243,255,0.68);
   --text-muted: rgba(245,243,255,0.42);
@@ -466,12 +466,12 @@ nav.scrolled {
   position: relative; overflow: hidden;
 }
 .hero-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
-.hero-grid { position: absolute; inset: 0; background-image: linear-gradient(to right, rgba(139,92,246,.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(139,92,246,.04) 1px, transparent 1px); background-size: 80px 80px; }
+.hero-grid { position: absolute; inset: 0; background-image: linear-gradient(to right, rgba(112,98,240,.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(112,98,240,.04) 1px, transparent 1px); background-size: 80px 80px; }
 .hero-orb { position: absolute; border-radius: 50%; filter: blur(100px); animation: float 16s ease-in-out infinite; }
-.ho1 { width: 750px; height: 750px; background: radial-gradient(circle, rgba(76,29,149,.55), transparent 70%); top: -250px; right: -180px; }
-.ho2 { width: 550px; height: 550px; background: radial-gradient(circle, rgba(168,85,247,.35), transparent 70%); bottom: -160px; left: 60px; animation-delay: -6s; }
-.ho3 { width: 380px; height: 380px; background: radial-gradient(circle, rgba(196,130,252,.25), transparent 70%); top: 30%; left: -100px; animation-delay: -11s; }
-.ho4 { width: 280px; height: 280px; background: radial-gradient(circle, rgba(109,40,217,.45), transparent 70%); bottom: 15%; right: 18%; animation-delay: -4s; }
+.ho1 { width: 750px; height: 750px; background: radial-gradient(circle, rgba(46,35,158,.55), transparent 70%); top: -250px; right: -180px; }
+.ho2 { width: 550px; height: 550px; background: radial-gradient(circle, rgba(133,119,243,.35), transparent 70%); bottom: -160px; left: 60px; animation-delay: -6s; }
+.ho3 { width: 380px; height: 380px; background: radial-gradient(circle, rgba(169,155,247,.25), transparent 70%); top: 30%; left: -100px; animation-delay: -11s; }
+.ho4 { width: 280px; height: 280px; background: radial-gradient(circle, rgba(74,58,217,.45), transparent 70%); bottom: 15%; right: 18%; animation-delay: -4s; }
 @keyframes float { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(22px,-22px) scale(1.04)} 66%{transform:translate(-16px,16px) scale(.97)} }
 
 /* diagonals */
@@ -481,7 +481,7 @@ nav.scrolled {
 .hero-badge {
   display: inline-flex; align-items: center; gap: 8px;
   border: 1px solid var(--border2);
-  background: rgba(139,92,246,.07);
+  background: rgba(112,98,240,.07);
   padding: 8px 16px; border-radius: 100px;
   font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
   color: var(--p4); margin-bottom: 28px;
@@ -502,7 +502,7 @@ nav.scrolled {
 .hero-title .line1 { display: block; color: var(--text); }
 .hero-title .line2 { display: block; }
 .hero-title .line2-inner { background: var(--grad2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-.hero-title .line3 { display: block; -webkit-text-stroke: 1.5px rgba(167,139,250,.5); color: transparent; }
+.hero-title .line3 { display: block; -webkit-text-stroke: 1.5px rgba(154,142,245,.5); color: transparent; }
 
 .hero-sub {
   margin-top: 28px;
@@ -531,11 +531,11 @@ nav.scrolled {
 .btn-ghost {
   color: var(--text); padding: 15px 32px;
   font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
-  border: 1px solid var(--border2); background: rgba(139,92,246,.06);
+  border: 1px solid var(--border2); background: rgba(112,98,240,.06);
   text-decoration: none; display: inline-flex; align-items: center; gap: 9px;
   transition: all .3s; border-radius: 3px;
 }
-.btn-ghost:hover { border-color: var(--p4); background: rgba(139,92,246,.14); transform: translateY(-2px); }
+.btn-ghost:hover { border-color: var(--p4); background: rgba(112,98,240,.14); transform: translateY(-2px); }
 
 /* hero stats */
 .hero-stats-row {
@@ -555,14 +555,14 @@ nav.scrolled {
 .hero-logo-big { position: absolute; right: 60px; top: 50%; transform: translateY(-50%); opacity: 0; animation: fadeIn 1s 1.2s forwards; }
 
 .scroll-hint { position: absolute; bottom: 36px; left: 60px; display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--text-muted); opacity: 0; animation: fadeIn 1s 1.6s forwards; }
-.scroll-line { width: 40px; height: 1px; background: rgba(139,92,246,.35); position: relative; overflow: hidden; }
+.scroll-line { width: 40px; height: 1px; background: rgba(112,98,240,.35); position: relative; overflow: hidden; }
 .scroll-line::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: var(--p4); animation: scanline 2s ease-in-out infinite; }
 @keyframes scanline { 0%,100%{left:-100%} 50%{left:100%} }
 @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
 /* ── TICKER ── */
-.ticker { padding: 13px 0; overflow: hidden; white-space: nowrap; background: linear-gradient(90deg,#3b0764,#4c1d95,#5b21b6,#6d28d9,#7c3aed,#6d28d9,#5b21b6,#4c1d95,#3b0764); background-size: 300% 100%; animation: gradShift 7s ease infinite; }
+.ticker { padding: 13px 0; overflow: hidden; white-space: nowrap; background: linear-gradient(90deg,#241a6e,#2e239e,#3d2fc0,#4a3ad9,#5b4bea,#4a3ad9,#3d2fc0,#2e239e,#241a6e); background-size: 300% 100%; animation: gradShift 7s ease infinite; }
 @keyframes gradShift{0%,100%{background-position:0%}50%{background-position:100%}}
 .ticker-track { display: inline-flex; animation: ticker 32s linear infinite; }
 .ticker-item { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.85); padding: 0 36px; display: inline-flex; align-items: center; gap: 14px; }
@@ -577,7 +577,7 @@ nav.scrolled {
 .section-tag::before { content: ''; display: block; width: 22px; height: 1px; background: var(--grad2); }
 .section-title { font-family: 'Syne', sans-serif; font-size: clamp(36px, 4.2vw, 62px); font-weight: 800; line-height: 1.0; letter-spacing: -.025em; }
 .grad-text { background: var(--grad2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-.outline-text { -webkit-text-stroke: 1.2px rgba(167,139,250,.5); color: transparent; }
+.outline-text { -webkit-text-stroke: 1.2px rgba(154,142,245,.5); color: transparent; }
 
 /* reveal */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity .75s ease, transform .75s ease; }
@@ -594,8 +594,8 @@ nav.scrolled {
   padding: 120px 60px;
   position: relative; overflow: hidden;
 }
-#about::before { content: ''; position: absolute; top: -120px; right: -120px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(76,29,149,.18), transparent 70%); pointer-events: none; }
-#about::after { content: ''; position: absolute; bottom: -80px; left: -80px; width: 350px; height: 350px; background: radial-gradient(circle, rgba(109,40,217,.12), transparent 70%); pointer-events: none; }
+#about::before { content: ''; position: absolute; top: -120px; right: -120px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(46,35,158,.18), transparent 70%); pointer-events: none; }
+#about::after { content: ''; position: absolute; bottom: -80px; left: -80px; width: 350px; height: 350px; background: radial-gradient(circle, rgba(74,58,217,.12), transparent 70%); pointer-events: none; }
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
 .about-eyebrow { font-family: 'Syne', sans-serif; font-size: clamp(18px,1.8vw,22px); font-weight: 500; line-height: 1.55; color: var(--text); margin-top: 28px; }
 .about-eyebrow em { font-style: normal; background: var(--grad2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -642,7 +642,7 @@ nav.scrolled {
   padding: 120px 60px;
   position: relative; overflow: hidden;
 }
-#why::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 50%, rgba(109,40,217,.08), transparent 70%); pointer-events: none; }
+#why::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 50%, rgba(74,58,217,.08), transparent 70%); pointer-events: none; }
 .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-top: 56px; }
 .why-left { }
 .why-intro { font-size: 16px; color: var(--text-dim); line-height: 1.8; font-weight: 300; margin-bottom: 36px; }
@@ -685,7 +685,7 @@ nav.scrolled {
 .portfolio-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 56px; }
 .portfolio-filter { display: flex; gap: 4px; flex-wrap: wrap; }
 .filter-btn { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); background: none; border: 1px solid transparent; padding: 7px 14px; cursor: none; transition: all .2s; border-radius: 2px; }
-.filter-btn.active, .filter-btn:hover { color: var(--p4); border-color: var(--border2); background: rgba(139,92,246,.08); }
+.filter-btn.active, .filter-btn:hover { color: var(--p4); border-color: var(--border2); background: rgba(112,98,240,.08); }
 .portfolio-grid { display: grid; grid-template-columns: repeat(12,1fr); gap: 16px; }
 .portfolio-item { position: relative; overflow: hidden; background: var(--surface2); border: 1px solid var(--border); cursor: none; transition: border-color .3s; border-radius: 3px; }
 .portfolio-item:hover { border-color: var(--border2); }
@@ -741,8 +741,8 @@ nav.scrolled {
   text-align: center;
   position: relative; overflow: hidden;
 }
-#cta-band::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 800px; height: 400px; background: radial-gradient(ellipse, rgba(109,40,217,.18), transparent 70%); pointer-events: none; }
-.cta-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border2); background: rgba(139,92,246,.08); padding: 7px 16px; border-radius: 100px; font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--p4); margin-bottom: 24px; }
+#cta-band::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 800px; height: 400px; background: radial-gradient(ellipse, rgba(74,58,217,.18), transparent 70%); pointer-events: none; }
+.cta-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border2); background: rgba(112,98,240,.08); padding: 7px 16px; border-radius: 100px; font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--p4); margin-bottom: 24px; }
 .cta-title { font-family: 'Syne', sans-serif; font-size: clamp(32px,4vw,58px); font-weight: 800; line-height: 1.1; letter-spacing: -.025em; margin-bottom: 18px; position: relative; }
 .cta-sub { font-size: 17px; color: var(--text-dim); font-weight: 300; max-width: 540px; margin: 0 auto 40px; line-height: 1.7; position: relative; }
 .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; }
@@ -760,7 +760,7 @@ nav.scrolled {
   border-radius: 4px;
 }
 .tc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--grad); transform: scaleX(0); transform-origin: left; transition: transform .4s; }
-.tc:hover { border-color: var(--border2); transform: translateY(-4px); box-shadow: 0 14px 44px rgba(76,29,149,.18); }
+.tc:hover { border-color: var(--border2); transform: translateY(-4px); box-shadow: 0 14px 44px rgba(46,35,158,.18); }
 .tc:hover::before { transform: scaleX(1); }
 .tc-quote { font-family: 'Syne', sans-serif; font-size: 64px; font-weight: 800; line-height: 1; position: absolute; top: 14px; right: 24px; background: var(--grad2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; opacity: .18; }
 .tc-stars { display: flex; gap: 3px; margin-bottom: 18px; }
@@ -780,7 +780,7 @@ nav.scrolled {
   border-top: 1px solid var(--border);
   position: relative; overflow: hidden;
 }
-#contact::before { content: ''; position: absolute; bottom: -100px; right: -100px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(76,29,149,.15), transparent 70%); pointer-events: none; }
+#contact::before { content: ''; position: absolute; bottom: -100px; right: -100px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(46,35,158,.15), transparent 70%); pointer-events: none; }
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; margin-top: 56px; }
 .contact-tagline { font-family: 'Syne', sans-serif; font-size: clamp(26px,3vw,42px); font-weight: 800; line-height: 1.18; letter-spacing: -.02em; margin-bottom: 20px; }
 .contact-tagline .aw { background: var(--grad2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -801,7 +801,7 @@ nav.scrolled {
 .cd-val { font-size: 14px; font-weight: 500; }
 .social-row { display: flex; gap: 10px; margin-top: 4px; }
 .sb { width: 40px; height: 40px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 15px; color: var(--text-muted); text-decoration: none; transition: all .2s; border-radius: 3px; }
-.sb:hover { border-color: var(--p3); color: var(--p4); background: rgba(139,92,246,.1); }
+.sb:hover { border-color: var(--p3); color: var(--p4); background: rgba(112,98,240,.1); }
 
 /* FORM */
 .contact-form { display: flex; flex-direction: column; gap: 15px; }
@@ -810,7 +810,7 @@ nav.scrolled {
 .fg label { font-size: 11px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--text-muted); }
 .fg input, .fg select, .fg textarea { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 12px 15px; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: all .2s; resize: none; border-radius: 3px; }
 .fg select { appearance: none; cursor: none; }
-.fg input:focus, .fg select:focus, .fg textarea:focus { border-color: var(--p3); box-shadow: 0 0 0 3px rgba(109,40,217,.12); }
+.fg input:focus, .fg select:focus, .fg textarea:focus { border-color: var(--p3); box-shadow: 0 0 0 3px rgba(74,58,217,.12); }
 .fg input::placeholder, .fg textarea::placeholder { color: var(--text-muted); }
 .form-submit { background: var(--grad); color: #fff; padding: 16px 40px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; border: none; cursor: none; display: flex; align-items: center; gap: 10px; justify-content: center; transition: all .3s; box-shadow: 0 6px 28px var(--glow); border-radius: 3px; }
 .form-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 44px var(--glow); }
@@ -824,7 +824,7 @@ footer {
   padding: 80px 60px 40px;
   position: relative; overflow: hidden;
 }
-footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(76,29,149,.1), transparent 70%); pointer-events: none; }
+footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(46,35,158,.1), transparent 70%); pointer-events: none; }
 .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 56px; padding-bottom: 56px; border-bottom: 1px solid var(--border); margin-bottom: 36px; }
 .footer-tag { font-size: 14px; color: var(--text-muted); line-height: 1.7; font-weight: 300; max-width: 280px; margin-top: 14px; }
 .footer-socials { display: flex; gap: 8px; margin-top: 24px; }
@@ -870,11 +870,11 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
 .db-ns-label { font-size: 10px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--text-muted); padding: 8px 12px 5px; display: block; }
 .db-ni { display: flex; align-items: center; gap: 9px; padding: 10px 12px; font-size: 13px; font-weight: 500; color: var(--text-dim); border-radius: 4px; cursor: none; transition: all .2s; border: 1px solid transparent; margin-bottom: 2px; width: 100%; background: none; font-family: 'DM Sans', sans-serif; text-align: left; }
 .db-ni:hover { background: var(--surface2); color: var(--text); border-color: var(--border); }
-.db-ni.active { background: rgba(139,92,246,.1); border-color: var(--border2); color: var(--p4); }
+.db-ni.active { background: rgba(112,98,240,.1); border-color: var(--border2); color: var(--p4); }
 .db-ni .ni { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
 .db-sf { padding: 16px 20px; border-top: 1px solid var(--border); }
 .db-exit { width: 100%; background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 10px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; cursor: none; transition: all .2s; display: flex; align-items: center; gap: 8px; justify-content: center; border-radius: 3px; }
-.db-exit:hover { border-color: var(--p3); color: var(--p4); background: rgba(139,92,246,.07); }
+.db-exit:hover { border-color: var(--p3); color: var(--p4); background: rgba(112,98,240,.07); }
 .db-main { position: absolute; left: 256px; right: 0; top: 0; bottom: 0; overflow-y: auto; }
 .db-topbar { padding: 17px 30px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface); position: sticky; top: 0; z-index: 10; }
 .db-pt { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; }
@@ -901,14 +901,14 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
 .db-tbl th { font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--text-muted); padding: 9px 16px; text-align: left; border-bottom: 1px solid var(--border); background: var(--surface2); }
 .db-tbl td { padding: 13px 16px; font-size: 13px; color: var(--text-dim); border-bottom: 1px solid var(--border); vertical-align: middle; }
 .db-tbl tr:last-child td { border-bottom: none; }
-.db-tbl tr:hover td { background: rgba(139,92,246,.025); }
+.db-tbl tr:hover td { background: rgba(112,98,240,.025); }
 .tdt { font-weight: 500; color: var(--text); }
 .badge { display: inline-block; padding: 2px 8px; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; border-radius: 2px; }
 .b-seo{background:rgba(96,165,250,.1);color:#60a5fa;border:1px solid rgba(96,165,250,.2)}
 .b-paid{background:rgba(255,107,53,.1);color:#ff6b35;border:1px solid rgba(255,107,53,.2)}
-.b-brand{background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2)}
+.b-brand{background:rgba(154,142,245,.1);color:#9a8ef5;border:1px solid rgba(154,142,245,.2)}
 .b-social{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2)}
-.b-email{background:rgba(196,130,252,.1);color:#c084fc;border:1px solid rgba(196,130,252,.2)}
+.b-email{background:rgba(169,155,247,.1);color:#a99bf7;border:1px solid rgba(169,155,247,.2)}
 .b-prod{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)}
 .td-acts { display: flex; gap: 6px; }
 
@@ -927,7 +927,7 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
 .field label { font-size: 11px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--text-muted); }
 .field input, .field select, .field textarea { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px 13px; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: all .2s; resize: vertical; border-radius: 3px; }
 .field select { appearance: none; cursor: none; }
-.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--p3); box-shadow: 0 0 0 3px rgba(109,40,217,.1); }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--p3); box-shadow: 0 0 0 3px rgba(74,58,217,.1); }
 .field input::placeholder, .field textarea::placeholder { color: var(--text-muted); }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
 .field-hint { font-size: 11px; color: var(--text-muted); margin-top: -10px; margin-bottom: 12px; }
@@ -971,13 +971,13 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
   <div class="intro-grid"></div>
 
   <!-- Floating particles -->
-  <div class="intro-particle" style="width:4px;height:4px;background:rgba(139,92,246,.6);left:15%;animation-duration:8s;animation-delay:0s"></div>
-  <div class="intro-particle" style="width:3px;height:3px;background:rgba(168,85,247,.5);left:35%;animation-duration:11s;animation-delay:1s"></div>
-  <div class="intro-particle" style="width:5px;height:5px;background:rgba(196,130,252,.4);left:60%;animation-duration:9s;animation-delay:2s"></div>
-  <div class="intro-particle" style="width:3px;height:3px;background:rgba(109,40,217,.6);left:80%;animation-duration:13s;animation-delay:.5s"></div>
-  <div class="intro-particle" style="width:4px;height:4px;background:rgba(139,92,246,.4);left:50%;animation-duration:10s;animation-delay:3s"></div>
-  <div class="intro-particle" style="width:2px;height:2px;background:rgba(196,130,252,.7);left:25%;animation-duration:12s;animation-delay:1.5s"></div>
-  <div class="intro-particle" style="width:4px;height:4px;background:rgba(167,139,250,.5);left:70%;animation-duration:7s;animation-delay:4s"></div>
+  <div class="intro-particle" style="width:4px;height:4px;background:rgba(112,98,240,.6);left:15%;animation-duration:8s;animation-delay:0s"></div>
+  <div class="intro-particle" style="width:3px;height:3px;background:rgba(133,119,243,.5);left:35%;animation-duration:11s;animation-delay:1s"></div>
+  <div class="intro-particle" style="width:5px;height:5px;background:rgba(169,155,247,.4);left:60%;animation-duration:9s;animation-delay:2s"></div>
+  <div class="intro-particle" style="width:3px;height:3px;background:rgba(74,58,217,.6);left:80%;animation-duration:13s;animation-delay:.5s"></div>
+  <div class="intro-particle" style="width:4px;height:4px;background:rgba(112,98,240,.4);left:50%;animation-duration:10s;animation-delay:3s"></div>
+  <div class="intro-particle" style="width:2px;height:2px;background:rgba(169,155,247,.7);left:25%;animation-duration:12s;animation-delay:1.5s"></div>
+  <div class="intro-particle" style="width:4px;height:4px;background:rgba(154,142,245,.5);left:70%;animation-duration:7s;animation-delay:4s"></div>
 
   <!-- Skip button -->
   <button class="skip-btn" onclick="skipIntro()">Skip ✕</button>
@@ -999,16 +999,16 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
 
       <!-- Sparkles -->
       <div class="sparkle sp1">
-        <svg width="18" height="18" viewBox="0 0 18 18"><path d="M9 0L10.5 7.5L18 9L10.5 10.5L9 18L7.5 10.5L0 9L7.5 7.5Z" fill="url(#sg1)"/><defs><linearGradient id="sg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c4b5fd"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs></svg>
+        <svg width="18" height="18" viewBox="0 0 18 18"><path d="M9 0L10.5 7.5L18 9L10.5 10.5L9 18L7.5 10.5L0 9L7.5 7.5Z" fill="url(#sg1)"/><defs><linearGradient id="sg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#cbc4fb"/><stop offset="100%" stop-color="#5b4bea"/></linearGradient></defs></svg>
       </div>
       <div class="sparkle sp2">
-        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 0L7 5L12 6L7 7L6 12L5 7L0 6L5 5Z" fill="url(#sg2)"/><defs><linearGradient id="sg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs></svg>
+        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 0L7 5L12 6L7 7L6 12L5 7L0 6L5 5Z" fill="url(#sg2)"/><defs><linearGradient id="sg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#9a8ef5"/><stop offset="100%" stop-color="#4a3ad9"/></linearGradient></defs></svg>
       </div>
       <div class="sparkle sp3">
-        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 0L8.2 5.8L14 7L8.2 8.2L7 14L5.8 8.2L0 7L5.8 5.8Z" fill="url(#sg3)"/><defs><linearGradient id="sg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e9d5ff"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg>
+        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 0L8.2 5.8L14 7L8.2 8.2L7 14L5.8 8.2L0 7L5.8 5.8Z" fill="url(#sg3)"/><defs><linearGradient id="sg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e6e2fd"/><stop offset="100%" stop-color="#7062f0"/></linearGradient></defs></svg>
       </div>
       <div class="sparkle sp4">
-        <svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 0L6 4L10 5L6 6L5 10L4 6L0 5L4 4Z" fill="#c4b5fd"/></svg>
+        <svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 0L6 4L10 5L6 6L5 10L4 6L0 5L4 4Z" fill="#cbc4fb"/></svg>
       </div>
 
       <!-- Character SVG -->
@@ -1016,9 +1016,9 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
         <defs>
           <!-- Main body gradient -->
           <linearGradient id="bodyGrad" x1="40" y1="60" x2="160" y2="200" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#7c3aed"/>
-            <stop offset="50%" stop-color="#6d28d9"/>
-            <stop offset="100%" stop-color="#4c1d95"/>
+            <stop offset="0%" stop-color="#5b4bea"/>
+            <stop offset="50%" stop-color="#4a3ad9"/>
+            <stop offset="100%" stop-color="#2e239e"/>
           </linearGradient>
           <!-- Face gradient -->
           <linearGradient id="faceGrad" x1="70" y1="30" x2="130" y2="95" gradientUnits="userSpaceOnUse">
@@ -1032,7 +1032,7 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
           </linearGradient>
           <!-- Shoe gradient -->
           <linearGradient id="shoeGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#4c1d95"/>
+            <stop offset="0%" stop-color="#2e239e"/>
             <stop offset="100%" stop-color="#2e1065"/>
           </linearGradient>
           <!-- Screen gradient -->
@@ -1045,12 +1045,12 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
             <feComposite in="SourceGraphic" in2="blur" operator="over"/>
           </filter>
           <filter id="softShadow">
-            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(76,29,149,0.5)"/>
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(46,35,158,0.5)"/>
           </filter>
         </defs>
 
         <!-- ── SHADOW ── -->
-        <ellipse class="char-shadow" cx="100" cy="212" rx="52" ry="8" fill="rgba(76,29,149,0.4)"/>
+        <ellipse class="char-shadow" cx="100" cy="212" rx="52" ry="8" fill="rgba(46,35,158,0.4)"/>
 
         <!-- ── LEGS ── -->
         <!-- Left leg -->
@@ -1073,8 +1073,8 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
         <rect x="88" y="150" width="24" height="12" rx="4" fill="rgba(255,255,255,.1)"/>
 
         <!-- ── TIE ── -->
-        <polygon points="100,102 106,116 100,126 94,116" fill="#a855f7"/>
-        <polygon points="100,102 103,110 100,108 97,110" fill="#7c3aed"/>
+        <polygon points="100,102 106,116 100,126 94,116" fill="#8577f3"/>
+        <polygon points="100,102 103,110 100,108 97,110" fill="#5b4bea"/>
 
         <!-- ── LAPTOP / TABLET being held ── -->
         <!-- Left arm holding laptop -->
@@ -1083,14 +1083,14 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
         <rect x="20" y="118" width="58" height="38" rx="6" fill="url(#shoeGrad)"/>
         <rect x="23" y="121" width="52" height="30" rx="4" fill="url(#screenGrad)"/>
         <!-- Screen content lines -->
-        <rect x="27" y="126" width="28" height="2" rx="1" fill="rgba(139,92,246,.7)"/>
-        <rect x="27" y="131" width="20" height="1.5" rx="1" fill="rgba(139,92,246,.4)"/>
-        <rect x="27" y="135" width="24" height="1.5" rx="1" fill="rgba(139,92,246,.4)"/>
-        <rect x="27" y="139" width="16" height="1.5" rx="1" fill="rgba(139,92,246,.3)"/>
+        <rect x="27" y="126" width="28" height="2" rx="1" fill="rgba(112,98,240,.7)"/>
+        <rect x="27" y="131" width="20" height="1.5" rx="1" fill="rgba(112,98,240,.4)"/>
+        <rect x="27" y="135" width="24" height="1.5" rx="1" fill="rgba(112,98,240,.4)"/>
+        <rect x="27" y="139" width="16" height="1.5" rx="1" fill="rgba(112,98,240,.3)"/>
         <!-- Small chart on laptop -->
-        <rect x="52" y="133" width="4" height="9" rx="1" fill="rgba(139,92,246,.6)"/>
-        <rect x="58" y="129" width="4" height="13" rx="1" fill="rgba(167,139,250,.8)"/>
-        <rect x="64" y="125" width="4" height="17" rx="1" fill="rgba(196,130,252,.9)"/>
+        <rect x="52" y="133" width="4" height="9" rx="1" fill="rgba(112,98,240,.6)"/>
+        <rect x="58" y="129" width="4" height="13" rx="1" fill="rgba(154,142,245,.8)"/>
+        <rect x="64" y="125" width="4" height="17" rx="1" fill="rgba(169,155,247,.9)"/>
         <!-- Laptop bottom -->
         <rect x="14" y="156" width="70" height="5" rx="2.5" fill="#2e1065"/>
         <!-- Trackpad -->
@@ -1118,9 +1118,9 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
         <ellipse cx="88" cy="40" rx="14" ry="10" fill="rgba(255,255,255,0.3)" transform="rotate(-20,88,40)"/>
 
         <!-- ── HAIR ── -->
-        <path d="M65 44 Q68 18 100 16 Q132 18 135 44 Q128 28 118 26 Q108 16 100 20 Q92 16 82 26 Q72 28 65 44Z" fill="#4c1d95"/>
+        <path d="M65 44 Q68 18 100 16 Q132 18 135 44 Q128 28 118 26 Q108 16 100 20 Q92 16 82 26 Q72 28 65 44Z" fill="#2e239e"/>
         <!-- Hair highlight -->
-        <path d="M82 20 Q90 15 100 17 Q88 18 82 25Z" fill="rgba(167,139,250,0.3)"/>
+        <path d="M82 20 Q90 15 100 17 Q88 18 82 25Z" fill="rgba(154,142,245,0.3)"/>
 
         <!-- ── EYES ── -->
         <!-- Left eye white -->
@@ -1129,57 +1129,57 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
         <ellipse cx="113" cy="54" rx="8" ry="9" fill="white"/>
         <!-- Left iris -->
         <g class="char-eye">
-          <circle cx="87" cy="55" r="5" fill="#4c1d95"/>
-          <circle cx="87" cy="55" r="3" fill="#6d28d9"/>
+          <circle cx="87" cy="55" r="5" fill="#2e239e"/>
+          <circle cx="87" cy="55" r="3" fill="#4a3ad9"/>
           <circle cx="89" cy="53" r="1.5" fill="white"/>
           <circle cx="86" cy="57" r="1" fill="rgba(255,255,255,.4)"/>
         </g>
         <!-- Right iris -->
         <g class="char-eye right">
-          <circle cx="113" cy="55" r="5" fill="#4c1d95"/>
-          <circle cx="113" cy="55" r="3" fill="#6d28d9"/>
+          <circle cx="113" cy="55" r="5" fill="#2e239e"/>
+          <circle cx="113" cy="55" r="3" fill="#4a3ad9"/>
           <circle cx="115" cy="53" r="1.5" fill="white"/>
           <circle cx="112" cy="57" r="1" fill="rgba(255,255,255,.4)"/>
         </g>
         <!-- Eyelashes left -->
-        <line x1="80" y1="47" x2="79" y2="44" stroke="#4c1d95" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="84" y1="45" x2="83" y2="42" stroke="#4c1d95" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="88" y1="45" x2="88" y2="42" stroke="#4c1d95" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="80" y1="47" x2="79" y2="44" stroke="#2e239e" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="84" y1="45" x2="83" y2="42" stroke="#2e239e" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="88" y1="45" x2="88" y2="42" stroke="#2e239e" stroke-width="1.2" stroke-linecap="round"/>
         <!-- Eyelashes right -->
-        <line x1="106" y1="45" x2="105" y2="42" stroke="#4c1d95" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="110" y1="44" x2="110" y2="41" stroke="#4c1d95" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="118" y1="46" x2="120" y2="43" stroke="#4c1d95" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="106" y1="45" x2="105" y2="42" stroke="#2e239e" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="110" y1="44" x2="110" y2="41" stroke="#2e239e" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="118" y1="46" x2="120" y2="43" stroke="#2e239e" stroke-width="1.2" stroke-linecap="round"/>
 
         <!-- ── EYEBROWS ── -->
-        <path d="M79 46 Q87 42 94 45" stroke="#4c1d95" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-        <path d="M106 45 Q113 42 121 46" stroke="#4c1d95" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M79 46 Q87 42 94 45" stroke="#2e239e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M106 45 Q113 42 121 46" stroke="#2e239e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
 
         <!-- ── NOSE ── -->
-        <path d="M98 62 Q100 66 102 62" stroke="rgba(76,29,149,.4)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <path d="M98 62 Q100 66 102 62" stroke="rgba(46,35,158,.4)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
 
         <!-- ── SMILE ── -->
-        <path d="M88 70 Q100 80 112 70" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M88 70 Q100 80 112 70" stroke="#5b4bea" stroke-width="2.5" stroke-linecap="round" fill="none"/>
         <!-- Cheek blush -->
-        <ellipse cx="78" cy="66" rx="7" ry="4" fill="rgba(168,85,247,.2)"/>
-        <ellipse cx="122" cy="66" rx="7" ry="4" fill="rgba(168,85,247,.2)"/>
+        <ellipse cx="78" cy="66" rx="7" ry="4" fill="rgba(133,119,243,.2)"/>
+        <ellipse cx="122" cy="66" rx="7" ry="4" fill="rgba(133,119,243,.2)"/>
 
         <!-- ── EAR ── -->
         <ellipse cx="64" cy="57" rx="5" ry="7" fill="url(#faceGrad)"/>
         <ellipse cx="136" cy="57" rx="5" ry="7" fill="url(#faceGrad)"/>
-        <ellipse cx="64" cy="57" rx="3" ry="4.5" fill="rgba(109,40,217,.15)"/>
-        <ellipse cx="136" cy="57" rx="3" ry="4.5" fill="rgba(109,40,217,.15)"/>
+        <ellipse cx="64" cy="57" rx="3" ry="4.5" fill="rgba(74,58,217,.15)"/>
+        <ellipse cx="136" cy="57" rx="3" ry="4.5" fill="rgba(74,58,217,.15)"/>
 
         <!-- ── COLLAR ── -->
         <path d="M88 89 L94 98 L100 92 L106 98 L112 89" stroke="rgba(255,255,255,.2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 
         <!-- ── RankRise logo on shirt ── -->
         <g transform="translate(92,108) scale(0.28)">
-          <path d="M28 8 L6 42 L14 42 L14 70 L22 70 L22 54 L28 48 L34 54 L34 70 L42 70 L42 42 L50 42 Z" fill="rgba(196,130,252,0.5)"/>
+          <path d="M28 8 L6 42 L14 42 L14 70 L22 70 L22 54 L28 48 L34 54 L34 70 L42 70 L42 42 L50 42 Z" fill="rgba(169,155,247,0.5)"/>
         </g>
 
         <!-- ── BADGE/ID on chest ── -->
         <rect x="115" y="100" width="22" height="16" rx="3" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.2)" stroke-width=".5"/>
-        <rect x="118" y="103" width="10" height="1.5" rx="1" fill="rgba(196,130,252,.7)"/>
+        <rect x="118" y="103" width="10" height="1.5" rx="1" fill="rgba(169,155,247,.7)"/>
         <rect x="118" y="107" width="7" height="1" rx="1" fill="rgba(255,255,255,.3)"/>
         <rect x="118" y="110" width="9" height="1" rx="1" fill="rgba(255,255,255,.2)"/>
 
@@ -1190,11 +1190,7 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
   <!-- Logo reveal at bottom -->
   <div class="intro-logo">
     <div class="intro-logo-mark">
-      <svg width="36" height="36" viewBox="0 0 100 100" fill="none">
-        <defs><linearGradient id="lgIntro" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#e9d5ff"/><stop offset="60%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
-        <path d="M50 8 L16 50 L27 50 L27 90 L41 90 L41 62 L50 52 L59 62 L59 90 L73 90 L73 50 L84 50 Z" fill="url(#lgIntro)"/>
-        <path d="M50 8 L16 50 L27 50 L27 63 L41 50 L50 38 L59 50 L73 63 L73 50 L84 50 Z" fill="rgba(255,255,255,0.18)"/>
-      </svg>
+      <svg width="36" height="36" viewBox="0 0 2270 2008" fill="none"><path fill="#7062F0" d="M 798.2,368.2 C 447.0,719.7 465.9,700.2 451.9,724.2 C 437.1,749.7 427.6,779.6 424.9,810.0 C 423.6,823.3 423.3,1175.0 424.5,1175.0 C 425.0,1175.0 583.5,1016.8 776.8,823.5 L 1128.3,472.0 L 1341.3,685.0 L 1554.3,898.0 L 1452.8,999.5 L 1351.3,1101.0 L 1239.7,989.4 L 1128.1,877.8 L 584.2,1422.0 C 285.1,1721.3 40.1,1966.6 40.0,1967.1 C 39.7,1967.7 108.8,1967.9 229.5,1967.7 C 405.3,1967.4 420.1,1967.3 429.8,1965.7 C 469.5,1959.0 501.8,1944.8 531.7,1920.8 C 535.9,1917.4 671.8,1782.3 833.8,1620.4 L 1128.3,1326.1 L 1422.8,1620.3 C 1584.8,1782.2 1720.9,1917.4 1725.3,1921.0 C 1754.9,1944.5 1787.8,1959.1 1826.8,1965.6 C 1836.6,1967.3 1850.8,1967.4 2027.1,1967.7 C 2131.4,1967.9 2216.8,1967.7 2216.8,1967.3 C 2216.8,1966.9 2069.2,1818.9 1888.8,1638.5 L 1560.8,1310.5 L 1770.0,1101.3 L 1979.3,892.0 L 1553.3,466.0 C 1319.0,231.7 1127.1,40.0 1126.8,40.0 C 1126.5,40.0 978.7,187.7 798.2,368.2 M 1931.5,203.7 C 1931.1,204.0 1930.8,209.0 1930.8,214.7 L 1930.8,225.0 L 1951.8,225.0 L 1972.8,225.0 L 1972.8,292.5 L 1972.8,360.0 L 1985.8,360.0 L 1998.8,360.0 L 1998.8,292.5 L 1998.8,225.0 L 2019.8,225.0 L 2040.9,225.0 L 2040.6,214.2 L 2040.3,203.5 L 1986.2,203.2 C 1956.5,203.1 1931.8,203.3 1931.5,203.7 M 2065.8,281.5 L 2065.8,360.0 L 2078.8,360.0 L 2091.8,360.0 L 2092.0,308.0 L 2092.3,256.1 L 2115.4,307.8 L 2138.5,359.5 L 2147.8,359.5 L 2157.0,359.5 L 2180.2,307.6 L 2203.3,255.7 L 2203.6,307.8 L 2203.8,360.0 L 2216.8,360.0 L 2229.8,360.0 L 2229.8,281.5 L 2229.8,203.0 L 2216.0,203.0 L 2202.1,203.0 L 2175.2,263.4 C 2160.4,296.6 2148.1,323.7 2147.8,323.5 C 2147.5,323.3 2135.1,296.1 2120.4,263.1 L 2093.5,203.0 L 2079.6,203.0 L 2065.8,203.0 L 2065.8,281.5"/></svg>
       <span class="intro-logo-name">RankRise</span>
     </div>
     <span class="intro-tagline">Digital Marketing & Production — Lebanon</span>
@@ -1214,11 +1210,7 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
 <!-- NAV -->
 <nav id="navbar">
   <a href="#hero" class="logo-wrap" aria-label="RankRise Home">
-    <svg class="logo-svg" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-      <defs><linearGradient id="lgN" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#e9d5ff"/><stop offset="60%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
-      <path d="M50 8 L16 50 L27 50 L27 90 L41 90 L41 62 L50 52 L59 62 L59 90 L73 90 L73 50 L84 50 Z" fill="url(#lgN)"/>
-      <path d="M50 8 L16 50 L27 50 L27 63 L41 50 L50 38 L59 50 L73 63 L73 50 L84 50 Z" fill="rgba(255,255,255,0.16)"/>
-    </svg>
+    <svg class="logo-svg" viewBox="0 0 2270 2008" fill="none" aria-hidden="true"><path fill="#7062F0" d="M 798.2,368.2 C 447.0,719.7 465.9,700.2 451.9,724.2 C 437.1,749.7 427.6,779.6 424.9,810.0 C 423.6,823.3 423.3,1175.0 424.5,1175.0 C 425.0,1175.0 583.5,1016.8 776.8,823.5 L 1128.3,472.0 L 1341.3,685.0 L 1554.3,898.0 L 1452.8,999.5 L 1351.3,1101.0 L 1239.7,989.4 L 1128.1,877.8 L 584.2,1422.0 C 285.1,1721.3 40.1,1966.6 40.0,1967.1 C 39.7,1967.7 108.8,1967.9 229.5,1967.7 C 405.3,1967.4 420.1,1967.3 429.8,1965.7 C 469.5,1959.0 501.8,1944.8 531.7,1920.8 C 535.9,1917.4 671.8,1782.3 833.8,1620.4 L 1128.3,1326.1 L 1422.8,1620.3 C 1584.8,1782.2 1720.9,1917.4 1725.3,1921.0 C 1754.9,1944.5 1787.8,1959.1 1826.8,1965.6 C 1836.6,1967.3 1850.8,1967.4 2027.1,1967.7 C 2131.4,1967.9 2216.8,1967.7 2216.8,1967.3 C 2216.8,1966.9 2069.2,1818.9 1888.8,1638.5 L 1560.8,1310.5 L 1770.0,1101.3 L 1979.3,892.0 L 1553.3,466.0 C 1319.0,231.7 1127.1,40.0 1126.8,40.0 C 1126.5,40.0 978.7,187.7 798.2,368.2 M 1931.5,203.7 C 1931.1,204.0 1930.8,209.0 1930.8,214.7 L 1930.8,225.0 L 1951.8,225.0 L 1972.8,225.0 L 1972.8,292.5 L 1972.8,360.0 L 1985.8,360.0 L 1998.8,360.0 L 1998.8,292.5 L 1998.8,225.0 L 2019.8,225.0 L 2040.9,225.0 L 2040.6,214.2 L 2040.3,203.5 L 1986.2,203.2 C 1956.5,203.1 1931.8,203.3 1931.5,203.7 M 2065.8,281.5 L 2065.8,360.0 L 2078.8,360.0 L 2091.8,360.0 L 2092.0,308.0 L 2092.3,256.1 L 2115.4,307.8 L 2138.5,359.5 L 2147.8,359.5 L 2157.0,359.5 L 2180.2,307.6 L 2203.3,255.7 L 2203.6,307.8 L 2203.8,360.0 L 2216.8,360.0 L 2229.8,360.0 L 2229.8,281.5 L 2229.8,203.0 L 2216.0,203.0 L 2202.1,203.0 L 2175.2,263.4 C 2160.4,296.6 2148.1,323.7 2147.8,323.5 C 2147.5,323.3 2135.1,296.1 2120.4,263.1 L 2093.5,203.0 L 2079.6,203.0 L 2065.8,203.0 L 2065.8,281.5"/></svg>
     <span class="logo-name">RankRise</span>
   </a>
   <ul class="nav-links" role="navigation" aria-label="Main navigation">
@@ -1239,10 +1231,10 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
     <div class="hero-grid"></div>
     <div class="hero-lines" aria-hidden="true">
       <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
-        <line x1="0" y1="900" x2="550" y2="0" stroke="rgba(139,92,246,.7)" stroke-width="1"/>
-        <line x1="180" y1="900" x2="730" y2="0" stroke="rgba(139,92,246,.4)" stroke-width="1"/>
-        <line x1="1440" y1="0" x2="940" y2="900" stroke="rgba(139,92,246,.5)" stroke-width="1"/>
-        <line x1="1260" y1="0" x2="760" y2="900" stroke="rgba(139,92,246,.3)" stroke-width="1"/>
+        <line x1="0" y1="900" x2="550" y2="0" stroke="rgba(112,98,240,.7)" stroke-width="1"/>
+        <line x1="180" y1="900" x2="730" y2="0" stroke="rgba(112,98,240,.4)" stroke-width="1"/>
+        <line x1="1440" y1="0" x2="940" y2="900" stroke="rgba(112,98,240,.5)" stroke-width="1"/>
+        <line x1="1260" y1="0" x2="760" y2="900" stroke="rgba(112,98,240,.3)" stroke-width="1"/>
       </svg>
     </div>
     <div class="hero-orb ho1"></div>
@@ -1253,10 +1245,7 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
 
   <!-- Big RR mark -->
   <div class="hero-logo-big" aria-hidden="true">
-    <svg width="200" height="200" viewBox="0 0 100 100" fill="none" opacity=".06">
-      <defs><linearGradient id="lgBig" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#e9d5ff"/><stop offset="100%" stop-color="#4c1d95"/></linearGradient></defs>
-      <path d="M50 8 L16 50 L27 50 L27 90 L41 90 L41 62 L50 52 L59 62 L59 90 L73 90 L73 50 L84 50 Z" fill="url(#lgBig)"/>
-    </svg>
+    <svg width="200" height="200" viewBox="0 0 2270 2008" fill="none" opacity=".06"><path fill="#7062F0" d="M 798.2,368.2 C 447.0,719.7 465.9,700.2 451.9,724.2 C 437.1,749.7 427.6,779.6 424.9,810.0 C 423.6,823.3 423.3,1175.0 424.5,1175.0 C 425.0,1175.0 583.5,1016.8 776.8,823.5 L 1128.3,472.0 L 1341.3,685.0 L 1554.3,898.0 L 1452.8,999.5 L 1351.3,1101.0 L 1239.7,989.4 L 1128.1,877.8 L 584.2,1422.0 C 285.1,1721.3 40.1,1966.6 40.0,1967.1 C 39.7,1967.7 108.8,1967.9 229.5,1967.7 C 405.3,1967.4 420.1,1967.3 429.8,1965.7 C 469.5,1959.0 501.8,1944.8 531.7,1920.8 C 535.9,1917.4 671.8,1782.3 833.8,1620.4 L 1128.3,1326.1 L 1422.8,1620.3 C 1584.8,1782.2 1720.9,1917.4 1725.3,1921.0 C 1754.9,1944.5 1787.8,1959.1 1826.8,1965.6 C 1836.6,1967.3 1850.8,1967.4 2027.1,1967.7 C 2131.4,1967.9 2216.8,1967.7 2216.8,1967.3 C 2216.8,1966.9 2069.2,1818.9 1888.8,1638.5 L 1560.8,1310.5 L 1770.0,1101.3 L 1979.3,892.0 L 1553.3,466.0 C 1319.0,231.7 1127.1,40.0 1126.8,40.0 C 1126.5,40.0 978.7,187.7 798.2,368.2 M 1931.5,203.7 C 1931.1,204.0 1930.8,209.0 1930.8,214.7 L 1930.8,225.0 L 1951.8,225.0 L 1972.8,225.0 L 1972.8,292.5 L 1972.8,360.0 L 1985.8,360.0 L 1998.8,360.0 L 1998.8,292.5 L 1998.8,225.0 L 2019.8,225.0 L 2040.9,225.0 L 2040.6,214.2 L 2040.3,203.5 L 1986.2,203.2 C 1956.5,203.1 1931.8,203.3 1931.5,203.7 M 2065.8,281.5 L 2065.8,360.0 L 2078.8,360.0 L 2091.8,360.0 L 2092.0,308.0 L 2092.3,256.1 L 2115.4,307.8 L 2138.5,359.5 L 2147.8,359.5 L 2157.0,359.5 L 2180.2,307.6 L 2203.3,255.7 L 2203.6,307.8 L 2203.8,360.0 L 2216.8,360.0 L 2229.8,360.0 L 2229.8,281.5 L 2229.8,203.0 L 2216.0,203.0 L 2202.1,203.0 L 2175.2,263.4 C 2160.4,296.6 2148.1,323.7 2147.8,323.5 C 2147.5,323.3 2135.1,296.1 2120.4,263.1 L 2093.5,203.0 L 2079.6,203.0 L 2065.8,203.0 L 2065.8,281.5"/></svg>
   </div>
 
   <div class="hero-badge">
@@ -1610,7 +1599,7 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
   <div class="footer-top">
     <div>
       <a href="#hero" class="logo-wrap">
-        <svg class="logo-svg" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="lgF" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#c4b5fd"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs><path d="M50 8 L16 50 L27 50 L27 90 L41 90 L41 62 L50 52 L59 62 L59 90 L73 90 L73 50 L84 50 Z" fill="url(#lgF)"/><path d="M50 8 L16 50 L27 50 L27 63 L41 50 L50 38 L59 50 L73 63 L73 50 L84 50 Z" fill="rgba(255,255,255,0.14)"/></svg>
+        <svg class="logo-svg" viewBox="0 0 2270 2008" fill="none" aria-hidden="true"><path fill="#7062F0" d="M 798.2,368.2 C 447.0,719.7 465.9,700.2 451.9,724.2 C 437.1,749.7 427.6,779.6 424.9,810.0 C 423.6,823.3 423.3,1175.0 424.5,1175.0 C 425.0,1175.0 583.5,1016.8 776.8,823.5 L 1128.3,472.0 L 1341.3,685.0 L 1554.3,898.0 L 1452.8,999.5 L 1351.3,1101.0 L 1239.7,989.4 L 1128.1,877.8 L 584.2,1422.0 C 285.1,1721.3 40.1,1966.6 40.0,1967.1 C 39.7,1967.7 108.8,1967.9 229.5,1967.7 C 405.3,1967.4 420.1,1967.3 429.8,1965.7 C 469.5,1959.0 501.8,1944.8 531.7,1920.8 C 535.9,1917.4 671.8,1782.3 833.8,1620.4 L 1128.3,1326.1 L 1422.8,1620.3 C 1584.8,1782.2 1720.9,1917.4 1725.3,1921.0 C 1754.9,1944.5 1787.8,1959.1 1826.8,1965.6 C 1836.6,1967.3 1850.8,1967.4 2027.1,1967.7 C 2131.4,1967.9 2216.8,1967.7 2216.8,1967.3 C 2216.8,1966.9 2069.2,1818.9 1888.8,1638.5 L 1560.8,1310.5 L 1770.0,1101.3 L 1979.3,892.0 L 1553.3,466.0 C 1319.0,231.7 1127.1,40.0 1126.8,40.0 C 1126.5,40.0 978.7,187.7 798.2,368.2 M 1931.5,203.7 C 1931.1,204.0 1930.8,209.0 1930.8,214.7 L 1930.8,225.0 L 1951.8,225.0 L 1972.8,225.0 L 1972.8,292.5 L 1972.8,360.0 L 1985.8,360.0 L 1998.8,360.0 L 1998.8,292.5 L 1998.8,225.0 L 2019.8,225.0 L 2040.9,225.0 L 2040.6,214.2 L 2040.3,203.5 L 1986.2,203.2 C 1956.5,203.1 1931.8,203.3 1931.5,203.7 M 2065.8,281.5 L 2065.8,360.0 L 2078.8,360.0 L 2091.8,360.0 L 2092.0,308.0 L 2092.3,256.1 L 2115.4,307.8 L 2138.5,359.5 L 2147.8,359.5 L 2157.0,359.5 L 2180.2,307.6 L 2203.3,255.7 L 2203.6,307.8 L 2203.8,360.0 L 2216.8,360.0 L 2229.8,360.0 L 2229.8,281.5 L 2229.8,203.0 L 2216.0,203.0 L 2202.1,203.0 L 2175.2,263.4 C 2160.4,296.6 2148.1,323.7 2147.8,323.5 C 2147.5,323.3 2135.1,296.1 2120.4,263.1 L 2093.5,203.0 L 2079.6,203.0 L 2065.8,203.0 L 2065.8,281.5"/></svg>
         <span class="logo-name">RankRise</span>
       </a>
       <p class="footer-tag" id="ft-tagline">A full-service digital marketing and production agency in Lebanon — building powerful brands through strategy, creativity, and high-quality content.</p>
@@ -1677,7 +1666,7 @@ footer::before { content: ''; position: absolute; bottom: -80px; right: -80px; w
   <div class="db-sidebar">
     <div class="db-sidebar-head">
       <a href="#" class="logo-wrap" onclick="return false">
-        <svg class="logo-svg" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="lgDB2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#c4b5fd"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs><path d="M50 8 L16 50 L27 50 L27 90 L41 90 L41 62 L50 52 L59 62 L59 90 L73 90 L73 50 L84 50 Z" fill="url(#lgDB2)"/></svg>
+        <svg class="logo-svg" viewBox="0 0 2270 2008" fill="none" aria-hidden="true"><path fill="#7062F0" d="M 798.2,368.2 C 447.0,719.7 465.9,700.2 451.9,724.2 C 437.1,749.7 427.6,779.6 424.9,810.0 C 423.6,823.3 423.3,1175.0 424.5,1175.0 C 425.0,1175.0 583.5,1016.8 776.8,823.5 L 1128.3,472.0 L 1341.3,685.0 L 1554.3,898.0 L 1452.8,999.5 L 1351.3,1101.0 L 1239.7,989.4 L 1128.1,877.8 L 584.2,1422.0 C 285.1,1721.3 40.1,1966.6 40.0,1967.1 C 39.7,1967.7 108.8,1967.9 229.5,1967.7 C 405.3,1967.4 420.1,1967.3 429.8,1965.7 C 469.5,1959.0 501.8,1944.8 531.7,1920.8 C 535.9,1917.4 671.8,1782.3 833.8,1620.4 L 1128.3,1326.1 L 1422.8,1620.3 C 1584.8,1782.2 1720.9,1917.4 1725.3,1921.0 C 1754.9,1944.5 1787.8,1959.1 1826.8,1965.6 C 1836.6,1967.3 1850.8,1967.4 2027.1,1967.7 C 2131.4,1967.9 2216.8,1967.7 2216.8,1967.3 C 2216.8,1966.9 2069.2,1818.9 1888.8,1638.5 L 1560.8,1310.5 L 1770.0,1101.3 L 1979.3,892.0 L 1553.3,466.0 C 1319.0,231.7 1127.1,40.0 1126.8,40.0 C 1126.5,40.0 978.7,187.7 798.2,368.2 M 1931.5,203.7 C 1931.1,204.0 1930.8,209.0 1930.8,214.7 L 1930.8,225.0 L 1951.8,225.0 L 1972.8,225.0 L 1972.8,292.5 L 1972.8,360.0 L 1985.8,360.0 L 1998.8,360.0 L 1998.8,292.5 L 1998.8,225.0 L 2019.8,225.0 L 2040.9,225.0 L 2040.6,214.2 L 2040.3,203.5 L 1986.2,203.2 C 1956.5,203.1 1931.8,203.3 1931.5,203.7 M 2065.8,281.5 L 2065.8,360.0 L 2078.8,360.0 L 2091.8,360.0 L 2092.0,308.0 L 2092.3,256.1 L 2115.4,307.8 L 2138.5,359.5 L 2147.8,359.5 L 2157.0,359.5 L 2180.2,307.6 L 2203.3,255.7 L 2203.6,307.8 L 2203.8,360.0 L 2216.8,360.0 L 2229.8,360.0 L 2229.8,281.5 L 2229.8,203.0 L 2216.0,203.0 L 2202.1,203.0 L 2175.2,263.4 C 2160.4,296.6 2148.1,323.7 2147.8,323.5 C 2147.5,323.3 2135.1,296.1 2120.4,263.1 L 2093.5,203.0 L 2079.6,203.0 L 2065.8,203.0 L 2065.8,281.5"/></svg>
         <span class="logo-name" style="font-size:17px">RankRise</span>
       </a>
       <div class="db-logo-sub">Admin Dashboard</div>
@@ -1841,7 +1830,7 @@ function renderPortfolio(){
       <div class="portfolio-visual"><div class="portfolio-visual-inner" style="background:${p.grad}">
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:.22">
           <svg width="80" height="80" viewBox="0 0 100 100" fill="none">
-            <defs><linearGradient id="pv${p.id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#c4b5fd"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
+            <defs><linearGradient id="pv${p.id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#cbc4fb"/><stop offset="100%" stop-color="#4a3ad9"/></linearGradient></defs>
             <circle cx="50" cy="50" r="42" stroke="url(#pv${p.id})" stroke-width="1" fill="none"/>
             <circle cx="50" cy="50" r="24" stroke="rgba(255,255,255,.3)" stroke-width=".5" fill="none"/>
             <path d="M50 18L30 44L37 44L37 72L43 72L43 56L50 50L57 56L57 72L63 72L63 44L70 44Z" fill="url(#pv${p.id})" opacity=".65"/>
