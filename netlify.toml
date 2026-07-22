@@ -1,0 +1,10 @@
+# Netlify configuration — static site served from the repo root
+[build]
+  publish = "."
+  command = ""
+
+# Long-cache the cover images and project assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
