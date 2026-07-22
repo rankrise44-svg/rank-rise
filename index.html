@@ -116,16 +116,16 @@ header.top {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 26px;
-  padding-bottom: 90px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
+  padding-bottom: 80px;
 }
 
 .card {
   position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
   transition: transform .4s cubic-bezier(.2,.7,.2,1), border-color .3s, box-shadow .4s;
@@ -137,7 +137,7 @@ header.top {
 .card:focus-visible { outline: 2px solid var(--p4); outline-offset: 3px; }
 
 /* live-preview thumbnail */
-.thumb { position: relative; width: 100%; aspect-ratio: 16/10; overflow: hidden; background: var(--bg2); border-bottom: 1px solid var(--border); }
+.thumb { position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden; background: var(--bg2); border-bottom: 1px solid var(--border); }
 .thumb-frame {
   position: absolute; top: 0; left: 0;
   width: 1440px; height: 900px;
@@ -151,6 +151,20 @@ header.top {
 }
 .thumb-fallback svg { width: 74px; height: 74px; opacity: .5; }
 .thumb-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* brand-logo cover (used on every card) */
+.thumb-logo {
+  position: absolute; inset: 0; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(139,92,246,.20), transparent 68%),
+    linear-gradient(135deg, #1a0840 0%, #0b0814 62%);
+}
+/* large faded watermark logo sitting behind */
+.thumb-logo .logo-back { position: absolute; width: 150%; opacity: .06; transform: rotate(-10deg); pointer-events: none; }
+.thumb-logo .logo-back svg { width: 100%; height: auto; display: block; }
+/* crisp brand logo in front */
+.thumb-logo .logo-front svg { width: 46px; height: 46px; position: relative; z-index: 1; filter: drop-shadow(0 6px 18px rgba(109,40,217,.55)); }
 .thumb-shine { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(139,92,246,.10), transparent 55%); pointer-events: none; }
 
 /* hover "enter" overlay */
@@ -163,23 +177,23 @@ header.top {
 }
 .card:hover .enter-overlay, .card:focus-visible .enter-overlay { opacity: 1; }
 .enter-btn {
-  display: inline-flex; align-items: center; gap: 9px;
+  display: inline-flex; align-items: center; gap: 8px;
   background: var(--grad); color: #fff;
-  padding: 13px 26px; border-radius: 4px;
-  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  padding: 10px 18px; border-radius: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
   box-shadow: 0 6px 28px var(--glow);
 }
-.enter-hint { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--p5); }
+.enter-hint { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--p5); }
 
 /* card meta */
-.card-info { padding: 22px 24px 24px; }
-.card-cat { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--p4); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-.status { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; font-size: 10px; color: var(--green); letter-spacing: .1em; }
-.status i { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
-.card-title { font-family: 'Syne', sans-serif; font-size: 21px; font-weight: 700; letter-spacing: -.01em; line-height: 1.2; }
-.card-desc { font-size: 14px; color: var(--text-dim); font-weight: 300; margin-top: 9px; line-height: 1.6; }
-.card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
-.tag { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); border: 1px solid var(--border); padding: 4px 9px; border-radius: 3px; }
+.card-info { padding: 15px 16px 17px; }
+.card-cat { font-size: 10px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--p4); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.status { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; font-size: 9px; color: var(--green); letter-spacing: .1em; }
+.status i { width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+.card-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: -.01em; line-height: 1.22; }
+.card-desc { font-size: 12.5px; color: var(--text-dim); font-weight: 300; margin-top: 6px; line-height: 1.55; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 13px; }
+.tag { font-size: 9px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); border: 1px solid var(--border); padding: 3px 7px; border-radius: 3px; }
 
 /* "coming soon / add more" placeholder card */
 .card.soon { cursor: default; border-style: dashed; background: transparent; display: flex; align-items: center; justify-content: center; min-height: 260px; text-align: center; }
@@ -399,11 +413,10 @@ function makeCard(p, i) {
   card.setAttribute('role', 'button');
   card.setAttribute('aria-label', 'Enter ' + p.title);
 
+  // every card uses the brand logo as its cover (or a custom image if `cover` is set)
   const thumbInner = p.cover
     ? `<img class="thumb-cover" src="${p.cover}" alt="${p.title} preview" loading="lazy">`
-    : p.preview
-      ? `<iframe class="thumb-frame" loading="lazy" tabindex="-1" aria-hidden="true" scrolling="no" src="${p.url}"></iframe>`
-      : `<div class="thumb-fallback">${LOGO_SVG}</div>`;
+    : `<div class="thumb-logo"><span class="logo-back">${LOGO_SVG}</span><span class="logo-front">${LOGO_SVG}</span></div>`;
 
   card.innerHTML = `
     <div class="thumb">
