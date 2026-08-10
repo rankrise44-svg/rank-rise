@@ -1,56 +1,51 @@
 # RankRise — Website & Portfolio
 
-The **RankRise agency website is the main site** (`index.html`). Its **Portfolio**
-section showcases client case-study projects; **clicking a project opens it
-full-screen** with a **← Back to RankRise** button (`Esc` also closes).
+A professional, mobile-first agency website. The homepage leads with the
+**Work / portfolio**; clicking any project opens it full-screen.
 
 ## Structure
 
 ```
-index.html          →  the full RankRise agency website (main site)
-projects/
-  mariam-jammoul-branding.html        →  Mariam Jammoul — brand identity
-  farhat-services-case-study.html     →  Farhat Services — case study
-  deir-qanoun-sorting-campaign.html   →  #ضروري_نكفّي — Deir Qanoun El Nahr campaign
+index.html          →  the website (design + layout)
+projects.js         →  ★ your portfolio DATA — edit this to manage projects
+assets/covers/      →  project cover images
+projects/           →  the case-study pages that open on click
+robots.txt, sitemap.xml, netlify.toml   →  hosting / SEO
 ```
 
-## How the portfolio works
+## ✏️ Managing projects — edit ONE file: `projects.js`
 
-- The Portfolio section is driven by the `data` array inside `index.html`.
-- Each entry with a `link` becomes a clickable card; clicking it opens that
-  project in a full-screen `<iframe>` viewer — the project files are loaded
-  as-is and never modified.
-- You can also manage cards from the site's built-in **Dashboard** (top-right
-  nav) — note that projects added there are display-only and won't have a link
-  unless you add one in the `data` array.
+All portfolio data lives in **`projects.js`**, separate from the design. Each
+project is one line:
 
-## ➕ Adding a new portfolio project
+```js
+window.RANKRISE_PROJECTS = [
+  { id: 8, title: 'New Client — Project', client: 'New Client',
+    cat: 'Brand', size: 'normal', mLabel: 'Case Study',
+    cover: 'assets/covers/new.jpg', link: 'projects/new.html' },
+  …
+];
+```
 
-1. Put the project's HTML file in `projects/`, e.g. `projects/new-project.html`.
-2. In `index.html`, find the `data` array and add an entry:
+Fields: `cat` = Brand | Social | Prod | Paid | SEO (drives the filter) ·
+`size` = `normal` or `feat` (featured = full-width) · `link` = a file in
+`projects/` or a full `https://` URL · `cover` = an image in `assets/covers/`
+or an `https://` URL.
 
-   ```js
-   {
-     id: 4,
-     title: 'New Project — Short Result',
-     client: 'Client Name',
-     cat: 'Brand',                 // SEO | Paid | Brand | Social | Prod (drives the filter)
-     mLabel: 'Case Study',
-     mVal: 'Open ↗',
-     size: 'third',                // wide (7 cols) | normal (5) | third (4)
-     grad: GRADS[2],               // background gradient (GRADS array above)
-     link: 'projects/new-project.html'
-   },
-   ```
+**To add a project:** drop its `.html` in `projects/` and a cover in
+`assets/covers/`, then add one line to `projects.js`. Done.
 
-3. Save. The card appears in the Portfolio grid and opens full-screen on click.
+### Or use the built-in manager (no code)
+Open the site with **`#admin`** in the URL (or press **Ctrl/Cmd + Alt + A**) to
+add/edit/remove projects visually. Changes preview instantly and save on your
+device; hit **“Copy code to publish”** and paste the result into `projects.js`
+to make them live for everyone.
 
 ## Running locally
 
-The portfolio viewer loads project files via `<iframe>`, so open the site
+The site loads `projects.js` and opens projects via `<iframe>`, so serve it
 through a local web server (not `file://`):
 
 ```bash
-python3 -m http.server 8000
-# then visit http://localhost:8000/
+python3 -m http.server 8000    # then open http://localhost:8000/
 ```

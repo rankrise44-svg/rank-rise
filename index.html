@@ -507,17 +507,10 @@ footer{ background:var(--dark); color:var(--on-dark); padding:clamp(56px,8vw,90p
 </div></div>
 <div class="pm-toast" id="pmToast"></div>
 
+<!-- Portfolio data lives in projects.js — edit that one file to manage projects -->
+<script src="projects.js"></script>
 <script>
-const GRADS=['#1e0a50','#0a1550','#300a60','#080a2a','#200510','#051520','#1a0028','#0a1a08','#280808','#1a1000'];
-let data=[
-  {id:1,title:'Mariam Jammoul — Brand Identity',client:'Mariam Jammoul',cat:'Brand',mLabel:'Brand Identity',size:'normal',cover:'assets/covers/mariam.jpg',link:'projects/mariam-jammoul-branding.html'},
-  {id:2,title:'BBCorp — Selected Work',client:'BBCorp',cat:'Prod',mLabel:'Video Production',size:'feat',cover:'assets/covers/bbcorp.jpg',link:'projects/bbcorp-selected-work.html'},
-  {id:3,title:'Farhat Services — Case Study',client:'Farhat Services',cat:'Brand',mLabel:'Case Study',size:'normal',cover:'assets/covers/farhat.jpg',link:'projects/farhat-services-case-study.html'},
-  {id:4,title:'#ضروري_نكفّي — Deir Qanoun El Nahr',client:'Deir Qanoun El Nahr',cat:'Social',mLabel:'Awareness Campaign',size:'normal',cover:'assets/covers/deir.jpg',link:'projects/deir-qanoun-sorting-campaign.html'},
-  {id:5,title:'Coin & Shares — Case Study',client:'Coin & Shares',cat:'Brand',mLabel:'Branding · Social',size:'normal',cover:'assets/covers/coins.jpg',link:'projects/coins-n-share-case-study.html'},
-  {id:6,title:'Hatem Rmaite Forex — Case Study',client:'Hatem Rmaite Forex',cat:'Social',mLabel:'Case Study',size:'normal',cover:'assets/covers/hatem.jpg',link:'projects/hatem-rmaite-forex-case-study-2.html'},
-  {id:7,title:'Bazzi Podiatry — Brand Identity',client:'Bazzi Podiatry',cat:'Brand',mLabel:'Brand Identity',size:'normal',cover:'assets/covers/bazzi.jpg',link:'projects/bazzi-podiatry-case-study.html'}
-];
+let data = (window.RANKRISE_PROJECTS || []).map(p => ({ ...p }));
 const SERVICES=[
   {n:'01',name:'Social Media Management',desc:'We run your social presence end to end — strategy, content calendars, daily publishing, and community management that turn followers into customers.',tags:['Instagram','TikTok','LinkedIn']},
   {n:'02',name:'Content & Video Production',desc:'Scroll-stopping Reels, films, photography, and creative direction. Cinema-grade production that makes your brand impossible to ignore.',tags:['Reels & Video','Photography','Direction']},
@@ -584,7 +577,7 @@ renderWork();
     function form(id){editId=id;const p=id?data.find(x=>x.id===id):{cat:'Brand',size:'normal',mLabel:'Case Study'};$('pmFTitle').textContent=id?'Edit Project':'Add Project';sf('title',p.title);sf('client',p.client);sf('cat',p.cat||'Brand');sf('size',p.size||'normal');sf('link',p.link);sf('cover',p.cover);sf('mlabel',p.mLabel);fov.classList.add('open');}
     function saveForm(){const t=gf('title');if(!t){toast('Enter a title');return;}const o={title:t,client:gf('client')||'—',cat:gf('cat'),size:gf('size'),link:gf('link'),cover:gf('cover'),mLabel:gf('mlabel')||'View'};if(editId){const i=data.findIndex(x=>x.id===editId);data[i]={...data[i],...o};}else{data.push({id:nid(),...o});}fov.classList.remove('open');save();renderList();toast('Saved ✓');}
     const del=id=>{data=data.filter(x=>x.id!==id);save();renderList();toast('Removed');};
-    function copyCode(){const code='let data=[\n'+data.map(p=>'  '+JSON.stringify(p)).join(',\n')+'\n];';const ok=()=>toast('Copied! Paste into index.html');if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(code).then(ok,()=>prompt('Copy:',code));else prompt('Copy:',code);}
+    function copyCode(){const code='window.RANKRISE_PROJECTS = [\n'+data.map(p=>'  '+JSON.stringify(p)).join(',\n')+'\n];';const ok=()=>toast('Copied! Paste into projects.js');if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(code).then(ok,()=>prompt('Copy this into projects.js:',code));else prompt('Copy this into projects.js:',code);}
     let tt;function toast(m){const e=$('pmToast');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2200);}
     $('pmClose').onclick=close;$('pmAdd').onclick=()=>form(null);$('pmCopy').onclick=copyCode;
     $('pmReset').onclick=()=>{if(confirm('Reset to default projects?')){try{localStorage.removeItem(LS);}catch(e){}location.reload();}};
