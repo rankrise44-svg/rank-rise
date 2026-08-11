@@ -92,10 +92,33 @@ h1,h2,h3{ font-family:'Syne',sans-serif; font-weight:800; letter-spacing:-.03em;
 .btn-o:hover{ border-color:var(--ink); }
 
 /* ── top bar ── */
-.bar{ position:fixed; top:0; left:0; right:0; z-index:90; display:flex; align-items:center; justify-content:space-between; padding:14px var(--pad); transition:background var(--t-ui), backdrop-filter var(--t-ui); }
+.bar{ position:fixed; top:0; left:0; right:0; z-index:90; display:flex; align-items:center; justify-content:space-between; padding:calc(14px + env(safe-area-inset-top)) var(--pad) 14px; transition:background var(--t-ui), backdrop-filter var(--t-ui); }
 .bar.scrolled{ background:rgba(8,8,13,.72); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
 .brand{ display:flex; align-items:center; gap:9px; font-family:'Syne'; font-weight:800; font-size:17px; }
 .brand svg{ width:24px; height:21px; color:var(--accent-2); }
+/* Below 1000px the link row is gone, so the burger is the only door in —
+   it exists precisely because the phone had no navigation at all. */
+.burger{ width:42px; height:42px; border-radius:100px; border:1px solid var(--line); background:rgba(8,8,13,.5); backdrop-filter:blur(10px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; cursor:pointer; }
+.burger i{ width:16px; height:2px; border-radius:2px; background:var(--ink); transition:transform var(--t-ui) var(--e-both), background var(--t-tap); }
+.burger[aria-expanded="true"] i:first-child{ transform:translateY(3.5px) rotate(45deg); }
+.burger[aria-expanded="true"] i:last-child{ transform:translateY(-3.5px) rotate(-45deg); }
+@media(min-width:1000px){ .burger{ display:none; } }
+
+.mnav{ position:fixed; inset:0; z-index:85; background:rgba(8,8,13,.96); backdrop-filter:blur(18px);
+  display:flex; flex-direction:column; justify-content:center; gap:40px; padding:calc(70px + env(safe-area-inset-top)) var(--pad) calc(34px + env(safe-area-inset-bottom));
+  opacity:0; visibility:hidden; transition:opacity var(--t-ui) var(--e-both), visibility var(--t-ui); }
+.mnav.open{ opacity:1; visibility:visible; }
+/* the menu carries its own WhatsApp — the floating one bows out while it's open */
+body.menu-open .wa{ opacity:0; pointer-events:none; }
+.mnav nav{ display:flex; flex-direction:column; gap:6px; }
+.mnav nav a{ display:flex; align-items:baseline; gap:16px; font-family:'Syne'; font-weight:800; font-size:clamp(30px,9vw,44px); letter-spacing:-.02em; padding:8px 0;
+  opacity:0; transform:translateY(26px); transition:opacity var(--t-media) var(--e-rise), transform var(--t-media) var(--e-rise); transition-delay:var(--d,0ms); }
+.mnav.open nav a{ opacity:1; transform:none; }
+.mnav nav a em{ font-family:'DM Sans'; font-style:normal; font-weight:600; font-size:12px; letter-spacing:.2em; color:var(--accent-2); }
+.mnav nav a:active{ color:var(--accent-2); }
+.mnav-foot{ display:flex; gap:12px; flex-wrap:wrap; }
+.mnav-foot .chip{ font-size:14px; padding:14px 22px; }
+
 .bar-links{ display:none; gap:26px; }
 .bar-links a{ font-size:13px; font-weight:500; color:var(--dim); transition:color var(--t-tap); }
 .bar-links a:hover{ color:#fff; }
@@ -320,7 +343,7 @@ footer .g{ color:var(--accent-2); }
 .vtitle{ font-family:'Syne'; font-weight:700; font-size:13px; color:var(--accent-2); background:rgba(8,8,13,.85); backdrop-filter:blur(10px); border:1px solid var(--line); padding:10px 15px; border-radius:100px; max-width:55vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
 /* ── whatsapp fab ── */
-.wa{ position:fixed; right:18px; bottom:18px; z-index:200; height:58px; display:flex; align-items:center; padding:0 15px; border-radius:100px; background:var(--accent); color:#fff; box-shadow:0 12px 30px -8px rgba(87,74,224,.6); overflow:hidden; }
+.wa{ position:fixed; right:calc(18px + env(safe-area-inset-right)); bottom:calc(18px + env(safe-area-inset-bottom)); z-index:200; height:58px; display:flex; align-items:center; padding:0 15px; border-radius:100px; background:var(--accent); color:#fff; box-shadow:0 12px 30px -8px rgba(87,74,224,.6); overflow:hidden; }
 .wa svg{ width:28px; height:28px; }
 .wa b{ max-width:0; opacity:0; white-space:nowrap; font-size:14px; font-weight:700; transition:max-width var(--t-ui), opacity var(--t-tap), margin var(--t-ui); }
 .wa:hover b{ max-width:150px; opacity:1; margin-left:10px; }
@@ -334,6 +357,11 @@ footer .g{ color:var(--accent-2); }
   body.cur-hover .curring{ width:56px; height:56px; border-color:var(--accent); }
 }
 @media(pointer:coarse){ .curdot,.curring{ display:none; } }
+/* No hover on touch — the affordances hover used to carry are simply on. */
+@media(hover:none){
+  .fw-media .go{ opacity:1; transform:none; }
+  .fw-media .veil{ opacity:1; }
+}
 
 /* ── manager ── */
 .pm-ov{ position:fixed; inset:0; z-index:500; background:rgba(8,8,13,.72); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; padding:16px; }
@@ -389,6 +417,7 @@ footer .g{ color:var(--accent-2); }
   .track{ transform:none !important; flex-wrap:wrap; width:auto; }
   .draw i{ display:none; } .draw b{ position:static; opacity:1; }
   .curdot,.curring{ display:none; }
+  .mnav,.mnav nav a{ transition:none; transform:none; }
   .up{ opacity:1; transform:none; transition:none; transition-delay:0ms !important; }
   .fw:hover .cov{ transform:none; }
 }
@@ -424,10 +453,27 @@ footer .g{ color:var(--accent-2); }
   </nav>
   <div class="bar-right">
     <button class="snd" id="snd" aria-label="Toggle sound" title="Sound"><i></i><i></i><i></i><i></i></button>
-    <a class="chip" href="portal.html">Client Login</a>
+    <a class="chip hide-m" href="portal.html">Client Login</a>
     <a class="chip solid hide-m" href="https://wa.me/96170991555" target="_blank" rel="noopener">WhatsApp</a>
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mnav"><i></i><i></i></button>
   </div>
 </header>
+
+<!-- MOBILE MENU — the only navigation below 1000px -->
+<div class="mnav" id="mnav" aria-hidden="true">
+  <nav aria-label="Menu">
+    <a href="#work"><em>01</em>Work</a>
+    <a href="#services"><em>02</em>Services</a>
+    <a href="#clients"><em>03</em>Clients</a>
+    <a href="#expand"><em>04</em>Expanding</a>
+    <a href="#faq"><em>05</em>FAQ</a>
+    <a href="#contact"><em>06</em>Contact</a>
+  </nav>
+  <div class="mnav-foot">
+    <a class="chip" href="portal.html">Client Login</a>
+    <a class="chip solid" href="https://wa.me/96170991555" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+</div>
 
 <div class="ride-rail" aria-hidden="true"><i id="railFill"></i></div>
 
@@ -768,6 +814,23 @@ function setSound(on){
   else if(AC){ master.gain.setTargetAtTime(0, AC.currentTime, .4); }
 }
 document.getElementById('snd').addEventListener('click',()=>setSound(!soundOn));
+
+/* ── mobile menu ── */
+const burger=document.getElementById('burger'), mnav=document.getElementById('mnav');
+function setMenu(open){
+  burger.setAttribute('aria-expanded',open);
+  mnav.setAttribute('aria-hidden',!open);
+  mnav.classList.toggle('open',open);
+  document.body.style.overflow=open?'hidden':'';
+  document.body.classList.toggle('menu-open',open);
+  if(open){
+    mnav.querySelectorAll('nav a').forEach((a,i)=>a.style.setProperty('--d',60+i*55+'ms'));
+    burger.setAttribute('aria-label','Close menu');
+  } else burger.setAttribute('aria-label','Open menu');
+}
+burger.addEventListener('click',()=>setMenu(burger.getAttribute('aria-expanded')!=='true'));
+mnav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+addEventListener('keydown',e=>{ if(e.key==='Escape'&&mnav.classList.contains('open')){ setMenu(false); burger.focus(); } });
 
 /* ── enter ── */
 const enterEl=document.getElementById('enter');
