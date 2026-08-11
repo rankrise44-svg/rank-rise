@@ -21,21 +21,24 @@ explained before it starts and reported after it lands.
 | 1 | Security — the hidden Project Manager, `portal.html` | **Deferred** by the client |
 | 2 | Hero focus + editorial Selected Work | Done |
 | 3 | Case studies, real client data, expansion map, BBCorp depth | Done |
-| 4 | Motion system + scroll pacing | Next |
-| 5 | Mobile optimisation | |
-| 6 | Performance — repo weight, the 29 MB BBCorp source page | |
-| 7 | SEO + accessibility | |
-| 8 | Final copy polish + QA | |
+| 4 | Motion system + scroll pacing | Done |
+| 5 | Mobile optimisation — nav, safe areas, touch | Done |
+| 6 | Performance — image re-encode, content-visibility | Done |
+| 7 | SEO — og-image, sitemap, robots, case og tags | Done |
+| 8 | QA + accessibility sweep | Done |
 
 ## Open — carried forward
 
-### 3D, still outstanding
-The client asked for a genuinely three-dimensional feel — the thing no
-competitor knows how to build. What exists today is 2D canvas work: the
-starfield, the ascent, and the hand-built dot-globe in `#expand`. None of
-it is real 3D. The candidate is a WebGL shader background (raymarched
-depth, parallax on scroll, brand-purple volumetrics) sitting behind the
-existing content rather than replacing it. Proposed, not built.
+### Typeface decision
+The client finds Syne big and not to their taste. A six-option board
+(Anton, Archivo Black, Bricolage Grotesque, Sora, Unbounded, current)
+was rendered on the real hero — awaiting their pick before any change.
+
+### 3D — first pass shipped
+The background is now a hand-written WebGL scene (three parallax star
+depths, fbm nebula in brand purple, scroll-velocity warp), with a 2D
+canvas fallback. Open question: whether to push further — e.g. depth on
+the Ascent section itself.
 
 ### Portfolio covers
 Six of seven covers in `assets/covers/` are still screenshots of the old
