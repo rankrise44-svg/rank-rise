@@ -78,10 +78,10 @@ window.RANKRISE_CASES = {
         title: 'No safety net.',
         text: 'An extreme-sport series that put the brand where the feed can’t ignore it — sky, sea, street and off-road. One mindset: calculated risk, executed clean.',
         items: [
-          { img: 'assets/brands/bbcorp/shot-15.jpg', cap: 'Paraglide · Beirut', w: 440, h: 782 },
-          { img: 'assets/brands/bbcorp/shot-16.jpg', cap: 'Diving', w: 440, h: 777 },
-          { img: 'assets/brands/bbcorp/shot-17.jpg', cap: 'Parkour', w: 440, h: 782 },
-          { img: 'assets/brands/bbcorp/shot-18.jpg', cap: 'Off-road · Beyond Limits', w: 440, h: 782 },
+          { video: 'assets/brands/bbcorp/clip-6.mp4', poster: 'assets/brands/bbcorp/shot-15.jpg', cap: 'Paraglide · Beirut', w: 440, h: 782 },
+          { video: 'assets/brands/bbcorp/clip-9.mp4', poster: 'assets/brands/bbcorp/shot-18.jpg', cap: 'Off-road · Beyond Limits', w: 440, h: 782 },
+          { video: 'assets/brands/bbcorp/clip-8.mp4', poster: 'assets/brands/bbcorp/shot-17.jpg', cap: 'Parkour', w: 440, h: 782 },
+          { img:   'assets/brands/bbcorp/shot-16.jpg', cap: 'Diving', w: 440, h: 777 },
         ]
       },
     ],

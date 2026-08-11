@@ -169,7 +169,7 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
   const tile = e => `
     <figure class="gi up">
       ${e.video
-        ? `<video src="${esc(e.video)}" ${e.poster?`poster="${esc(e.poster)}"`:''} muted loop playsinline preload="none" autoplay></video>`
+        ? `<video data-src="${esc(e.video)}" ${e.poster?`poster="${esc(e.poster)}"`:''}${e.w?` width="${e.w}" height="${e.h}"`:''} muted loop playsinline preload="none"></video>`
         : `<img src="${esc(e.img)}" alt="${esc(e.cap||'')}"${e.w?` width="${e.w}" height="${e.h}"`:''} loading="lazy" decoding="async">`}
       ${e.cap?`<figcaption>${esc(e.cap)}</figcaption>`:''}
     </figure>`;
@@ -246,6 +246,23 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
       {threshold:.14, rootMargin:'0px 0px -6% 0px'});
     document.querySelectorAll('.up').forEach(el=>io.observe(el));
   } else { document.querySelectorAll('.up').forEach(el=>el.classList.add('in')); }
+
+  // Gallery clips: nothing downloads until the tile is on screen, and they
+  // stop the moment it leaves. The poster carries the frame until then, so
+  // the page looks finished on a slow connection and costs nothing on data.
+  const vids=document.querySelectorAll('.gi video');
+  if(vids.length){
+    if(reduce || !('IntersectionObserver' in window)){
+      vids.forEach(v=>{ if(!v.src) v.src=v.dataset.src; v.setAttribute('controls',''); });
+    } else {
+      const vio=new IntersectionObserver(en=>en.forEach(x=>{
+        const v=x.target;
+        if(x.isIntersecting){ if(!v.src) v.src=v.dataset.src; v.play().catch(()=>{}); }
+        else v.pause();
+      }),{threshold:.25});
+      vids.forEach(v=>vio.observe(v));
+    }
+  }
   }
 
   paint();
