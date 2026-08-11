@@ -56,6 +56,18 @@
   --bg:#08080d; --bg2:#0d0d15; --ink:#f5f4fa; --dim:rgba(245,244,250,.62); --faint:rgba(245,244,250,.36);
   --accent:#7062f0; --accent-2:#9a8ef5; --accent-3:#cbc4fb; --line:rgba(245,244,250,.12);
   --pad:clamp(20px,5vw,60px); --maxw:1360px;
+
+  /* Motion. Four durations and three curves, and nothing outside this set.
+     --e-rise is the site's signature: a hard start that settles slowly,
+     so everything reads as arriving from below rather than sliding. */
+  --e-rise:cubic-bezier(.2,.7,.2,1);
+  --e-media:cubic-bezier(.2,0,0,1);
+  --e-both:cubic-bezier(.65,0,.35,1);
+  --t-tap:.18s;    /* colour, borders, anything under the cursor  */
+  --t-ui:.3s;      /* controls, chips, panels                     */
+  --t-media:.6s;   /* images, veils, anything with weight         */
+  --t-rise:.9s;    /* the scroll reveal                           */
+  --stagger:70ms;  /* between siblings in one group               */
 }
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
 html{ scroll-behavior:auto; }
@@ -73,29 +85,29 @@ h1,h2,h3{ font-family:'Syne',sans-serif; font-weight:800; letter-spacing:-.03em;
 #stars{ position:fixed; inset:0; z-index:0; pointer-events:none; }
 
 /* buttons */
-.btn{ display:inline-flex; align-items:center; justify-content:center; gap:9px; font-weight:600; font-size:15px; padding:16px 28px; border-radius:100px; border:1px solid transparent; cursor:pointer; transition:.25s; }
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:9px; font-weight:600; font-size:15px; padding:16px 28px; border-radius:100px; border:1px solid transparent; cursor:pointer; transition:var(--t-tap); }
 .btn-p{ background:var(--accent); color:#fff; box-shadow:0 10px 34px -10px rgba(112,98,240,.55); }
 .btn-p:hover{ background:#574ae0; transform:translateY(-2px); }
 .btn-o{ border-color:var(--line); color:var(--ink); background:none; }
 .btn-o:hover{ border-color:var(--ink); }
 
 /* ── top bar ── */
-.bar{ position:fixed; top:0; left:0; right:0; z-index:90; display:flex; align-items:center; justify-content:space-between; padding:14px var(--pad); transition:background .3s, backdrop-filter .3s; }
+.bar{ position:fixed; top:0; left:0; right:0; z-index:90; display:flex; align-items:center; justify-content:space-between; padding:14px var(--pad); transition:background var(--t-ui), backdrop-filter var(--t-ui); }
 .bar.scrolled{ background:rgba(8,8,13,.72); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
 .brand{ display:flex; align-items:center; gap:9px; font-family:'Syne'; font-weight:800; font-size:17px; }
 .brand svg{ width:24px; height:21px; color:var(--accent-2); }
 .bar-links{ display:none; gap:26px; }
-.bar-links a{ font-size:13px; font-weight:500; color:var(--dim); transition:color .2s; }
+.bar-links a{ font-size:13px; font-weight:500; color:var(--dim); transition:color var(--t-tap); }
 .bar-links a:hover{ color:#fff; }
 .bar-right{ display:flex; align-items:center; gap:10px; }
-.chip{ display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:600; padding:10px 16px; border-radius:100px; border:1px solid var(--line); background:rgba(8,8,13,.5); backdrop-filter:blur(10px); transition:.2s; cursor:pointer; }
+.chip{ display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:600; padding:10px 16px; border-radius:100px; border:1px solid var(--line); background:rgba(8,8,13,.5); backdrop-filter:blur(10px); transition:var(--t-tap); cursor:pointer; }
 .chip:hover{ border-color:var(--accent); color:#fff; }
 .chip.solid{ background:var(--accent); border-color:var(--accent); color:#fff; }
 .chip.solid:hover{ background:#574ae0; }
 /* sound toggle */
-.snd{ width:42px; height:42px; border-radius:100px; border:1px solid var(--line); background:rgba(8,8,13,.5); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; gap:2.5px; cursor:pointer; transition:.2s; }
+.snd{ width:42px; height:42px; border-radius:100px; border:1px solid var(--line); background:rgba(8,8,13,.5); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; gap:2.5px; cursor:pointer; transition:var(--t-tap); }
 .snd:hover{ border-color:var(--accent); }
-.snd i{ width:2.5px; height:6px; background:var(--faint); border-radius:2px; transition:background .3s; }
+.snd i{ width:2.5px; height:6px; background:var(--faint); border-radius:2px; transition:background var(--t-ui); }
 .snd.on i{ background:var(--accent-2); animation:eq .9s ease-in-out infinite alternate; }
 .snd.on i:nth-child(2){ animation-delay:.15s; } .snd.on i:nth-child(3){ animation-delay:.3s; } .snd.on i:nth-child(4){ animation-delay:.45s; }
 @keyframes eq{ from{ height:4px; } to{ height:16px; } }
@@ -103,9 +115,9 @@ h1,h2,h3{ font-family:'Syne',sans-serif; font-weight:800; letter-spacing:-.03em;
 .progressbar i{ display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--accent-2)); }
 
 /* ── ENTER / loader ── */
-#enter{ position:fixed; inset:0; z-index:300; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; transition:opacity .7s, visibility .7s; }
+#enter{ position:fixed; inset:0; z-index:300; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; transition:opacity var(--t-rise) var(--e-both), visibility var(--t-rise); }
 #enter.done{ opacity:0; visibility:hidden; }
-#enter svg{ width:60px; height:53px; color:var(--accent); animation:riseIn 1.1s cubic-bezier(.2,.7,.2,1) both; position:relative; z-index:2; }
+#enter svg{ width:60px; height:53px; color:var(--accent); animation:riseIn 1.1s var(--e-rise) both; position:relative; z-index:2; }
 #enter .ttl{ font-family:'Syne'; font-weight:800; font-size:clamp(22px,4vw,34px); letter-spacing:-.02em; margin-top:18px; animation:fadeIn .8s .4s both; }
 #enter .sub{ font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--faint); margin-top:6px; animation:fadeIn .8s .6s both; }
 .enter-btns{ display:flex; gap:12px; margin-top:34px; flex-wrap:wrap; justify-content:center; animation:fadeIn .8s .9s both; }
@@ -132,7 +144,7 @@ h1,h2,h3{ font-family:'Syne',sans-serif; font-weight:800; letter-spacing:-.03em;
 .hero-in{ position:relative; z-index:2; width:100%; padding:0 var(--pad) clamp(44px,7vh,76px); }
 .hero h1{ font-size:clamp(38px,8.6vw,118px); text-transform:uppercase; }
 .hero h1 .ln{ display:block; overflow:hidden; }
-.hero h1 .ln span{ display:block; transform:translateY(110%); animation:lnup 1s cubic-bezier(.2,.7,.2,1) forwards; }
+.hero h1 .ln span{ display:block; transform:translateY(110%); animation:lnup 1s var(--e-rise) forwards; }
 .hero h1 .ln:nth-child(2) span{ animation-delay:.12s; }
 .hero h1 .ln:nth-child(3) span{ animation-delay:.24s; }
 @keyframes lnup{ to{ transform:none; } }
@@ -164,7 +176,7 @@ h1,h2,h3{ font-family:'Syne',sans-serif; font-weight:800; letter-spacing:-.03em;
 .milestone{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; pointer-events:none; }
 .milestone h2{ font-size:clamp(28px,6vw,78px); text-transform:uppercase; opacity:0; will-change:transform,opacity; }
 .milestone h2 small{ display:block; font-family:'DM Sans'; font-weight:500; font-size:clamp(11px,1.4vw,14px); letter-spacing:.34em; color:var(--accent-2); margin-bottom:14px; }
-.ride-rail{ position:fixed; right:calc(var(--pad) - 6px); top:50%; transform:translateY(-50%); z-index:50; width:2px; height:120px; background:var(--line); border-radius:2px; opacity:0; transition:opacity .4s; }
+.ride-rail{ position:fixed; right:calc(var(--pad) - 6px); top:50%; transform:translateY(-50%); z-index:50; width:2px; height:120px; background:var(--line); border-radius:2px; opacity:0; transition:opacity var(--t-ui); }
 .ride-rail i{ display:block; width:100%; height:0%; background:var(--accent); border-radius:2px; }
 body.in-ascent .ride-rail{ opacity:1; }
 
@@ -173,26 +185,26 @@ body.in-ascent .ride-rail{ opacity:1; }
 .feat-list{ display:flex; flex-direction:column; gap:clamp(56px,9vh,104px); }
 .fw{ display:grid; grid-template-columns:1fr; gap:16px; cursor:pointer; }
 .fw-media{ position:relative; aspect-ratio:16/10; border-radius:18px; overflow:hidden; background:var(--bg2); border:1px solid var(--line); }
-.fw-media .cov{ position:absolute; inset:0; background-size:cover; background-position:center top; transition:transform .8s cubic-bezier(.2,0,0,1); }
+.fw-media .cov{ position:absolute; inset:0; background-size:cover; background-position:center top; transition:transform var(--t-media) var(--e-media); }
 .fw:hover .cov{ transform:scale(1.045) translateY(-6px); }
-.fw-media .veil{ position:absolute; inset:0; background:linear-gradient(to top, rgba(8,8,13,.42), transparent 45%); opacity:0; transition:opacity .35s; }
+.fw-media .veil{ position:absolute; inset:0; background:linear-gradient(to top, rgba(8,8,13,.42), transparent 45%); opacity:0; transition:opacity var(--t-ui); }
 .fw:hover .veil,.fw:focus-visible .veil{ opacity:1; }
-.fw-media .go{ position:absolute; right:18px; bottom:18px; width:48px; height:48px; border:1px solid rgba(255,255,255,.55); border-radius:100px; display:grid; place-items:center; font-size:18px; color:#fff; background:rgba(8,8,13,.35); backdrop-filter:blur(6px); opacity:0; transform:translateY(10px); transition:.35s; }
+.fw-media .go{ position:absolute; right:18px; bottom:18px; width:48px; height:48px; border:1px solid rgba(255,255,255,.55); border-radius:100px; display:grid; place-items:center; font-size:18px; color:#fff; background:rgba(8,8,13,.35); backdrop-filter:blur(6px); opacity:0; transform:translateY(10px); transition:var(--t-ui); }
 .fw:hover .go,.fw:focus-visible .go{ opacity:1; transform:none; }
 .fw-info{ display:flex; flex-direction:column; gap:6px; }
 .fw-n{ font-family:'Syne'; font-weight:800; font-size:13px; color:var(--accent-2); }
-.fw-info h3{ font-size:clamp(22px,3.4vw,42px); transition:color .25s; }
+.fw-info h3{ font-size:clamp(22px,3.4vw,42px); transition:color var(--t-tap); }
 .fw:hover .fw-info h3{ color:var(--accent-2); }
 .fw-cat{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); }
 .mw{ margin-top:clamp(48px,8vh,86px); border-top:1px solid var(--line); }
-.mw-row{ display:flex; align-items:baseline; justify-content:space-between; gap:18px; padding:clamp(18px,3vh,26px) 0; border-bottom:1px solid var(--line); cursor:pointer; transition:padding-left .3s; }
+.mw-row{ display:flex; align-items:baseline; justify-content:space-between; gap:18px; padding:clamp(18px,3vh,26px) 0; border-bottom:1px solid var(--line); cursor:pointer; transition:padding-left var(--t-ui); }
 .mw-row:hover,.mw-row:focus-visible{ padding-left:12px; }
-.mw-row h3{ font-size:clamp(18px,2.4vw,28px); transition:color .25s; }
+.mw-row h3{ font-size:clamp(18px,2.4vw,28px); transition:color var(--t-tap); }
 .mw-row:hover h3{ color:var(--accent-2); }
 .mw-row .mw-cat{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); white-space:nowrap; }
 .empty{ padding:50px 0; color:var(--faint); text-align:center; }
 /* upward reveal — the "rise" motion */
-.up{ opacity:0; transform:translateY(36px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+.up{ opacity:0; transform:translateY(36px); transition:opacity var(--t-rise) var(--e-rise), transform var(--t-rise) var(--e-rise); transition-delay:var(--d,0ms); }
 .up.in{ opacity:1; transform:none; }
 
 /* ── STILLS ── */
@@ -207,7 +219,7 @@ body.in-ascent .ride-rail{ opacity:1; }
 
 /* ── SERVICES ── */
 .svc{ border-top:1px solid var(--line); margin-top:clamp(26px,4vw,44px); }
-.svc-row{ display:grid; grid-template-columns:1fr; gap:8px; padding:clamp(24px,3.6vw,38px) 0; border-bottom:1px solid var(--line); transition:padding-left .3s; }
+.svc-row{ display:grid; grid-template-columns:1fr; gap:8px; padding:clamp(24px,3.6vw,38px) 0; border-bottom:1px solid var(--line); transition:padding-left var(--t-ui); }
 .svc-row:hover{ padding-left:10px; }
 .svc-n{ font-family:'Syne'; font-weight:800; font-size:14px; color:var(--accent); }
 .svc-row h3{ font-size:clamp(22px,4.2vw,34px); }
@@ -222,13 +234,13 @@ body.in-ascent .ride-rail{ opacity:1; }
 .draw i{ font-style:normal; display:block; color:transparent; -webkit-text-stroke:1.3px var(--accent-2); clip-path:inset(0 101% 0 0); }
 .draw b{ position:absolute; top:0; left:0; color:var(--ink); opacity:0; }
 .draw small{ display:block; font-family:'DM Sans'; font-weight:500; font-size:10px; letter-spacing:.26em; text-transform:uppercase; color:var(--faint); margin-top:7px; }
-.draw.on i{ animation:drawText 1.5s cubic-bezier(.55,0,.2,1) forwards; animation-delay:var(--dd,0s); }
+.draw.on i{ animation:drawText 1.5s var(--e-both) forwards; animation-delay:var(--dd,0s); }
 .draw.on b{ animation:fillIn .7s ease forwards; animation-delay:calc(var(--dd,0s) + 1.15s); }
 @keyframes drawText{ to{ clip-path:inset(0 -2% 0 0); } }
 @keyframes fillIn{ to{ opacity:1; } }
 .draw .logo{ display:block; height:clamp(40px,6.5vh,66px); width:auto; max-width:100%; object-fit:contain; clip-path:inset(0 101% 0 0); filter:drop-shadow(0 6px 22px rgba(112,98,240,.28)); }
 .draw .logo.tile{ height:clamp(66px,10vh,100px); border-radius:16px; }
-.draw.on .logo{ animation:drawText 1.5s cubic-bezier(.55,0,.2,1) forwards; animation-delay:var(--dd,0s); }
+.draw.on .logo{ animation:drawText 1.5s var(--e-both) forwards; animation-delay:var(--dd,0s); }
 
 /* ── EXPANSION GLOBE ── */
 #expand{ border-top:1px solid var(--line); }
@@ -259,7 +271,7 @@ body.in-ascent .ride-rail{ opacity:1; }
 
 /* ── PROCESS ── */
 .steps{ margin-top:clamp(30px,5vh,50px); display:grid; grid-template-columns:1fr; gap:12px; }
-.step{ border:1px solid var(--line); border-radius:14px; padding:22px; background:rgba(13,13,21,.5); transition:border-color .25s, transform .25s; }
+.step{ border:1px solid var(--line); border-radius:14px; padding:22px; background:rgba(13,13,21,.5); transition:border-color var(--t-tap), transform var(--t-tap); }
 .step:hover{ border-color:var(--accent); transform:translateY(-3px); }
 .step b{ font-family:'Syne'; font-size:13px; color:var(--accent-2); }
 .step h3{ font-size:18px; margin:8px 0 6px; }
@@ -273,7 +285,7 @@ body.in-ascent .ride-rail{ opacity:1; }
 .faq summary::-webkit-details-marker{ display:none; }
 .faq .pm2{ width:20px; height:20px; position:relative; flex-shrink:0; }
 .faq .pm2::before,.faq .pm2::after{ content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--accent-2); }
-.faq .pm2::before{ width:12px; height:2px; } .faq .pm2::after{ width:2px; height:12px; transition:.3s; }
+.faq .pm2::before{ width:12px; height:2px; } .faq .pm2::after{ width:2px; height:12px; transition:var(--t-ui); }
 .faq details[open] .pm2::after{ transform:translate(-50%,-50%) scaleY(0); }
 .faq .a{ padding:0 20px 18px; color:var(--dim); font-size:14px; }
 .faq .a a{ color:var(--accent-2); font-weight:600; }
@@ -284,13 +296,13 @@ body.in-ascent .ride-rail{ opacity:1; }
 .cta h2 span{ color:var(--accent-2); }
 .cta-btns{ margin-top:32px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
 .cds{ margin:clamp(36px,6vh,56px) auto 0; display:grid; grid-template-columns:1fr; gap:10px; max-width:680px; text-align:left; }
-.cd{ display:flex; gap:14px; align-items:center; padding:15px 18px; border:1px solid var(--line); border-radius:12px; transition:.2s; background:rgba(13,13,21,.5); }
+.cd{ display:flex; gap:14px; align-items:center; padding:15px 18px; border:1px solid var(--line); border-radius:12px; transition:var(--t-tap); background:rgba(13,13,21,.5); }
 .cd:hover{ border-color:var(--accent); }
 .cd .ic{ width:40px; height:40px; border-radius:10px; background:rgba(112,98,240,.14); display:grid; place-items:center; color:var(--accent-2); flex-shrink:0; }
 .cd small{ display:block; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); }
 .cd b{ font-weight:600; font-size:14px; }
 .socs{ display:flex; gap:10px; justify-content:center; margin-top:24px; }
-.soc{ width:44px; height:44px; border:1px solid var(--line); border-radius:11px; display:grid; place-items:center; color:var(--dim); transition:.2s; font-size:12px; font-weight:700; }
+.soc{ width:44px; height:44px; border:1px solid var(--line); border-radius:11px; display:grid; place-items:center; color:var(--dim); transition:var(--t-tap); font-size:12px; font-weight:700; }
 .soc:hover{ border-color:var(--accent); color:var(--accent-2); }
 
 /* ── footer ── */
@@ -310,7 +322,7 @@ footer .g{ color:var(--accent-2); }
 /* ── whatsapp fab ── */
 .wa{ position:fixed; right:18px; bottom:18px; z-index:200; height:58px; display:flex; align-items:center; padding:0 15px; border-radius:100px; background:var(--accent); color:#fff; box-shadow:0 12px 30px -8px rgba(87,74,224,.6); overflow:hidden; }
 .wa svg{ width:28px; height:28px; }
-.wa b{ max-width:0; opacity:0; white-space:nowrap; font-size:14px; font-weight:700; transition:max-width .3s, opacity .25s, margin .3s; }
+.wa b{ max-width:0; opacity:0; white-space:nowrap; font-size:14px; font-weight:700; transition:max-width var(--t-ui), opacity var(--t-tap), margin var(--t-ui); }
 .wa:hover b{ max-width:150px; opacity:1; margin-left:10px; }
 .wa::after{ content:""; position:absolute; inset:0; border-radius:100px; animation:pulse 2.6s ease-out infinite; }
 @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(112,98,240,.5); } 70%{ box-shadow:0 0 0 18px rgba(112,98,240,0); } 100%{ box-shadow:0 0 0 0 rgba(112,98,240,0); } }
@@ -318,7 +330,7 @@ footer .g{ color:var(--accent-2); }
 /* ── custom cursor (desktop) ── */
 @media(pointer:fine){
   .curdot{ position:fixed; top:0; left:0; width:8px; height:8px; border-radius:100px; background:var(--accent-2); z-index:999; pointer-events:none; transform:translate(-50%,-50%); mix-blend-mode:screen; }
-  .curring{ position:fixed; top:0; left:0; width:34px; height:34px; border-radius:100px; border:1.5px solid rgba(154,142,245,.5); z-index:998; pointer-events:none; transform:translate(-50%,-50%); transition:width .25s,height .25s,border-color .25s; }
+  .curring{ position:fixed; top:0; left:0; width:34px; height:34px; border-radius:100px; border:1.5px solid rgba(154,142,245,.5); z-index:998; pointer-events:none; transform:translate(-50%,-50%); transition:width var(--t-tap),height var(--t-tap),border-color var(--t-tap); }
   body.cur-hover .curring{ width:56px; height:56px; border-color:var(--accent); }
 }
 @media(pointer:coarse){ .curdot,.curring{ display:none; } }
@@ -342,7 +354,7 @@ footer .g{ color:var(--accent-2); }
 .pm input,.pm select{ width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:8px; background:#0d0d15; color:var(--ink); font-family:'DM Sans'; font-size:14px; outline:none; }
 .pm input:focus,.pm select:focus{ border-color:var(--accent); }
 .pm .two{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.pm-toast{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--accent); color:#fff; padding:12px 20px; border-radius:100px; font-size:13px; font-weight:600; z-index:600; opacity:0; transition:.3s; }
+.pm-toast{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--accent); color:#fff; padding:12px 20px; border-radius:100px; font-size:13px; font-weight:600; z-index:600; opacity:0; transition:var(--t-ui); }
 .pm-toast.show{ transform:translateX(-50%); opacity:1; }
 
 /* ── breakpoints ── */
@@ -362,8 +374,14 @@ footer .g{ color:var(--accent-2); }
 
 /* ── reduced motion ── */
 @media(prefers-reduced-motion:reduce){
-  #enter .enter-btns{ animation:none; } .hero h1 .ln span{ animation:none; transform:none; }
-  .cue i::after,.tk,.flame i,.flame .sp,.wa::after{ animation:none !important; }
+  /* Nothing may loop, and nothing may travel. Anything that only animated
+     opacity is left visible rather than mid-fade. */
+  *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; }
+  #enter svg,#enter .ttl,#enter .sub,#enter .enter-btns{ animation:none; opacity:1; transform:none; }
+  .hero h1 .ln span{ animation:none; transform:none; }
+  .cue i::after,.tk,.flame i,.flame .sp,.wa::after,.snd.on i,.mkt .dot{ animation:none !important; }
+  .mkt .dot{ box-shadow:none; }
+  .draw.on .logo,.draw.on i,.draw.on b{ animation:none !important; clip-path:none !important; opacity:1; }
   #ascent{ height:auto; } .stage{ position:relative; height:auto; padding:60px var(--pad); display:grid; gap:16px; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); perspective:none; }
   .fly{ position:static; width:100% !important; height:auto !important; aspect-ratio:4/3; transform:none !important; }
   .rocket,.milestone{ display:none; }
@@ -371,7 +389,7 @@ footer .g{ color:var(--accent-2); }
   .track{ transform:none !important; flex-wrap:wrap; width:auto; }
   .draw i{ display:none; } .draw b{ position:static; opacity:1; }
   .curdot,.curring{ display:none; }
-  .up{ opacity:1; transform:none; transition:none; }
+  .up{ opacity:1; transform:none; transition:none; transition-delay:0ms !important; }
   .fw:hover .cov{ transform:none; }
 }
 </style>
@@ -419,7 +437,7 @@ footer .g{ color:var(--accent-2); }
 <section class="hero">
   <video id="heroVid" src="assets/reel/hero-basketball.mp4" poster="assets/reel/poster-hero.jpg" autoplay muted loop playsinline preload="auto"></video>
   <div class="hero-in">
-    <span class="eyebrow">Creative & Marketing Agency · Worldwide</span>
+    <span class="eyebrow up">Creative & Marketing Agency · Worldwide</span>
     <h1 style="margin-top:16px">
       <span class="ln"><span>We build</span></span>
       <span class="ln"><span><span class="ghost">brands</span> that</span></span>
@@ -477,8 +495,8 @@ footer .g{ color:var(--accent-2); }
 <!-- WORK -->
 <section class="sec" id="work"><div class="wrap">
   <div class="head-row">
-    <span class="eyebrow">Selected Work</span>
-    <h2 class="sec-h2">The work speaks.</h2>
+    <span class="eyebrow up">Selected Work</span>
+    <h2 class="sec-h2 up">The work speaks.</h2>
   </div>
   <div id="workGrid"></div>
 </div></section>
@@ -487,8 +505,8 @@ footer .g{ color:var(--accent-2); }
 <section id="stills" aria-label="Studio stills">
   <div class="stills-stage">
     <div class="stills-head">
-      <span class="eyebrow">Shot in-house</span>
-      <h2 class="sec-h2">Cinema-grade, frame by frame.</h2>
+      <span class="eyebrow up">Shot in-house</span>
+      <h2 class="sec-h2 up">Cinema-grade, frame by frame.</h2>
     </div>
     <div class="track" id="track">
       <figure class="shot"><img src="assets/reel/still-smoke-rim.jpg" alt="Basketball player in smoke with rim lighting"><span>Smoke · rim light</span><b>01</b></figure>
@@ -504,15 +522,15 @@ footer .g{ color:var(--accent-2); }
 
 <!-- SERVICES -->
 <section class="sec" id="services"><div class="wrap">
-  <span class="eyebrow">What we do</span>
-  <h2 class="sec-h2">Full-service, end to end.</h2>
-  <div class="svc" id="svc"></div>
+  <span class="eyebrow up">What we do</span>
+  <h2 class="sec-h2 up">Full-service, end to end.</h2>
+  <div class="svc" id="svc" data-stagger></div>
 </div></section>
 
 <!-- CLIENTS -->
 <section class="sec" id="clients" style="border-top:1px solid var(--line)"><div class="wrap">
-  <span class="eyebrow">Trusted by</span>
-  <h2 class="sec-h2">Brands that rode with us.</h2>
+  <span class="eyebrow up">Trusted by</span>
+  <h2 class="sec-h2 up">Brands that rode with us.</h2>
   <div class="client-wall">
     <div class="draw" style="--dd:0s"><img class="logo" src="assets/brands/coins.png" alt="Coin &amp; Shares logo"><small>Coin &amp; Shares · Branding · Social</small></div>
     <div class="draw" style="--dd:.2s"><img class="logo" src="assets/brands/bbcorp-mark.svg" alt="BBCorp logo"><small>BBCorp · Video Production</small></div>
@@ -526,18 +544,18 @@ footer .g{ color:var(--accent-2); }
 
 <!-- EXPANSION -->
 <section class="sec" id="expand"><div class="wrap">
-  <span class="eyebrow">Expanding</span>
-  <h2 class="sec-h2">Where we're going next.</h2>
+  <span class="eyebrow up">Expanding</span>
+  <h2 class="sec-h2 up">Where we're going next.</h2>
   <div class="globe-wrap">
     <div class="globe-stage"><canvas id="globe" aria-hidden="true"></canvas></div>
     <div>
-      <div class="mkts">
-        <div class="mkt live"><span class="dot base"></span><b>Lebanon</b><span>Base</span></div>
-        <div class="mkt live"><span class="dot base"></span><b>United States</b><span>Live</span></div>
-        <div class="mkt"><span class="dot"></span><b>Europe</b><span>Coming soon</span></div>
-        <div class="mkt"><span class="dot"></span><b>Türkiye</b><span>Coming soon</span></div>
-        <div class="mkt"><span class="dot"></span><b>Egypt</b><span>Coming soon</span></div>
-        <div class="mkt"><span class="dot"></span><b>Africa</b><span>Coming soon</span></div>
+      <div class="mkts" data-stagger>
+        <div class="mkt live up"><span class="dot base"></span><b>Lebanon</b><span>Base</span></div>
+        <div class="mkt live up"><span class="dot base"></span><b>United States</b><span>Live</span></div>
+        <div class="mkt up"><span class="dot"></span><b>Europe</b><span>Coming soon</span></div>
+        <div class="mkt up"><span class="dot"></span><b>Türkiye</b><span>Coming soon</span></div>
+        <div class="mkt up"><span class="dot"></span><b>Egypt</b><span>Coming soon</span></div>
+        <div class="mkt up"><span class="dot"></span><b>Africa</b><span>Coming soon</span></div>
       </div>
       <p style="color:var(--dim);font-size:15px;margin-top:22px;max-width:44ch">Work already running from Beirut to Michigan — and four new markets opening. Names announced as they launch.</p>
     </div>
@@ -547,38 +565,38 @@ footer .g{ color:var(--accent-2); }
 
 <!-- IMPACT -->
 <section class="sec impact" id="impact"><div class="wrap">
-  <span class="eyebrow">Why RankRise</span>
-  <h2 class="sec-h2">Real craft. Real growth.</h2>
-  <div class="imp-grid">
-    <div class="imp"><b><em data-count="17">0</em>+</b><span>Brands delivered</span></div>
-    <div class="imp"><b><em data-count="100">0</em>%</b><span>In-house production</span></div>
-    <div class="imp"><b><em data-count="7">0</em></b><span>Published case studies</span></div>
-    <div class="imp"><b><em data-count="2">0</em></b><span>Countries · 4 opening</span></div>
+  <span class="eyebrow up">Why RankRise</span>
+  <h2 class="sec-h2 up">Real craft. Real growth.</h2>
+  <div class="imp-grid" data-stagger>
+    <div class="imp up"><b><em data-count="17">0</em>+</b><span>Brands delivered</span></div>
+    <div class="imp up"><b><em data-count="100">0</em>%</b><span>In-house production</span></div>
+    <div class="imp up"><b><em data-count="7">0</em></b><span>Published case studies</span></div>
+    <div class="imp up"><b><em data-count="2">0</em></b><span>Countries · 4 opening</span></div>
   </div>
 </div></section>
 
 <!-- PROCESS -->
 <section class="sec" id="process"><div class="wrap">
-  <span class="eyebrow">How we work</span>
-  <h2 class="sec-h2">A simple, sharp process.</h2>
-  <div class="steps">
-    <div class="step"><b>01</b><h3>Discover</h3><p>We learn your brand, goals, and audience.</p></div>
-    <div class="step"><b>02</b><h3>Plan</h3><p>A tailored strategy with clear KPIs.</p></div>
-    <div class="step"><b>03</b><h3>Create</h3><p>High-end content and creative assets.</p></div>
-    <div class="step"><b>04</b><h3>Launch</h3><p>Executed across the right channels.</p></div>
-    <div class="step"><b>05</b><h3>Optimize</h3><p>We read the data and keep improving.</p></div>
+  <span class="eyebrow up">How we work</span>
+  <h2 class="sec-h2 up">A simple, sharp process.</h2>
+  <div class="steps" data-stagger>
+    <div class="step up"><b>01</b><h3>Discover</h3><p>We learn your brand, goals, and audience.</p></div>
+    <div class="step up"><b>02</b><h3>Plan</h3><p>A tailored strategy with clear KPIs.</p></div>
+    <div class="step up"><b>03</b><h3>Create</h3><p>High-end content and creative assets.</p></div>
+    <div class="step up"><b>04</b><h3>Launch</h3><p>Executed across the right channels.</p></div>
+    <div class="step up"><b>05</b><h3>Optimize</h3><p>We read the data and keep improving.</p></div>
   </div>
 </div></section>
 
 <!-- FAQ -->
 <section class="sec" id="faq" style="border-top:1px solid var(--line)"><div class="wrap">
-  <span class="eyebrow">Questions</span>
-  <h2 class="sec-h2">Good to know.</h2>
-  <div class="faq">
-    <details><summary>What does RankRise do?<span class="pm2"></span></summary><div class="a">Full-service digital marketing — social media management, content &amp; video production, branding &amp; design, plus strategy and paid advertising.</div></details>
-    <details><summary>Do you work with clients outside Lebanon?<span class="pm2"></span></summary><div class="a">Yes. We're based in Sin El Fil, Lebanon, and already run work in the United States — with Europe, Türkiye, Egypt and Africa opening next.</div></details>
-    <details><summary>How do we get started?<span class="pm2"></span></summary><div class="a">The fastest way is to <a href="https://wa.me/96170991555" target="_blank" rel="noopener">message us on WhatsApp</a>. We learn your goals, then send a tailored plan.</div></details>
-    <details><summary>How much does it cost?<span class="pm2"></span></summary><div class="a">Every engagement is scoped to your goals — custom packages, not fixed prices. <a href="https://wa.me/96170991555" target="_blank" rel="noopener">Message us</a> for a quote.</div></details>
+  <span class="eyebrow up">Questions</span>
+  <h2 class="sec-h2 up">Good to know.</h2>
+  <div class="faq" data-stagger>
+    <details class="up"><summary>What does RankRise do?<span class="pm2"></span></summary><div class="a">Full-service digital marketing — social media management, content &amp; video production, branding &amp; design, plus strategy and paid advertising.</div></details>
+    <details class="up"><summary>Do you work with clients outside Lebanon?<span class="pm2"></span></summary><div class="a">Yes. We're based in Sin El Fil, Lebanon, and already run work in the United States — with Europe, Türkiye, Egypt and Africa opening next.</div></details>
+    <details class="up"><summary>How do we get started?<span class="pm2"></span></summary><div class="a">The fastest way is to <a href="https://wa.me/96170991555" target="_blank" rel="noopener">message us on WhatsApp</a>. We learn your goals, then send a tailored plan.</div></details>
+    <details class="up"><summary>How much does it cost?<span class="pm2"></span></summary><div class="a">Every engagement is scoped to your goals — custom packages, not fixed prices. <a href="https://wa.me/96170991555" target="_blank" rel="noopener">Message us</a> for a quote.</div></details>
   </div>
 </div></section>
 
@@ -589,10 +607,10 @@ footer .g{ color:var(--accent-2); }
     <a class="btn btn-p" href="https://wa.me/96170991555" target="_blank" rel="noopener">💬 Message us on WhatsApp</a>
     <a class="btn btn-o" href="mailto:hello@rankrise.media">hello@rankrise.media</a>
   </div>
-  <div class="cds">
-    <a class="cd" href="https://wa.me/96170991555" target="_blank" rel="noopener"><span class="ic">💬</span><div><small>WhatsApp</small><b>+961 70 991 555</b></div></a>
-    <a class="cd" href="tel:+96170992555"><span class="ic">📞</span><div><small>Phone</small><b>+961 70 992 555</b></div></a>
-    <a class="cd" href="https://maps.google.com/?q=Sin+El+Fil+Lebanon" target="_blank" rel="noopener"><span class="ic">📍</span><div><small>Studio</small><b>Sin El Fil, Lebanon — worldwide</b></div></a>
+  <div class="cds" data-stagger>
+    <a class="cd up" href="https://wa.me/96170991555" target="_blank" rel="noopener"><span class="ic">💬</span><div><small>WhatsApp</small><b>+961 70 991 555</b></div></a>
+    <a class="cd up" href="tel:+96170992555"><span class="ic">📞</span><div><small>Phone</small><b>+961 70 992 555</b></div></a>
+    <a class="cd up" href="https://maps.google.com/?q=Sin+El+Fil+Lebanon" target="_blank" rel="noopener"><span class="ic">📍</span><div><small>Studio</small><b>Sin El Fil, Lebanon — worldwide</b></div></a>
   </div>
   <div class="socs">
     <a class="soc" href="https://instagram.com/rankrise" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
@@ -662,20 +680,44 @@ function renderWork(){
   if(!feats.length) feats=data.slice(0,4);
   const rest=data.filter(p=>!feats.includes(p));
   g.innerHTML=
-    '<div class="feat-list">'+feats.map((p,i)=>`
+    '<div class="feat-list" data-stagger>'+feats.map((p,i)=>`
       <article class="fw up${p.size==='feat'?' wide':''}" data-id="${p.id}" tabindex="0" role="button" aria-label="Open ${esc(p.title)}">
         <div class="fw-media"><div class="cov" style="background-image:url('${esc(p.cover)}')"></div><div class="veil"></div><span class="go" aria-hidden="true">↗</span></div>
         <div class="fw-info"><span class="fw-n">${String(i+1).padStart(2,'0')}</span><h3>${esc(p.title)}</h3><span class="fw-cat">${esc(CAT[p.cat]||p.cat)}</span></div>
       </article>`).join('')+'</div>'
-    +(rest.length?'<div class="mw">'+rest.map(p=>`
+    +(rest.length?'<div class="mw" data-stagger>'+rest.map(p=>`
       <div class="mw-row up" data-id="${p.id}" tabindex="0" role="button" aria-label="Open ${esc(p.title)}">
         <h3>${esc(p.title)}</h3><span class="mw-cat">${esc(CAT[p.cat]||p.cat)}</span>
       </div>`).join('')+'</div>':'');
   g.querySelectorAll('.up').forEach(el=>{ if(window.upIO) window.upIO.observe(el); else el.classList.add('in'); });
 }
-document.getElementById('svc').innerHTML=SERVICES.map(s=>`<div class="svc-row"><div class="svc-n">${s.n}</div><h3>${s.name}</h3><div><p>${s.desc}</p><div class="svc-tags">${s.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div></div>`).join('');
-window.upIO=new IntersectionObserver(en=>en.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');window.upIO.unobserve(x.target);}}),{threshold:.18,rootMargin:'0px 0px -6% 0px'});
+document.getElementById('svc').innerHTML=SERVICES.map(s=>`<div class="svc-row up"><div class="svc-n">${s.n}</div><h3>${s.name}</h3><div><p>${s.desc}</p><div class="svc-tags">${s.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div></div>`).join('');
+/* Reveal. Everything used to arrive at the same instant, which reads flat —
+   a heading and six cards landing together looks like a page that loaded,
+   not one that was composed. Inside a [data-stagger] group each element now
+   waits its turn. Capped at six steps so a long list never drags. */
+window.upIO=new IntersectionObserver(en=>en.forEach(x=>{
+  if(!x.isIntersecting) return;
+  const el=x.target, group=el.closest('[data-stagger]');
+  if(group){
+    const i=[...group.querySelectorAll('.up')].indexOf(el);
+    if(i>0) el.style.setProperty('--d', Math.min(i,6)*70+'ms');
+  }
+  el.classList.add('in');
+  window.upIO.unobserve(el);
+}),{threshold:.18,rootMargin:'0px 0px -6% 0px'});
 renderWork();
+
+/* A .up element starts at opacity 0, so anything never observed would stay
+   invisible for good. Everything on the page gets observed here, and if the
+   browser has no IntersectionObserver the content is simply shown. */
+(function revealAll(){
+  const all=document.querySelectorAll('.up');
+  if(!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches){
+    all.forEach(el=>el.classList.add('in')); return;
+  }
+  all.forEach(el=>window.upIO.observe(el));
+})();
 
 /* ── viewer ── */
 const viewer=document.getElementById('viewer'),vframe=document.getElementById('vframe'),vtitle=document.getElementById('vtitle');

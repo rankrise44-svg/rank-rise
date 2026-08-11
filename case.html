@@ -17,6 +17,12 @@
   --accent:#7062f0; --accent-2:#9a8ef5; --line:rgba(245,244,250,.12);
   --brand:#7062f0;                       /* overridden per case */
   --pad:clamp(20px,5vw,60px); --maxw:1180px;
+
+  /* Same motion set as the main site — the case pages were running their
+     own slightly different timings, which read as a different product. */
+  --e-rise:cubic-bezier(.2,.7,.2,1);
+  --e-media:cubic-bezier(.2,0,0,1);
+  --t-tap:.18s; --t-media:.6s; --t-rise:.9s;
 }
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
 body{ background:var(--bg); color:var(--ink); font-family:'DM Sans',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
@@ -65,7 +71,7 @@ h1,h2,h3{ font-family:'Syne',sans-serif; font-weight:800; letter-spacing:-.03em;
 .gal{ display:flex; align-items:flex-start; gap:clamp(14px,2vw,22px); margin-top:clamp(26px,4vh,44px); }
 .gcol{ flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:clamp(14px,2vw,22px); }
 .gi{ border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--bg2); }
-.gi img,.gi video{ width:100%; height:auto; display:block; transition:transform .7s cubic-bezier(.2,0,0,1); }
+.gi img,.gi video{ width:100%; height:auto; display:block; transition:transform var(--t-media) var(--e-media); }
 .gi:hover img,.gi:hover video{ transform:scale(1.04); }
 .gi figcaption{ padding:12px 14px; font-size:11.5px; letter-spacing:.06em; color:var(--faint); border-top:1px solid var(--line); }
 
@@ -89,7 +95,7 @@ h1,h2,h3{ font-family:'Syne',sans-serif; font-weight:800; letter-spacing:-.03em;
 /* next + cta */
 .next{ display:block; padding-block:clamp(50px,9vh,96px); border-bottom:1px solid var(--line); }
 .next small{ font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--faint); }
-.next h2{ font-size:clamp(30px,6.4vw,72px); margin-top:12px; transition:color .25s, transform .4s cubic-bezier(.2,.7,.2,1); }
+.next h2{ font-size:clamp(30px,6.4vw,72px); margin-top:12px; transition:color var(--t-tap), transform var(--t-media) var(--e-rise); }
 .next:hover h2{ color:var(--accent-2); transform:translateY(-4px); }
 .cta{ text-align:center; padding-block:clamp(60px,10vh,110px); }
 .cta h2{ font-size:clamp(30px,6vw,68px); text-transform:uppercase; }
@@ -99,7 +105,7 @@ h1,h2,h3{ font-family:'Syne',sans-serif; font-weight:800; letter-spacing:-.03em;
 footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-align:center; }
 
 /* rise motion */
-.up{ opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+.up{ opacity:0; transform:translateY(36px); transition:opacity var(--t-rise) var(--e-rise), transform var(--t-rise) var(--e-rise); transition-delay:var(--d,0ms); }
 .up.in{ opacity:1; transform:none; }
 
 @media(min-width:700px){
@@ -107,7 +113,8 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
   .two{ grid-template-columns:1fr 1fr; gap:clamp(36px,5vw,72px); }
 }
 @media(prefers-reduced-motion:reduce){
-  .up{ opacity:1; transform:none; transition:none; }
+  *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; }
+  .up{ opacity:1; transform:none; transition:none; transition-delay:0ms !important; }
   .gi:hover img,.gi:hover video,.next:hover h2{ transform:none; }
 }
 </style>
@@ -242,8 +249,11 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduce){ document.querySelectorAll('.up').forEach(el=>el.classList.add('in')); }
   else if('IntersectionObserver' in window){
-    const io=new IntersectionObserver(en=>en.forEach(x=>{ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); } }),
-      {threshold:.14, rootMargin:'0px 0px -6% 0px'});
+    const io=new IntersectionObserver(en=>en.forEach(x=>{ if(!x.isIntersecting) return;
+      const el=x.target, g=el.closest('.gcol');
+      if(g){ const i=[...g.querySelectorAll('.up')].indexOf(el); if(i>0) el.style.setProperty('--d', Math.min(i,6)*70+'ms'); }
+      el.classList.add('in'); io.unobserve(el); }),
+      {threshold:.18, rootMargin:'0px 0px -6% 0px'});
     document.querySelectorAll('.up').forEach(el=>io.observe(el));
   } else { document.querySelectorAll('.up').forEach(el=>el.classList.add('in')); }
 
