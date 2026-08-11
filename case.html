@@ -71,6 +71,9 @@ h1,h2,h3{ font-family:'Syne',sans-serif; font-weight:800; letter-spacing:-.03em;
 .result{ border-block:1px solid var(--line); background:rgba(13,13,21,.55); }
 .res-stat{ font-family:'Syne'; font-weight:800; font-size:clamp(56px,13vw,150px); line-height:.9; color:var(--brand); letter-spacing:-.04em; }
 .res-lab{ font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--faint); margin-top:10px; }
+/* Cases with no measured number carry a stated outcome instead, at the same
+   visual weight — so the section never reads as a missing metric. */
+.res-pull{ font-family:'Syne'; font-weight:800; font-size:clamp(30px,5.6vw,64px); line-height:1.02; color:var(--brand); letter-spacing:-.03em; max-width:17ch; }
 .res-text{ margin-top:clamp(18px,3vh,26px); font-size:clamp(16px,2.2vw,22px); color:var(--ink); max-width:46ch; line-height:1.55; font-family:'Syne'; font-weight:700; letter-spacing:-.02em; }
 
 /* next + cta */
@@ -179,7 +182,9 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
 
   <section class="sec result"><div class="wrap up">
     <span class="eyebrow">The result</span>
-    ${c.result&&c.result.stat?`<div class="res-stat" style="margin-top:16px">${esc(c.result.stat)}</div><div class="res-lab">${esc(c.result.statLabel)}</div>`:''}
+    ${c.result&&c.result.stat
+        ? `<div class="res-stat" style="margin-top:16px">${esc(c.result.stat)}</div><div class="res-lab">${esc(c.result.statLabel)}</div>`
+        : (c.result&&c.result.pull ? `<div class="res-pull" style="margin-top:16px">${esc(c.result.pull)}</div>` : '')}
     <p class="res-text">${esc(c.result?c.result.text:'')}</p>
   </div></section>
 

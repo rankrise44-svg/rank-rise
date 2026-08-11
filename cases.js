@@ -7,6 +7,12 @@
    RULE: every fact here comes from the real project. If a project has
    no measured result, `result.stat` is left empty and we describe the
    outcome instead. Never invent numbers, quotes or clients.
+
+   result.stat  a measured number. Only ever a real one.
+   result.pull  used when there is no number — a short stated outcome,
+                shown at the same size so the section still lands.
+                If a real number turns up later, add `stat` and the
+                template uses it instead automatically.
    ═══════════════════════════════════════════════════════════════ */
 
 window.RANKRISE_CASES = {
@@ -32,7 +38,7 @@ window.RANKRISE_CASES = {
       { img: 'assets/reel/still-cinematic.jpg',    cap: 'Cinematic grade — reverse angle' },
     ],
     result: {
-      stat: '', statLabel: '',
+      stat: '', statLabel: '', pull: 'Three teams. One voice.',
       text: 'The brand film screened live to the room before the first speaker took the stage — the event, the film and the campaign finally reading as one brand.'
     },
     next: 'coins'
@@ -58,7 +64,7 @@ window.RANKRISE_CASES = {
       { img: 'assets/brands/coins/stationery-notebook.jpg', cap: 'Stationery system' },
     ],
     result: {
-      stat: '', statLabel: '',
+      stat: '', statLabel: '', pull: 'Teach first. Sell later.',
       text: 'A brand that teaches before it sells — one system carrying from app icon to out-of-home, and a series built to be followed rather than scrolled past.'
     },
     next: 'farhat'
@@ -111,7 +117,7 @@ window.RANKRISE_CASES = {
       { img: 'assets/brands/hatem/hatem-rmaite-forex-post-2.jpg', cap: 'Risk and literacy, not hype' },
     ],
     result: {
-      stat: '', statLabel: '',
+      stat: '', statLabel: '', pull: 'From trader to brand.',
       text: 'One system holding from business card to signage to app — and a feed we keep publishing, turning an independent trader into a recognised voice.'
     },
     next: 'mariam'
@@ -137,7 +143,7 @@ window.RANKRISE_CASES = {
       { img: 'assets/brands/mariam/29lt-adir-weights-extralight-regular-semibol.jpg', cap: '29LT Adir — Arabic and Latin, one geometry' },
     ],
     result: {
-      stat: '', statLabel: '',
+      stat: '', statLabel: '', pull: 'Three tones. No noise.',
       text: 'Three tones, no noise. A complete brand board — mark on four grounds, a pattern system, and a typeface whose squared bowls echo the symbols exactly.'
     },
     next: 'bazzi'
@@ -164,7 +170,7 @@ window.RANKRISE_CASES = {
       { img: 'assets/brands/bazzi/bazzi-podiatry-embroidered-logo-on-clinic-sc.jpg', cap: 'Embroidered on clinic scrubs' },
     ],
     result: {
-      stat: '', statLabel: '',
+      stat: '', statLabel: '', pull: 'Favicon to billboard.',
       text: 'A mark that holds at a 22px favicon and on a three-storey billboard — carried across print, apparel, out-of-home and video, for a practice serving patients in Michigan.'
     },
     next: 'deir'
@@ -191,8 +197,8 @@ window.RANKRISE_CASES = {
       { img: 'assets/brands/deir/our-team-is-visiting-your-homes-and-shops.jpg', cap: 'Door-to-door volunteer programme' },
     ],
     result: {
-      stat: '', statLabel: '',
-      text: 'A complete civic toolkit — social, print, signage and a volunteer programme — carrying one message from the feed to the fridge door.'
+      stat: '', statLabel: '', pull: 'The town argued about it.',
+      text: 'The campaign did what awareness work rarely manages — people argued about it. It drew real engagement across the feed and turned sorting into a subject of debate in the town itself, discussed in the street and not only online. And the habit it was built to change, changed: sorting at the source stopped being an instruction on a brochure and became something households actually did.'
     },
     next: 'bbcorp'
   },
