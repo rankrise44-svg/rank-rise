@@ -637,7 +637,13 @@ renderWork();
 
 /* ── viewer ── */
 const viewer=document.getElementById('viewer'),vframe=document.getElementById('vframe'),vtitle=document.getElementById('vtitle');
-function openProject(url,title){ vtitle.textContent=title; vframe.src = url; viewer.classList.add('open'); document.body.style.overflow='hidden'; document.getElementById('vback').focus(); }
+function openProject(url,title){
+  // Our own case pages are real navigations: shareable URL, back button, SEO.
+  // The iframe viewer stays for anything external (e.g. a live client site).
+  if(!/^https?:\/\//i.test(url)){ location.href = url; return; }
+  vtitle.textContent=title; vframe.src = url; viewer.classList.add('open');
+  document.body.style.overflow='hidden'; document.getElementById('vback').focus();
+}
 function closeProject(){ viewer.classList.remove('open'); vframe.src = 'about:blank'; document.body.style.overflow=''; }
 document.getElementById('vback').addEventListener('click',closeProject);
 document.getElementById('workGrid').addEventListener('click',e=>{const c=e.target.closest('[data-id]');if(!c)return;const p=data.find(x=>String(x.id)===c.dataset.id);if(p&&p.link)openProject(p.link,p.title);});

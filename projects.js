@@ -16,11 +16,11 @@
    ═══════════════════════════════════════════════════════════════ */
 
 window.RANKRISE_PROJECTS = [
-  { id: 2, title: 'BBCorp — Selected Work',            client: 'BBCorp',              cat: 'Prod',   featured: true, size: 'feat',   mLabel: 'Video Production',    cover: 'assets/covers/bbcorp.jpg', link: 'projects/bbcorp-selected-work.html' },
-  { id: 5, title: 'Coin & Shares — Case Study',        client: 'Coin & Shares',       cat: 'Brand',  featured: true, size: 'normal', mLabel: 'Branding · Social',   cover: 'assets/covers/coins.jpg',  link: 'projects/coins-n-share-case-study.html' },
-  { id: 1, title: 'Mariam Jammoul — Brand Identity',   client: 'Mariam Jammoul',      cat: 'Brand',  featured: true, size: 'normal', mLabel: 'Brand Identity',      cover: 'assets/covers/mariam.jpg', link: 'projects/mariam-jammoul-branding.html' },
-  { id: 4, title: '#ضروري_نكفّي — Deir Qanoun El Nahr', client: 'Deir Qanoun El Nahr', cat: 'Social', featured: true, size: 'normal', mLabel: 'Awareness Campaign',  cover: 'assets/covers/deir.jpg',   link: 'projects/deir-qanoun-sorting-campaign.html' },
-  { id: 3, title: 'Farhat Services — Case Study',      client: 'Farhat Services',     cat: 'Brand',  mLabel: 'Case Study',          cover: 'assets/covers/farhat.jpg', link: 'projects/farhat-services-case-study.html' },
-  { id: 6, title: 'Hatem Rmaite Forex — Case Study',   client: 'Hatem Rmaite Forex',  cat: 'Social', mLabel: 'Case Study',          cover: 'assets/covers/hatem.jpg',  link: 'projects/hatem-rmaite-forex-case-study-2.html' },
-  { id: 7, title: 'Bazzi Podiatry — Brand Identity',   client: 'Bazzi Podiatry',      cat: 'Brand',  mLabel: 'Brand Identity',      cover: 'assets/covers/bazzi.jpg',  link: 'projects/bazzi-podiatry-case-study.html' },
+  { id: 2, title: 'BBCorp — Selected Work',            client: 'BBCorp',              cat: 'Prod',   featured: true, size: 'feat',   mLabel: 'Video Production',    cover: 'assets/covers/bbcorp.jpg', link: 'case.html?id=bbcorp' },
+  { id: 5, title: 'Coin & Shares — Case Study',        client: 'Coin & Shares',       cat: 'Brand',  featured: true, size: 'normal', mLabel: 'Branding · Social',   cover: 'assets/covers/coins.jpg',  link: 'case.html?id=coins' },
+  { id: 1, title: 'Mariam Jammoul — Brand Identity',   client: 'Mariam Jammoul',      cat: 'Brand',  featured: true, size: 'normal', mLabel: 'Brand Identity',      cover: 'assets/covers/mariam.jpg', link: 'case.html?id=mariam' },
+  { id: 4, title: '#ضروري_نكفّي — Deir Qanoun El Nahr', client: 'Deir Qanoun El Nahr', cat: 'Social', featured: true, size: 'normal', mLabel: 'Awareness Campaign',  cover: 'assets/covers/deir.jpg',   link: 'case.html?id=deir' },
+  { id: 3, title: 'Farhat Services — Case Study',      client: 'Farhat Services',     cat: 'Brand',  mLabel: 'Case Study',          cover: 'assets/covers/farhat.jpg', link: 'case.html?id=farhat' },
+  { id: 6, title: 'Hatem Rmaite Forex — Case Study',   client: 'Hatem Rmaite Forex',  cat: 'Social', mLabel: 'Case Study',          cover: 'assets/covers/hatem.jpg',  link: 'case.html?id=hatem' },
+  { id: 7, title: 'Bazzi Podiatry — Brand Identity',   client: 'Bazzi Podiatry',      cat: 'Brand',  mLabel: 'Brand Identity',      cover: 'assets/covers/bazzi.jpg',  link: 'case.html?id=bazzi' },
 ];

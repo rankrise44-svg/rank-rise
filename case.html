@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Case Study — RankRise</title>
+<meta name="description" content="A RankRise case study — challenge, approach, execution and result.">
+<meta name="theme-color" content="#08080d">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="RankRise Agency">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08080d; --bg2:#0d0d15; --ink:#f5f4fa; --dim:rgba(245,244,250,.62); --faint:rgba(245,244,250,.36);
+  --accent:#7062f0; --accent-2:#9a8ef5; --line:rgba(245,244,250,.12);
+  --brand:#7062f0;                       /* overridden per case */
+  --pad:clamp(20px,5vw,60px); --maxw:1180px;
+}
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+body{ background:var(--bg); color:var(--ink); font-family:'DM Sans',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+img,video{ display:block; max-width:100%; }
+a{ color:inherit; text-decoration:none; }
+::selection{ background:var(--accent); color:#fff; }
+h1,h2,h3{ font-family:'Syne',sans-serif; font-weight:800; letter-spacing:-.03em; line-height:.98; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+.wrap{ max-width:var(--maxw); margin:0 auto; padding-inline:var(--pad); }
+.eyebrow{ display:inline-flex; align-items:center; gap:10px; font-size:11px; font-weight:600; letter-spacing:.3em; text-transform:uppercase; color:var(--brand); }
+.eyebrow::before{ content:""; width:26px; height:1px; background:var(--brand); }
+
+/* bar */
+.bar{ position:fixed; top:0; left:0; right:0; z-index:80; display:flex; align-items:center; justify-content:space-between;
+  padding:14px var(--pad); background:linear-gradient(to bottom, rgba(8,8,13,.85), transparent); }
+.bar.solid{ background:rgba(8,8,13,.82); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+.back{ display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:var(--ink); }
+.back:hover{ color:var(--accent-2); }
+.bar .brand{ display:flex; align-items:center; gap:8px; font-family:'Syne'; font-weight:800; font-size:15px; }
+.bar .brand svg{ width:20px; height:18px; color:var(--accent-2); }
+.wa-mini{ font-size:12px; font-weight:600; padding:9px 15px; border-radius:100px; background:var(--accent); color:#fff; }
+.wa-mini:hover{ background:#574ae0; }
+@media(max-width:640px){ .bar .brand span{ display:none; } }
+
+/* hero */
+.hero{ position:relative; min-height:88svh; display:flex; align-items:flex-end; overflow:hidden; }
+.hero .bgm{ position:absolute; inset:0; }
+.hero .bgm img,.hero .bgm video{ width:100%; height:100%; object-fit:cover; opacity:.42; }
+.hero::after{ content:""; position:absolute; inset:0; background:linear-gradient(to bottom, rgba(8,8,13,.72) 0%, rgba(8,8,13,.34) 38%, rgba(8,8,13,.99) 92%); }
+.hero-in{ position:relative; z-index:2; width:100%; padding-block:clamp(40px,7vh,80px); }
+.hero h1{ font-size:clamp(38px,7.6vw,96px); margin-top:14px; }
+.hero .sub{ margin-top:14px; color:var(--dim); font-size:clamp(14px,1.7vw,17px); max-width:54ch; }
+.meta{ margin-top:clamp(26px,4vh,40px); display:grid; grid-template-columns:repeat(2,1fr); gap:18px 20px; border-top:1px solid var(--line); padding-top:20px; }
+.meta small{ display:block; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); margin-bottom:5px; }
+.meta b{ font-weight:600; font-size:14px; }
+
+/* sections */
+.sec{ padding-block:clamp(64px,11vh,120px); }
+.two{ display:grid; grid-template-columns:1fr; gap:clamp(30px,5vh,52px); }
+.blk h2{ font-size:clamp(24px,3.6vw,40px); margin:12px 0 14px; }
+.blk p{ color:var(--dim); font-size:clamp(15px,1.8vw,17px); line-height:1.72; max-width:58ch; }
+
+/* execution */
+.gal{ display:grid; grid-template-columns:1fr; gap:clamp(14px,2vw,22px); margin-top:clamp(26px,4vh,44px); }
+.gi{ border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--bg2); }
+.gi img{ width:100%; aspect-ratio:4/3; object-fit:cover; transition:transform .7s cubic-bezier(.2,0,0,1); }
+.gi:hover img{ transform:scale(1.04); }
+.gi figcaption{ padding:12px 14px; font-size:11.5px; letter-spacing:.06em; color:var(--faint); border-top:1px solid var(--line); }
+.gi.tall{ grid-column:span 1; }
+
+/* result */
+.result{ border-block:1px solid var(--line); background:rgba(13,13,21,.55); }
+.res-stat{ font-family:'Syne'; font-weight:800; font-size:clamp(56px,13vw,150px); line-height:.9; color:var(--brand); letter-spacing:-.04em; }
+.res-lab{ font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--faint); margin-top:10px; }
+.res-text{ margin-top:clamp(18px,3vh,26px); font-size:clamp(16px,2.2vw,22px); color:var(--ink); max-width:46ch; line-height:1.55; font-family:'Syne'; font-weight:700; letter-spacing:-.02em; }
+
+/* next + cta */
+.next{ display:block; padding-block:clamp(50px,9vh,96px); border-bottom:1px solid var(--line); }
+.next small{ font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--faint); }
+.next h2{ font-size:clamp(30px,6.4vw,72px); margin-top:12px; transition:color .25s, transform .4s cubic-bezier(.2,.7,.2,1); }
+.next:hover h2{ color:var(--accent-2); transform:translateY(-4px); }
+.cta{ text-align:center; padding-block:clamp(60px,10vh,110px); }
+.cta h2{ font-size:clamp(30px,6vw,68px); text-transform:uppercase; }
+.cta h2 span{ color:var(--accent-2); }
+.btn{ display:inline-flex; align-items:center; gap:9px; margin-top:26px; font-weight:600; font-size:15px; padding:16px 28px; border-radius:100px; background:var(--accent); color:#fff; }
+.btn:hover{ background:#574ae0; }
+footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-align:center; }
+
+/* rise motion */
+.up{ opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+.up.in{ opacity:1; transform:none; }
+
+@media(min-width:700px){
+  .meta{ grid-template-columns:repeat(4,1fr); }
+  .two{ grid-template-columns:1fr 1fr; gap:clamp(36px,5vw,72px); }
+  .gal{ grid-template-columns:repeat(2,1fr); }
+  .gi.tall{ grid-row:span 2; } .gi.tall img{ aspect-ratio:3/4; height:100%; }
+}
+@media(min-width:1000px){ .gal{ grid-template-columns:repeat(3,1fr); } }
+@media(prefers-reduced-motion:reduce){
+  .up{ opacity:1; transform:none; transition:none; }
+  .gi:hover img,.next:hover h2{ transform:none; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="rr" viewBox="0 0 2270 2008"><path fill="currentColor" d="M 798.2,368.2 C 447.0,719.7 465.9,700.2 451.9,724.2 C 437.1,749.7 427.6,779.6 424.9,810.0 C 423.6,823.3 423.3,1175.0 424.5,1175.0 C 425.0,1175.0 583.5,1016.8 776.8,823.5 L 1128.3,472.0 L 1341.3,685.0 L 1554.3,898.0 L 1452.8,999.5 L 1351.3,1101.0 L 1239.7,989.4 L 1128.1,877.8 L 584.2,1422.0 C 285.1,1721.3 40.1,1966.6 40.0,1967.1 C 39.7,1967.7 108.8,1967.9 229.5,1967.7 C 405.3,1967.4 420.1,1967.3 429.8,1965.7 C 469.5,1959.0 501.8,1944.8 531.7,1920.8 C 535.9,1917.4 671.8,1782.3 833.8,1620.4 L 1128.3,1326.1 L 1422.8,1620.3 C 1584.8,1782.2 1720.9,1917.4 1725.3,1921.0 C 1754.9,1944.5 1787.8,1959.1 1826.8,1965.6 C 1836.6,1967.3 1850.8,1967.4 2027.1,1967.7 C 2131.4,1967.9 2216.8,1967.7 2216.8,1967.3 C 2216.8,1966.9 2069.2,1818.9 1888.8,1638.5 L 1560.8,1310.5 L 1770.0,1101.3 L 1979.3,892.0 L 1553.3,466.0 C 1319.0,231.7 1127.1,40.0 1126.8,40.0 C 1126.5,40.0 978.7,187.7 798.2,368.2"/></symbol></svg>
+
+<header class="bar" id="bar">
+  <a class="back" href="index.html#work">← All work</a>
+  <a class="brand" href="index.html"><svg><use href="#rr"/></svg><span>RankRise</span></a>
+  <a class="wa-mini" href="https://wa.me/96170991555" target="_blank" rel="noopener">WhatsApp</a>
+</header>
+
+<main id="case"></main>
+
+<footer>© 2026 <span style="color:var(--accent-2)">RankRise</span> Agency — Lebanon · Working worldwide</footer>
+
+<script src="cases.js"></script>
+<script>
+(function(){
+  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const CASES=window.RANKRISE_CASES||{};
+  const id=(new URLSearchParams(location.search).get('id')||'').toLowerCase();
+  const c=CASES[id];
+  const root=document.getElementById('case');
+
+  if(!c){
+    root.innerHTML='<section class="sec wrap" style="padding-top:22vh;text-align:center">'
+      +'<span class="eyebrow">Not found</span><h1 style="font-size:clamp(30px,6vw,64px);margin-top:14px">That case isn\'t here.</h1>'
+      +'<p style="color:var(--dim);margin-top:14px">Pick one from the work.</p>'
+      +'<a class="btn" href="index.html#work">← All work</a></section>';
+    return;
+  }
+
+  document.documentElement.style.setProperty('--brand', c.accent||'#7062f0');
+  document.title = c.title+' — Case Study | RankRise';
+  const desc = (c.challenge||'').slice(0,155);
+  const md=document.querySelector('meta[name="description"]'); if(md) md.setAttribute('content',desc);
+  const canon=document.createElement('link'); canon.rel='canonical';
+  canon.href='https://rankrise.media/case.html?id='+encodeURIComponent(id); document.head.appendChild(canon);
+  const ld=document.createElement('script'); ld.type='application/ld+json';
+  ld.textContent=JSON.stringify({'@context':'https://schema.org','@type':'CreativeWork',name:c.title+' — Case Study',
+    about:c.sector,creator:{'@type':'Organization',name:'RankRise',url:'https://rankrise.media'},
+    dateCreated:c.year,description:desc});
+  document.head.appendChild(ld);
+
+  const meta=[['Client',c.client],['Sector',c.sector],c.markets?['Markets',c.markets]:null,['Year',c.year],['Scope',(c.scope||[]).join(' · ')]]
+    .filter(Boolean).slice(0,4);
+
+  const heroMedia = c.heroVideo
+    ? `<video src="${esc(c.heroVideo)}" poster="${esc(c.heroPoster||'')}" autoplay muted loop playsinline preload="metadata"></video>`
+    : `<img src="${esc(c.hero)}" alt="${esc(c.title)} — case study cover" fetchpriority="high">`;
+
+  root.innerHTML=`
+  <section class="hero">
+    <div class="bgm">${heroMedia}</div>
+    <div class="hero-in wrap">
+      <span class="eyebrow">Case Study${c.year?' · '+esc(c.year):''}</span>
+      <h1>${esc(c.tagline||c.title)}</h1>
+      <p class="sub">${esc(c.title)} — ${esc(c.sector||'')}</p>
+      <div class="meta">${meta.map(m=>`<div><small>${esc(m[0])}</small><b>${esc(m[1])}</b></div>`).join('')}</div>
+    </div>
+  </section>
+
+  <section class="sec"><div class="wrap two">
+    <div class="blk up"><span class="eyebrow">The challenge</span><h2>What was in the way.</h2><p>${esc(c.challenge)}</p></div>
+    <div class="blk up"><span class="eyebrow">The approach</span><h2>How we moved.</h2><p>${esc(c.approach)}</p></div>
+  </div></section>
+
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="up"><span class="eyebrow">Execution</span><h2 style="font-size:clamp(24px,3.6vw,40px);margin-top:12px">The work.</h2></div>
+    <div class="gal">${(c.execution||[]).map((e,i)=>`
+      <figure class="gi up${i===0?' tall':''}">
+        <img src="${esc(e.img)}" alt="${esc(e.cap)}" loading="lazy" decoding="async">
+        <figcaption>${esc(e.cap)}</figcaption>
+      </figure>`).join('')}</div>
+  </div></section>
+
+  <section class="sec result"><div class="wrap up">
+    <span class="eyebrow">The result</span>
+    ${c.result&&c.result.stat?`<div class="res-stat" style="margin-top:16px">${esc(c.result.stat)}</div><div class="res-lab">${esc(c.result.statLabel)}</div>`:''}
+    <p class="res-text">${esc(c.result?c.result.text:'')}</p>
+  </div></section>
+
+  ${c.next&&CASES[c.next]?`<a class="next wrap" href="case.html?id=${esc(c.next)}"><small>Next case</small><h2>${esc(CASES[c.next].title)} →</h2></a>`:''}
+
+  <section class="cta wrap">
+    <h2>Ready to <span>rise?</span></h2>
+    <a class="btn" href="https://wa.me/96170991555" target="_blank" rel="noopener">Start a project</a>
+  </section>`;
+
+  // rise reveals
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){ document.querySelectorAll('.up').forEach(el=>el.classList.add('in')); }
+  else if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(en=>en.forEach(x=>{ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); } }),
+      {threshold:.14, rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.up').forEach(el=>io.observe(el));
+  } else { document.querySelectorAll('.up').forEach(el=>el.classList.add('in')); }
+
+  addEventListener('scroll',()=>document.getElementById('bar').classList.toggle('solid',scrollY>60),{passive:true});
+})();
+</script>
+</body>
+</html>
