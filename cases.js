@@ -97,22 +97,22 @@ window.RANKRISE_CASES = {
     client: 'Hatem Rmaite — independent trader & educator',
     sector: 'Forex · Financial education',
     year: '2026',
-    scope: ['Brand identity', 'Social media'],
+    scope: ['Brand identity', 'Social media', 'Content'],
     accent: '#306794',
     hero: 'assets/brands/hatem/signage.jpg',
-    challenge: 'An independent trader competing for attention with firms that look institutional — with no identity of his own to stand on.',
-    approach: 'An H+R monogram cut into a single forward-driving form: angular, fast, unmistakably a trading brand. A restrained palette — the confidence of a trading floor at night, legible on any screen.',
+    challenge: 'An independent trader and educator competing for attention with firms that look institutional — with no identity of his own, and nothing publishing consistently.',
+    approach: 'We built the brand, then ran it. An H+R monogram cut into a single forward-driving form on a trading-floor-at-night palette — then ongoing social media management publishing education-led content in a voice that sounds like a trader, not an ad.',
     execution: [
       { img: 'assets/brands/hatem/hatem-rmaite-forex-logo.png', cap: 'The monogram — H and R in one form' },
       { img: 'assets/brands/hatem/business-card-in-hand.jpg', cap: 'Stationery' },
       { img: 'assets/brands/hatem/signage.jpg', cap: 'Signage' },
       { img: 'assets/brands/hatem/apparel.jpg', cap: 'Apparel' },
-      { img: 'assets/brands/hatem/hatem-rmaite-forex-post.jpg', cap: 'Social — ongoing management' },
       { img: 'assets/brands/hatem/hatem-rmaite-forex-post-4.jpg', cap: 'Education-led content' },
+      { img: 'assets/brands/hatem/hatem-rmaite-forex-post-2.jpg', cap: 'Risk and literacy, not hype' },
     ],
     result: {
       stat: '', statLabel: '',
-      text: 'One system that holds from business card to signage to app — and a social presence that keeps the brand publishing, not just existing.'
+      text: 'One system holding from business card to signage to app — and a feed we keep publishing, turning an independent trader into a recognised voice.'
     },
     next: 'mariam'
   },
@@ -148,12 +148,13 @@ window.RANKRISE_CASES = {
     tagline: 'Clinical, not cold.',
     client: 'Bazzi Podiatry',
     sector: 'Healthcare · Podiatry',
+    markets: 'Michigan, USA',
     year: '2025',
-    scope: ['Identity', 'Print', 'Out-of-home'],
+    scope: ['Rebrand', 'Print & OOH', 'Video'],
     accent: '#2f7d73',
     hero: 'assets/brands/bazzi/brand-detail-clinician-with-stethoscope.jpg',
-    challenge: 'The category defaults to sterile and intimidating. Bazzi needed medical credibility that still reads as relief — comfort you recognise before you read a word.',
-    approach: 'One ownable mark: the two counters of the B carved into the arch and heel of a foot, drawn in negative space so it survives any size. Petrol for trust, mint for relief. Every headline sells being pain-free, never the procedure.',
+    challenge: 'A Michigan podiatry practice in a category that defaults to sterile and intimidating. The rebrand had to carry medical credibility and still read as relief — comfort you recognise before you read a word.',
+    approach: 'One ownable mark: the two counters of the B carved into the arch and heel of a foot, drawn in negative space so it survives any size. Petrol for trust, mint for relief. Then talking-head video put the clinician on camera — the fastest way to earn trust in healthcare.',
     execution: [
       { img: 'assets/brands/bazzi/bazzi-podiatry-logo-mark-construction-pen-to.jpg', cap: 'Mark construction — grid and curves' },
       { img: 'assets/brands/bazzi/mark-on-petrol.png', cap: 'Petrol for trust' },
@@ -164,7 +165,7 @@ window.RANKRISE_CASES = {
     ],
     result: {
       stat: '', statLabel: '',
-      text: 'A mark that holds at a 22px favicon and on a three-storey billboard — carried cleanly across print, apparel and out-of-home.'
+      text: 'A mark that holds at a 22px favicon and on a three-storey billboard — carried across print, apparel, out-of-home and video, for a practice serving patients in Michigan.'
     },
     next: 'deir'
   },
