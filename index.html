@@ -168,26 +168,32 @@ h1,h2,h3{ font-family:'Syne',sans-serif; font-weight:800; letter-spacing:-.03em;
 .ride-rail i{ display:block; width:100%; height:0%; background:var(--accent); border-radius:2px; }
 body.in-ascent .ride-rail{ opacity:1; }
 
-/* ── WORK ── */
-#work .head-row{ display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:18px; margin-bottom:clamp(28px,4vw,46px); }
-.filters{ display:flex; gap:8px; flex-wrap:wrap; }
-.filter{ font-size:12.5px; font-weight:600; color:var(--dim); background:none; border:1px solid var(--line); padding:9px 16px; border-radius:100px; cursor:pointer; transition:.2s; font-family:'DM Sans'; }
-.filter:hover{ border-color:var(--accent-2); color:#fff; }
-.filter.on{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
-.work{ display:grid; grid-template-columns:1fr; gap:clamp(26px,3.6vw,44px); }
-.card{ cursor:pointer; }
-.card-media{ position:relative; aspect-ratio:16/10; border-radius:16px; overflow:hidden; background:var(--bg2); border:1px solid var(--line); }
-.card-media .cov{ position:absolute; inset:0; background-size:cover; background-position:center top; transition:transform .7s cubic-bezier(.2,0,0,1); }
-.card:hover .cov{ transform:scale(1.05); }
-.card-media .ov{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; background:rgba(8,8,13,.55); opacity:0; transition:.3s; }
-.card:hover .ov,.card:focus-visible .ov{ opacity:1; }
-.ov small{ font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent-3); }
-.ov .go{ width:46px; height:46px; border:1px solid rgba(255,255,255,.55); border-radius:100px; display:grid; place-items:center; font-size:18px; color:#fff; }
-.card-info{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding-top:14px; margin-top:14px; border-top:1px solid var(--line); }
-.card-info h3{ font-size:clamp(18px,2vw,24px); transition:color .2s; }
-.card:hover .card-info h3{ color:var(--accent-2); }
-.card-cat{ font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); white-space:nowrap; flex-shrink:0; }
+/* ── SELECTED WORK (editorial) ── */
+#work .head-row{ margin-bottom:clamp(34px,6vw,64px); }
+.feat-list{ display:flex; flex-direction:column; gap:clamp(56px,9vh,104px); }
+.fw{ display:grid; grid-template-columns:1fr; gap:16px; cursor:pointer; }
+.fw-media{ position:relative; aspect-ratio:16/10; border-radius:18px; overflow:hidden; background:var(--bg2); border:1px solid var(--line); }
+.fw-media .cov{ position:absolute; inset:0; background-size:cover; background-position:center top; transition:transform .8s cubic-bezier(.2,0,0,1); }
+.fw:hover .cov{ transform:scale(1.045) translateY(-6px); }
+.fw-media .veil{ position:absolute; inset:0; background:linear-gradient(to top, rgba(8,8,13,.42), transparent 45%); opacity:0; transition:opacity .35s; }
+.fw:hover .veil,.fw:focus-visible .veil{ opacity:1; }
+.fw-media .go{ position:absolute; right:18px; bottom:18px; width:48px; height:48px; border:1px solid rgba(255,255,255,.55); border-radius:100px; display:grid; place-items:center; font-size:18px; color:#fff; background:rgba(8,8,13,.35); backdrop-filter:blur(6px); opacity:0; transform:translateY(10px); transition:.35s; }
+.fw:hover .go,.fw:focus-visible .go{ opacity:1; transform:none; }
+.fw-info{ display:flex; flex-direction:column; gap:6px; }
+.fw-n{ font-family:'Syne'; font-weight:800; font-size:13px; color:var(--accent-2); }
+.fw-info h3{ font-size:clamp(22px,3.4vw,42px); transition:color .25s; }
+.fw:hover .fw-info h3{ color:var(--accent-2); }
+.fw-cat{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); }
+.mw{ margin-top:clamp(48px,8vh,86px); border-top:1px solid var(--line); }
+.mw-row{ display:flex; align-items:baseline; justify-content:space-between; gap:18px; padding:clamp(18px,3vh,26px) 0; border-bottom:1px solid var(--line); cursor:pointer; transition:padding-left .3s; }
+.mw-row:hover,.mw-row:focus-visible{ padding-left:12px; }
+.mw-row h3{ font-size:clamp(18px,2.4vw,28px); transition:color .25s; }
+.mw-row:hover h3{ color:var(--accent-2); }
+.mw-row .mw-cat{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); white-space:nowrap; }
 .empty{ padding:50px 0; color:var(--faint); text-align:center; }
+/* upward reveal — the "rise" motion */
+.up{ opacity:0; transform:translateY(36px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+.up.in{ opacity:1; transform:none; }
 
 /* ── STILLS ── */
 #stills{ position:relative; height:300svh; z-index:1; }
@@ -320,8 +326,17 @@ footer .g{ color:var(--accent-2); }
 .pm-toast.show{ transform:translateX(-50%); opacity:1; }
 
 /* ── breakpoints ── */
-@media(min-width:700px){ .work{ grid-template-columns:repeat(2,1fr); } .imp-grid{ grid-template-columns:repeat(4,1fr); } .steps{ grid-template-columns:repeat(3,1fr); } .cds{ grid-template-columns:repeat(3,1fr); } .client-wall{ grid-template-columns:1fr 1fr; } }
-@media(min-width:1000px){ .bar-links{ display:flex; } .steps{ grid-template-columns:repeat(5,1fr); } .card.feat{ grid-column:span 2; } .card.feat .card-media{ aspect-ratio:21/9; } .svc-row{ grid-template-columns:64px 1.05fr 1.4fr; align-items:start; gap:30px; } .svc-tags{ grid-column:2; } }
+@media(min-width:700px){ .imp-grid{ grid-template-columns:repeat(4,1fr); } .steps{ grid-template-columns:repeat(3,1fr); } .cds{ grid-template-columns:repeat(3,1fr); } .client-wall{ grid-template-columns:1fr 1fr; } }
+@media(min-width:900px){
+  .fw{ grid-template-columns:7fr 4fr; align-items:end; gap:36px; }
+  .fw:nth-child(even){ grid-template-columns:4fr 7fr; }
+  .fw:nth-child(even) .fw-media{ order:2; }
+  .fw:nth-child(even) .fw-info{ order:1; text-align:right; align-items:flex-end; }
+  .fw.wide{ grid-template-columns:1fr !important; }
+  .fw.wide .fw-media{ aspect-ratio:21/9; order:0 !important; }
+  .fw.wide .fw-info{ order:1 !important; flex-direction:row; align-items:baseline; justify-content:space-between; text-align:left; }
+}
+@media(min-width:1000px){ .bar-links{ display:flex; } .steps{ grid-template-columns:repeat(5,1fr); } .svc-row{ grid-template-columns:64px 1.05fr 1.4fr; align-items:start; gap:30px; } .svc-tags{ grid-column:2; } }
 @media(max-width:600px){ .cue{ display:none; } .bar .hide-m{ display:none; } }
 
 /* ── reduced motion ── */
@@ -335,6 +350,8 @@ footer .g{ color:var(--accent-2); }
   .track{ transform:none !important; flex-wrap:wrap; width:auto; }
   .draw i{ display:none; } .draw b{ position:static; opacity:1; }
   .curdot,.curring{ display:none; }
+  .up{ opacity:1; transform:none; transition:none; }
+  .fw:hover .cov{ transform:none; }
 }
 </style>
 </head>
@@ -387,10 +404,9 @@ footer .g{ color:var(--accent-2); }
       <span class="ln"><span><span class="ghost">brands</span> that</span></span>
       <span class="ln"><span><span class="grad">rise.</span></span></span>
     </h1>
-    <p>Social media, content &amp; video production, and branding — shot, directed and graded in-house. Scroll to ride through the work. <bdi lang="ar" dir="rtl">نصنع علامات ترتقي.</bdi></p>
+    <p>Strategy, content, video production and growth — built to move brands forward. <bdi lang="ar" dir="rtl">نصنع علامات ترتقي.</bdi></p>
     <div class="hero-cta">
-      <a class="btn btn-p" href="https://wa.me/96170991555" target="_blank" rel="noopener">💬 Start a project</a>
-      <a class="btn btn-o" href="#work">See the work ↓</a>
+      <a class="btn btn-p" href="https://wa.me/96170991555" target="_blank" rel="noopener">Start a project</a>
     </div>
   </div>
   <div class="cue">Scroll to rise <i></i></div>
@@ -440,15 +456,10 @@ footer .g{ color:var(--accent-2); }
 <!-- WORK -->
 <section class="sec" id="work"><div class="wrap">
   <div class="head-row">
-    <div><span class="eyebrow">Selected Work</span><h2 class="sec-h2">Brands we've built.</h2></div>
-    <div class="filters" id="filters">
-      <button class="filter on" data-cat="all">All</button>
-      <button class="filter" data-cat="Brand">Branding</button>
-      <button class="filter" data-cat="Social">Social</button>
-      <button class="filter" data-cat="Prod">Production</button>
-    </div>
+    <span class="eyebrow">Selected Work</span>
+    <h2 class="sec-h2">The work speaks.</h2>
   </div>
-  <div class="work" id="workGrid"></div>
+  <div id="workGrid"></div>
 </div></section>
 
 <!-- STILLS -->
@@ -599,23 +610,29 @@ const SERVICES=[
   {n:'06',name:'Influencer & Campaigns',desc:'We connect your brand with the right voices and run campaigns end to end — reach, trust, and engagement.',tags:['Influencer','Campaigns','PR']}
 ];
 const CAT={Brand:'Branding',Social:'Social Media',Prod:'Production',Paid:'Paid Advertising',SEO:'SEO'};
-let filter='all';
+
 const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function renderWork(){
   const g=document.getElementById('workGrid');
-  const items=filter==='all'?data:data.filter(p=>p.cat===filter);
-  if(!items.length){g.innerHTML='<div class="empty">No projects in this category yet.</div>';return;}
-  g.innerHTML=items.map(p=>`
-    <article class="card${p.size==='feat'?' feat':''}" data-id="${p.id}" tabindex="0" role="button" aria-label="Open ${esc(p.title)}">
-      <div class="card-media"><div class="cov" style="background-image:url('${esc(p.cover)}')"></div>
-        <div class="ov"><small>${esc(p.mLabel||'View')}</small><span class="go">↗</span></div>
-      </div>
-      <div class="card-info"><h3>${esc(p.title)}</h3><span class="card-cat">${esc(CAT[p.cat]||p.cat)}</span></div>
-    </article>`).join('');
+  if(!data.length){g.innerHTML='<div class="empty">No projects yet.</div>';return;}
+  let feats=data.filter(p=>p.featured).slice(0,5);
+  if(!feats.length) feats=data.slice(0,4);
+  const rest=data.filter(p=>!feats.includes(p));
+  g.innerHTML=
+    '<div class="feat-list">'+feats.map((p,i)=>`
+      <article class="fw up${p.size==='feat'?' wide':''}" data-id="${p.id}" tabindex="0" role="button" aria-label="Open ${esc(p.title)}">
+        <div class="fw-media"><div class="cov" style="background-image:url('${esc(p.cover)}')"></div><div class="veil"></div><span class="go" aria-hidden="true">↗</span></div>
+        <div class="fw-info"><span class="fw-n">${String(i+1).padStart(2,'0')}</span><h3>${esc(p.title)}</h3><span class="fw-cat">${esc(CAT[p.cat]||p.cat)}</span></div>
+      </article>`).join('')+'</div>'
+    +(rest.length?'<div class="mw">'+rest.map(p=>`
+      <div class="mw-row up" data-id="${p.id}" tabindex="0" role="button" aria-label="Open ${esc(p.title)}">
+        <h3>${esc(p.title)}</h3><span class="mw-cat">${esc(CAT[p.cat]||p.cat)}</span>
+      </div>`).join('')+'</div>':'');
+  g.querySelectorAll('.up').forEach(el=>{ if(window.upIO) window.upIO.observe(el); else el.classList.add('in'); });
 }
 document.getElementById('svc').innerHTML=SERVICES.map(s=>`<div class="svc-row"><div class="svc-n">${s.n}</div><h3>${s.name}</h3><div><p>${s.desc}</p><div class="svc-tags">${s.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div></div>`).join('');
-document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('.filter');if(!b)return;document.querySelectorAll('.filter').forEach(x=>x.classList.remove('on'));b.classList.add('on');filter=b.dataset.cat;renderWork();});
+window.upIO=new IntersectionObserver(en=>en.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');window.upIO.unobserve(x.target);}}),{threshold:.18,rootMargin:'0px 0px -6% 0px'});
 renderWork();
 
 /* ── viewer ── */
@@ -623,8 +640,8 @@ const viewer=document.getElementById('viewer'),vframe=document.getElementById('v
 function openProject(url,title){ vtitle.textContent=title; vframe.src = url; viewer.classList.add('open'); document.body.style.overflow='hidden'; document.getElementById('vback').focus(); }
 function closeProject(){ viewer.classList.remove('open'); vframe.src = 'about:blank'; document.body.style.overflow=''; }
 document.getElementById('vback').addEventListener('click',closeProject);
-document.getElementById('workGrid').addEventListener('click',e=>{const c=e.target.closest('.card[data-id]');if(!c)return;const p=data.find(x=>String(x.id)===c.dataset.id);if(p&&p.link)openProject(p.link,p.title);});
-document.getElementById('workGrid').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const c=e.target.closest('.card[data-id]');if(c){e.preventDefault();const p=data.find(x=>String(x.id)===c.dataset.id);if(p&&p.link)openProject(p.link,p.title);}}});
+document.getElementById('workGrid').addEventListener('click',e=>{const c=e.target.closest('[data-id]');if(!c)return;const p=data.find(x=>String(x.id)===c.dataset.id);if(p&&p.link)openProject(p.link,p.title);});
+document.getElementById('workGrid').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const c=e.target.closest('[data-id]');if(c){e.preventDefault();const p=data.find(x=>String(x.id)===c.dataset.id);if(p&&p.link)openProject(p.link,p.title);}}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&viewer.classList.contains('open'))closeProject();});
 
 /* ── generative ambient music (WebAudio) ── */
