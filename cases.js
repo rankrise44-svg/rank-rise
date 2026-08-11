@@ -159,7 +159,7 @@ window.RANKRISE_CASES = {
     execution: [
       { img: 'assets/brands/hatem/hatem-rmaite-forex-logo.png', cap: 'The monogram — H and R in one form', w: 1080, h: 1080 },
       { img: 'assets/brands/hatem/business-card-in-hand.jpg', cap: 'Stationery', w: 1620, h: 1620 },
-      { img: 'assets/brands/hatem/signage.jpg', cap: 'Signage', w: 1620, h: 1620 },
+      { img: 'assets/brands/hatem/signage.jpg', cap: 'Signage', w: 1600, h: 1600 },
       { img: 'assets/brands/hatem/apparel.jpg', cap: 'Apparel', w: 1620, h: 1620 },
       { img: 'assets/brands/hatem/hatem-rmaite-forex-post-4.jpg', cap: 'Education-led content', w: 900, h: 1125 },
       { img: 'assets/brands/hatem/hatem-rmaite-forex-post-2.jpg', cap: 'Risk and literacy, not hype', w: 900, h: 1125 },
