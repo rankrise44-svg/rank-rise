@@ -59,13 +59,23 @@ h1,h2,h3{ font-family:'Syne',sans-serif; font-weight:800; letter-spacing:-.03em;
 .blk h2{ font-size:clamp(24px,3.6vw,40px); margin:12px 0 14px; }
 .blk p{ color:var(--dim); font-size:clamp(15px,1.8vw,17px); line-height:1.72; max-width:58ch; }
 
-/* execution */
-.gal{ display:grid; grid-template-columns:1fr; gap:clamp(14px,2vw,22px); margin-top:clamp(26px,4vh,44px); }
+/* execution — masonry columns, so every image keeps its own shape.
+   A square social post, a 16:9 film frame and a portrait studio shot all
+   sit in the same wall without any of them being cropped to fit. */
+.gal{ display:flex; align-items:flex-start; gap:clamp(14px,2vw,22px); margin-top:clamp(26px,4vh,44px); }
+.gcol{ flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:clamp(14px,2vw,22px); }
 .gi{ border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--bg2); }
-.gi img{ width:100%; aspect-ratio:4/3; object-fit:cover; transition:transform .7s cubic-bezier(.2,0,0,1); }
-.gi:hover img{ transform:scale(1.04); }
+.gi img,.gi video{ width:100%; height:auto; display:block; transition:transform .7s cubic-bezier(.2,0,0,1); }
+.gi:hover img,.gi:hover video{ transform:scale(1.04); }
 .gi figcaption{ padding:12px 14px; font-size:11.5px; letter-spacing:.06em; color:var(--faint); border-top:1px solid var(--line); }
-.gi.tall{ grid-column:span 1; }
+
+/* chapters — for cases with more than one body of work */
+.chap{ margin-top:clamp(46px,8vh,96px); }
+.chap:first-of-type{ margin-top:0; }
+.chap-n{ font-family:'Syne'; font-weight:800; font-size:12px; letter-spacing:.22em; color:var(--brand); }
+.chap-k{ font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--faint); margin-left:12px; }
+.chap h3{ font-size:clamp(25px,4.4vw,46px); letter-spacing:-.025em; line-height:1.05; margin-top:14px; }
+.chap > p{ color:var(--dim); font-size:clamp(15px,1.8vw,17px); line-height:1.72; max-width:58ch; margin-top:14px; }
 
 /* result */
 .result{ border-block:1px solid var(--line); background:rgba(13,13,21,.55); }
@@ -95,13 +105,10 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
 @media(min-width:700px){
   .meta{ grid-template-columns:repeat(4,1fr); }
   .two{ grid-template-columns:1fr 1fr; gap:clamp(36px,5vw,72px); }
-  .gal{ grid-template-columns:repeat(2,1fr); }
-  .gi.tall{ grid-row:span 2; } .gi.tall img{ aspect-ratio:3/4; height:100%; }
 }
-@media(min-width:1000px){ .gal{ grid-template-columns:repeat(3,1fr); } }
 @media(prefers-reduced-motion:reduce){
   .up{ opacity:1; transform:none; transition:none; }
-  .gi:hover img,.next:hover h2{ transform:none; }
+  .gi:hover img,.gi:hover video,.next:hover h2{ transform:none; }
 }
 </style>
 </head>
@@ -151,10 +158,40 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
   const meta=[['Client',c.client],['Sector',c.sector],c.markets?['Markets',c.markets]:null,['Year',c.year],['Scope',(c.scope||[]).join(' · ')]]
     .filter(Boolean).slice(0,4);
 
+  // Images keep their natural shape — nothing is ever cropped to fit a grid.
+  // Because every item carries its real w/h, we can pack the columns ourselves
+  // instead of letting the browser balance them: each tile goes to whichever
+  // column is currently shortest. That leaves no empty column when a chapter
+  // has fewer items than columns, and the w/h attributes reserve the right
+  // space up front so nothing jumps around while the images load.
+  const colCount = () => innerWidth >= 1000 ? 3 : innerWidth >= 700 ? 2 : 1;
+
+  const tile = e => `
+    <figure class="gi up">
+      ${e.video
+        ? `<video src="${esc(e.video)}" ${e.poster?`poster="${esc(e.poster)}"`:''} muted loop playsinline preload="none" autoplay></video>`
+        : `<img src="${esc(e.img)}" alt="${esc(e.cap||'')}"${e.w?` width="${e.w}" height="${e.h}"`:''} loading="lazy" decoding="async">`}
+      ${e.cap?`<figcaption>${esc(e.cap)}</figcaption>`:''}
+    </figure>`;
+
+  const gallery = items => {
+    items = items || [];
+    if(!items.length) return '';
+    const n = Math.min(colCount(), items.length);
+    const cols = Array.from({length:n}, () => ({ h:0, html:'' }));
+    items.forEach(e => {
+      const c = cols.reduce((a,b) => b.h < a.h ? b : a);
+      c.html += tile(e);
+      c.h += (e.w && e.h ? e.h/e.w : 0.75) + (e.cap ? 0.13 : 0);   // height per unit of column width
+    });
+    return cols.map(c => `<div class="gcol">${c.html}</div>`).join('');
+  };
+
   const heroMedia = c.heroVideo
     ? `<video src="${esc(c.heroVideo)}" poster="${esc(c.heroPoster||'')}" autoplay muted loop playsinline preload="metadata"></video>`
     : `<img src="${esc(c.hero)}" alt="${esc(c.title)} — case study cover" fetchpriority="high">`;
 
+  function paint(){
   root.innerHTML=`
   <section class="hero">
     <div class="bgm">${heroMedia}</div>
@@ -173,11 +210,17 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
 
   <section class="sec" style="padding-top:0"><div class="wrap">
     <div class="up"><span class="eyebrow">Execution</span><h2 style="font-size:clamp(24px,3.6vw,40px);margin-top:12px">The work.</h2></div>
-    <div class="gal">${(c.execution||[]).map((e,i)=>`
-      <figure class="gi up${i===0?' tall':''}">
-        <img src="${esc(e.img)}" alt="${esc(e.cap)}" loading="lazy" decoding="async">
-        <figcaption>${esc(e.cap)}</figcaption>
-      </figure>`).join('')}</div>
+    ${c.chapters && c.chapters.length
+      ? c.chapters.map((ch,n)=>`
+        <div class="chap">
+          <div class="up">
+            <span class="chap-n">${String(n+1).padStart(2,'0')}</span><span class="chap-k">${esc(ch.kicker||'')}</span>
+            <h3>${esc(ch.title||'')}</h3>
+            ${ch.text?`<p>${esc(ch.text)}</p>`:''}
+          </div>
+          <div class="gal">${gallery(ch.items)}</div>
+        </div>`).join('')
+      : `<div class="gal">${gallery(c.execution)}</div>`}
   </div></section>
 
   <section class="sec result"><div class="wrap up">
@@ -203,6 +246,17 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
       {threshold:.14, rootMargin:'0px 0px -6% 0px'});
     document.querySelectorAll('.up').forEach(el=>io.observe(el));
   } else { document.querySelectorAll('.up').forEach(el=>el.classList.add('in')); }
+  }
+
+  paint();
+
+  // Column count is baked into the markup, so a rotate or a resized window
+  // needs a re-pack — but only when it actually crosses a breakpoint.
+  let cols = colCount();
+  addEventListener('resize', () => {
+    const n = colCount();
+    if(n !== cols){ cols = n; paint(); }
+  }, {passive:true});
 
   addEventListener('scroll',()=>document.getElementById('bar').classList.toggle('solid',scrollY>60),{passive:true});
 })();
