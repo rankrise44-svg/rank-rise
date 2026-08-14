@@ -6,7 +6,8 @@
 <title>Blue × RankRise — استمارة اكتشاف المشروع</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#7062F0">
-<meta name="description" content="استمارة الأسئلة التمهيدية لمشروع تطبيق Blue — RankRise.">
+<meta name="author" content="Ribelle — RankRise">
+<meta name="description" content="استمارة الأسئلة التمهيدية لمشروع تطبيق Blue — إعداد Ribelle، RankRise.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -78,6 +79,8 @@ a{ color:inherit; }
   display:grid; place-items:center; font-size:11.5px; font-style:normal; font-weight:800; flex-shrink:0;
   font-family:'Syne',sans-serif; }
 .rail-item.on i{ background:var(--accent); color:#fff; border-color:var(--accent); }
+.rail-by{ margin-top:22px; padding:0 12px; font-size:12.5px; color:var(--muted); line-height:1.7; }
+.rail-by b{ color:var(--ink-2); font-weight:700; }
 
 .card{ background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:clamp(22px,3.4vw,40px); }
 .step h2{ font-size:clamp(25px,4.4vw,34px); margin:10px 0 8px; }
@@ -133,11 +136,18 @@ a{ color:inherit; }
 .hero .fact{ background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14);
   border-radius:100px; padding:7px 15px; font-size:13.5px; color:#fff; }
 .hero .btn{ margin-top:28px; }
+.byline{ margin-top:30px; padding-top:20px; border-top:1px solid rgba(255,255,255,.12);
+  font-size:13.5px; color:var(--on-dark-dim); }
+.byline b{ color:#fff; font-weight:700; }
 .done{ text-align:center; padding:clamp(30px,6vw,64px) clamp(20px,4vw,40px); }
 .done .tick{ width:66px; height:66px; border-radius:100px; background:var(--ok-soft); color:var(--ok);
   display:grid; place-items:center; margin:0 auto 20px; font-size:30px; font-weight:800; }
 .done h2{ font-size:clamp(26px,4.6vw,34px); margin-bottom:10px; }
 .done p{ color:var(--ink-2); max-width:46ch; margin:0 auto 8px; }
+.done .sig{ margin-top:26px; padding-top:20px; border-top:1px solid var(--line);
+  font-size:13px; color:var(--muted); }
+.done .sig b{ color:var(--ink-2); }
+.fallback{ text-align:center; }
 .fallback textarea{ width:100%; min-height:220px; border:1px solid var(--line); border-radius:12px;
   padding:14px 16px; font-size:14px; margin:16px 0; background:var(--surface); font-family:inherit; }
 .fallback .row{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
@@ -153,7 +163,7 @@ a{ color:inherit; }
       <div><b>RankRise</b><small>Blue Discovery</small></div>
     </div>
     <div class="tb-spacer"></div>
-    <div class="saved" id="savedTag" hidden><i></i> محفوظ تلقائيًا</div>
+    <div class="saved" id="savedTag" hidden><i></i> حُفظت الإجابات تلقائيًا</div>
   </div>
   <div class="bar"><i id="bar"></i></div>
 </header>
@@ -162,17 +172,18 @@ a{ color:inherit; }
 
   <!-- ═══ RAIL ═══ -->
   <nav class="rail" id="rail" hidden>
-        <button type="button" class="rail-item on" data-go="0"><i>1</i><span>مين عم يعبّي؟</span></button>
+        <button type="button" class="rail-item on" data-go="0"><i>1</i><span>بيانات مُعبِّئ الاستمارة</span></button>
         <button type="button" class="rail-item" data-go="1"><i>2</i><span>الشركة والهدف</span></button>
         <button type="button" class="rail-item" data-go="2"><i>3</i><span>أصحاب المصالح (Supply)</span></button>
         <button type="button" class="rail-item" data-go="3"><i>4</i><span>العميل النهائي (Demand)</span></button>
         <button type="button" class="rail-item" data-go="4"><i>5</i><span>المنافسون</span></button>
-        <button type="button" class="rail-item" data-go="5"><i>6</i><span>الهوية والعلامة (Branding)</span></button>
+        <button type="button" class="rail-item" data-go="5"><i>6</i><span>الهوية والعلامة التجارية</span></button>
         <button type="button" class="rail-item" data-go="6"><i>7</i><span>التسويق الحالي</span></button>
         <button type="button" class="rail-item" data-go="7"><i>8</i><span>الميزانية</span></button>
         <button type="button" class="rail-item" data-go="8"><i>9</i><span>التطبيق نفسه</span></button>
         <button type="button" class="rail-item" data-go="9"><i>10</i><span>مشكلة الـ Marketplace</span></button>
         <button type="button" class="rail-item" data-go="10"><i>11</i><span>الأسئلة الرئيسية</span></button>
+    <p class="rail-by">إعداد: <b>Ribelle</b><br>RankRise</p>
   </nav>
 
   <main id="main">
@@ -181,14 +192,15 @@ a{ color:inherit; }
     <div id="intro">
       <div class="hero">
         <span class="eyebrow" style="color:var(--accent-tint)">RankRise × Blue</span>
-        <h1>قبل ما نصرف أول ليرة على إعلان، لازم نتفق على الجواب.</h1>
-        <p>هي الاستمارة مو روتين — هي أساس الاستراتيجية. كل سؤال فيها بيغيّر شي بالخطة: وين منركّز، على مين منصرف، وشو منقول. خدلك وقتك، وإذا في سؤال ما عندك جوابه، اتركه فاضي واكتب «ما منعرف» — هيدا بحد ذاته جواب مفيد.</p>
+        <h1>قبل أن نُنفق أول ليرة على الإعلان، علينا أن نتفق على الإجابة.</h1>
+        <p>هذه الاستمارة ليست إجراءً روتينيًا، بل هي أساس الاستراتيجية. كل سؤال فيها يغيّر شيئًا في الخطة: أين نركّز، وعلى مَن نُنفق، وماذا نقول. خُذ وقتك في الإجابة، وإذا كان هناك سؤال لا تملك إجابته، فاتركه فارغًا أو اكتب «غير محدد» — فهذا بحد ذاته إجابة مفيدة.</p>
         <div class="facts">
-          <span class="fact">١١ قسم</span>
-          <span class="fact">حوالي ٢٠ دقيقة</span>
-          <span class="fact">بينحفظ تلقائيًا — فيك ترجع بعدين</span>
+          <span class="fact">١١ قسمًا</span>
+          <span class="fact">٢٠ دقيقة تقريبًا</span>
+          <span class="fact">حفظ تلقائي — يمكنك العودة لاحقًا</span>
         </div>
-        <button type="button" class="btn btn-p" id="startBtn">يلا نبلّش ←</button>
+        <button type="button" class="btn btn-p" id="startBtn">لنبدأ ←</button>
+        <p class="byline">إعداد: <b>Ribelle</b></p>
       </div>
     </div>
 
@@ -197,20 +209,20 @@ a{ color:inherit; }
           data-netlify="true" netlify-honeypot="bot-field">
       <input type="hidden" name="form-name" value="blue-brief">
       <input type="hidden" name="ملخص الأجوبة" id="summaryField">
-      <p hidden><label>ما تعبّي هالخانة: <input name="bot-field"></label></p>
+      <p hidden><label>يُرجى ترك هذا الحقل فارغًا: <input name="bot-field"></label></p>
 
-    <section class="step" id="step-contact" data-title="مين عم يعبّي؟">
-      <span class="eyebrow">خطوة ١</span>
-      <h2>مين عم يعبّي؟</h2>
-      <p class="lead">معلومات سريعة تخليني إقدر إرجع إلك إذا احتجت أوضّح شي.</p>
+    <section class="step" id="step-contact" data-title="بيانات مُعبِّئ الاستمارة">
+      <span class="eyebrow">القسم الأول</span>
+      <h2>بيانات مُعبِّئ الاستمارة</h2>
+      <p class="lead">معلومات سريعة تتيح لنا العودة إليك عند الحاجة إلى أي توضيح.</p>
       <div class="field" data-q="الاسم الكامل" data-k="00_name" data-req="1">
         <label class="q" for="f1">الاسم الكامل <span class="req">*</span></label>
         
         <input id="f1" type="text" name="00_name" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="المسمى الوظيفي / دورك بالشركة" data-k="00_role">
-        <label class="q" for="f2">المسمى الوظيفي / دورك بالشركة</label>
+      <div class="field" data-q="المسمى الوظيفي / الدور في الشركة" data-k="00_role">
+        <label class="q" for="f2">المسمى الوظيفي / الدور في الشركة</label>
         
         <input id="f2" type="text" name="00_role" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
@@ -242,13 +254,13 @@ a{ color:inherit; }
     </section>
 
     <section class="step" id="step-company" data-title="الشركة والهدف" hidden>
-      <span class="eyebrow">خطوة ٢</span>
+      <span class="eyebrow">القسم الثاني</span>
       <h2>الشركة والهدف</h2>
-      <p class="lead">من هون منبني الأساس: وين رايحة Blue، ومين رح توصل قبل غيرها.</p>
+      <p class="lead">من هنا نبني الأساس: إلى أين تتّجه Blue، ومَن ستصل إليه قبل غيره.</p>
       <div class="field" data-q="ما هو الهدف الأساسي من تطبيق Blue خلال السنة القادمة؟" data-k="01_goal_12m" data-req="1">
         <label class="q" for="f7">ما هو الهدف الأساسي من تطبيق Blue خلال السنة القادمة؟ <span class="req">*</span></label>
-        <p class="hint">مثال: ١٠ آلاف تحميل، أو ٥٠٠ صاحب مصلحة مسجّل، أو أول إيراد من الاشتراكات.</p>
-        <textarea id="f7" name="01_goal_12m" rows="3" placeholder="اكتب هون…"></textarea>
+        <p class="hint">مثال: عشرة آلاف تحميل، أو خمسمئة صاحب مصلحة مسجّل، أو أول إيراد من الاشتراكات.</p>
+        <textarea id="f7" name="01_goal_12m" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="ما هي المدن السورية التي تستهدفونها في البداية؟" data-k="02_cities">
@@ -260,11 +272,11 @@ a{ color:inherit; }
       <div class="field" data-q="هل الهدف الانتشار في سوريا فقط أم هناك نية للتوسع لاحقًا؟" data-k="03_expansion">
         <span class="q" id="f9_l">هل الهدف الانتشار في سوريا فقط أم هناك نية للتوسع لاحقًا؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f9_l"><label class="chip"><input type="radio" name="03_expansion" value="سوريا فقط"><span>سوريا فقط</span></label><label class="chip"><input type="radio" name="03_expansion" value="سوريا أولًا ثم توسع إقليمي"><span>سوريا أولًا ثم توسع إقليمي</span></label><label class="chip"><input type="radio" name="03_expansion" value="التوسع خلال ١٢ شهر"><span>التوسع خلال ١٢ شهر</span></label><label class="chip"><input type="radio" name="03_expansion" value="لسه ما تقرر"><span>لسه ما تقرر</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f9_l"><label class="chip"><input type="radio" name="03_expansion" value="سوريا فقط"><span>سوريا فقط</span></label><label class="chip"><input type="radio" name="03_expansion" value="سوريا أولًا ثم توسع إقليمي"><span>سوريا أولًا ثم توسع إقليمي</span></label><label class="chip"><input type="radio" name="03_expansion" value="التوسع خلال اثني عشر شهرًا"><span>التوسع خلال اثني عشر شهرًا</span></label><label class="chip"><input type="radio" name="03_expansion" value="لم يُتّخذ القرار بعد"><span>لم يُتّخذ القرار بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="إذا في نية توسع — لأي دول؟" data-k="03b_expansion_where">
-        <label class="q" for="f10">إذا في نية توسع — لأي دول؟</label>
+      <div class="field" data-q="إذا كانت هناك نية للتوسع — إلى أي دول؟" data-k="03b_expansion_where">
+        <label class="q" for="f10">إذا كانت هناك نية للتوسع — إلى أي دول؟</label>
         
         <input id="f10" type="text" name="03b_expansion_where" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
@@ -272,41 +284,41 @@ a{ color:inherit; }
       <div class="field" data-q="ما الذي يميز Blue عن التطبيقات والمواقع الموجودة حاليًا؟" data-k="04_differentiator">
         <label class="q" for="f11">ما الذي يميز Blue عن التطبيقات والمواقع الموجودة حاليًا؟</label>
         
-        <textarea id="f11" name="04_differentiator" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f11" name="04_differentiator" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="لماذا يستخدم العميل Blue بدلًا من البحث عن صاحب المصلحة عبر Facebook أو Instagram أو Google أو المعارف؟" data-k="05_why_not_fb">
         <label class="q" for="f12">لماذا يستخدم العميل Blue بدلًا من البحث عن صاحب المصلحة عبر Facebook أو Instagram أو Google أو المعارف؟</label>
-        <p class="hint">هاد السؤال هو قلب الـ Value Proposition — خدلك وقتك فيه.</p>
-        <textarea id="f12" name="05_why_not_fb" rows="3" placeholder="اكتب هون…"></textarea>
+        <p class="hint">هذا السؤال هو قلب الـ Value Proposition — خُذ وقتك في الإجابة عليه.</p>
+        <textarea id="f12" name="05_why_not_fb" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="ما هي أهم الخدمات التي تريدون التركيز عليها عند الإطلاق؟" data-k="06_launch_services">
         <label class="q" for="f13">ما هي أهم الخدمات التي تريدون التركيز عليها عند الإطلاق؟</label>
         
-        <textarea id="f13" name="06_launch_services" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f13" name="06_launch_services" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل هناك خدمات تعتبرونها أولوية أكثر من غيرها؟" data-k="07_priority_services">
         <label class="q" for="f14">هل هناك خدمات تعتبرونها أولوية أكثر من غيرها؟</label>
         
-        <textarea id="f14" name="07_priority_services" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f14" name="07_priority_services" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
     </section>
 
     <section class="step" id="step-providers" data-title="أصحاب المصالح (Supply)" hidden>
-      <span class="eyebrow">خطوة ٣</span>
+      <span class="eyebrow">القسم الثالث</span>
       <h2>أصحاب المصالح (Supply)</h2>
-      <p class="lead">الطرف اللي بيعبّي التطبيق بمحتوى. بدون قوة هون، ما في سبب المستخدم يرجع.</p>
+      <p class="lead">الطرف الذي يملأ التطبيق بالمحتوى. من دون قوة حقيقية هنا، لا يوجد سبب يدفع المستخدم إلى العودة.</p>
       <div class="field" data-q="من هم أصحاب المصالح الذين تريدون استقطابهم تحديدًا؟" data-k="08_provider_cats">
         <span class="q" id="f15_l">من هم أصحاب المصالح الذين تريدون استقطابهم تحديدًا؟</span>
         
-        <div class="chips" role="group" aria-labelledby="f15_l"><label class="chip"><input type="checkbox" name="08_provider_cats" value="سيارات"><span>سيارات</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="عقارات"><span>عقارات</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="نجارين"><span>نجارين</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="بنائين"><span>بنائين</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="كهربائيين"><span>كهربائيين</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="سبّاكين"><span>سبّاكين</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="أطباء"><span>أطباء</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="مطاعم"><span>مطاعم</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="محلات"><span>محلات</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="شركات"><span>شركات</span></label></div>
+        <div class="chips" role="group" aria-labelledby="f15_l"><label class="chip"><input type="checkbox" name="08_provider_cats" value="سيارات"><span>سيارات</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="عقارات"><span>عقارات</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="نجّارون"><span>نجّارون</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="بنّاؤون"><span>بنّاؤون</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="كهربائيون"><span>كهربائيون</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="سبّاكون"><span>سبّاكون</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="أطباء"><span>أطباء</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="مطاعم"><span>مطاعم</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="محلات"><span>محلات</span></label><label class="chip"><input type="checkbox" name="08_provider_cats" value="شركات"><span>شركات</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="فئات ثانية غير المذكورة؟" data-k="08b_provider_cats_other">
-        <label class="q" for="f16">فئات ثانية غير المذكورة؟</label>
+      <div class="field" data-q="هل هناك فئات أخرى غير المذكورة؟" data-k="08b_provider_cats_other">
+        <label class="q" for="f16">هل هناك فئات أخرى غير المذكورة؟</label>
         
         <input id="f16" type="text" name="08b_provider_cats_other" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
@@ -314,7 +326,7 @@ a{ color:inherit; }
       <div class="field" data-q="هل صاحب المصلحة سيدفع مقابل إدراج خدماته على التطبيق؟" data-k="09_provider_pays">
         <span class="q" id="f17_l">هل صاحب المصلحة سيدفع مقابل إدراج خدماته على التطبيق؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f17_l"><label class="chip"><input type="radio" name="09_provider_pays" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="09_provider_pays" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="09_provider_pays" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f17_l"><label class="chip"><input type="radio" name="09_provider_pays" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="09_provider_pays" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="09_provider_pays" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="إذا كان سيدفع — ما هو نموذج التسعير؟" data-k="10_pricing_model">
@@ -323,80 +335,80 @@ a{ color:inherit; }
         <div class="chips" role="group" aria-labelledby="f18_l"><label class="chip"><input type="checkbox" name="10_pricing_model" value="اشتراك شهري"><span>اشتراك شهري</span></label><label class="chip"><input type="checkbox" name="10_pricing_model" value="إعلان مدفوع"><span>إعلان مدفوع</span></label><label class="chip"><input type="checkbox" name="10_pricing_model" value="عمولة على الصفقة"><span>عمولة على الصفقة</span></label><label class="chip"><input type="checkbox" name="10_pricing_model" value="Featured listing"><span>Featured listing</span></label><label class="chip"><input type="checkbox" name="10_pricing_model" value="باقات"><span>باقات</span></label><label class="chip"><input type="checkbox" name="10_pricing_model" value="مجاني حاليًا"><span>مجاني حاليًا</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="تفاصيل الأسعار إذا محددة (أرقام تقريبية)" data-k="10b_pricing_details">
-        <label class="q" for="f19">تفاصيل الأسعار إذا محددة (أرقام تقريبية)</label>
+      <div class="field" data-q="تفاصيل الأسعار إن كانت محددة (أرقام تقريبية)" data-k="10b_pricing_details">
+        <label class="q" for="f19">تفاصيل الأسعار إن كانت محددة (أرقام تقريبية)</label>
         
-        <textarea id="f19" name="10b_pricing_details" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f19" name="10b_pricing_details" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل التسجيل مجاني في البداية؟" data-k="11_free_signup">
         <span class="q" id="f20_l">هل التسجيل مجاني في البداية؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f20_l"><label class="chip"><input type="radio" name="11_free_signup" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="11_free_signup" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="11_free_signup" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f20_l"><label class="chip"><input type="radio" name="11_free_signup" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="11_free_signup" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="11_free_signup" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل يوجد حاليًا عدد من أصحاب المصالح المسجلين؟" data-k="12_has_providers">
         <span class="q" id="f21_l">هل يوجد حاليًا عدد من أصحاب المصالح المسجلين؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f21_l"><label class="chip"><input type="radio" name="12_has_providers" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="12_has_providers" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="12_has_providers" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f21_l"><label class="chip"><input type="radio" name="12_has_providers" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="12_has_providers" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="12_has_providers" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="كم عددهم؟ وما هي الفئات التي يمثلونها؟" data-k="13_providers_count">
         <label class="q" for="f22">كم عددهم؟ وما هي الفئات التي يمثلونها؟</label>
         
-        <textarea id="f22" name="13_providers_count" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f22" name="13_providers_count" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل لديكم قاعدة بيانات لأصحاب المصالح يمكن استخدامها؟" data-k="14_provider_db">
         <span class="q" id="f23_l">هل لديكم قاعدة بيانات لأصحاب المصالح يمكن استخدامها؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f23_l"><label class="chip"><input type="radio" name="14_provider_db" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="14_provider_db" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="14_provider_db" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f23_l"><label class="chip"><input type="radio" name="14_provider_db" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="14_provider_db" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="14_provider_db" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل لديكم فريق مبيعات (Sales Team) لاستقطابهم؟" data-k="15_sales_team">
         <span class="q" id="f24_l">هل لديكم فريق مبيعات (Sales Team) لاستقطابهم؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f24_l"><label class="chip"><input type="radio" name="15_sales_team" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="15_sales_team" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="15_sales_team" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f24_l"><label class="chip"><input type="radio" name="15_sales_team" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="15_sales_team" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="15_sales_team" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="إذا في فريق — كم شخص وشو طريقة عملهم؟" data-k="15b_sales_team_size">
-        <label class="q" for="f25">إذا في فريق — كم شخص وشو طريقة عملهم؟</label>
+      <div class="field" data-q="إذا كان هناك فريق — كم عدد أفراده؟ وما آلية عمله؟" data-k="15b_sales_team_size">
+        <label class="q" for="f25">إذا كان هناك فريق — كم عدد أفراده؟ وما آلية عمله؟</label>
         
         <input id="f25" type="text" name="15b_sales_team_size" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل الشركة ستتواصل معهم هاتفيًا وميدانيًا أم سيكون التسجيل ذاتيًا عبر التطبيق؟" data-k="16_acquisition_method">
-        <span class="q" id="f26_l">هل الشركة ستتواصل معهم هاتفيًا وميدانيًا أم سيكون التسجيل ذاتيًا عبر التطبيق؟</span>
+      <div class="field" data-q="هل ستتواصل الشركة معهم هاتفيًا وميدانيًا أم سيكون التسجيل ذاتيًا عبر التطبيق؟" data-k="16_acquisition_method">
+        <span class="q" id="f26_l">هل ستتواصل الشركة معهم هاتفيًا وميدانيًا أم سيكون التسجيل ذاتيًا عبر التطبيق؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f26_l"><label class="chip"><input type="radio" name="16_acquisition_method" value="تواصل هاتفي وميداني"><span>تواصل هاتفي وميداني</span></label><label class="chip"><input type="radio" name="16_acquisition_method" value="تسجيل ذاتي عبر التطبيق"><span>تسجيل ذاتي عبر التطبيق</span></label><label class="chip"><input type="radio" name="16_acquisition_method" value="الاثنين معًا"><span>الاثنين معًا</span></label><label class="chip"><input type="radio" name="16_acquisition_method" value="غير محدد"><span>غير محدد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f26_l"><label class="chip"><input type="radio" name="16_acquisition_method" value="تواصل هاتفي وميداني"><span>تواصل هاتفي وميداني</span></label><label class="chip"><input type="radio" name="16_acquisition_method" value="تسجيل ذاتي عبر التطبيق"><span>تسجيل ذاتي عبر التطبيق</span></label><label class="chip"><input type="radio" name="16_acquisition_method" value="كلاهما معًا"><span>كلاهما معًا</span></label><label class="chip"><input type="radio" name="16_acquisition_method" value="غير محدد"><span>غير محدد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="ما الذي سيجعل صاحب المصلحة يترك Facebook/Instagram والمنصات الأخرى ويأتي إلى Blue؟" data-k="17_why_leave_fb">
-        <label class="q" for="f27">ما الذي سيجعل صاحب المصلحة يترك Facebook/Instagram والمنصات الأخرى ويأتي إلى Blue؟</label>
+      <div class="field" data-q="ما الذي سيجعل صاحب المصلحة يترك Facebook و Instagram والمنصات الأخرى ويأتي إلى Blue؟" data-k="17_why_leave_fb">
+        <label class="q" for="f27">ما الذي سيجعل صاحب المصلحة يترك Facebook و Instagram والمنصات الأخرى ويأتي إلى Blue؟</label>
         
-        <textarea id="f27" name="17_why_leave_fb" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f27" name="17_why_leave_fb" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="ما هي الفائدة الملموسة التي سيحصل عليها صاحب المصلحة من وجوده على Blue؟" data-k="18_provider_benefit">
         <label class="q" for="f28">ما هي الفائدة الملموسة التي سيحصل عليها صاحب المصلحة من وجوده على Blue؟</label>
         
-        <textarea id="f28" name="18_provider_benefit" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f28" name="18_provider_benefit" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل يستطيع صاحب المصلحة نشر عدد معين من الإعلانات؟" data-k="19_listing_limit">
         <span class="q" id="f29_l">هل يستطيع صاحب المصلحة نشر عدد معين من الإعلانات؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f29_l"><label class="chip"><input type="radio" name="19_listing_limit" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="19_listing_limit" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="19_listing_limit" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f29_l"><label class="chip"><input type="radio" name="19_listing_limit" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="19_listing_limit" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="19_listing_limit" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="إذا في حد أقصى — كم إعلان؟" data-k="19b_listing_limit_n">
-        <label class="q" for="f30">إذا في حد أقصى — كم إعلان؟</label>
+      <div class="field" data-q="إذا كان هناك حد أقصى — كم عدد الإعلانات المسموح بها؟" data-k="19b_listing_limit_n">
+        <label class="q" for="f30">إذا كان هناك حد أقصى — كم عدد الإعلانات المسموح بها؟</label>
         
         <input id="f30" type="text" name="19b_listing_limit_n" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="شو بيقدر يضيف صاحب المصلحة على إعلانه؟" data-k="20_listing_content">
-        <span class="q" id="f31_l">شو بيقدر يضيف صاحب المصلحة على إعلانه؟</span>
+      <div class="field" data-q="ما الذي يستطيع صاحب المصلحة إضافته إلى إعلانه؟" data-k="20_listing_content">
+        <span class="q" id="f31_l">ما الذي يستطيع صاحب المصلحة إضافته إلى إعلانه؟</span>
         
         <div class="chips" role="group" aria-labelledby="f31_l"><label class="chip"><input type="checkbox" name="20_listing_content" value="صور"><span>صور</span></label><label class="chip"><input type="checkbox" name="20_listing_content" value="فيديوهات"><span>فيديوهات</span></label><label class="chip"><input type="checkbox" name="20_listing_content" value="أسعار"><span>أسعار</span></label><label class="chip"><input type="checkbox" name="20_listing_content" value="عروض وخصومات"><span>عروض وخصومات</span></label><label class="chip"><input type="checkbox" name="20_listing_content" value="ساعات العمل"><span>ساعات العمل</span></label><label class="chip"><input type="checkbox" name="20_listing_content" value="الموقع على الخريطة"><span>الموقع على الخريطة</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
@@ -404,17 +416,17 @@ a{ color:inherit; }
       <div class="field" data-q="هل يوجد نظام تقييم (Reviews و Ratings)؟" data-k="21_reviews_system">
         <span class="q" id="f32_l">هل يوجد نظام تقييم (Reviews و Ratings)؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f32_l"><label class="chip"><input type="radio" name="21_reviews_system" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="21_reviews_system" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="21_reviews_system" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f32_l"><label class="chip"><input type="radio" name="21_reviews_system" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="21_reviews_system" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="21_reviews_system" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل سيتم التحقق من هوية أو مهنية أصحاب الخدمات؟" data-k="22_verification">
-        <span class="q" id="f33_l">هل سيتم التحقق من هوية أو مهنية أصحاب الخدمات؟</span>
+      <div class="field" data-q="هل سيتم التحقق من هوية أصحاب الخدمات أو من كفاءتهم المهنية؟" data-k="22_verification">
+        <span class="q" id="f33_l">هل سيتم التحقق من هوية أصحاب الخدمات أو من كفاءتهم المهنية؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f33_l"><label class="chip"><input type="radio" name="22_verification" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="22_verification" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="22_verification" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f33_l"><label class="chip"><input type="radio" name="22_verification" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="22_verification" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="22_verification" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="إذا نعم — كيف؟ (هوية، سجل تجاري، زيارة ميدانية…)" data-k="22b_verification_how">
-        <label class="q" for="f34">إذا نعم — كيف؟ (هوية، سجل تجاري، زيارة ميدانية…)</label>
+      <div class="field" data-q="إذا كانت الإجابة نعم — كيف؟ (هوية شخصية، سجل تجاري، زيارة ميدانية…)" data-k="22b_verification_how">
+        <label class="q" for="f34">إذا كانت الإجابة نعم — كيف؟ (هوية شخصية، سجل تجاري، زيارة ميدانية…)</label>
         
         <input id="f34" type="text" name="22b_verification_how" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
@@ -422,17 +434,17 @@ a{ color:inherit; }
     </section>
 
     <section class="step" id="step-customer" data-title="العميل النهائي (Demand)" hidden>
-      <span class="eyebrow">خطوة ٤</span>
+      <span class="eyebrow">القسم الرابع</span>
       <h2>العميل النهائي (Demand)</h2>
-      <p class="lead">مين اللي رح نصرف عليه إعلانات، وشو اللي بيخليه يرجع مرة تانية.</p>
+      <p class="lead">من الذي سنُنفق عليه ميزانية الإعلانات، وما الذي سيجعله يعود مرة أخرى.</p>
       <div class="field" data-q="من هو العميل الذي تريدون استهدافه؟" data-k="23_target_customer">
         <label class="q" for="f35">من هو العميل الذي تريدون استهدافه؟</label>
         
-        <textarea id="f35" name="23_target_customer" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f35" name="23_target_customer" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="ما الفئة العمرية الأساسية؟" data-k="24_age">
-        <span class="q" id="f36_l">ما الفئة العمرية الأساسية؟</span>
+      <div class="field" data-q="ما هي الفئة العمرية الأساسية؟" data-k="24_age">
+        <span class="q" id="f36_l">ما هي الفئة العمرية الأساسية؟</span>
         
         <div class="chips" role="group" aria-labelledby="f36_l"><label class="chip"><input type="checkbox" name="24_age" value="١٨–٢٤"><span>١٨–٢٤</span></label><label class="chip"><input type="checkbox" name="24_age" value="٢٥–٣٤"><span>٢٥–٣٤</span></label><label class="chip"><input type="checkbox" name="24_age" value="٣٥–٤٤"><span>٣٥–٤٤</span></label><label class="chip"><input type="checkbox" name="24_age" value="٤٥–٥٤"><span>٤٥–٥٤</span></label><label class="chip"><input type="checkbox" name="24_age" value="+٥٥"><span>+٥٥</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
@@ -440,175 +452,175 @@ a{ color:inherit; }
       <div class="field" data-q="هل تستهدفون الرجال والنساء بالتساوي؟" data-k="25_gender">
         <span class="q" id="f37_l">هل تستهدفون الرجال والنساء بالتساوي؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f37_l"><label class="chip"><input type="radio" name="25_gender" value="الرجال والنساء بالتساوي"><span>الرجال والنساء بالتساوي</span></label><label class="chip"><input type="radio" name="25_gender" value="رجال بشكل أساسي"><span>رجال بشكل أساسي</span></label><label class="chip"><input type="radio" name="25_gender" value="نساء بشكل أساسي"><span>نساء بشكل أساسي</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f37_l"><label class="chip"><input type="radio" name="25_gender" value="الرجال والنساء بالتساوي"><span>الرجال والنساء بالتساوي</span></label><label class="chip"><input type="radio" name="25_gender" value="الرجال بشكل أساسي"><span>الرجال بشكل أساسي</span></label><label class="chip"><input type="radio" name="25_gender" value="النساء بشكل أساسي"><span>النساء بشكل أساسي</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل التطبيق موجه أكثر للأفراد أم للشركات؟" data-k="26_b2c_b2b">
-        <span class="q" id="f38_l">هل التطبيق موجه أكثر للأفراد أم للشركات؟</span>
+      <div class="field" data-q="هل التطبيق موجّه أكثر للأفراد أم للشركات؟" data-k="26_b2c_b2b">
+        <span class="q" id="f38_l">هل التطبيق موجّه أكثر للأفراد أم للشركات؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f38_l"><label class="chip"><input type="radio" name="26_b2c_b2b" value="أفراد (B2C)"><span>أفراد (B2C)</span></label><label class="chip"><input type="radio" name="26_b2c_b2b" value="شركات (B2B)"><span>شركات (B2B)</span></label><label class="chip"><input type="radio" name="26_b2c_b2b" value="الاثنين"><span>الاثنين</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f38_l"><label class="chip"><input type="radio" name="26_b2c_b2b" value="أفراد (B2C)"><span>أفراد (B2C)</span></label><label class="chip"><input type="radio" name="26_b2c_b2b" value="شركات (B2B)"><span>شركات (B2B)</span></label><label class="chip"><input type="radio" name="26_b2c_b2b" value="كلاهما"><span>كلاهما</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="ما أكثر الخدمات التي تتوقعون أن يبحث عنها العميل؟" data-k="27_top_searches">
         <label class="q" for="f39">ما أكثر الخدمات التي تتوقعون أن يبحث عنها العميل؟</label>
         
-        <textarea id="f39" name="27_top_searches" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f39" name="27_top_searches" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="ما المشكلة الأساسية التي يحلها Blue للعميل؟" data-k="28_problem_solved">
         <label class="q" for="f40">ما المشكلة الأساسية التي يحلها Blue للعميل؟</label>
         
-        <textarea id="f40" name="28_problem_solved" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f40" name="28_problem_solved" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل العميل يستطيع التواصل مباشرة مع صاحب الخدمة؟" data-k="29_direct_contact">
-        <span class="q" id="f41_l">هل العميل يستطيع التواصل مباشرة مع صاحب الخدمة؟</span>
+      <div class="field" data-q="هل يستطيع العميل التواصل مباشرة مع صاحب الخدمة؟" data-k="29_direct_contact">
+        <span class="q" id="f41_l">هل يستطيع العميل التواصل مباشرة مع صاحب الخدمة؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f41_l"><label class="chip"><input type="radio" name="29_direct_contact" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="29_direct_contact" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="29_direct_contact" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f41_l"><label class="chip"><input type="radio" name="29_direct_contact" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="29_direct_contact" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="29_direct_contact" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل يستطيع طلب عرض سعر؟" data-k="30_quote_request">
         <span class="q" id="f42_l">هل يستطيع طلب عرض سعر؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f42_l"><label class="chip"><input type="radio" name="30_quote_request" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="30_quote_request" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="30_quote_request" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f42_l"><label class="chip"><input type="radio" name="30_quote_request" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="30_quote_request" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="30_quote_request" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل يستطيع مقارنة أكثر من مقدم خدمة؟" data-k="31_compare">
-        <span class="q" id="f43_l">هل يستطيع مقارنة أكثر من مقدم خدمة؟</span>
+      <div class="field" data-q="هل يستطيع المقارنة بين أكثر من مقدّم خدمة؟" data-k="31_compare">
+        <span class="q" id="f43_l">هل يستطيع المقارنة بين أكثر من مقدّم خدمة؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f43_l"><label class="chip"><input type="radio" name="31_compare" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="31_compare" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="31_compare" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f43_l"><label class="chip"><input type="radio" name="31_compare" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="31_compare" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="31_compare" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل توجد Reviews وتقييمات ظاهرة للعميل؟" data-k="32_reviews">
         <span class="q" id="f44_l">هل توجد Reviews وتقييمات ظاهرة للعميل؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f44_l"><label class="chip"><input type="radio" name="32_reviews" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="32_reviews" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="32_reviews" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f44_l"><label class="chip"><input type="radio" name="32_reviews" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="32_reviews" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="32_reviews" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل يوجد نظام للبحث حسب المنطقة؟" data-k="33_area_search">
         <span class="q" id="f45_l">هل يوجد نظام للبحث حسب المنطقة؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f45_l"><label class="chip"><input type="radio" name="33_area_search" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="33_area_search" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="33_area_search" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f45_l"><label class="chip"><input type="radio" name="33_area_search" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="33_area_search" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="33_area_search" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل يستطيع العميل معرفة الأسعار قبل التواصل؟" data-k="34_prices_visible">
         <span class="q" id="f46_l">هل يستطيع العميل معرفة الأسعار قبل التواصل؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f46_l"><label class="chip"><input type="radio" name="34_prices_visible" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="34_prices_visible" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="34_prices_visible" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f46_l"><label class="chip"><input type="radio" name="34_prices_visible" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="34_prices_visible" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="34_prices_visible" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل يوجد Chat داخل التطبيق؟" data-k="35_in_app_chat">
         <span class="q" id="f47_l">هل يوجد Chat داخل التطبيق؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f47_l"><label class="chip"><input type="radio" name="35_in_app_chat" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="35_in_app_chat" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="35_in_app_chat" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f47_l"><label class="chip"><input type="radio" name="35_in_app_chat" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="35_in_app_chat" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="35_in_app_chat" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل يوجد زر Call / WhatsApp؟" data-k="36_call_wa_button">
-        <span class="q" id="f48_l">هل يوجد زر Call / WhatsApp؟</span>
+      <div class="field" data-q="هل يوجد زر Call أو WhatsApp؟" data-k="36_call_wa_button">
+        <span class="q" id="f48_l">هل يوجد زر Call أو WhatsApp؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f48_l"><label class="chip"><input type="radio" name="36_call_wa_button" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="36_call_wa_button" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="36_call_wa_button" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f48_l"><label class="chip"><input type="radio" name="36_call_wa_button" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="36_call_wa_button" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="36_call_wa_button" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل يوجد نظام لحجز الخدمة؟" data-k="37_booking">
         <span class="q" id="f49_l">هل يوجد نظام لحجز الخدمة؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f49_l"><label class="chip"><input type="radio" name="37_booking" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="37_booking" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="37_booking" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f49_l"><label class="chip"><input type="radio" name="37_booking" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="37_booking" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="37_booking" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
     </section>
 
     <section class="step" id="step-competitors" data-title="المنافسون" hidden>
-      <span class="eyebrow">خطوة ٥</span>
+      <span class="eyebrow">القسم الخامس</span>
       <h2>المنافسون</h2>
-      <p class="lead">ما منقدر نبني تموضع بدون ما نعرف مين واقف بالمكان اللي بدنا ياه.</p>
+      <p class="lead">لا يمكن بناء تموضع واضح من دون معرفة مَن يشغل المكان الذي نريده.</p>
       <div class="field" data-q="من تعتبرون منافسي Blue الأساسيين في سوريا؟" data-k="38_main_competitors">
         <label class="q" for="f50">من تعتبرون منافسي Blue الأساسيين في سوريا؟</label>
         
-        <textarea id="f50" name="38_main_competitors" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f50" name="38_main_competitors" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل هناك تطبيقات مشابهة حاليًا؟ شو أسماءها؟" data-k="39_similar_apps">
-        <label class="q" for="f51">هل هناك تطبيقات مشابهة حاليًا؟ شو أسماءها؟</label>
+      <div class="field" data-q="هل هناك تطبيقات مشابهة حاليًا؟ ما أسماؤها؟" data-k="39_similar_apps">
+        <label class="q" for="f51">هل هناك تطبيقات مشابهة حاليًا؟ ما أسماؤها؟</label>
         
-        <textarea id="f51" name="39_similar_apps" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f51" name="39_similar_apps" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل تعتبرون Facebook Marketplace منافسًا؟" data-k="40_fb_marketplace">
         <span class="q" id="f52_l">هل تعتبرون Facebook Marketplace منافسًا؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f52_l"><label class="chip"><input type="radio" name="40_fb_marketplace" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="40_fb_marketplace" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="40_fb_marketplace" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f52_l"><label class="chip"><input type="radio" name="40_fb_marketplace" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="40_fb_marketplace" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="40_fb_marketplace" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل Instagram و TikTok يعتبران منافسين بطريقة غير مباشرة؟" data-k="41_ig_tiktok">
-        <span class="q" id="f53_l">هل Instagram و TikTok يعتبران منافسين بطريقة غير مباشرة؟</span>
+      <div class="field" data-q="هل يُعدّ Instagram و TikTok منافسين بطريقة غير مباشرة؟" data-k="41_ig_tiktok">
+        <span class="q" id="f53_l">هل يُعدّ Instagram و TikTok منافسين بطريقة غير مباشرة؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f53_l"><label class="chip"><input type="radio" name="41_ig_tiktok" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="41_ig_tiktok" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="41_ig_tiktok" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f53_l"><label class="chip"><input type="radio" name="41_ig_tiktok" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="41_ig_tiktok" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="41_ig_tiktok" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل هناك مواقع إعلانات مبوبة مثل OLX أو غيرها؟ مين؟" data-k="42_classifieds">
-        <label class="q" for="f54">هل هناك مواقع إعلانات مبوبة مثل OLX أو غيرها؟ مين؟</label>
+      <div class="field" data-q="هل هناك مواقع إعلانات مبوّبة مثل OLX أو غيرها؟ ما هي؟" data-k="42_classifieds">
+        <label class="q" for="f54">هل هناك مواقع إعلانات مبوّبة مثل OLX أو غيرها؟ ما هي؟</label>
         
-        <textarea id="f54" name="42_classifieds" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f54" name="42_classifieds" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="ما الذي يعجبكم في المنافسين؟" data-k="43_competitor_likes">
         <label class="q" for="f55">ما الذي يعجبكم في المنافسين؟</label>
         
-        <textarea id="f55" name="43_competitor_likes" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f55" name="43_competitor_likes" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="ما الذي لا يعجبكم فيهم؟" data-k="44_competitor_dislikes">
         <label class="q" for="f56">ما الذي لا يعجبكم فيهم؟</label>
         
-        <textarea id="f56" name="44_competitor_dislikes" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f56" name="44_competitor_dislikes" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="ما الذي تريدون أن تكون Blue أفضل فيه منهم؟" data-k="45_beat_them_at">
         <label class="q" for="f57">ما الذي تريدون أن تكون Blue أفضل فيه منهم؟</label>
         
-        <textarea id="f57" name="45_beat_them_at" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f57" name="45_beat_them_at" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل قمتم بدراسة أسعار المنافسين؟" data-k="46_studied_pricing">
         <span class="q" id="f58_l">هل قمتم بدراسة أسعار المنافسين؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f58_l"><label class="chip"><input type="radio" name="46_studied_pricing" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="46_studied_pricing" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="46_studied_pricing" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f58_l"><label class="chip"><input type="radio" name="46_studied_pricing" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="46_studied_pricing" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="46_studied_pricing" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل قمتم بدراسة طريقة تسويقهم؟" data-k="47_studied_marketing">
         <span class="q" id="f59_l">هل قمتم بدراسة طريقة تسويقهم؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f59_l"><label class="chip"><input type="radio" name="47_studied_marketing" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="47_studied_marketing" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="47_studied_marketing" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f59_l"><label class="chip"><input type="radio" name="47_studied_marketing" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="47_studied_marketing" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="47_studied_marketing" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field star" data-q="★ لو كنت أنا العميل — ليش أختار Blue بدل أي منصة تانية؟" data-k="48_one_line_value">
-        <label class="q" for="f60">★ لو كنت أنا العميل — ليش أختار Blue بدل أي منصة تانية؟</label>
-        <p class="hint">جاوب بجملة وحدة واضحة. إذا ما طلعت الجملة، معناها لازم نشتغل على الـ Value Proposition قبل ما نبلّش أي حملة.</p>
-        <textarea id="f60" name="48_one_line_value" rows="3" placeholder="اكتب هون…"></textarea>
+      <div class="field star" data-q="★ لو كنتُ أنا العميل — لماذا أختار Blue بدلًا من أي منصة أخرى؟" data-k="48_one_line_value">
+        <label class="q" for="f60">★ لو كنتُ أنا العميل — لماذا أختار Blue بدلًا من أي منصة أخرى؟</label>
+        <p class="hint">أجب بجملة واحدة واضحة. إن لم تتشكّل هذه الجملة، فهذا يعني أننا بحاجة إلى العمل على الـ Value Proposition قبل بدء أي حملة.</p>
+        <textarea id="f60" name="48_one_line_value" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
     </section>
 
-    <section class="step" id="step-branding" data-title="الهوية والعلامة (Branding)" hidden>
-      <span class="eyebrow">خطوة ٦</span>
-      <h2>الهوية والعلامة (Branding)</h2>
-      <p class="lead">شو اللي جاهز عندكم، وشو لازم نبنيه قبل ما ينزل أول إعلان.</p>
+    <section class="step" id="step-branding" data-title="الهوية والعلامة التجارية" hidden>
+      <span class="eyebrow">القسم السادس</span>
+      <h2>الهوية والعلامة التجارية</h2>
+      <p class="lead">ما هو الجاهز لديكم، وما الذي يجب بناؤه قبل نزول أول إعلان.</p>
       <div class="field" data-q="هل اسم وشعار Blue نهائيان؟" data-k="49_name_logo_final">
         <span class="q" id="f61_l">هل اسم وشعار Blue نهائيان؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f61_l"><label class="chip"><input type="radio" name="49_name_logo_final" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="49_name_logo_final" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="49_name_logo_final" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f61_l"><label class="chip"><input type="radio" name="49_name_logo_final" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="49_name_logo_final" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="49_name_logo_final" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل يوجد Brand Guidelines؟" data-k="50_brand_guidelines">
         <span class="q" id="f62_l">هل يوجد Brand Guidelines؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f62_l"><label class="chip"><input type="radio" name="50_brand_guidelines" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="50_brand_guidelines" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="50_brand_guidelines" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f62_l"><label class="chip"><input type="radio" name="50_brand_guidelines" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="50_brand_guidelines" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="50_brand_guidelines" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل هناك Brand Personality محددة؟" data-k="51_brand_personality">
         <span class="q" id="f63_l">هل هناك Brand Personality محددة؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f63_l"><label class="chip"><input type="radio" name="51_brand_personality" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="51_brand_personality" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="51_brand_personality" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f63_l"><label class="chip"><input type="radio" name="51_brand_personality" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="51_brand_personality" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="51_brand_personality" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="كيف تريدون أن يرى الناس Blue؟" data-k="52_perception">
@@ -617,8 +629,8 @@ a{ color:inherit; }
         <div class="chips" role="group" aria-labelledby="f64_l"><label class="chip"><input type="checkbox" name="52_perception" value="موثوقة"><span>موثوقة</span></label><label class="chip"><input type="checkbox" name="52_perception" value="سريعة"><span>سريعة</span></label><label class="chip"><input type="checkbox" name="52_perception" value="شبابية"><span>شبابية</span></label><label class="chip"><input type="checkbox" name="52_perception" value="فخمة"><span>فخمة</span></label><label class="chip"><input type="checkbox" name="52_perception" value="عملية"><span>عملية</span></label><label class="chip"><input type="checkbox" name="52_perception" value="اقتصادية"><span>اقتصادية</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل لديكم Slogan؟ شو هو؟" data-k="53_slogan">
-        <label class="q" for="f65">هل لديكم Slogan؟ شو هو؟</label>
+      <div class="field" data-q="هل لديكم Slogan؟ ما هو؟" data-k="53_slogan">
+        <label class="q" for="f65">هل لديكم Slogan؟ ما هو؟</label>
         
         <input id="f65" type="text" name="53_slogan" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
@@ -626,17 +638,17 @@ a{ color:inherit; }
       <div class="field" data-q="هل الهوية البصرية جاهزة؟" data-k="54_visual_identity">
         <span class="q" id="f66_l">هل الهوية البصرية جاهزة؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f66_l"><label class="chip"><input type="radio" name="54_visual_identity" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="54_visual_identity" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="54_visual_identity" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f66_l"><label class="chip"><input type="radio" name="54_visual_identity" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="54_visual_identity" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="54_visual_identity" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل هناك ألوان وخطوط معتمدة؟" data-k="55_colors_fonts">
         <span class="q" id="f67_l">هل هناك ألوان وخطوط معتمدة؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f67_l"><label class="chip"><input type="radio" name="55_colors_fonts" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="55_colors_fonts" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="55_colors_fonts" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f67_l"><label class="chip"><input type="radio" name="55_colors_fonts" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="55_colors_fonts" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="55_colors_fonts" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="إذا نعم — شو هي؟ (وإذا في ملفات، ابعتيها معي بالواتساب)" data-k="55b_colors_fonts_what">
-        <label class="q" for="f68">إذا نعم — شو هي؟ (وإذا في ملفات، ابعتيها معي بالواتساب)</label>
+      <div class="field" data-q="إذا كانت الإجابة نعم — ما هي؟ (وإن وُجدت ملفات، يُرجى إرسالها عبر الواتساب)" data-k="55b_colors_fonts_what">
+        <label class="q" for="f68">إذا كانت الإجابة نعم — ما هي؟ (وإن وُجدت ملفات، يُرجى إرسالها عبر الواتساب)</label>
         
         <input id="f68" type="text" name="55b_colors_fonts_what" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
@@ -644,25 +656,25 @@ a{ color:inherit; }
       <div class="field" data-q="هل يوجد Tone of Voice للعلامة التجارية؟" data-k="56_tone_of_voice">
         <span class="q" id="f69_l">هل يوجد Tone of Voice للعلامة التجارية؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f69_l"><label class="chip"><input type="radio" name="56_tone_of_voice" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="56_tone_of_voice" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="56_tone_of_voice" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f69_l"><label class="chip"><input type="radio" name="56_tone_of_voice" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="56_tone_of_voice" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="56_tone_of_voice" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
     </section>
 
     <section class="step" id="step-marketing" data-title="التسويق الحالي" hidden>
-      <span class="eyebrow">خطوة ٧</span>
+      <span class="eyebrow">القسم السابع</span>
       <h2>التسويق الحالي</h2>
-      <p class="lead">أي شي جرّبتوه قبل — حتى لو ما نجح — بيوفّر علينا شهر تجارب.</p>
+      <p class="lead">أي تجربة سابقة — حتى وإن لم تنجح — توفّر علينا شهرًا كاملًا من التجريب.</p>
       <div class="field" data-q="هل قمتم بأي حملات تسويقية سابقًا؟" data-k="57_past_campaigns">
         <span class="q" id="f70_l">هل قمتم بأي حملات تسويقية سابقًا؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f70_l"><label class="chip"><input type="radio" name="57_past_campaigns" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="57_past_campaigns" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="57_past_campaigns" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f70_l"><label class="chip"><input type="radio" name="57_past_campaigns" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="57_past_campaigns" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="57_past_campaigns" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="إذا نعم — شو عملتوا وشو كانت النتيجة؟" data-k="57b_past_campaigns_detail">
-        <label class="q" for="f71">إذا نعم — شو عملتوا وشو كانت النتيجة؟</label>
+      <div class="field" data-q="إذا كانت الإجابة نعم — ماذا نفّذتم؟ وما كانت النتيجة؟" data-k="57b_past_campaigns_detail">
+        <label class="q" for="f71">إذا كانت الإجابة نعم — ماذا نفّذتم؟ وما كانت النتيجة؟</label>
         
-        <textarea id="f71" name="57b_past_campaigns_detail" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f71" name="57b_past_campaigns_detail" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="كم كانت الميزانية؟" data-k="58_past_budget">
@@ -671,10 +683,10 @@ a{ color:inherit; }
         <input id="f72" type="text" name="58_past_budget" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل لديكم Website؟" data-k="59_website">
-        <span class="q" id="f73_l">هل لديكم Website؟</span>
+      <div class="field" data-q="هل لديكم موقع إلكتروني (Website)؟" data-k="59_website">
+        <span class="q" id="f73_l">هل لديكم موقع إلكتروني (Website)؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f73_l"><label class="chip"><input type="radio" name="59_website" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="59_website" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="59_website" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f73_l"><label class="chip"><input type="radio" name="59_website" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="59_website" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="59_website" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="رابط الموقع" data-k="59b_website_url">
@@ -686,7 +698,7 @@ a{ color:inherit; }
       <div class="field" data-q="هل لديكم قاعدة بيانات للعملاء؟" data-k="60_customer_db">
         <span class="q" id="f75_l">هل لديكم قاعدة بيانات للعملاء؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f75_l"><label class="chip"><input type="radio" name="60_customer_db" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="60_customer_db" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="60_customer_db" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f75_l"><label class="chip"><input type="radio" name="60_customer_db" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="60_customer_db" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="60_customer_db" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل لديكم Email Database أو WhatsApp Database؟" data-k="61_email_wa_db">
@@ -695,84 +707,84 @@ a{ color:inherit; }
         <div class="chips" role="group" aria-labelledby="f76_l"><label class="chip"><input type="checkbox" name="61_email_wa_db" value="Email Database"><span>Email Database</span></label><label class="chip"><input type="checkbox" name="61_email_wa_db" value="WhatsApp Database"><span>WhatsApp Database</span></label><label class="chip"><input type="checkbox" name="61_email_wa_db" value="لا يوجد"><span>لا يوجد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="العدد التقريبي للأسماء بقاعدة البيانات" data-k="61b_db_size">
-        <label class="q" for="f77">العدد التقريبي للأسماء بقاعدة البيانات</label>
+      <div class="field" data-q="ما العدد التقريبي للأسماء في قاعدة البيانات؟" data-k="61b_db_size">
+        <label class="q" for="f77">ما العدد التقريبي للأسماء في قاعدة البيانات؟</label>
         
         <input id="f77" type="text" name="61b_db_size" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل لديكم بيانات عن Downloads و Registrations؟ شو الأرقام؟" data-k="62_app_numbers">
-        <label class="q" for="f78">هل لديكم بيانات عن Downloads و Registrations؟ شو الأرقام؟</label>
+      <div class="field" data-q="هل لديكم بيانات عن الـ Downloads والـ Registrations؟ ما هي الأرقام؟" data-k="62_app_numbers">
+        <label class="q" for="f78">هل لديكم بيانات عن الـ Downloads والـ Registrations؟ ما هي الأرقام؟</label>
         
-        <textarea id="f78" name="62_app_numbers" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f78" name="62_app_numbers" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
     </section>
 
     <section class="step" id="step-budget" data-title="الميزانية" hidden>
-      <span class="eyebrow">خطوة ٨</span>
+      <span class="eyebrow">القسم الثامن</span>
       <h2>الميزانية</h2>
-      <p class="lead">الرقم بيحدد الاستراتيجية. ما في خطة صحيحة بدون ما نعرف حدودها.</p>
+      <p class="lead">الرقم هو ما يحدد الاستراتيجية. لا توجد خطة صحيحة من دون معرفة حدودها.</p>
       <div class="field" data-q="ما هي الميزانية الشهرية التي خصصتها الشركة للتسويق؟" data-k="63_monthly_budget">
         <label class="q" for="f79">ما هي الميزانية الشهرية التي خصصتها الشركة للتسويق؟</label>
-        <p class="hint">إذا لسه ما تحددت، اكتب «نحن منحددها» ومنقترح عليكم رقم مبني على الأهداف.</p>
-        <input id="f79" type="text" name="63_monthly_budget" placeholder="مثال: 1,500$ بالشهر">
+        <p class="hint">إذا لم تتحدد بعد، اكتب «نترك التقدير لكم» وسنقترح رقمًا مبنيًا على الأهداف.</p>
+        <input id="f79" type="text" name="63_monthly_budget" placeholder="مثال: 1,500$ شهريًا">
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل الميزانية تشمل إعلانات السوشيال ميديا فقط؟" data-k="64_budget_social_only">
-        <span class="q" id="f80_l">هل الميزانية تشمل إعلانات السوشيال ميديا فقط؟</span>
+      <div class="field" data-q="هل تشمل الميزانية إعلانات السوشيال ميديا فقط؟" data-k="64_budget_social_only">
+        <span class="q" id="f80_l">هل تشمل الميزانية إعلانات السوشيال ميديا فقط؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f80_l"><label class="chip"><input type="radio" name="64_budget_social_only" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="64_budget_social_only" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="64_budget_social_only" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f80_l"><label class="chip"><input type="radio" name="64_budget_social_only" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="64_budget_social_only" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="64_budget_social_only" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل تشمل Influencers؟" data-k="65_budget_influencers">
-        <span class="q" id="f81_l">هل تشمل Influencers؟</span>
+      <div class="field" data-q="هل تشمل الـ Influencers؟" data-k="65_budget_influencers">
+        <span class="q" id="f81_l">هل تشمل الـ Influencers؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f81_l"><label class="chip"><input type="radio" name="65_budget_influencers" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="65_budget_influencers" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="65_budget_influencers" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f81_l"><label class="chip"><input type="radio" name="65_budget_influencers" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="65_budget_influencers" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="65_budget_influencers" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل تشمل Billboards؟" data-k="66_budget_billboards">
-        <span class="q" id="f82_l">هل تشمل Billboards؟</span>
+      <div class="field" data-q="هل تشمل الـ Billboards؟" data-k="66_budget_billboards">
+        <span class="q" id="f82_l">هل تشمل الـ Billboards؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f82_l"><label class="chip"><input type="radio" name="66_budget_billboards" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="66_budget_billboards" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="66_budget_billboards" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f82_l"><label class="chip"><input type="radio" name="66_budget_billboards" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="66_budget_billboards" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="66_budget_billboards" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="هل تشمل Production وتصوير الفيديو؟" data-k="67_budget_production">
-        <span class="q" id="f83_l">هل تشمل Production وتصوير الفيديو؟</span>
+      <div class="field" data-q="هل تشمل الـ Production وتصوير الفيديو؟" data-k="67_budget_production">
+        <span class="q" id="f83_l">هل تشمل الـ Production وتصوير الفيديو؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f83_l"><label class="chip"><input type="radio" name="67_budget_production" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="67_budget_production" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="67_budget_production" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f83_l"><label class="chip"><input type="radio" name="67_budget_production" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="67_budget_production" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="67_budget_production" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل هناك ميزانية للـ Outdoor Advertising؟" data-k="68_budget_outdoor">
         <span class="q" id="f84_l">هل هناك ميزانية للـ Outdoor Advertising؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f84_l"><label class="chip"><input type="radio" name="68_budget_outdoor" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="68_budget_outdoor" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="68_budget_outdoor" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f84_l"><label class="chip"><input type="radio" name="68_budget_outdoor" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="68_budget_outdoor" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="68_budget_outdoor" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل هناك ميزانية للـ Google Ads؟" data-k="69_budget_google">
         <span class="q" id="f85_l">هل هناك ميزانية للـ Google Ads؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f85_l"><label class="chip"><input type="radio" name="69_budget_google" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="69_budget_google" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="69_budget_google" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f85_l"><label class="chip"><input type="radio" name="69_budget_google" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="69_budget_google" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="69_budget_google" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل هناك ميزانية لاستقطاب أصحاب المصالح بشكل ميداني؟" data-k="70_budget_field_sales">
         <span class="q" id="f86_l">هل هناك ميزانية لاستقطاب أصحاب المصالح بشكل ميداني؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f86_l"><label class="chip"><input type="radio" name="70_budget_field_sales" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="70_budget_field_sales" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="70_budget_field_sales" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f86_l"><label class="chip"><input type="radio" name="70_budget_field_sales" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="70_budget_field_sales" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="70_budget_field_sales" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل الميزانية ثابتة أم قابلة للزيادة إذا أثبتت الحملة نتائجها؟" data-k="71_budget_flexible">
         <span class="q" id="f87_l">هل الميزانية ثابتة أم قابلة للزيادة إذا أثبتت الحملة نتائجها؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f87_l"><label class="chip"><input type="radio" name="71_budget_flexible" value="ثابتة"><span>ثابتة</span></label><label class="chip"><input type="radio" name="71_budget_flexible" value="قابلة للزيادة عند إثبات النتائج"><span>قابلة للزيادة عند إثبات النتائج</span></label><label class="chip"><input type="radio" name="71_budget_flexible" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f87_l"><label class="chip"><input type="radio" name="71_budget_flexible" value="ثابتة"><span>ثابتة</span></label><label class="chip"><input type="radio" name="71_budget_flexible" value="قابلة للزيادة عند إثبات النتائج"><span>قابلة للزيادة عند إثبات النتائج</span></label><label class="chip"><input type="radio" name="71_budget_flexible" value="غير محددة بعد"><span>غير محددة بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
     </section>
 
     <section class="step" id="step-app" data-title="التطبيق نفسه" hidden>
-      <span class="eyebrow">خطوة ٩</span>
+      <span class="eyebrow">القسم التاسع</span>
       <h2>التطبيق نفسه</h2>
-      <p class="lead">أرقام التطبيق هي اللي بتحدد إذا المشكلة تسويق ولا المشكلة تجربة استخدام.</p>
+      <p class="lead">أرقام التطبيق هي التي تحدد ما إذا كانت المشكلة في التسويق أم في تجربة الاستخدام.</p>
       <div class="field" data-q="على أي أنظمة يعمل التطبيق؟" data-k="72_platforms">
         <span class="q" id="f88_l">على أي أنظمة يعمل التطبيق؟</span>
         
@@ -782,7 +794,7 @@ a{ color:inherit; }
       <div class="field" data-q="هل التطبيق جاهز ومستقر؟" data-k="73_app_ready">
         <span class="q" id="f89_l">هل التطبيق جاهز ومستقر؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f89_l"><label class="chip"><input type="radio" name="73_app_ready" value="جاهز ومستقر"><span>جاهز ومستقر</span></label><label class="chip"><input type="radio" name="73_app_ready" value="جاهز مع ملاحظات"><span>جاهز مع ملاحظات</span></label><label class="chip"><input type="radio" name="73_app_ready" value="لسه قيد التطوير"><span>لسه قيد التطوير</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f89_l"><label class="chip"><input type="radio" name="73_app_ready" value="جاهز ومستقر"><span>جاهز ومستقر</span></label><label class="chip"><input type="radio" name="73_app_ready" value="جاهز مع ملاحظات"><span>جاهز مع ملاحظات</span></label><label class="chip"><input type="radio" name="73_app_ready" value="لا يزال قيد التطوير"><span>لا يزال قيد التطوير</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="كم عدد الـ Downloads حاليًا؟" data-k="74_downloads">
@@ -797,8 +809,8 @@ a{ color:inherit; }
         <input id="f91" type="text" name="75_registered_providers" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="ما نسبة المستخدمين الذين يسجلون ثم يعودون للتطبيق؟" data-k="76_retention">
-        <label class="q" for="f92">ما نسبة المستخدمين الذين يسجلون ثم يعودون للتطبيق؟</label>
+      <div class="field" data-q="ما نسبة المستخدمين الذين يسجّلون ثم يعودون إلى التطبيق؟" data-k="76_retention">
+        <label class="q" for="f92">ما نسبة المستخدمين الذين يسجّلون ثم يعودون إلى التطبيق؟</label>
         
         <input id="f92" type="text" name="76_retention" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
@@ -806,11 +818,11 @@ a{ color:inherit; }
       <div class="field" data-q="هل يوجد Analytics داخل التطبيق؟" data-k="77_analytics">
         <span class="q" id="f93_l">هل يوجد Analytics داخل التطبيق؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f93_l"><label class="chip"><input type="radio" name="77_analytics" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="77_analytics" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="77_analytics" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f93_l"><label class="chip"><input type="radio" name="77_analytics" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="77_analytics" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="77_analytics" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="إذا نعم — أي أداة؟ (Firebase، AppsFlyer، غيرها)" data-k="77b_analytics_tool">
-        <label class="q" for="f94">إذا نعم — أي أداة؟ (Firebase، AppsFlyer، غيرها)</label>
+      <div class="field" data-q="إذا كانت الإجابة نعم — أي أداة؟ (Firebase، AppsFlyer، غيرها)" data-k="77b_analytics_tool">
+        <label class="q" for="f94">إذا كانت الإجابة نعم — أي أداة؟ (Firebase، AppsFlyer، غيرها)</label>
         
         <input id="f94" type="text" name="77b_analytics_tool" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
@@ -818,17 +830,17 @@ a{ color:inherit; }
       <div class="field" data-q="ما هي أهم الصفحات التي يدخل إليها المستخدم؟" data-k="78_top_screens">
         <label class="q" for="f95">ما هي أهم الصفحات التي يدخل إليها المستخدم؟</label>
         
-        <textarea id="f95" name="78_top_screens" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f95" name="78_top_screens" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="ما هي نسبة التحويل من Download → Registration؟" data-k="79_cvr_download_reg">
-        <label class="q" for="f96">ما هي نسبة التحويل من Download → Registration؟</label>
+      <div class="field" data-q="ما هي نسبة التحويل من Download إلى Registration؟" data-k="79_cvr_download_reg">
+        <label class="q" for="f96">ما هي نسبة التحويل من Download إلى Registration؟</label>
         
         <input id="f96" type="text" name="79_cvr_download_reg" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="ما نسبة Registration → Contact / Request؟" data-k="80_cvr_reg_contact">
-        <label class="q" for="f97">ما نسبة Registration → Contact / Request؟</label>
+      <div class="field" data-q="ما نسبة التحويل من Registration إلى Contact أو Request؟" data-k="80_cvr_reg_contact">
+        <label class="q" for="f97">ما نسبة التحويل من Registration إلى Contact أو Request؟</label>
         
         <input id="f97" type="text" name="80_cvr_reg_contact" placeholder="">
         <p class="err">هذا السؤال مطلوب</p>
@@ -836,72 +848,72 @@ a{ color:inherit; }
       <div class="field" data-q="هل يوجد Referral System؟" data-k="81_referral">
         <span class="q" id="f98_l">هل يوجد Referral System؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f98_l"><label class="chip"><input type="radio" name="81_referral" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="81_referral" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="81_referral" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f98_l"><label class="chip"><input type="radio" name="81_referral" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="81_referral" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="81_referral" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل يستطيع المستخدم مشاركة الإعلان؟" data-k="82_share_listing">
         <span class="q" id="f99_l">هل يستطيع المستخدم مشاركة الإعلان؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f99_l"><label class="chip"><input type="radio" name="82_share_listing" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="82_share_listing" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="82_share_listing" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f99_l"><label class="chip"><input type="radio" name="82_share_listing" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="82_share_listing" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="82_share_listing" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل يوجد Push Notifications؟" data-k="83_push">
         <span class="q" id="f100_l">هل يوجد Push Notifications؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f100_l"><label class="chip"><input type="radio" name="83_push" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="83_push" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="83_push" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f100_l"><label class="chip"><input type="radio" name="83_push" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="83_push" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="83_push" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل يوجد Deep Linking؟" data-k="84_deep_linking">
         <span class="q" id="f101_l">هل يوجد Deep Linking؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f101_l"><label class="chip"><input type="radio" name="84_deep_linking" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="84_deep_linking" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="84_deep_linking" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f101_l"><label class="chip"><input type="radio" name="84_deep_linking" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="84_deep_linking" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="84_deep_linking" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل التطبيق متوفر باللغة العربية فقط؟" data-k="85_languages">
         <span class="q" id="f102_l">هل التطبيق متوفر باللغة العربية فقط؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f102_l"><label class="chip"><input type="radio" name="85_languages" value="عربي فقط"><span>عربي فقط</span></label><label class="chip"><input type="radio" name="85_languages" value="عربي + إنكليزي"><span>عربي + إنكليزي</span></label><label class="chip"><input type="radio" name="85_languages" value="عربي + إنكليزي + لغات أخرى"><span>عربي + إنكليزي + لغات أخرى</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f102_l"><label class="chip"><input type="radio" name="85_languages" value="العربية فقط"><span>العربية فقط</span></label><label class="chip"><input type="radio" name="85_languages" value="العربية والإنكليزية"><span>العربية والإنكليزية</span></label><label class="chip"><input type="radio" name="85_languages" value="العربية والإنكليزية ولغات أخرى"><span>العربية والإنكليزية ولغات أخرى</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
     </section>
 
     <section class="step" id="step-marketplace" data-title="مشكلة الـ Marketplace" hidden>
-      <span class="eyebrow">خطوة ١٠</span>
+      <span class="eyebrow">القسم العاشر</span>
       <h2>مشكلة الـ Marketplace</h2>
-      <p class="lead">كيف منجيب ناس عالتطبيق إذا ما في أصحاب مصالح؟ وكيف منسجّل أصحاب مصالح إذا ما في ناس؟ هاي اسمها Chicken-and-Egg Problem، ولازم نتفق على جوابها قبل أي حملة.</p>
-      <div class="callout"><b>اقتراحنا: Supply First Strategy</b><p>أولًا منبني Supply قوي → بعدين منسوّق للطلب. بدل ما نقول «رح نعلن عن Blue لكل سوريا»، منقول «رح نسيطر أول شي على فئة محددة بمدينة محددة» — مثلًا دمشق: عقارات + سيارات + خدمات منزلية. هيك التسويق بيصير قابل للقياس، والميزانية بتشتغل بعمق مش بعرض.</p></div>
+      <p class="lead">كيف نجعل الناس تأتي إلى التطبيق إذا لم يكن هناك أصحاب مصالح؟ وكيف نجعل أصحاب المصالح يسجّلون إذا لم يكن هناك عملاء؟ هذه تُسمى Marketplace Chicken-and-Egg Problem، ويجب الاتفاق على إجابتها قبل أي حملة.</p>
+      <div class="callout"><b>اقتراحنا: Supply First Strategy</b><p>أولًا نبني Supply قويًا، ثم نسوّق للطلب. فبدلًا من أن نقول «سنعلن عن Blue لكل سوريا»، نقول «سنسيطر أولًا على فئة محددة في مدينة محددة» — مثلًا دمشق: عقارات + سيارات + خدمات منزلية. بهذه الطريقة يصبح التسويق قابلًا للقياس، وتعمل الميزانية في العمق لا في الاتساع.</p></div>
       <div class="field" data-q="أي طرف تريد الشركة أن نركز عليه أولًا؟" data-k="86_which_side_first">
         <span class="q" id="f103_l">أي طرف تريد الشركة أن نركز عليه أولًا؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f103_l"><label class="chip"><input type="radio" name="86_which_side_first" value="أصحاب المصالح (Supply)"><span>أصحاب المصالح (Supply)</span></label><label class="chip"><input type="radio" name="86_which_side_first" value="العميل النهائي (Demand)"><span>العميل النهائي (Demand)</span></label><label class="chip"><input type="radio" name="86_which_side_first" value="الاثنين بالتوازي"><span>الاثنين بالتوازي</span></label><label class="chip"><input type="radio" name="86_which_side_first" value="بدنا رأيكم كوكالة"><span>بدنا رأيكم كوكالة</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f103_l"><label class="chip"><input type="radio" name="86_which_side_first" value="أصحاب المصالح (Supply)"><span>أصحاب المصالح (Supply)</span></label><label class="chip"><input type="radio" name="86_which_side_first" value="العميل النهائي (Demand)"><span>العميل النهائي (Demand)</span></label><label class="chip"><input type="radio" name="86_which_side_first" value="كلاهما بالتوازي"><span>كلاهما بالتوازي</span></label><label class="chip"><input type="radio" name="86_which_side_first" value="نريد رأيكم كوكالة"><span>نريد رأيكم كوكالة</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field" data-q="هل لديكم خطة مسبقة لكسر هذه الحلقة؟" data-k="87_has_plan">
         <span class="q" id="f104_l">هل لديكم خطة مسبقة لكسر هذه الحلقة؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f104_l"><label class="chip"><input type="radio" name="87_has_plan" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="87_has_plan" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="87_has_plan" value="ما منعرف بعد"><span>ما منعرف بعد</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f104_l"><label class="chip"><input type="radio" name="87_has_plan" value="نعم"><span>نعم</span></label><label class="chip"><input type="radio" name="87_has_plan" value="لا"><span>لا</span></label><label class="chip"><input type="radio" name="87_has_plan" value="غير محدد بعد"><span>غير محدد بعد</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="إذا نعم — شو هي؟" data-k="87b_plan_detail">
-        <label class="q" for="f105">إذا نعم — شو هي؟</label>
+      <div class="field" data-q="إذا كانت الإجابة نعم — ما هي؟" data-k="87b_plan_detail">
+        <label class="q" for="f105">إذا كانت الإجابة نعم — ما هي؟</label>
         
-        <textarea id="f105" name="87b_plan_detail" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f105" name="87b_plan_detail" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="شو رأيكم باقتراح الـ Supply First (مدينة وحدة + فئتين أو تلاتة)؟" data-k="88_supply_first_agree">
-        <span class="q" id="f106_l">شو رأيكم باقتراح الـ Supply First (مدينة وحدة + فئتين أو تلاتة)؟</span>
+      <div class="field" data-q="ما رأيكم باقتراح الـ Supply First (مدينة واحدة + فئتان أو ثلاث)؟" data-k="88_supply_first_agree">
+        <span class="q" id="f106_l">ما رأيكم باقتراح الـ Supply First (مدينة واحدة + فئتان أو ثلاث)؟</span>
         
-        <div class="chips" role="radiogroup" aria-labelledby="f106_l"><label class="chip"><input type="radio" name="88_supply_first_agree" value="موافقين"><span>موافقين</span></label><label class="chip"><input type="radio" name="88_supply_first_agree" value="موافقين مع تعديل"><span>موافقين مع تعديل</span></label><label class="chip"><input type="radio" name="88_supply_first_agree" value="غير موافقين"><span>غير موافقين</span></label></div>
+        <div class="chips" role="radiogroup" aria-labelledby="f106_l"><label class="chip"><input type="radio" name="88_supply_first_agree" value="موافقون"><span>موافقون</span></label><label class="chip"><input type="radio" name="88_supply_first_agree" value="موافقون مع تعديل"><span>موافقون مع تعديل</span></label><label class="chip"><input type="radio" name="88_supply_first_agree" value="غير موافقين"><span>غير موافقين</span></label></div>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="ملاحظاتكم على الاقتراح" data-k="88b_supply_first_notes">
-        <label class="q" for="f107">ملاحظاتكم على الاقتراح</label>
+      <div class="field" data-q="ما هي ملاحظاتكم على الاقتراح؟" data-k="88b_supply_first_notes">
+        <label class="q" for="f107">ما هي ملاحظاتكم على الاقتراح؟</label>
         
-        <textarea id="f107" name="88b_supply_first_notes" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f107" name="88b_supply_first_notes" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="إذا بلّشنا فيه — أول مدينة وأول فئتين بدنا نسيطر عليهن؟" data-k="89_first_city_cats">
-        <label class="q" for="f108">إذا بلّشنا فيه — أول مدينة وأول فئتين بدنا نسيطر عليهن؟</label>
+      <div class="field" data-q="إذا بدأنا به — ما أول مدينة وأول فئتين نريد السيطرة عليهما؟" data-k="89_first_city_cats">
+        <label class="q" for="f108">إذا بدأنا به — ما أول مدينة وأول فئتين نريد السيطرة عليهما؟</label>
         
         <input id="f108" type="text" name="89_first_city_cats" placeholder="مثال: دمشق — عقارات + خدمات منزلية">
         <p class="err">هذا السؤال مطلوب</p>
@@ -909,49 +921,49 @@ a{ color:inherit; }
     </section>
 
     <section class="step" id="step-main" data-title="الأسئلة الرئيسية" hidden>
-      <span class="eyebrow">خطوة ١١ — الأخيرة</span>
+      <span class="eyebrow">القسم الحادي عشر — الأخير</span>
       <h2>الأسئلة الرئيسية</h2>
-      <p class="lead">إذا ما عندك وقت لكل الفورم، هدول الستة هنّي اللي ما فينا نبلّش بدونهن.</p>
-      <div class="field star" data-q="١. ما الهدف الرئيسي من Blue خلال أول ٦–١٢ شهر؟" data-k="90_main_goal" data-req="1">
-        <label class="q" for="f109">١. ما الهدف الرئيسي من Blue خلال أول ٦–١٢ شهر؟ <span class="req">*</span></label>
+      <p class="lead">إذا لم يتّسع وقتك لكامل الاستمارة، فهذه الأسئلة الستة هي التي لا يمكن البدء من دونها.</p>
+      <div class="field star" data-q="١. ما الهدف الرئيسي من Blue خلال أول ٦–١٢ شهرًا؟" data-k="90_main_goal" data-req="1">
+        <label class="q" for="f109">١. ما الهدف الرئيسي من Blue خلال أول ٦–١٢ شهرًا؟ <span class="req">*</span></label>
         
-        <textarea id="f109" name="90_main_goal" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f109" name="90_main_goal" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field star" data-q="٢. ما المدن السورية التي نريد السيطرة عليها أولًا؟" data-k="91_main_cities" data-req="1">
         <label class="q" for="f110">٢. ما المدن السورية التي نريد السيطرة عليها أولًا؟ <span class="req">*</span></label>
         
-        <textarea id="f110" name="91_main_cities" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f110" name="91_main_cities" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field star" data-q="٣. من هو الـ Target Audience الأساسي؟" data-k="92_main_audience" data-req="1">
         <label class="q" for="f111">٣. من هو الـ Target Audience الأساسي؟ <span class="req">*</span></label>
         
-        <textarea id="f111" name="92_main_audience" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f111" name="92_main_audience" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field star" data-q="٤. من هم الـ Target Providers الذين نريد استقطابهم؟" data-k="93_main_providers" data-req="1">
         <label class="q" for="f112">٤. من هم الـ Target Providers الذين نريد استقطابهم؟ <span class="req">*</span></label>
         
-        <textarea id="f112" name="93_main_providers" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f112" name="93_main_providers" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field star" data-q="٥. ما المشكلة التي يحلها Blue بشكل أفضل من Facebook و Instagram والمنافسين؟" data-k="94_main_problem" data-req="1">
         <label class="q" for="f113">٥. ما المشكلة التي يحلها Blue بشكل أفضل من Facebook و Instagram والمنافسين؟ <span class="req">*</span></label>
         
-        <textarea id="f113" name="94_main_problem" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f113" name="94_main_problem" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
       <div class="field star" data-q="٦. كيف ستجني Blue المال؟" data-k="95_main_revenue" data-req="1">
         <label class="q" for="f114">٦. كيف ستجني Blue المال؟ <span class="req">*</span></label>
         
-        <textarea id="f114" name="95_main_revenue" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f114" name="95_main_revenue" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
-      <div class="field" data-q="أي شي تاني حابين نعرفه؟" data-k="96_notes">
-        <label class="q" for="f115">أي شي تاني حابين نعرفه؟</label>
+      <div class="field" data-q="هل هناك شيء آخر تودّون إخبارنا به؟" data-k="96_notes">
+        <label class="q" for="f115">هل هناك شيء آخر تودّون إخبارنا به؟</label>
         
-        <textarea id="f115" name="96_notes" rows="3" placeholder="اكتب هون…"></textarea>
+        <textarea id="f115" name="96_notes" rows="3" placeholder="اكتب إجابتك هنا…"></textarea>
         <p class="err">هذا السؤال مطلوب</p>
       </div>
     </section>
@@ -960,20 +972,21 @@ a{ color:inherit; }
     <!-- ═══ DONE ═══ -->
     <div class="card done" id="done" hidden>
       <div class="tick">✓</div>
-      <h2>وصلتنا. شكرًا إلك.</h2>
-      <p>رح نقرأ كل جواب ونرجعلك بملخّص + الخطوة الجاية خلال ٤٨ ساعة.</p>
-      <p style="color:var(--muted);font-size:14px">فيك تسكّر الصفحة بأمان.</p>
+      <h2>وصلتنا إجاباتك. شكرًا لك.</h2>
+      <p>سنقرأ كل إجابة، ونعود إليك بملخّص وبالخطوة التالية خلال ثمانٍ وأربعين ساعة.</p>
+      <p style="color:var(--muted);font-size:14px">يمكنك إغلاق الصفحة الآن بأمان.</p>
+      <p class="sig">إعداد: <b>Ribelle</b> — وكالة RankRise</p>
     </div>
 
     <!-- ═══ FALLBACK (if the POST can't go through) ═══ -->
     <div class="card done fallback" id="fallback" hidden>
-      <h2>أجوبتك محفوظة — بس ما قدرنا نبعتها أوتوماتيكيًا</h2>
-      <p>ما تقلق، ما ضاع شي. انسخ النص من تحت وابعته لـ RankRise على الواتساب أو الإيميل.</p>
+      <h2>إجاباتك محفوظة، لكن تعذّر إرسالها تلقائيًا</h2>
+      <p>لم يُفقد شيء. انسخ النص أدناه وأرسله إلى RankRise عبر الواتساب أو البريد الإلكتروني.</p>
       <textarea id="fbText" readonly></textarea>
       <div class="row">
-        <button type="button" class="btn btn-p" id="copyBtn">نسخ كل الأجوبة</button>
-        <a class="btn btn-o" id="mailBtn" href="#">إرسال بالإيميل</a>
-        <a class="btn btn-o" id="waBtn" href="#" target="_blank" rel="noopener">إرسال بالواتساب</a>
+        <button type="button" class="btn btn-p" id="copyBtn">نسخ جميع الإجابات</button>
+        <a class="btn btn-o" id="mailBtn" href="#">الإرسال بالبريد الإلكتروني</a>
+        <a class="btn btn-o" id="waBtn" href="#" target="_blank" rel="noopener">الإرسال عبر الواتساب</a>
       </div>
     </div>
 
@@ -984,9 +997,9 @@ a{ color:inherit; }
 <div class="navbar" id="navbar" hidden>
   <div class="navbar-in">
     <button type="button" class="btn btn-o" id="prevBtn">السابق</button>
-    <div class="count"><b id="cNow">1</b> / <b id="cAll">11</b> · <span id="cAnswered">0</span> جواب</div>
+    <div class="count"><b id="cNow">1</b> / <b id="cAll">11</b> · إجابات: <span id="cAnswered">0</span></div>
     <button type="button" class="btn btn-d" id="nextBtn">التالي ←</button>
-    <button type="button" class="btn btn-p" id="sendBtn" hidden>إرسال الأجوبة</button>
+    <button type="button" class="btn btn-p" id="sendBtn" hidden>إرسال الإجابات</button>
   </div>
 </div>
 
@@ -996,7 +1009,7 @@ a{ color:inherit; }
 
   // ── config ────────────────────────────────────────────────────────────
   var OWNER_EMAIL = 'rankrise44@gmail.com';
-  var OWNER_WHATSAPP = '';          // ← حطي رقمك بصيغة 963xxxxxxxxx ليشتغل زر الواتساب
+  var OWNER_WHATSAPP = '';          // ← ضعي رقمك بصيغة 963xxxxxxxxx ليعمل زر الواتساب
   var STORE = 'blue-brief-v1';
 
   var form = document.getElementById('brief');
@@ -1131,7 +1144,7 @@ a{ color:inherit; }
 
   // ── submit ────────────────────────────────────────────────────────────
   function buildSummary(){
-    var out = ['استمارة اكتشاف — Blue × RankRise', ''];
+    var out = ['استمارة اكتشاف المشروع — Blue × RankRise', 'إعداد: Ribelle', ''];
     steps.forEach(function(s){
       var lines = [];
       s.querySelectorAll('.field').forEach(function(f){
@@ -1158,7 +1171,7 @@ a{ color:inherit; }
     fb.hidden = false;
     document.getElementById('fbText').value = summary;
     document.getElementById('mailBtn').href =
-      'mailto:' + OWNER_EMAIL + '?subject=' + encodeURIComponent('استمارة Blue — أجوبة العميل') +
+      'mailto:' + OWNER_EMAIL + '?subject=' + encodeURIComponent('استمارة Blue — إجابات العميل') +
       '&body=' + encodeURIComponent(summary.slice(0, 1800));
     var wa = document.getElementById('waBtn');
     if (OWNER_WHATSAPP) wa.href = 'https://wa.me/' + OWNER_WHATSAPP + '?text=' + encodeURIComponent(summary.slice(0, 1500));
@@ -1171,7 +1184,7 @@ a{ color:inherit; }
 
     var btn = this;
     btn.disabled = true;
-    btn.textContent = 'عم نبعت…';
+    btn.textContent = 'جارٍ الإرسال…';
 
     var summary = buildSummary();
     document.getElementById('summaryField').value = summary;
@@ -1198,7 +1211,7 @@ a{ color:inherit; }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }).catch(function(){
       btn.disabled = false;
-      btn.textContent = 'إرسال الأجوبة';
+      btn.textContent = 'إرسال الإجابات';
       showFallback(summary);
     });
   });
@@ -1207,7 +1220,7 @@ a{ color:inherit; }
     var ta = document.getElementById('fbText');
     ta.select();
     var btn = this;
-    function done(){ btn.textContent = 'تم النسخ ✓'; setTimeout(function(){ btn.textContent = 'نسخ كل الأجوبة'; }, 2000); }
+    function done(){ btn.textContent = 'تم النسخ ✓'; setTimeout(function(){ btn.textContent = 'نسخ جميع الإجابات'; }, 2000); }
     if (navigator.clipboard) navigator.clipboard.writeText(ta.value).then(done, function(){ document.execCommand('copy'); done(); });
     else { document.execCommand('copy'); done(); }
   });
@@ -1215,7 +1228,7 @@ a{ color:inherit; }
   // ── boot ──────────────────────────────────────────────────────────────
   restore();
   if (answeredCount()) {
-    document.getElementById('startBtn').textContent = 'كمّل من وين وقفت ←';
+    document.getElementById('startBtn').textContent = 'متابعة من حيث توقفت ←';
   }
   window.addEventListener('beforeunload', function(e){
     if (!form.classList.contains('off') && answeredCount()) { e.preventDefault(); e.returnValue = ''; }
