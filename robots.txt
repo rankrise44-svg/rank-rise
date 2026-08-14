@@ -4,5 +4,6 @@ Allow: /
 # versions live at /case.html — keep crawlers off the duplicates.
 Disallow: /projects/
 Disallow: /portal.html
+Disallow: /blue-brief.html
 
 Sitemap: https://rankrise.media/sitemap.xml
