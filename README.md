@@ -66,6 +66,17 @@ text, which is the one to read first.
 Free tier covers 100 submissions/month. Answers autosave in the client's
 browser as they type, so they can close the tab and come back.
 
+### Printable version — `blue-brief.pdf`
+
+The same questionnaire as a 22-page A4 document (cover, contents, all 115
+questions numbered with writing space and tick boxes), for clients who would
+rather fill it on paper or forward it internally. Reachable at
+`/blue-brief.pdf`, also unlisted.
+
+It's generated from the identical question list as the web page, so **when
+you change a question, change it in `blue-brief.html` and re-export the PDF**
+— otherwise the two drift apart.
+
 Optional: to switch on the WhatsApp fallback button (shown only if the POST
 fails), set `OWNER_WHATSAPP` near the top of the `<script>` in
 `blue-brief.html` to your number, e.g. `'963999111222'`.
