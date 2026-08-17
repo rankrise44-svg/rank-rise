@@ -210,6 +210,8 @@ window.RANKRISE_CASES = {
     approach: 'The whole mark is one letter. The V\u2019s strokes are drawn like a trading chart — the sharp rise and drop of a market line in a single geometric symbol — set in deep oxblood on stone and blush, under a hairline wordmark.',
     execution: [
       { img: 'assets/brands/valmuntra/logo-on-stone.jpg', cap: 'The mark — a V drawn like a market line', w: 1800, h: 1200 },
+      { video: 'assets/brands/valmuntra/film-01.mp4', cap: 'Reel — 01', w: 1080, h: 1920 },
+      { video: 'assets/brands/valmuntra/film-02.mp4', cap: 'Reel — 02', w: 1440, h: 2560 },
       { img: 'assets/brands/valmuntra/oxblood-on-blush.png', cap: 'Oxblood on blush', w: 700, h: 584 },
       { img: 'assets/brands/valmuntra/white-on-oxblood.png', cap: 'White on oxblood', w: 700, h: 584 },
       { img: 'assets/brands/valmuntra/stone-on-charcoal.png', cap: 'Stone on charcoal', w: 700, h: 584 },
