@@ -223,6 +223,9 @@ body.in-ascent .ride-rail{ opacity:1; }
 .pcard h3{ font-family:'DM Sans'; font-weight:600; font-size:clamp(15.5px,1.6vw,17.5px); line-height:1.45; letter-spacing:-.01em; transition:color var(--t-tap); }
 .pcard:hover h3{ color:var(--accent-2); }
 .pcard small{ font-size:12px; color:var(--faint); letter-spacing:.04em; }
+.pgo{ margin-top:auto; font-size:13px; font-weight:600; color:var(--accent-2); display:inline-flex; align-items:center; gap:7px; }
+.pgo::after{ content:"→"; transition:transform var(--t-tap); }
+.pcard:hover .pgo::after{ transform:translateX(4px); }
 .pcard.cta-cell{ justify-content:center; align-items:flex-start; gap:12px; }
 .pcard.cta-cell b{ font-family:'Anton'; font-weight:400; font-size:clamp(21px,2.6vw,30px); }
 .pcard.cta-cell span{ color:var(--accent-2); font-weight:600; font-size:14px; }
@@ -639,6 +642,7 @@ function renderWork(){
         : `<span class="pmark">${esc(p.client)}</span>`}</div>
       <h3>${esc(p.title)}</h3>
       <small>${esc(p.mLabel||CAT[p.cat]||p.cat)}${year(p)?' · '+esc(year(p)):''}</small>
+      <span class="pgo">View work</span>
     </article>`).join('')
     +`<a class="pcard cta-cell up" href="https://wa.me/96170991555" target="_blank" rel="noopener">
       <b>Your brand next.</b><span>Start a project →</span>

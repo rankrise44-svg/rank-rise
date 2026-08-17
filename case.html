@@ -106,6 +106,9 @@ h1,h2,h3{ font-family:'Anton',sans-serif; font-weight:400; letter-spacing:.005em
 .cta h2 span{ color:var(--accent-2); }
 .btn{ display:inline-flex; align-items:center; gap:9px; margin-top:26px; font-weight:600; font-size:15px; padding:16px 28px; border-radius:100px; background:var(--accent); color:#fff; }
 .btn:hover{ background:#574ae0; }
+.cta-row{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.btn.ghost{ background:transparent; border:1px solid var(--line); color:var(--ink); }
+.btn.ghost:hover{ border-color:var(--accent); background:transparent; color:var(--accent-2); }
 footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-align:center; }
 
 /* chapter index — one line under "The work.", so a long case reads as a map */
@@ -269,7 +272,10 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
 
   <section class="cta wrap">
     <h2>Ready to <span>rise?</span></h2>
-    <a class="btn" href="https://wa.me/96170991555" target="_blank" rel="noopener">Start a project</a>
+    <div class="cta-row">
+      <a class="btn" href="https://wa.me/96170991555?text=${encodeURIComponent('Hi RankRise! I saw your '+c.title+' case study and I\'d like to hear more about this kind of work.')}" target="_blank" rel="noopener">Ask about this work</a>
+      <a class="btn ghost" href="https://wa.me/96170991555" target="_blank" rel="noopener">Start a project</a>
+    </div>
   </section>`;
 
   // rise reveals
