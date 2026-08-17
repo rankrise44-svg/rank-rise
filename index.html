@@ -193,6 +193,7 @@ body.menu-open .wa{ opacity:0; pointer-events:none; }
 /* ── ASCENT ride ── */
 #ascent{ position:relative; height:260svh; z-index:1; }
 .stage{ position:sticky; top:0; height:100svh; overflow:hidden; perspective:900px; }
+@media(max-width:640px){ .fly{ width:min(58vw,240px) !important; } }
 .fly{ position:absolute; left:50%; top:50%; will-change:transform; border-radius:14px; overflow:hidden; box-shadow:0 30px 80px -20px rgba(0,0,0,.7); border:1px solid rgba(245,244,250,.09); }
 .fly video,.fly img{ width:100%; height:100%; object-fit:cover; }
 .fly .cap{ position:absolute; left:10px; bottom:10px; font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#fff; background:rgba(8,8,13,.55); backdrop-filter:blur(8px); padding:6px 10px; border-radius:100px; }
@@ -244,18 +245,8 @@ body.in-ascent .ride-rail{ opacity:1; }
 .tag{ font-size:10.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--faint); border:1px solid var(--line); padding:5px 10px; border-radius:100px; }
 
 /* ── CLIENTS (drawn) ── */
-.client-wall{ margin-top:clamp(30px,6vh,54px); display:grid; grid-template-columns:1fr; gap:clamp(20px,3.4vh,34px) 40px; }
-.draw{ position:relative; font-family:'Anton'; font-weight:400; font-size:clamp(24px,4.2vw,48px); letter-spacing:.005em; line-height:1.08; white-space:nowrap; }
-.draw i{ font-style:normal; display:block; color:transparent; -webkit-text-stroke:1.3px var(--accent-2); clip-path:inset(0 101% 0 0); }
-.draw b{ position:absolute; top:0; left:0; color:var(--ink); opacity:0; }
-.draw small{ display:block; font-family:'DM Sans'; font-weight:500; font-size:10px; letter-spacing:.26em; text-transform:uppercase; color:var(--faint); margin-top:7px; }
-.draw.on i{ animation:drawText 1.5s var(--e-both) forwards; animation-delay:var(--dd,0s); }
-.draw.on b{ animation:fillIn .7s ease forwards; animation-delay:calc(var(--dd,0s) + 1.15s); }
 @keyframes drawText{ to{ clip-path:inset(0 -2% 0 0); } }
 @keyframes fillIn{ to{ opacity:1; } }
-.draw .logo{ display:block; height:clamp(40px,6.5vh,66px); width:auto; max-width:100%; object-fit:contain; clip-path:inset(0 101% 0 0); filter:drop-shadow(0 6px 22px rgba(112,98,240,.28)); }
-.draw .logo.tile{ height:clamp(66px,10vh,100px); border-radius:16px; }
-.draw.on .logo{ animation:drawText 1.5s var(--e-both) forwards; animation-delay:var(--dd,0s); }
 
 /* ── EXPANSION GLOBE ── */
 #expand{ border-top:1px solid var(--line); }
@@ -369,7 +360,7 @@ footer .g{ color:var(--accent-2); }
 
 /* ── breakpoints ── */
 @media(min-width:900px){ .globe-wrap{ grid-template-columns:1.05fr .95fr; } }
-@media(min-width:700px){ .pgrid{ grid-template-columns:repeat(2,1fr); } .imp-grid{ grid-template-columns:repeat(4,1fr); } .cds{ grid-template-columns:repeat(3,1fr); } .client-wall{ grid-template-columns:1fr 1fr; } }
+@media(min-width:700px){ .pgrid{ grid-template-columns:repeat(2,1fr); } .imp-grid{ grid-template-columns:repeat(4,1fr); } .cds{ grid-template-columns:repeat(3,1fr); } }
 @media(min-width:900px){
 }
 @media(min-width:1000px){ .pgrid{ grid-template-columns:repeat(3,1fr); } .bar-links{ display:flex; } .svc-row{ grid-template-columns:64px 1.05fr 1.4fr; align-items:start; gap:30px; } .svc-tags{ grid-column:2; } }
@@ -384,11 +375,9 @@ footer .g{ color:var(--accent-2); }
   .hero h1 .ln span{ animation:none; transform:none; }
   .cue i::after,.tk,.flame i,.flame .sp,.wa::after,.snd.on i,.mkt .dot{ animation:none !important; }
   .mkt .dot{ box-shadow:none; }
-  .draw.on .logo,.draw.on i,.draw.on b{ animation:none !important; clip-path:none !important; opacity:1; }
   #ascent{ height:auto; } .stage{ position:relative; height:auto; padding:60px var(--pad); display:grid; gap:16px; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); perspective:none; }
   .fly{ position:static; width:100% !important; height:auto !important; aspect-ratio:4/3; transform:none !important; }
   .rocket,.milestone{ display:none; }
-  .draw i{ display:none; } .draw b{ position:static; opacity:1; }
   .curdot,.curring{ display:none; }
   .mnav,.mnav nav a{ transition:none; transform:none; }
   .up{ opacity:1; transform:none; transition:none; transition-delay:0ms !important; }
@@ -422,7 +411,7 @@ footer .g{ color:var(--accent-2); }
 <header class="bar" id="bar">
   <a class="brand" href="#top" aria-label="RankRise home"><svg><use href="#rr"/></svg>RankRise</a>
   <nav class="bar-links" aria-label="Primary">
-    <a href="#work">Work</a><a href="#services">Services</a><a href="#clients">Clients</a><a href="#expand">Expanding</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>
+    <a href="#work">Work</a><a href="#services">Services</a><a href="#expand">Expanding</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>
   </nav>
   <div class="bar-right">
     <button class="snd" id="snd" aria-label="Toggle sound" title="Sound"><i></i><i></i><i></i><i></i></button>
@@ -437,10 +426,9 @@ footer .g{ color:var(--accent-2); }
   <nav aria-label="Menu">
     <a href="#work"><em>01</em>Work</a>
     <a href="#services"><em>02</em>Services</a>
-    <a href="#clients"><em>03</em>Clients</a>
-    <a href="#expand"><em>04</em>Expanding</a>
-    <a href="#faq"><em>05</em>FAQ</a>
-    <a href="#contact"><em>06</em>Contact</a>
+    <a href="#expand"><em>03</em>Expanding</a>
+    <a href="#faq"><em>04</em>FAQ</a>
+    <a href="#contact"><em>05</em>Contact</a>
   </nav>
   <div class="mnav-foot">
     <a class="chip" href="portal.html">Client Login</a>
@@ -527,27 +515,6 @@ footer .g{ color:var(--accent-2); }
   <div class="svc" id="svc" data-stagger></div>
 </div></section>
 
-<!-- CLIENTS -->
-<section class="sec" id="clients" style="border-top:1px solid var(--line)"><div class="wrap">
-  <span class="eyebrow up">Trusted by</span>
-  <h2 class="sec-h2 up">Brands that rode with us.</h2>
-  <div class="client-wall">
-    <div class="draw" style="--dd:0s"><img class="logo" src="assets/brands/coins.png" alt="Coin &amp; Shares logo"><small>Coin &amp; Shares · Branding · Social</small></div>
-    <div class="draw" style="--dd:.2s"><img class="logo" src="assets/brands/bbcorp-mark.svg" alt="BBCorp logo"><small>BBCorp · Video Production</small></div>
-    <div class="draw" style="--dd:.4s"><img class="logo" src="assets/brands/mariam.png" alt="Mariam Jammoul logo"><small>Mariam Jammoul · Brand Identity</small></div>
-    <div class="draw" style="--dd:.6s"><img class="logo" src="assets/brands/farhat.png" alt="Farhat Services logo"><small>Farhat Services · Case Study</small></div>
-    <div class="draw" style="--dd:.8s"><img class="logo tile" src="assets/brands/hatem.png" alt="Hatem Rmaite Forex logo"><small>Hatem Rmaite Forex · Brand &amp; Social</small></div>
-    <div class="draw" style="--dd:1s"><i>Bazzi Podiatry</i><b>Bazzi Podiatry</b><small>Brand Identity</small></div>
-    <div class="draw" style="--dd:1.2s"><img class="logo" src="assets/brands/deir.png" alt="Deir Qanoun El Nahr Municipality logo"><small>Deir Qanoun El Nahr · Awareness Campaign</small></div>
-  </div>
-  <div class="imp-grid" data-stagger style="margin-top:clamp(40px,7vh,64px)">
-    <div class="imp up"><b><em data-count="17">0</em>+</b><span>Brands delivered</span></div>
-    <div class="imp up"><b><em data-count="100">0</em>%</b><span>In-house production</span></div>
-    <div class="imp up"><b><em data-count="7">0</em></b><span>Published case studies</span></div>
-    <div class="imp up"><b><em data-count="2">0</em></b><span>Countries · 4 opening</span></div>
-  </div>
-</div></section>
-
 <!-- EXPANSION -->
 <section class="sec" id="expand"><div class="wrap">
   <span class="eyebrow up">Expanding</span>
@@ -567,6 +534,12 @@ footer .g{ color:var(--accent-2); }
     </div>
   </div>
   <p class="sr">RankRise markets: Lebanon (base), United States (live), and Europe, Türkiye, Egypt and Africa opening soon.</p>
+  <div class="imp-grid" data-stagger style="margin-top:clamp(40px,7vh,64px)">
+    <div class="imp up"><b><em data-count="17">0</em>+</b><span>Brands delivered</span></div>
+    <div class="imp up"><b><em data-count="100">0</em>%</b><span>In-house production</span></div>
+    <div class="imp up"><b><em data-count="7">0</em></b><span>Published case studies</span></div>
+    <div class="imp up"><b><em data-count="2">0</em></b><span>Countries · 4 opening</span></div>
+  </div>
 </div></section>
 
 <!-- FAQ -->
@@ -920,10 +893,6 @@ try{
   if(gl) starfieldGL(gl); else starfield2D();
 }catch(e){ starfield2D(); }
 
-/* ── drawn client wordmarks ── */
-const drawIO=new IntersectionObserver(en=>en.forEach(x=>x.target.classList.toggle('on',x.isIntersecting)),{threshold:.35});
-document.querySelectorAll('.draw').forEach(el=>drawIO.observe(el));
-
 /* ── count-up stats ── */
 const cntIO=new IntersectionObserver(en=>en.forEach(x=>{
   if(!x.isIntersecting) return; cntIO.unobserve(x.target);
@@ -957,7 +926,14 @@ if(!reduce){
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   const prog=el=>{const r=el.getBoundingClientRect();return clamp(-r.top/(r.height-innerHeight),0,1);};
   const ascent=document.getElementById('ascent');
-  const flies=[...document.querySelectorAll('.fly')].map(el=>({el,x:+el.dataset.x,z:+el.dataset.z,d:+el.dataset.d,s:+el.dataset.s,r:+el.dataset.r,video:el.querySelector('video')}));
+  const narrow=innerWidth<640;
+  // On a phone the ±30vw lanes overlap in the middle — widen the split and
+  // pull everything nearer the camera so the two lanes read side by side.
+  const flies=[...document.querySelectorAll('.fly')].map(el=>{
+    let x=+el.dataset.x;
+    if(narrow) x=Math.sign(x)*Math.max(Math.abs(x)*1.15,26);
+    return {el,x,z:narrow?+el.dataset.z*.4:+el.dataset.z,d:+el.dataset.d,s:+el.dataset.s,r:+el.dataset.r,video:el.querySelector('video')};
+  });
   const rocket=document.getElementById('rocket');
   const miles=[...document.querySelectorAll('.milestone h2')];
   const railFill=document.getElementById('railFill');
