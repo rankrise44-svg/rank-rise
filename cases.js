@@ -35,7 +35,7 @@ window.RANKRISE_CASES = {
         title: 'Trained for the market.',
         text: 'We took BBCorp’s athlete campaign from a blank page to final grade — the concept, the script, the direction and every frame. A national-team baller and a trader, built by the same discipline.',
         items: [
-          { img: 'assets/brands/bbcorp/shot.jpg',    cap: 'The opening frame — the court, read as a chart', w: 640, h: 360 },
+          { video: 'assets/brands/bbcorp/clip.mp4', poster: 'assets/brands/bbcorp/shot.jpg', cap: 'The film — trained for the market', w: 640, h: 360 },
           { img: 'assets/brands/bbcorp/shot-6.jpg',  cap: 'Under the lights', w: 1100, h: 1649 },
           { img: 'assets/brands/bbcorp/shot-3.jpg',  cap: 'Direction and grade, in-house', w: 1100, h: 1649 },
         ]
