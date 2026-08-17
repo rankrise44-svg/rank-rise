@@ -25,4 +25,5 @@ window.RANKRISE_PROJECTS = [
   { id: 3, logo: 'assets/brands/farhat.png', title: 'Farhat Services — Case Study',      client: 'Farhat Services',     cat: 'Brand',  mLabel: 'Case Study',          cover: 'assets/covers/farhat.jpg', link: 'case.html?id=farhat' },
   { id: 6, logo: 'assets/brands/hatem.png', title: 'Hatem Rmaite Forex — Case Study',   client: 'Hatem Rmaite Forex',  cat: 'Social', mLabel: 'Case Study',          cover: 'assets/covers/hatem.jpg',  link: 'case.html?id=hatem' },
   { id: 7, title: 'Bazzi Podiatry — Brand Identity',   client: 'Bazzi Podiatry',      cat: 'Brand',  mLabel: 'Brand Identity',      cover: 'assets/covers/bazzi.jpg',  link: 'case.html?id=bazzi' },
+  { id: 8, title: 'Valmuntra — Brand Identity',   client: 'Valmuntra',           cat: 'Brand',  mLabel: 'Brand Identity',      logo: 'assets/brands/valmuntra/white-on-oxblood.png', tile: true, link: 'case.html?id=valmuntra' },
 ];

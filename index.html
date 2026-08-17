@@ -638,7 +638,7 @@ function renderWork(){
   g.innerHTML='<div class="pgrid" data-stagger>'+data.map(p=>`
     <article class="pcard up" data-id="${p.id}" tabindex="0" role="button" aria-label="Open ${esc(p.title)}">
       <div class="pcard-mark">${p.logo
-        ? `<img src="${esc(p.logo)}" alt="${esc(p.client)} logo"${/hatem/.test(p.logo)?' class="tile"':''} loading="lazy">`
+        ? `<img src="${esc(p.logo)}" alt="${esc(p.client)} logo"${p.tile||/hatem/.test(p.logo)?' class="tile"':''} loading="lazy">`
         : `<span class="pmark">${esc(p.client)}</span>`}</div>
       <h3>${esc(p.title)}</h3>
       <small>${esc(p.mLabel||CAT[p.cat]||p.cat)}${year(p)?' · '+esc(year(p)):''}</small>

@@ -194,6 +194,35 @@ window.RANKRISE_CASES = {
       stat: '', statLabel: '', pull: 'Three tones. No noise.',
       text: 'Three tones, no noise. A complete brand board — mark on four grounds, a pattern system, and a typeface whose squared bowls echo the symbols exactly.'
     },
+    next: 'valmuntra'
+  },
+
+  valmuntra: {
+    title: 'Valmuntra',
+    tagline: 'A V that moves like the market.',
+    client: 'Valmuntra',
+    sector: 'Trading · Financial services',
+    year: '2025',
+    scope: ['Brand identity', 'Guidelines', 'Applications'],
+    accent: '#c0484c',
+    hero: 'assets/brands/valmuntra/logo-on-stone.jpg',
+    challenge: 'A trading brand in a category that defaults to loud. Valmuntra needed an identity that reads considered — market energy held inside real restraint.',
+    approach: 'The whole mark is one letter. The V\u2019s strokes are drawn like a trading chart — the sharp rise and drop of a market line in a single geometric symbol — set in deep oxblood on stone and blush, under a hairline wordmark.',
+    execution: [
+      { img: 'assets/brands/valmuntra/logo-on-stone.jpg', cap: 'The mark — a V drawn like a market line', w: 1800, h: 1200 },
+      { img: 'assets/brands/valmuntra/oxblood-on-blush.png', cap: 'Oxblood on blush', w: 700, h: 584 },
+      { img: 'assets/brands/valmuntra/white-on-oxblood.png', cap: 'White on oxblood', w: 700, h: 584 },
+      { img: 'assets/brands/valmuntra/stone-on-charcoal.png', cap: 'Stone on charcoal', w: 700, h: 584 },
+      { img: 'assets/brands/valmuntra/stationery.jpg', cap: 'Stationery', w: 1200, h: 869 },
+      { img: 'assets/brands/valmuntra/business-cards.jpg', cap: 'Business cards', w: 1200, h: 1200 },
+      { img: 'assets/brands/valmuntra/signage.jpg', cap: 'Blade signage', w: 1100, h: 1100 },
+      { img: 'assets/brands/valmuntra/merchandise.jpg', cap: 'Merchandise', w: 1100, h: 1055 },
+      { img: 'assets/brands/valmuntra/window-graphics.jpg', cap: 'Window graphics', w: 1100, h: 1100 },
+    ],
+    result: {
+      stat: '', statLabel: '', pull: 'One letter. The whole market.',
+      text: 'A complete system delivered as a full brand book — logo and V-7 construction, colour, typography, stationery, signage, merch and packaging — every application holding the same quiet confidence.'
+    },
     next: 'bazzi'
   },
 
