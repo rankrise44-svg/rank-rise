@@ -108,6 +108,24 @@ h1,h2,h3{ font-family:'Anton',sans-serif; font-weight:400; letter-spacing:.005em
 .btn:hover{ background:#574ae0; }
 footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-align:center; }
 
+/* chapter index — one line under "The work.", so a long case reads as a map */
+.chnav{ display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+.chnav a{ font-size:12px; font-weight:600; letter-spacing:.04em; color:var(--dim); border:1px solid var(--line); border-radius:100px; padding:9px 15px; transition:color var(--t-tap), border-color var(--t-tap); }
+.chnav a:hover{ color:var(--ink); border-color:var(--brand); }
+.chnav a b{ color:var(--brand); font-weight:700; margin-right:7px; }
+
+/* lightbox — any tile opens full-screen; videos get their sound back */
+.gi{ cursor:zoom-in; }
+.lb{ position:fixed; inset:0; z-index:120; background:rgba(5,5,9,.94); backdrop-filter:blur(10px);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; padding:calc(20px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom));
+  opacity:0; visibility:hidden; transition:opacity var(--t-media) var(--e-rise), visibility var(--t-media); }
+.lb.open{ opacity:1; visibility:visible; }
+.lb img,.lb video{ max-width:min(100%,1100px); max-height:82svh; width:auto; height:auto; border-radius:12px; }
+.lb figcaption{ margin-top:14px; font-size:13px; letter-spacing:.05em; color:var(--dim); text-align:center; }
+.lb-x{ position:absolute; top:calc(16px + env(safe-area-inset-top)); right:18px; width:46px; height:46px; border-radius:100px; border:1px solid var(--line); background:rgba(13,13,21,.7); color:var(--ink); font-size:20px; cursor:pointer; display:grid; place-items:center; }
+.lb-x:hover{ border-color:var(--brand); }
+@media(prefers-reduced-motion:reduce){ .lb{ transition:none; } }
+
 /* rise motion */
 .up{ opacity:0; transform:translateY(36px); transition:opacity var(--t-rise) var(--e-rise), transform var(--t-rise) var(--e-rise); transition-delay:var(--d,0ms); }
 .up.in{ opacity:1; transform:none; }
@@ -134,6 +152,10 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
 </header>
 
 <main id="case"></main>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Media viewer">
+  <button class="lb-x" id="lbx" aria-label="Close">×</button>
+  <figure id="lbFig"></figure>
+</div>
 
 <footer>© 2026 <span style="color:var(--accent-2)">RankRise</span> Agency — Lebanon · Working worldwide</footer>
 
@@ -220,10 +242,11 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
   </div></section>
 
   <section class="sec" style="padding-top:0"><div class="wrap">
-    <div class="up"><span class="eyebrow">Execution</span><h2 style="font-size:clamp(24px,3.6vw,40px);margin-top:12px">The work.</h2></div>
+    <div class="up"><span class="eyebrow">Execution</span><h2 style="font-size:clamp(24px,3.6vw,40px);margin-top:12px">The work.</h2>
+    ${c.chapters&&c.chapters.length>1?`<nav class="chnav" aria-label="Chapters">${c.chapters.map((ch,n)=>`<a href="#ch${n+1}"><b>${String(n+1).padStart(2,'0')}</b>${esc(ch.title||'')}</a>`).join('')}</nav>`:''}</div>
     ${c.chapters && c.chapters.length
       ? c.chapters.map((ch,n)=>`
-        <div class="chap">
+        <div class="chap" id="ch${n+1}">
           <div class="up">
             <span class="chap-n">${String(n+1).padStart(2,'0')}</span><span class="chap-k">${esc(ch.kicker||'')}</span>
             <h3>${esc(ch.title||'')}</h3>
@@ -288,6 +311,42 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
     const n = colCount();
     if(n !== cols){ cols = n; paint(); }
   }, {passive:true});
+
+  // Lightbox. A tap opens the piece at full size — and a clip that was
+  // politely muted in the wall plays here with its sound and controls.
+  const lb=document.getElementById('lb'), lbFig=document.getElementById('lbFig');
+  let lastFocus=null;
+  function lbOpen(node,cap){
+    lbFig.innerHTML='';
+    if(node.tagName==='VIDEO'){
+      const v=document.createElement('video');
+      v.src=node.src||node.dataset.src; v.poster=node.poster||'';
+      v.controls=true; v.autoplay=true; v.playsInline=true; v.loop=true;
+      lbFig.appendChild(v);
+    } else {
+      const im=document.createElement('img');
+      im.src=node.src; im.alt=node.alt||'';
+      lbFig.appendChild(im);
+    }
+    if(cap){ const fc=document.createElement('figcaption'); fc.textContent=cap; lbFig.appendChild(fc); }
+    lb.classList.add('open'); document.body.style.overflow='hidden';
+    lastFocus=document.activeElement; document.getElementById('lbx').focus();
+  }
+  function lbClose(){
+    lb.classList.remove('open'); document.body.style.overflow='';
+    lbFig.innerHTML='';                              // stops any playing video
+    if(lastFocus) lastFocus.focus();
+  }
+  document.querySelectorAll('.gi').forEach(fig=>{
+    fig.addEventListener('click',()=>{
+      const m=fig.querySelector('img,video');
+      const cap=fig.querySelector('figcaption');
+      if(m) lbOpen(m,cap?cap.textContent:'');
+    });
+  });
+  document.getElementById('lbx').addEventListener('click',lbClose);
+  lb.addEventListener('click',e=>{ if(e.target===lb) lbClose(); });
+  addEventListener('keydown',e=>{ if(e.key==='Escape'&&lb.classList.contains('open')) lbClose(); });
 
   addEventListener('scroll',()=>document.getElementById('bar').classList.toggle('solid',scrollY>60),{passive:true});
 })();
