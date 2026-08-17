@@ -207,26 +207,24 @@ body.in-ascent .ride-rail{ opacity:1; }
 
 /* ── SELECTED WORK (editorial) ── */
 #work .head-row{ margin-bottom:clamp(34px,6vw,64px); }
-.feat-list{ display:flex; flex-direction:column; gap:clamp(56px,9vh,104px); }
-.fw{ display:grid; grid-template-columns:1fr; gap:16px; cursor:pointer; }
-.fw-media{ position:relative; aspect-ratio:16/10; border-radius:18px; overflow:hidden; background:var(--bg2); border:1px solid var(--line); }
-.fw-media .cov{ position:absolute; inset:0; background-size:cover; background-position:center top; transition:transform var(--t-media) var(--e-media); }
-.fw:hover .cov{ transform:scale(1.045) translateY(-6px); }
-.fw-media .veil{ position:absolute; inset:0; background:linear-gradient(to top, rgba(8,8,13,.42), transparent 45%); opacity:0; transition:opacity var(--t-ui); }
-.fw:hover .veil,.fw:focus-visible .veil{ opacity:1; }
-.fw-media .go{ position:absolute; right:18px; bottom:18px; width:48px; height:48px; border:1px solid rgba(255,255,255,.55); border-radius:100px; display:grid; place-items:center; font-size:18px; color:#fff; background:rgba(8,8,13,.35); backdrop-filter:blur(6px); opacity:0; transform:translateY(10px); transition:var(--t-ui); }
-.fw:hover .go,.fw:focus-visible .go{ opacity:1; transform:none; }
-.fw-info{ display:flex; flex-direction:column; gap:6px; }
-.fw-n{ font-family:'Anton'; font-weight:400; font-size:13px; color:var(--accent-2); }
-.fw-info h3{ font-size:clamp(22px,3.4vw,42px); transition:color var(--t-tap); }
-.fw:hover .fw-info h3{ color:var(--accent-2); }
-.fw-cat{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); }
-.mw{ margin-top:clamp(48px,8vh,86px); border-top:1px solid var(--line); }
-.mw-row{ display:flex; align-items:baseline; justify-content:space-between; gap:18px; padding:clamp(18px,3vh,26px) 0; border-bottom:1px solid var(--line); cursor:pointer; transition:padding-left var(--t-ui); }
-.mw-row:hover,.mw-row:focus-visible{ padding-left:12px; }
-.mw-row h3{ font-size:clamp(18px,2.4vw,28px); transition:color var(--t-tap); }
-.mw-row:hover h3{ color:var(--accent-2); }
-.mw-row .mw-cat{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); white-space:nowrap; }
+/* work — one calm grid, hairline-ruled like a print index.
+   The cell carries the client's mark, not a crop of the work: the work
+   itself lives one click away, full-bleed, inside the case. */
+.pgrid{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--line); border:1px solid var(--line); }
+.pcard{ background:var(--bg); padding:clamp(20px,2.6vw,30px); display:flex; flex-direction:column; gap:clamp(16px,2.4vh,24px); cursor:pointer; transition:background var(--t-ui); }
+.pcard:hover,.pcard:focus-visible{ background:var(--bg2); }
+.pcard-mark{ height:clamp(130px,17vh,180px); display:grid; place-items:center; background:var(--bg2); border-radius:10px; transition:background var(--t-ui); }
+.pcard:hover .pcard-mark{ background:rgba(112,98,240,.08); }
+.pcard-mark img{ max-height:clamp(52px,8vh,78px); max-width:68%; object-fit:contain; transition:transform var(--t-media) var(--e-rise); }
+.pcard-mark img.tile{ max-height:clamp(72px,11vh,104px); border-radius:12px; }
+.pcard:hover .pcard-mark img{ transform:translateY(-4px); }
+.pcard-mark .pmark{ font-family:'Anton'; font-weight:400; font-size:clamp(21px,2.6vw,30px); letter-spacing:.01em; text-align:center; padding:0 14px; }
+.pcard h3{ font-family:'DM Sans'; font-weight:600; font-size:clamp(15.5px,1.6vw,17.5px); line-height:1.45; letter-spacing:-.01em; transition:color var(--t-tap); }
+.pcard:hover h3{ color:var(--accent-2); }
+.pcard small{ font-size:12px; color:var(--faint); letter-spacing:.04em; }
+.pcard.cta-cell{ justify-content:center; align-items:flex-start; gap:12px; }
+.pcard.cta-cell b{ font-family:'Anton'; font-weight:400; font-size:clamp(21px,2.6vw,30px); }
+.pcard.cta-cell span{ color:var(--accent-2); font-weight:600; font-size:14px; }
 .empty{ padding:50px 0; color:var(--faint); text-align:center; }
 /* upward reveal — the "rise" motion */
 .up{ opacity:0; transform:translateY(36px); transition:opacity var(--t-rise) var(--e-rise), transform var(--t-rise) var(--e-rise); transition-delay:var(--d,0ms); }
@@ -345,11 +343,7 @@ footer .g{ color:var(--accent-2); }
   body.cur-hover .curring{ width:56px; height:56px; border-color:var(--accent); }
 }
 @media(pointer:coarse){ .curdot,.curring{ display:none; } }
-/* No hover on touch — the affordances hover used to carry are simply on. */
-@media(hover:none){
-  .fw-media .go{ opacity:1; transform:none; }
-  .fw-media .veil{ opacity:1; }
-}
+
 
 /* ── manager ── */
 .pm-ov{ position:fixed; inset:0; z-index:500; background:rgba(8,8,13,.72); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; padding:16px; }
@@ -375,17 +369,10 @@ footer .g{ color:var(--accent-2); }
 
 /* ── breakpoints ── */
 @media(min-width:900px){ .globe-wrap{ grid-template-columns:1.05fr .95fr; } }
-@media(min-width:700px){ .imp-grid{ grid-template-columns:repeat(4,1fr); } .cds{ grid-template-columns:repeat(3,1fr); } .client-wall{ grid-template-columns:1fr 1fr; } }
+@media(min-width:700px){ .pgrid{ grid-template-columns:repeat(2,1fr); } .imp-grid{ grid-template-columns:repeat(4,1fr); } .cds{ grid-template-columns:repeat(3,1fr); } .client-wall{ grid-template-columns:1fr 1fr; } }
 @media(min-width:900px){
-  .fw{ grid-template-columns:7fr 4fr; align-items:end; gap:36px; }
-  .fw:nth-child(even){ grid-template-columns:4fr 7fr; }
-  .fw:nth-child(even) .fw-media{ order:2; }
-  .fw:nth-child(even) .fw-info{ order:1; text-align:right; align-items:flex-end; }
-  .fw.wide{ grid-template-columns:1fr !important; }
-  .fw.wide .fw-media{ aspect-ratio:21/9; order:0 !important; }
-  .fw.wide .fw-info{ order:1 !important; flex-direction:row; align-items:baseline; justify-content:space-between; text-align:left; }
 }
-@media(min-width:1000px){ .bar-links{ display:flex; } .svc-row{ grid-template-columns:64px 1.05fr 1.4fr; align-items:start; gap:30px; } .svc-tags{ grid-column:2; } }
+@media(min-width:1000px){ .pgrid{ grid-template-columns:repeat(3,1fr); } .bar-links{ display:flex; } .svc-row{ grid-template-columns:64px 1.05fr 1.4fr; align-items:start; gap:30px; } .svc-tags{ grid-column:2; } }
 @media(max-width:600px){ .cue{ display:none; } .bar .hide-m{ display:none; } }
 
 /* ── reduced motion ── */
@@ -405,7 +392,6 @@ footer .g{ color:var(--accent-2); }
   .curdot,.curring{ display:none; }
   .mnav,.mnav nav a{ transition:none; transform:none; }
   .up{ opacity:1; transform:none; transition:none; transition-delay:0ms !important; }
-  .fw:hover .cov{ transform:none; }
 }
 </style>
 </head>
@@ -653,6 +639,7 @@ footer .g{ color:var(--accent-2); }
 
 <!-- Portfolio data lives in projects.js — edit that one file to manage projects -->
 <script src="projects.js"></script>
+<script src="cases.js"></script>
 <script>
 let data = (window.RANKRISE_PROJECTS || []).map(p => ({ ...p }));
 const SERVICES=[
@@ -670,19 +657,19 @@ const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 function renderWork(){
   const g=document.getElementById('workGrid');
   if(!data.length){g.innerHTML='<div class="empty">No projects yet.</div>';return;}
-  let feats=data.filter(p=>p.featured).slice(0,5);
-  if(!feats.length) feats=data.slice(0,4);
-  const rest=data.filter(p=>!feats.includes(p));
-  g.innerHTML=
-    '<div class="feat-list" data-stagger>'+feats.map((p,i)=>`
-      <article class="fw up${p.size==='feat'?' wide':''}" data-id="${p.id}" tabindex="0" role="button" aria-label="Open ${esc(p.title)}">
-        <div class="fw-media"><div class="cov" style="background-image:url('${esc(p.cover)}')"></div><div class="veil"></div><span class="go" aria-hidden="true">↗</span></div>
-        <div class="fw-info"><span class="fw-n">${String(i+1).padStart(2,'0')}</span><h3>${esc(p.title)}</h3><span class="fw-cat">${esc(CAT[p.cat]||p.cat)}</span></div>
-      </article>`).join('')+'</div>'
-    +(rest.length?'<div class="mw" data-stagger>'+rest.map(p=>`
-      <div class="mw-row up" data-id="${p.id}" tabindex="0" role="button" aria-label="Open ${esc(p.title)}">
-        <h3>${esc(p.title)}</h3><span class="mw-cat">${esc(CAT[p.cat]||p.cat)}</span>
-      </div>`).join('')+'</div>':'');
+  const CASES=window.RANKRISE_CASES||{};
+  const year=p=>{ const m=/[?&]id=([a-z0-9-]+)/i.exec(p.link||''); return m&&CASES[m[1]]?CASES[m[1]].year:''; };
+  g.innerHTML='<div class="pgrid" data-stagger>'+data.map(p=>`
+    <article class="pcard up" data-id="${p.id}" tabindex="0" role="button" aria-label="Open ${esc(p.title)}">
+      <div class="pcard-mark">${p.logo
+        ? `<img src="${esc(p.logo)}" alt="${esc(p.client)} logo"${/hatem/.test(p.logo)?' class="tile"':''} loading="lazy">`
+        : `<span class="pmark">${esc(p.client)}</span>`}</div>
+      <h3>${esc(p.title)}</h3>
+      <small>${esc(p.mLabel||CAT[p.cat]||p.cat)}${year(p)?' · '+esc(year(p)):''}</small>
+    </article>`).join('')
+    +`<a class="pcard cta-cell up" href="https://wa.me/96170991555" target="_blank" rel="noopener">
+      <b>Your brand next.</b><span>Start a project →</span>
+    </a>`+'</div>';
   g.querySelectorAll('.up').forEach(el=>{ if(window.upIO) window.upIO.observe(el); else el.classList.add('in'); });
 }
 document.getElementById('svc').innerHTML=SERVICES.map(s=>`<div class="svc-row up"><div class="svc-n">${s.n}</div><h3>${s.name}</h3><div><p>${s.desc}</p><div class="svc-tags">${s.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div></div>`).join('');
