@@ -113,9 +113,6 @@ h1,h2,h3{ font-family:'Anton',sans-serif; font-weight:400; letter-spacing:.005em
 .spin3d svg:nth-child(3){ filter:brightness(.45); }
 .spin3d svg:nth-child(4){ transform:translateZ(-1.5px); filter:brightness(.45); }
 .spin3d svg:nth-child(5){ transform:translateZ(-3px); animation:logoGlint 8s linear infinite; }
-/* the side of the slab — faces the viewer at the quarter turns, so the mark
-   never blinks out of existence */
-.spin3d .s3e{ position:absolute; top:4%; bottom:4%; left:50%; width:6px; margin-left:-3px; transform:rotateY(90deg); background:linear-gradient(to bottom,#B9BDC4,#71767F 46%,#9FA4AC); border-radius:2px; }
 @keyframes logoSpin{ to{ transform:rotateY(360deg); } }
 @keyframes logoGlint{ 0%,50%,100%{ filter:brightness(1); } 25%,75%{ filter:brightness(1.55); } }
 /* Below 1000px the link row is gone, so the burger is the only door in —
@@ -451,7 +448,7 @@ footer .g{ color:var(--accent-2); }
   *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; }
   #enter .spin3d,#enter svg,#enter .ttl,#enter .sub,#enter .enter-btns{ animation:none; opacity:1; transform:none; }
   .spin3d .s3o,.spin3d svg{ animation:none !important; transform:none; }
-  .spin3d svg:not(:first-child),.spin3d .s3e{ display:none; }
+  .spin3d svg:not(:first-child){ display:none; }
   .enter-bg img{ animation:none; transform:scale(1.04); }
   .hero h1 .ln span{ animation:none; transform:none; }
   .cue i::after,.tk,.flame i,.flame .sp,.wa::after,.snd.on i,.mkt .dot{ animation:none !important; }
@@ -491,7 +488,7 @@ footer .g{ color:var(--accent-2); }
 <!-- ENTER -->
 <div id="enter">
   <div class="enter-bg" aria-hidden="true"><img src="assets/entry-earth.jpg" alt=""></div>
-  <span class="spin3d"><span class="s3o"><svg><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><i class="s3e" aria-hidden="true"></i></span></span>
+  <span class="spin3d"><span class="s3o"><svg><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg></span></span>
   <div class="flame small" aria-hidden="true"><i class="f1"></i><i class="f2"></i><i class="f3"></i><span class="sp"></span><span class="sp sp2"></span><span class="sp sp3"></span></div>
   <div class="ttl">We build brands that rise.</div>
   <div class="sub">RankRise — The Experience</div>
@@ -503,7 +500,7 @@ footer .g{ color:var(--accent-2); }
 
 <!-- BAR -->
 <header class="bar" id="bar">
-  <a class="brand" href="#top" aria-label="RankRise home"><span class="spin3d"><span class="s3o"><svg><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><i class="s3e" aria-hidden="true"></i></span></span>RankRise</a>
+  <a class="brand" href="#top" aria-label="RankRise home"><span class="spin3d"><span class="s3o"><svg><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg></span></span>RankRise</a>
   <span class="skyrocket" id="skyrocket" aria-hidden="true"><svg><use href="#rr"/></svg><i></i></span>
   <nav class="bar-links" aria-label="Primary">
     <a class="hv hv-soft" href="#work">Work</a><a class="hv hv-soft" href="#services">Services</a><a class="hv hv-soft" href="#expand">Expanding</a><a class="hv hv-soft" href="#faq">FAQ</a><a class="hv hv-soft" href="#contact">Contact</a>
@@ -563,7 +560,7 @@ footer .g{ color:var(--accent-2); }
 <section id="ascent" aria-label="Our work in motion">
   <div class="stage" id="stage">
     <div class="rocket" id="rocket" aria-hidden="true">
-      <span class="spin3d"><span class="s3o"><svg viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><svg aria-hidden="true" viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><svg aria-hidden="true" viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><svg aria-hidden="true" viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><svg aria-hidden="true" viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><i class="s3e" aria-hidden="true"></i></span></span>
+      <span class="spin3d"><span class="s3o"><svg viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><svg aria-hidden="true" viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><svg aria-hidden="true" viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><svg aria-hidden="true" viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><svg aria-hidden="true" viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg></span></span>
       <div class="flame" aria-hidden="true"><i class="f1"></i><i class="f2"></i><i class="f3"></i><span class="sp"></span><span class="sp sp2"></span><span class="sp sp3"></span></div>
     </div>
     <div class="fly" data-x="-34" data-z="-260" data-d="0.00" data-s="1.00" data-r="-7" style="width:min(46vw,430px);aspect-ratio:16/10">
