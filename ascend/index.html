@@ -20,13 +20,14 @@
 <link rel="stylesheet" href="styles/app.css">
 <link rel="stylesheet" href="styles/flow.css">
 <link rel="stylesheet" href="styles/plan.css">
+<link rel="stylesheet" href="styles/create.css">
 
 <style>
   /* Print is a real surface here: the diagnosis is the thing an owner
      forwards to a partner, and a judge asked for "something to take away"
      should get a clean page rather than a screenshot of a dark UI. */
   @media print{
-    .aurora,.topbar,.nav-row,.sample-note{ display:none !important; }
+    .aurora,.topbar,.nav-row,.sample-note,.sheet,.sheet-veil{ display:none !important; }
     body{ background:#fff; color:#111; }
     .card,.pillars,.pillar{ background:#fff; border-color:#ddd; }
     .lede,.muted,.pillar-note,.finding p{ color:#333; }

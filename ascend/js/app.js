@@ -12,10 +12,12 @@ import { stream, EngineError } from './lib/api.js';
 import { PRODUCT, MARK, STAGES } from './brand.js';
 import { Welcome }   from './screens/welcome.js';
 import { Intake }    from './screens/intake.js';
-import { Working, DIAGNOSE_STEPS, PLAN_STEPS } from './screens/working.js';
+import { Working, DIAGNOSE_STEPS, PLAN_STEPS, CALENDAR_STEPS } from './screens/working.js';
 import { Diagnosis } from './screens/diagnosis.js';
 import { Plan }      from './screens/plan.js';
-import { SAMPLE_INTAKE, SAMPLE_DIAGNOSIS, SAMPLE_PLAN } from './data/sample.js';
+import { Create }    from './screens/create.js';
+import { SAMPLE_INTAKE, SAMPLE_DIAGNOSIS, SAMPLE_PLAN, SAMPLE_CALENDAR, SAMPLE_POSTS }
+  from './data/sample.js';
 
 const state = {
   screen:    'welcome',   // welcome · intake · working · diagnosis · plan
@@ -24,6 +26,7 @@ const state = {
   language:  'en',
   result:    null,        // the diagnosis
   plan:      null,        // the 90-day plan, built from the diagnosis
+  calendar:  null,        // four weeks of slots, built from the plan
   resultFor: '',          // business the current result describes; the sample
                           // has its own name and must not claim the user's
   isSample:  false,
@@ -79,7 +82,14 @@ function go(screen, stage) {
   paint();
 }
 
+/* A screen may own something outside its own subtree — the Create screen
+   appends its post sheet to <body> so it can sit above everything. Tearing
+   that down is the screen's job, but calling it is the router's, or the
+   sheet outlives the screen that opened it. */
+let current = null;
+
 function paint() {
+  current?.dispose?.();
   let view;
 
   switch (state.screen) {
@@ -95,13 +105,21 @@ function paint() {
       break;
 
     case 'working':
-      view = state.stage === 'plan'
-        ? Working({
-            steps: PLAN_STEPS,
-            title: 'Building the plan',
-            note:  'Turning the diagnosis into 90 days of work sized to the hours you have.',
-          })
-        : Working({ businessName: state.intake.name, steps: DIAGNOSE_STEPS });
+      if (state.stage === 'plan') {
+        view = Working({
+          steps: PLAN_STEPS,
+          title: 'Building the plan',
+          note:  'Turning the diagnosis into 90 days of work sized to the hours you have.',
+        });
+      } else if (state.stage === 'create') {
+        view = Working({
+          steps: CALENDAR_STEPS,
+          title: 'Laying out the month',
+          note:  'Four weeks of slots at the cadence the plan committed to.',
+        });
+      } else {
+        view = Working({ businessName: state.intake.name, steps: DIAGNOSE_STEPS });
+      }
       break;
 
     case 'diagnosis':
@@ -112,7 +130,7 @@ function paint() {
         onPlan:       runPlan,
         onRestart: () => {
           state.intake = {}; state.result = null; state.plan = null;
-          state.resultFor = ''; state.isSample = false;
+          state.calendar = null; state.resultFor = ''; state.isSample = false;
           save(); go('welcome', 'consult');
         },
       });
@@ -124,11 +142,24 @@ function paint() {
         isSample:     state.isSample,
         businessName: state.resultFor,
         onBack:       () => go('diagnosis', 'diagnose'),
-        onCreate:     () => {
-          // Stage 4 is next. Saying so plainly beats a button that
+        onCreate:     runCalendar,
+      });
+      break;
+
+    case 'create':
+      view = Create({
+        result:       state.calendar,
+        isSample:     state.isSample,
+        businessName: state.resultFor,
+        language:     state.language,
+        onLanguage:   (l) => { state.language = l; save(); },
+        onBack:       () => go('plan', 'plan'),
+        onRun:        () => {
+          // Stage 5 is next. Saying so plainly beats a button that
           // silently does nothing in front of an audience.
-          alert('Stage 4 — the calendar and the content — is being built next. Stages 1 to 3 are finished.');
+          alert('Stage 5 — publishing and competitor watch — is being built next. Stages 1 to 4 are finished.');
         },
+        writePost:    writePost,
       });
       break;
 
@@ -140,6 +171,7 @@ function paint() {
       });
   }
 
+  current = view;
   render(root, Topbar(), h('main', {}, view));
 }
 
@@ -150,6 +182,7 @@ function paint() {
 function showSample() {
   state.result    = SAMPLE_DIAGNOSIS;
   state.plan      = SAMPLE_PLAN;
+  state.calendar  = SAMPLE_CALENDAR;
   state.resultFor = SAMPLE_INTAKE.name;
   state.isSample  = true;
   go('diagnosis', 'diagnose');
@@ -236,6 +269,62 @@ async function runPlan() {
       runPlan,
       showSample);
   }
+}
+
+/* ── stage 4 ────────────────────────────────────────────────────────── */
+async function runCalendar() {
+  if (!state.plan) return go('plan', 'plan');
+  if (state.isSample) { state.calendar = SAMPLE_CALENDAR; return go('create', 'create'); }
+  if (state.calendar) return go('create', 'create');
+
+  go('working', 'create');
+  const screen = root.querySelector('main > div');
+  inflight?.abort();
+  inflight = new AbortController();
+
+  try {
+    state.calendar = await stream(
+      'calendar',
+      { intake:state.intake, diagnosis:state.result, plan:state.plan, language:state.language },
+      { onProgress:(chars) => screen.advance?.(chars) },
+      inflight.signal,
+    );
+    screen.finish?.();
+    go('create', 'create');
+  } catch (err) {
+    if (err.name === 'AbortError') return;
+    screen.fail?.(
+      err instanceof EngineError && err.kind === 'no_key'
+        ? 'No ANTHROPIC_API_KEY is set on this deployment, so the calendar cannot be generated live. The bundled sample includes a finished month you can walk instead.'
+        : err.message ?? 'The calendar failed.',
+      runCalendar,
+      showSample);
+  }
+}
+
+/* One slot → one finished post. Its own small call: this is the tap that
+   has to feel instant, and generating all twelve up front would be slower,
+   dearer, and would produce eleven posts nobody asked for. */
+function writePost(slot, key, { onProgress, onDone, onFail }) {
+  if (state.isSample) {
+    const post = SAMPLE_POSTS[state.language]?.[key];
+    // Only week 1 is pre-written, and only in two languages. Saying that
+    // plainly beats inventing a post and implying it was just generated.
+    return post
+      ? setTimeout(() => onDone(post), 420)
+      : onFail('Only week one is pre-written in the sample, in English and Lebanese. Add an ANTHROPIC_API_KEY to write any slot in any of the four languages.');
+  }
+
+  stream('post',
+    { slot, intake:state.intake, plan:state.plan, language:state.language },
+    { onProgress })
+    .then(onDone)
+    .catch((err) => {
+      if (err.name === 'AbortError') return;
+      onFail(err instanceof EngineError && err.kind === 'no_key'
+        ? 'No ANTHROPIC_API_KEY is set on this deployment.'
+        : err.message ?? 'Writing the post failed.');
+    });
 }
 
 /* ── boot ───────────────────────────────────────────────────────────── */

@@ -36,6 +36,15 @@ export const PLAN_STEPS = [
   { at:7200, label:'Writing your first seven days'              },
 ];
 
+export const CALENDAR_STEPS = [
+  { at:0,    label:'Reading the plan'                          },
+  { at:150,  label:'Choosing content pillars you can repeat'   },
+  { at:900,  label:'Checking what you can actually shoot'      },
+  { at:2000, label:'Laying out four weeks'                     },
+  { at:3600, label:'Tying every slot to the plan'              },
+  { at:5200, label:'Writing the story prompts'                 },
+];
+
 export function Working({ businessName, title, note, steps = DIAGNOSE_STEPS }) {
   const rows = steps.map((s) =>
     h('div.step', { 'data-state':'idle' }, h('i'), h('span', {}, s.label)));

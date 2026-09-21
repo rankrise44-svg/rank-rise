@@ -53,6 +53,55 @@ export function readableError(err) {
   return err?.message || 'Something failed while generating. Try again.';
 }
 
+/* ── content language ───────────────────────────────────────────────────
+   The reason a tool built here beats one built abroad.
+
+   Every international generator produces Modern Standard Arabic that no
+   one in a Beirut comment section has ever written — grammatically perfect
+   and socially wrong, the written equivalent of a news anchor selling you
+   a sandwich. Matching how the market actually writes is not a nice-to-
+   have in this region; it is most of why local content outperforms.
+
+   These rules are deliberately specific. "Write in Lebanese dialect" gets
+   you Egyptian with a few swapped words. */
+export const LANGUAGE_RULES = {
+  en: `Write the captions in English. Plain, warm, and short. No emoji strings,
+no "Dive into", no "Elevate your". Write like a person who runs the shop.`,
+
+  ar: `Write the captions in Modern Standard Arabic (فصحى). Keep it simple and
+contemporary — the Arabic of a well-written brand, not of a newspaper
+editorial. Short sentences. No rhyming, no classical flourishes, no
+ornamental introductions before the point.`,
+
+  'ar-lb': `Write the captions in spoken Lebanese Arabic, in Arabic script.
+
+This is the difference between a caption that gets engagement and one that
+gets ignored, so be exact about it:
+
+- Lebanese, not Egyptian and not Gulf. Use بدي / بدك (not عايز, not أبغى),
+  هلق (not دلوقتي, not الحين), كتير (not أوي, not وايد), شو (not إيه),
+  هيك, منيح, كمان, لهيك, بس, عم + verb for the present (عم نحمّص,
+  عم نشتغل), رح for the future (رح نفتح), ما for negation (ما في, ما بيصير),
+  مش before adjectives and nouns (مش غالي).
+- Mixing English words in is normal and correct — Lebanese brands write
+  "الـdelivery" and "الـorder" and everybody does. Do not sanitise it into
+  pure Arabic. Use the Arabic definite article on them: الـcoffee, الـbags.
+- Keep product names, prices and handles exactly as the business writes
+  them. Never translate a brand name.
+- Write short. Spoken Lebanese on Instagram runs in fragments, not in
+  full sentences with complete clauses.
+- Never write فصحى and call it Lebanese. If a sentence reads like the
+  news, rewrite it the way someone would say it across a counter.`,
+
+  mixed: `Write the captions the way most Lebanese brands actually post: Lebanese
+Arabic in Arabic script for the human parts — the hook, the feeling, the
+call to action — and English for product names, categories, prices and
+anything technical. Follow the Lebanese dialect rules exactly (بدي, هلق,
+كتير, شو, عم + verb, رح, مش) for the Arabic half, and let the English sit
+inside the sentence naturally rather than in a separate block. This is a
+register, not a translation: do not write the caption twice.`,
+};
+
 /* ── the house rules ────────────────────────────────────────────────────
    Prepended to every prompt in the product. This is the part that makes
    the output read like RankRise rather than like a chatbot, and the

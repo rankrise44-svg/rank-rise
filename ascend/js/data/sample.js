@@ -227,3 +227,187 @@ export const SAMPLE_PLAN = {
       mitigation:'Two weeks, no edits, written down before it starts. A test you adjust halfway teaches you nothing, and you only get a few of these at this budget.' },
   ],
 };
+
+export const SAMPLE_CALENDAR = {
+  headline: 'Make the roast date the reason people buy a bag.',
+
+  pillars: [
+    { name:'Roast date', share:'40%',
+      what:'The one claim nobody on the street can answer. Every post in this pillar makes freshness visible rather than stated.' },
+    { name:'Behind the counter', share:'30%',
+      what:'Roasting, grinding, the machine. Process is the cheapest content you have — it already happens every day.' },
+    { name:'Regulars', share:'30%',
+      what:'The people who come back. Word of mouth is already your main channel; this is what makes it shareable.' },
+  ],
+
+  weeks: [
+    { n:1, theme:'Plant the roast-date claim',
+      slots: [
+        { day:'Mon', format:'photo', pillar:'Roast date',
+          angle:'Today\'s roast date, written on the bag, in one photo',
+          serves:'Roast date is an advantage nobody nearby can copy' },
+        { day:'Wed', format:'carousel', pillar:'Behind the counter',
+          angle:'What happens to coffee two weeks, one month, three months past roast',
+          serves:'Roast date is an advantage nobody nearby can copy' },
+        { day:'Sat', format:'photo', pillar:'Regulars',
+          angle:'The order we know before they reach the counter',
+          serves:'Word of mouth is already the main channel' },
+      ] },
+    { n:2, theme:'Show who actually drinks it',
+      slots: [
+        { day:'Mon', format:'photo', pillar:'Roast date',
+          angle:'This week\'s roast, and what it tastes like',
+          serves:'Roast date is an advantage nobody nearby can copy' },
+        { day:'Thu', format:'carousel', pillar:'Regulars',
+          angle:'Three regulars, three different reasons they buy beans',
+          serves:'Word of mouth is already the main channel' },
+        { day:'Sat', format:'photo', pillar:'Behind the counter',
+          angle:'Sunday roast day — the week\'s batch coming out',
+          serves:'Posted to a few times a month — too thin to compound' },
+      ] },
+    { n:3, theme:'The bag starts looking like the coffee',
+      slots: [
+        { day:'Tue', format:'photo', pillar:'Roast date',
+          angle:'The new label, roast date on the front, held in a hand',
+          serves:'The bag does not look like the coffee tastes' },
+        { day:'Thu', format:'carousel', pillar:'Behind the counter',
+          angle:'Why the roast date moved to the front of the bag',
+          serves:'The bag does not look like the coffee tastes' },
+        { day:'Sat', format:'photo', pillar:'Regulars',
+          angle:'A bag on someone\'s kitchen counter, not ours',
+          serves:'The bag does not look like the coffee tastes' },
+      ] },
+    { n:4, theme:'Bags reach past the street',
+      slots: [
+        { day:'Mon', format:'photo', pillar:'Roast date',
+          angle:'Order a bag on WhatsApp, collect it off-peak',
+          serves:'Orders arrive on three channels' },
+        { day:'Wed', format:'text', pillar:'Roast date',
+          angle:'Check the bag in your kitchen — is there a roast date on it?',
+          serves:'Roast date is an advantage nobody nearby can copy' },
+        { day:'Sat', format:'photo', pillar:'Regulars',
+          angle:'The first bag that left Beirut this month',
+          serves:'One machine caps how much demand you can absorb' },
+      ] },
+  ],
+
+  stories: [
+    'The roast date being written on today\'s bags — five seconds, every roast day.',
+    'The machine mid-pour, no words, no music.',
+    'A poll: which origin should we roast next week?',
+    'One regular\'s order being made, from grind to lid.',
+    'The bag going into someone\'s hand across the counter.',
+  ],
+};
+
+/* Pre-written posts for the sample, in two languages, so the language
+   switch can be demonstrated without an API key. Only week 1 is written —
+   any other slot says plainly that live generation is needed, rather than
+   inventing something and pretending it was generated. */
+export const SAMPLE_POSTS = {
+  'ar-lb': {
+    '1:0': {
+      hook: 'شوف التاريخ عالكيس.',
+      caption: 'كل كيس عنا فيه تاريخ التحميص. مش تاريخ إنتاج، مش تاريخ صلاحية — تاريخ التحميص.\n\nهيدا الكيس تحمّص اليوم. رح يوصلك وهو لسا ما مرق عليه أسبوعين.\n\nالفرق بتشمّو أول ما تفتح الكيس. وبتذوقو بأول فنجان.\n\nروح شوف الكيس يلي عندك بالبيت هلق. إذا ما في تاريخ تحميص عليه، في سبب.',
+      cta: 'مرقوا عالمحل أو ابعتولنا واتساب ومنحطلكن كيس عالجنب.',
+      hashtags: ['#specialtycoffee', '#قهوة_مختصة', '#مار_مخايل', '#beirutcoffee', '#roastdate', '#تحميص_طازج', '#habbethal'],
+      visual: {
+        direction: 'One photo, shot on a phone in daylight near the window. The roast date has to be readable at thumbnail size — that is the entire job of this image.',
+        shots: [
+          'Bag held at an angle so the date catches the light, hand in frame.',
+          'Shoot in the morning near the window, no flash.',
+          'Fill the frame — crop so the date is roughly a third of the image.',
+          'Take five and pick the one where the date is sharpest.',
+        ],
+      },
+      alt_text: 'A hand holding a coffee bag, with the roast date printed on the front clearly visible.',
+      note: 'Written around the freshness claim because it is the one thing your competitors cannot answer. The last line asks them to go check their own bag — that is what makes this shareable rather than just informative.',
+    },
+    '1:1': {
+      hook: 'ليش القهوة بتفقد طعمها؟',
+      caption: 'القهوة ما بتخرب. بس بتموت شوي شوي.\n\nبعد أسبوعين عالتحميص، بتبلش تفقد الزيوت يلي بتعطيها الطعم.\n\nبعد شهر، صرت عم تشرب شي تاني.\n\nالقهوة يلي عالرف بالسوبرماركت ما بتعرف إيمتى تحمّصت. ومحّد رح يقلك.\n\nنحنا منحمّص كل أسبوع. لهيك منكتب التاريخ — مش شطارة، بس هيك المفروض تكون.',
+      cta: 'بدك تجرب الفرق؟ ابعتلنا واتساب ونقلك شو طالع هالأسبوع.',
+      hashtags: ['#قهوة_مختصة', '#specialtycoffee', '#beirut', '#مار_مخايل', '#coffeelebanon', '#habbethal'],
+      visual: {
+        direction: 'A four-card carousel, each card one stage in time. Plain background, big type, one bag in shot. It has to be readable while someone scrolls with the sound off.',
+        shots: [
+          'Card 1: the bag, roast date visible. Caption: اليوم.',
+          'Card 2: same framing. Caption: بعد أسبوعين.',
+          'Card 3: same framing. Caption: بعد شهر.',
+          'Card 4: the roast date close up. Caption: لهيك منكتب التاريخ.',
+        ],
+      },
+      alt_text: 'A four-part carousel explaining how coffee loses flavour in the weeks after roasting.',
+      note: 'The line about nobody telling you is doing the work here — it turns a fact about coffee into a reason to distrust the alternative, without naming anyone.',
+    },
+    '1:2': {
+      hook: 'نفس الطلب، كل يوم.',
+      caption: 'في زباين منعرف طلبن قبل ما يوصلوا عالكاونتر.\n\nهيدا مش شي صغير. يعني في شي عم يمشي صح.\n\nما منعمل إعلانات. الناس يلي بتجي، بتجي لأنو حدا قلّها.\n\nشكراً لكل واحد فيكن بيمرق كل يوم. إنتو السبب يلي منفتح لأجلو الصبح.',
+      cta: 'جبلك حدا معك المرة الجاي — فنجانو علينا.',
+      hashtags: ['#مار_مخايل', '#beirutcafe', '#قهوة', '#specialtycoffee', '#habbethal'],
+      visual: {
+        direction: 'The counter mid-service, from behind or from the side. Nobody\'s face needs to be identifiable — hands and a cup carry it, and it means you do not need anyone\'s permission to post.',
+        shots: [
+          'A cup being slid across the counter, hands only.',
+          'Shot from your side of the counter, so it reads as your point of view.',
+          'Slightly warm, slightly grainy is fine here — polish would undercut it.',
+        ],
+      },
+      alt_text: 'A coffee cup being handed across a café counter, hands visible.',
+      note: 'The free-cup offer at the end is the only ask in the post, and it makes the word of mouth you already have into something measurable. Drop it if you cannot absorb the extra cups.',
+    },
+  },
+
+  en: {
+    '1:0': {
+      hook: 'Check the date on the bag.',
+      caption: 'Every bag we sell has a roast date on it. Not a production date. Not an expiry date. The day it was roasted.\n\nThis one was roasted today. It will reach you before it is two weeks old.\n\nYou can smell the difference the moment you open the bag, and taste it in the first cup.\n\nGo and look at the bag in your kitchen right now. If there is no roast date on it, there is a reason.',
+      cta: 'Come by, or send us a WhatsApp and we will put one aside.',
+      hashtags: ['#specialtycoffee', '#beirutcoffee', '#marmikhael', '#roastdate', '#freshlyroasted', '#lebanon', '#habbethal'],
+      visual: {
+        direction: 'One photo, shot on a phone in daylight near the window. The roast date has to be readable at thumbnail size — that is the entire job of this image.',
+        shots: [
+          'Bag held at an angle so the date catches the light, hand in frame.',
+          'Shoot in the morning near the window, no flash.',
+          'Fill the frame — crop so the date is roughly a third of the image.',
+          'Take five and pick the one where the date is sharpest.',
+        ],
+      },
+      alt_text: 'A hand holding a coffee bag, with the roast date printed on the front clearly visible.',
+      note: 'Written around the freshness claim because it is the one thing your competitors cannot answer. The last line asks them to go check their own bag — that is what makes this shareable rather than just informative.',
+    },
+    '1:1': {
+      hook: 'Why does coffee lose its taste?',
+      caption: 'Coffee does not go off. It dies slowly.\n\nTwo weeks after roasting, it starts losing the oils that carry the flavour.\n\nA month after, you are drinking something else.\n\nThe bag on a supermarket shelf does not know when it was roasted. And nobody is going to tell you.\n\nWe roast every week. That is why we print the date — not because it is clever, but because it is what everyone should be doing.',
+      cta: 'Want to taste the difference? Message us and we will tell you what came out this week.',
+      hashtags: ['#specialtycoffee', '#beirutcoffee', '#marmikhael', '#coffeelebanon', '#roastdate', '#habbethal'],
+      visual: {
+        direction: 'A four-card carousel, each card one stage in time. Plain background, big type, one bag in shot. It has to be readable while someone scrolls with the sound off.',
+        shots: [
+          'Card 1: the bag, roast date visible. Caption: Today.',
+          'Card 2: same framing. Caption: Two weeks on.',
+          'Card 3: same framing. Caption: A month on.',
+          'Card 4: the roast date close up. Caption: This is why we print it.',
+        ],
+      },
+      alt_text: 'A four-part carousel explaining how coffee loses flavour in the weeks after roasting.',
+      note: 'The line about nobody telling you is doing the work here — it turns a fact about coffee into a reason to distrust the alternative, without naming anyone.',
+    },
+    '1:2': {
+      hook: 'The same order, every day.',
+      caption: 'There are people whose order we know before they reach the counter.\n\nThat is not a small thing. It means something is working.\n\nWe do not run ads. The people who walk in walk in because somebody told them to.\n\nThank you to everyone who comes by every day. You are the reason we open in the morning.',
+      cta: 'Bring someone with you next time — their cup is on us.',
+      hashtags: ['#marmikhael', '#beirutcafe', '#specialtycoffee', '#coffeelebanon', '#habbethal'],
+      visual: {
+        direction: 'The counter mid-service, from behind or from the side. Nobody\'s face needs to be identifiable — hands and a cup carry it, and it means you do not need anyone\'s permission to post.',
+        shots: [
+          'A cup being slid across the counter, hands only.',
+          'Shot from your side of the counter, so it reads as your point of view.',
+          'Slightly warm, slightly grainy is fine here — polish would undercut it.',
+        ],
+      },
+      alt_text: 'A coffee cup being handed across a café counter, hands visible.',
+      note: 'The free-cup offer at the end is the only ask in the post, and it makes the word of mouth you already have into something measurable. Drop it if you cannot absorb the extra cups.',
+    },
+  },
+};

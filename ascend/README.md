@@ -21,9 +21,9 @@ thinks rather than what a generator does.
 |---|---|---|
 | 1 · Consult  | 7-section intake, saved as you go | **Built** |
 | 2 · Diagnose | Readiness score, 6 pillars, ranked findings, ad-spend verdict | **Built** — live Claude call |
-| 3 · Plan     | 90-day plan sized to real hours and budget | Next |
-| 4 · Create   | Calendar, posts, creative, on-brand, in Arabic/Lebanese | Planned |
-| 5 · Run      | Publishing, competitor ad alerts, analytics | Planned |
+| 3 · Plan     | 90-day plan sized to real hours and budget, every action tied to a finding | **Built** — live Claude call |
+| 4 · Create   | Content pillars, four-week calendar, one-tap post writing in English / MSA / Lebanese / mixed | **Built** — live Claude call |
+| 5 · Run      | Publishing, competitor ad alerts, analytics | Next |
 
 The second track — the student internship marketplace, where AI assigns and
 grades real client tasks — is designed but not started. It is a separate
@@ -73,8 +73,11 @@ js/data/questions.js       ★   the consultation itself
 js/data/sample.js              the no-key sample run (invented business)
 js/lib/{dom,api}.js            tiny DOM helpers · SSE client
 js/screens/*.js                welcome · intake · working · diagnosis
-netlify/functions/_claude.mjs  shared client + the house rules prompt
-netlify/functions/diagnose.mjs the readiness engine
+netlify/functions/_claude.mjs  shared client, house rules, language rules
+netlify/functions/diagnose.mjs stage 2 — the readiness engine
+netlify/functions/plan.mjs     stage 3 — the 90-day plan
+netlify/functions/calendar.mjs stage 4 — four weeks of slots
+netlify/functions/post.mjs     stage 4 — one slot into a finished post
 ```
 
 Two files carry most of the product's value and are the ones to edit:
@@ -85,6 +88,11 @@ Two files carry most of the product's value and are the ones to edit:
   the verdict. The rubric lives in the prompt on purpose: readiness is a
   judgement, and a weighted sum of dropdown indices would produce a number
   that looks precise and means nothing.
+- **`netlify/functions/_claude.mjs`** — `LANGUAGE_RULES`. The Lebanese rules
+  are specific down to individual words (بدي not عايز, هلق not دلوقتي, عم +
+  verb) because "write in Lebanese dialect" reliably returns Egyptian with
+  a few swapped words. This is the part a tool built abroad cannot copy by
+  adding a dropdown.
 
 No build step, no framework. The app is a handful of screens that each
 render once; a bundler would buy nothing here except a bundler.

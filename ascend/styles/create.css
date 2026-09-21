@@ -1,0 +1,144 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   RankRise Ascend — the content month
+
+   Four weeks side by side, so the shape of a month is visible at a glance
+   rather than reconstructed by scrolling. Tapping a slot writes the post.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── pillars strip ─────────────────────────────────────────────────── */
+.pillars-strip{ display:grid; gap:12px; }
+@media(min-width:720px){ .pillars-strip{ grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); } }
+.pill-card{ border:1px solid var(--line); border-radius:var(--r); padding:18px 20px;
+  background:var(--surface); }
+.pill-top{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+.pill-name{ font-weight:600; font-size:15.5px; }
+.pill-share{ font-family:'Anton'; font-size:19px; color:var(--accent-2); }
+.pill-what{ font-size:13.5px; line-height:1.55; color:var(--faint); margin-top:9px; }
+
+/* ── the month ─────────────────────────────────────────────────────── */
+.month{ display:grid; gap:14px; }
+@media(min-width:900px){ .month{ grid-template-columns:repeat(4,1fr); align-items:start; } }
+
+.week{ border:1px solid var(--line); border-radius:var(--r); overflow:hidden; background:var(--surface); }
+.week-head{ padding:15px 17px; border-bottom:1px solid var(--line); background:var(--surface-2); }
+.week-n{ font-size:10.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent-2); }
+.week-theme{ font-size:14.5px; font-weight:600; line-height:1.4; margin-top:6px; }
+
+.slots{ display:grid; }
+.slot{
+  display:grid; gap:7px; text-align:start; width:100%; border:0; cursor:pointer;
+  background:none; color:inherit; padding:14px 17px;
+  border-bottom:1px solid var(--line);
+  transition:background var(--t-tap);
+}
+.slot:last-child{ border-bottom:0; }
+.slot:hover{ background:var(--surface-hi); }
+.slot-top{ display:flex; align-items:center; gap:8px; }
+.slot-day{ font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--dim); }
+.slot-format{
+  font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  border:1px solid var(--line); border-radius:100px; padding:2px 8px; color:var(--faint);
+}
+.slot[data-written="true"] .slot-format{ border-color:var(--good); color:var(--good); }
+.slot-angle{ font-size:14px; line-height:1.45; }
+.slot-serves{ font-size:11.5px; line-height:1.4; color:var(--faint); }
+.slot-go{ font-size:11.5px; font-weight:600; color:var(--accent-2); }
+
+/* ── story prompts ─────────────────────────────────────────────────── */
+.stories-list{ display:grid; gap:2px; border:1px solid var(--line); border-radius:var(--r);
+  overflow:hidden; }
+.story-row{ display:flex; gap:12px; align-items:flex-start; padding:14px 18px;
+  background:var(--surface); font-size:14.5px; line-height:1.5; }
+.story-row::before{ content:""; width:5px; height:5px; border-radius:100px; flex:none;
+  background:var(--accent-2); margin-top:8px; }
+
+/* ── the post panel ────────────────────────────────────────────────────
+   A sheet rather than a new page: the calendar stays behind it, so the
+   month never disappears while a single post is being read. */
+.sheet-veil{
+  position:fixed; inset:0; z-index:80; background:rgba(8,8,13,.7); backdrop-filter:blur(6px);
+  opacity:0; animation:fade var(--t-ui) var(--e-both) forwards;
+}
+@keyframes fade{ to{ opacity:1; } }
+
+.sheet{
+  position:fixed; z-index:81; inset-block:0; inset-inline-end:0;
+  width:min(560px,100%); overflow-y:auto; overscroll-behavior:contain;
+  background:var(--bg2); border-inline-start:1px solid var(--line);
+  padding:clamp(22px,3.4vw,32px) clamp(20px,3vw,30px) calc(40px + env(safe-area-inset-bottom));
+  transform:translateX(100%); animation:slide var(--t-media) var(--e-rise) forwards;
+}
+@keyframes slide{ to{ transform:none; } }
+@media(max-width:620px){
+  .sheet{ inset-block:auto 0; inset-inline:0; width:100%; max-height:92dvh;
+    border-inline-start:0; border-top:1px solid var(--line);
+    border-radius:18px 18px 0 0; transform:translateY(100%); }
+  @keyframes slide{ to{ transform:none; } }
+}
+
+.sheet-head{ display:flex; align-items:flex-start; gap:14px; margin-bottom:22px; }
+.sheet-head .spacer{ flex:1; }
+.sheet-close{
+  width:34px; height:34px; border-radius:100px; flex:none; cursor:pointer;
+  border:1px solid var(--line); background:none; color:var(--dim); font-size:17px; line-height:1;
+  transition:border-color var(--t-tap), color var(--t-tap);
+}
+.sheet-close:hover{ border-color:var(--ink); color:var(--ink); }
+
+.block{ margin-bottom:22px; }
+.block-label{
+  display:flex; align-items:center; gap:10px; margin-bottom:10px;
+  font-size:10.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent-2);
+}
+.block-label .spacer{ flex:1; }
+
+/* Published copy. dir="auto" lets the browser resolve direction from the
+   text itself, so an Arabic caption reads right-to-left and an English one
+   left-to-right without the app having to track which language is set. */
+.copy{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-sm);
+  padding:16px 18px; font-size:15.5px; line-height:1.7; white-space:pre-wrap;
+}
+.copy[dir="rtl"], .copy:dir(rtl){ text-align:right; }
+.hook{ font-size:18px; font-weight:600; line-height:1.4; }
+
+.tags{ display:flex; flex-wrap:wrap; gap:7px; }
+.tag-chip{ font-size:12.5px; color:var(--accent-3); background:rgba(112,98,240,.1);
+  border-radius:100px; padding:6px 11px; }
+
+.shots{ display:grid; gap:9px; counter-reset:shot; }
+.shot{ display:flex; gap:11px; font-size:14px; line-height:1.55; color:var(--dim); }
+.shot::before{
+  counter-increment:shot; content:counter(shot);
+  width:20px; height:20px; border-radius:100px; flex:none; margin-top:1px;
+  border:1px solid var(--line); display:grid; place-items:center;
+  font-size:10.5px; font-weight:700; color:var(--faint);
+}
+
+.owner-note{
+  border-inline-start:2px solid var(--warn); background:var(--warn-dim);
+  border-radius:0 var(--r-sm) var(--r-sm) 0; padding:12px 15px;
+  font-size:13.5px; line-height:1.55; color:var(--ink);
+}
+
+.copy-btn{
+  font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  border:1px solid var(--line); border-radius:100px; background:none; color:var(--dim);
+  padding:5px 12px; cursor:pointer;
+  transition:border-color var(--t-tap), color var(--t-tap);
+}
+.copy-btn:hover{ border-color:var(--ink); color:var(--ink); }
+.copy-btn[data-done="true"]{ border-color:var(--good); color:var(--good); }
+
+/* Inline wait inside the sheet — the same honest step narrative as the
+   full-page one, at panel scale. */
+.sheet-working{ text-align:center; padding-block:clamp(50px,14vh,110px); }
+.sheet-working .pulse{ width:58px; height:58px; margin-bottom:24px; }
+.sheet-working .pulse svg{ width:23px; height:20px; }
+
+/* ── language switch ───────────────────────────────────────────────── */
+.lang-row{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.lang-row .label{ font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); }
