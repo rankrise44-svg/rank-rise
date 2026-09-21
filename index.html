@@ -140,7 +140,7 @@ body.menu-open .wa{ opacity:0; pointer-events:none; }
 .progressbar i{ display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--accent-2)); }
 
 /* ── ENTER / loader ── */
-#enter{ position:fixed; inset:0; z-index:300; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; transition:opacity var(--t-rise) var(--e-both), visibility var(--t-rise); }
+#enter{ position:fixed; inset:0; z-index:300; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding-top:min(34vh,330px); transition:opacity var(--t-rise) var(--e-both), visibility var(--t-rise); }
 /* the plate: overlooking Earth, drifting in a slow breath of a zoom */
 .enter-bg{ position:absolute; inset:0; overflow:hidden; }
 .enter-bg img{ width:100%; height:100%; object-fit:cover; object-position:center 40%; animation:earthDrift 28s ease-in-out infinite alternate; will-change:transform; }
