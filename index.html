@@ -99,6 +99,25 @@ h1,h2,h3{ font-family:'Anton',sans-serif; font-weight:400; letter-spacing:.005em
 .bar.scrolled{ background:rgba(5,5,8,.72); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
 .brand{ display:flex; align-items:center; gap:9px; font-family:'Anton'; font-weight:400; font-size:17px; }
 .brand svg{ width:24px; height:21px; color:var(--accent-2); }
+/* ── 3D mark — the logo turns on its Y axis, endlessly, like a real object.
+   Five stacked copies fan out along Z: silver faces front and back, a darker
+   core between them, so edge-on the mark shows its metal edge instead of
+   vanishing the way a flat plane would. The brightness swell at the quarter
+   turns is the light catching the metal. ── */
+.spin3d{ display:inline-flex; perspective:460px; }
+.spin3d .s3o{ position:relative; display:inline-flex; transform-style:preserve-3d; animation:logoSpin 8s linear infinite; will-change:transform; }
+.spin3d svg{ display:block; }
+.spin3d svg:not(:first-child){ position:absolute; left:0; top:0; }
+.spin3d svg:nth-child(1){ transform:translateZ(3px); animation:logoGlint 8s linear infinite; }
+.spin3d svg:nth-child(2){ transform:translateZ(1.5px); filter:brightness(.45); }
+.spin3d svg:nth-child(3){ filter:brightness(.45); }
+.spin3d svg:nth-child(4){ transform:translateZ(-1.5px); filter:brightness(.45); }
+.spin3d svg:nth-child(5){ transform:translateZ(-3px); animation:logoGlint 8s linear infinite; }
+/* the side of the slab — faces the viewer at the quarter turns, so the mark
+   never blinks out of existence */
+.spin3d .s3e{ position:absolute; top:4%; bottom:4%; left:50%; width:6px; margin-left:-3px; transform:rotateY(90deg); background:linear-gradient(to bottom,#B9BDC4,#71767F 46%,#9FA4AC); border-radius:2px; }
+@keyframes logoSpin{ to{ transform:rotateY(360deg); } }
+@keyframes logoGlint{ 0%,50%,100%{ filter:brightness(1); } 25%,75%{ filter:brightness(1.55); } }
 /* Below 1000px the link row is gone, so the burger is the only door in —
    it exists precisely because the phone had no navigation at all. */
 .burger{ width:42px; height:42px; border-radius:100px; border:1px solid var(--line); background:rgba(5,5,8,.5); backdrop-filter:blur(10px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; cursor:pointer; }
@@ -153,7 +172,8 @@ body.menu-open .wa{ opacity:0; pointer-events:none; }
 #enter .ttl,#enter .sub,#enter .enter-btns,#enter .flame{ position:relative; z-index:2; }
 #enter .ttl,#enter .sub{ text-shadow:0 2px 24px rgba(5,5,8,.8); }
 #enter.done{ opacity:0; visibility:hidden; }
-#enter svg{ width:86px; height:76px; color:var(--accent); animation:riseIn 1.1s var(--e-rise) both; position:relative; z-index:2; }
+#enter .spin3d{ animation:riseIn 1.1s var(--e-rise) both; position:relative; z-index:2; }
+#enter .spin3d svg{ width:86px; height:76px; color:var(--accent); }
 #enter .ttl{ font-family:'Anton'; font-weight:400; font-size:clamp(22px,4vw,34px); letter-spacing:.01em; margin-top:18px; animation:fadeIn .8s .4s both; }
 #enter .sub{ font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--faint); margin-top:6px; animation:fadeIn .8s .6s both; }
 .enter-btns{ display:flex; gap:12px; margin-top:34px; flex-wrap:wrap; justify-content:center; animation:fadeIn .8s .9s both; }
@@ -410,7 +430,9 @@ footer .g{ color:var(--accent-2); }
   /* Nothing may loop, and nothing may travel. Anything that only animated
      opacity is left visible rather than mid-fade. */
   *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; }
-  #enter svg,#enter .ttl,#enter .sub,#enter .enter-btns{ animation:none; opacity:1; transform:none; }
+  #enter .spin3d,#enter svg,#enter .ttl,#enter .sub,#enter .enter-btns{ animation:none; opacity:1; transform:none; }
+  .spin3d .s3o,.spin3d svg{ animation:none !important; transform:none; }
+  .spin3d svg:not(:first-child),.spin3d .s3e{ display:none; }
   .enter-bg img{ animation:none; transform:scale(1.04); }
   .hero h1 .ln span{ animation:none; transform:none; }
   .cue i::after,.tk,.flame i,.flame .sp,.wa::after,.snd.on i,.mkt .dot{ animation:none !important; }
@@ -450,7 +472,7 @@ footer .g{ color:var(--accent-2); }
 <!-- ENTER -->
 <div id="enter">
   <div class="enter-bg" aria-hidden="true"><img src="assets/entry-earth.jpg" alt=""></div>
-  <svg><use href="#rr"/></svg>
+  <span class="spin3d"><span class="s3o"><svg><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><i class="s3e" aria-hidden="true"></i></span></span>
   <div class="flame small" aria-hidden="true"><i class="f1"></i><i class="f2"></i><i class="f3"></i><span class="sp"></span><span class="sp sp2"></span><span class="sp sp3"></span></div>
   <div class="ttl">We build brands that rise.</div>
   <div class="sub">RankRise — The Experience</div>
@@ -462,7 +484,7 @@ footer .g{ color:var(--accent-2); }
 
 <!-- BAR -->
 <header class="bar" id="bar">
-  <a class="brand" href="#top" aria-label="RankRise home"><svg><use href="#rr"/></svg>RankRise</a>
+  <a class="brand" href="#top" aria-label="RankRise home"><span class="spin3d"><span class="s3o"><svg><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><i class="s3e" aria-hidden="true"></i></span></span>RankRise</a>
   <nav class="bar-links" aria-label="Primary">
     <a href="#work">Work</a><a href="#services">Services</a><a href="#expand">Expanding</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>
   </nav>
@@ -521,7 +543,7 @@ footer .g{ color:var(--accent-2); }
 <section id="ascent" aria-label="Our work in motion">
   <div class="stage" id="stage">
     <div class="rocket" id="rocket" aria-hidden="true">
-      <svg viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg>
+      <span class="spin3d"><span class="s3o"><svg viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><svg aria-hidden="true" viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><svg aria-hidden="true" viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><svg aria-hidden="true" viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><svg aria-hidden="true" viewBox="0 0 2270 2008" fill="none"><use href="#rr"/></svg><i class="s3e" aria-hidden="true"></i></span></span>
       <div class="flame" aria-hidden="true"><i class="f1"></i><i class="f2"></i><i class="f3"></i><span class="sp"></span><span class="sp sp2"></span><span class="sp sp3"></span></div>
     </div>
     <div class="fly" data-x="-34" data-z="-260" data-d="0.00" data-s="1.00" data-r="-7" style="width:min(46vw,430px);aspect-ratio:16/10">

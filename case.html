@@ -53,9 +53,25 @@ h1,h2,h3{ font-family:'Anton',sans-serif; font-weight:400; letter-spacing:.005em
 .back:hover{ color:var(--accent-2); }
 .bar .brand{ display:flex; align-items:center; gap:8px; font-family:'Anton'; font-weight:400; font-size:15px; }
 .bar .brand svg{ width:20px; height:18px; color:var(--accent-2); }
+/* 3D mark — same endless Y-axis turn as the home page: five copies fanned
+   along Z (silver faces, dark core) so the edge shows instead of vanishing */
+.spin3d{ display:inline-flex; perspective:460px; }
+.spin3d .s3o{ position:relative; display:inline-flex; transform-style:preserve-3d; animation:logoSpin 8s linear infinite; will-change:transform; }
+.spin3d svg{ display:block; }
+.spin3d svg:not(:first-child){ position:absolute; left:0; top:0; }
+.spin3d svg:nth-child(1){ transform:translateZ(3px); animation:logoGlint 8s linear infinite; }
+.spin3d svg:nth-child(2){ transform:translateZ(1.5px); filter:brightness(.45); }
+.spin3d svg:nth-child(3){ filter:brightness(.45); }
+.spin3d svg:nth-child(4){ transform:translateZ(-1.5px); filter:brightness(.45); }
+.spin3d svg:nth-child(5){ transform:translateZ(-3px); animation:logoGlint 8s linear infinite; }
+/* the side of the slab — faces the viewer at the quarter turns, so the mark
+   never blinks out of existence */
+.spin3d .s3e{ position:absolute; top:4%; bottom:4%; left:50%; width:6px; margin-left:-3px; transform:rotateY(90deg); background:linear-gradient(to bottom,#B9BDC4,#71767F 46%,#9FA4AC); border-radius:2px; }
+@keyframes logoSpin{ to{ transform:rotateY(360deg); } }
+@keyframes logoGlint{ 0%,50%,100%{ filter:brightness(1); } 25%,75%{ filter:brightness(1.55); } }
 .wa-mini{ font-size:12px; font-weight:600; padding:12px 18px; border-radius:100px; background:var(--accent); color:#fff; }
 .wa-mini:hover{ background:#6C52C2; }
-@media(max-width:640px){ .bar .brand span{ display:none; } }
+@media(max-width:640px){ .bar .brand>span:not(.spin3d){ display:none; } }
 
 /* hero */
 .hero{ position:relative; min-height:88svh; display:flex; align-items:flex-end; overflow:hidden; }
@@ -178,6 +194,8 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; }
+  .spin3d .s3o,.spin3d svg{ animation:none !important; transform:none; }
+  .spin3d svg:not(:first-child),.spin3d .s3e{ display:none; }
   .up{ opacity:1; transform:none; transition:none; transition-delay:0ms !important; }
   .gi:hover img,.gi:hover video,.next:hover h2{ transform:none; }
 }
@@ -199,7 +217,7 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
 
 <header class="bar" id="bar">
   <a class="back" href="index.html#work">← All work</a>
-  <a class="brand" href="index.html"><svg><use href="#rr"/></svg><span>RankRise</span></a>
+  <a class="brand" href="index.html"><span class="spin3d"><span class="s3o"><svg><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><i class="s3e" aria-hidden="true"></i></span></span><span>RankRise</span></a>
   <a class="wa-mini hv" href="https://wa.me/96170991555" target="_blank" rel="noopener">WhatsApp</a>
 </header>
 
