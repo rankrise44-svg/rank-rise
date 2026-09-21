@@ -9,6 +9,7 @@ import { AboutPage } from './routes/AboutPage';
 import { LegalPage } from './routes/LegalPage';
 import { PortalPage } from './routes/PortalPage';
 import { NotFoundPage } from './routes/NotFoundPage';
+import { PreviewPage } from './routes/PreviewPage';
 import { TradingProvider } from './state/TradingProvider';
 import { UIProvider } from './state/UIProvider';
 import { ROUTES } from './config/site';
@@ -33,6 +34,8 @@ export default function App() {
               <Route path={ROUTES.about} element={<AboutPage />} />
               <Route path={ROUTES.legal} element={<LegalPage />} />
               <Route path={ROUTES.portal} element={<PortalPage />} />
+              {/* Unlinked: preview of the components the rebuild superseded. */}
+              <Route path="/preview-unused" element={<PreviewPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Routes>

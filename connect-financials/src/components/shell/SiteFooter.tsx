@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Mail, MessageCircle, PlayCircle, Send, Shield } from 'lucide-react';
+import { Layers, Mail, MessageCircle, PlayCircle, Send, Shield } from 'lucide-react';
 import { Logo } from '../brand/Logo';
 import { Container } from '../ui/Layout';
 import { Button } from '../ui/Button';
@@ -98,6 +98,19 @@ export function SiteFooter() {
                   <PlayCircle className="h-3.5 w-3.5" aria-hidden="true" />
                   Replay the cinematic intro
                 </button>
+              </li>
+              {/* Internal, temporary: reachable only from here so the superseded
+                  components can be reviewed. Remove with the route once they are
+                  kept or dropped. */}
+              <li>
+                <Link
+                  to="/preview-unused"
+                  className="inline-flex items-center gap-2 text-small text-text-subtle
+                             transition-colors hover:text-text"
+                >
+                  <Layers className="h-3.5 w-3.5" aria-hidden="true" />
+                  Internal: unused components
+                </Link>
               </li>
             </ul>
           </div>
