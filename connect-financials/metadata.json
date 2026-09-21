@@ -1,0 +1,6 @@
+{
+  "name": "Connect Financials",
+  "description": "Institutional-grade forex & CFD brokerage platform with real-time market data visualization, multi-tier trading accounts, and a secure trader portal.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

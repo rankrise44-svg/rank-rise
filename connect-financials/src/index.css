@@ -1,0 +1,225 @@
+@import 'tailwindcss';
+@import './styles/tokens.css';
+
+/* =============================================================================
+   Base
+   ============================================================================= */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-canvas);
+  color: var(--color-text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv02', 'cv03', 'cv04';
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.6;
+}
+
+section {
+  margin: 0;
+}
+
+/* Numerals in tables, quotes and metrics must not shift width as they tick. */
+.tabular,
+[data-numeric] {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* One focus treatment everywhere, keyboard-only. */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+/* Scrollbars, so the dense panels don't punch a bright hole in the page. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-line-strong);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #3c4a61;
+  background-clip: content-box;
+}
+
+/* =============================================================================
+   Legacy utility bridge
+   =============================================================================
+   The existing components call these class names directly. They keep their
+   names and their jobs — what changes is the intensity. Glow becomes a hint
+   instead of a headline, transforms get smaller, gradients get quieter.
+   ============================================================================= */
+
+@layer utilities {
+  .bg-navy-950 {
+    background-color: var(--color-canvas);
+  }
+  .bg-navy-900 {
+    background-color: var(--color-surface-1);
+  }
+  .bg-navy-850 {
+    background-color: var(--color-surface-2);
+  }
+  .bg-navy-800 {
+    background-color: var(--color-surface-3);
+  }
+  .border-navy-700 {
+    border-color: var(--color-line);
+  }
+  .border-gold-300,
+  .border-gold-500 {
+    border-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  }
+
+  /* Gold text. The gradient is kept for the one or two display headlines that
+     earn it; `text-gold-bright` is the everyday accent text. */
+  .text-gold-gradient {
+    background: linear-gradient(
+      135deg,
+      #e8d49a 0%,
+      var(--color-accent) 55%,
+      var(--color-accent-press) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .text-gold-bright {
+    color: var(--color-accent-hover);
+  }
+
+  .bg-gold-metallic {
+    background: linear-gradient(
+      135deg,
+      var(--color-accent-press) 0%,
+      var(--color-accent-hover) 52%,
+      var(--color-accent-press) 100%
+    );
+  }
+  .bg-gold-metallic-hover:hover {
+    background: linear-gradient(
+      135deg,
+      var(--color-accent) 0%,
+      #e4c67a 52%,
+      var(--color-accent) 100%
+    );
+  }
+
+  /* Elevation without colour. */
+  .shadow-gold {
+    box-shadow: var(--shadow-sm);
+  }
+  .shadow-gold-lg {
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Panels. Flat fill instead of the old translucent gradient + 12px blur:
+     backdrop-filter on a dozen stacked panels was costing real frames. */
+  .fintech-surface {
+    background: var(--color-surface-1);
+    border: 1px solid var(--color-line);
+    transition:
+      border-color var(--duration-base) var(--ease-out),
+      background-color var(--duration-base) var(--ease-out);
+  }
+  .fintech-surface:hover {
+    border-color: var(--color-line-strong);
+    background: var(--color-surface-2);
+  }
+
+  .fintech-grid-pattern {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.018) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.018) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .btn-interactive {
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+  .btn-interactive:active {
+    transform: translateY(0.5px);
+  }
+
+  /* Hover accents. Previously 12px drop-shadow glows on every interactive
+     element; now a colour shift, with the faintest lift on bordered boxes. */
+  .glow-gold-hover {
+    transition: color var(--duration-base) var(--ease-out);
+  }
+  .glow-gold-hover:hover {
+    color: var(--color-accent-hover);
+  }
+
+  .glow-cyan-hover {
+    transition: color var(--duration-base) var(--ease-out);
+  }
+  .glow-cyan-hover:hover {
+    color: var(--color-info);
+  }
+
+  .glow-gold-box {
+    transition:
+      border-color var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out);
+  }
+  .glow-gold-box:hover {
+    border-color: color-mix(in srgb, var(--color-accent) 50%, transparent) !important;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .glow-cyan-box {
+    transition:
+      border-color var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out);
+  }
+  .glow-cyan-box:hover {
+    border-color: color-mix(in srgb, var(--color-info) 45%, transparent) !important;
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+/* =============================================================================
+   Motion preferences
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
