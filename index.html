@@ -140,7 +140,7 @@ body.menu-open .wa{ opacity:0; pointer-events:none; }
 .progressbar i{ display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--accent-2)); }
 
 /* ── ENTER / loader ── */
-#enter{ position:fixed; inset:0; z-index:300; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding-top:min(34vh,330px); transition:opacity var(--t-rise) var(--e-both), visibility var(--t-rise); }
+#enter{ position:fixed; inset:0; z-index:300; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding-top:min(42vh,410px); transition:opacity var(--t-rise) var(--e-both), visibility var(--t-rise); }
 /* the plate: overlooking Earth, drifting in a slow breath of a zoom */
 .enter-bg{ position:absolute; inset:0; overflow:hidden; }
 .enter-bg img{ width:100%; height:100%; object-fit:cover; object-position:center 40%; animation:earthDrift 28s ease-in-out infinite alternate; will-change:transform; }
@@ -151,7 +151,7 @@ body.menu-open .wa{ opacity:0; pointer-events:none; }
 #enter .ttl,#enter .sub,#enter .enter-btns,#enter .flame{ position:relative; z-index:2; }
 #enter .ttl,#enter .sub{ text-shadow:0 2px 24px rgba(8,8,13,.8); }
 #enter.done{ opacity:0; visibility:hidden; }
-#enter svg{ width:60px; height:53px; color:var(--accent); animation:riseIn 1.1s var(--e-rise) both; position:relative; z-index:2; }
+#enter svg{ width:86px; height:76px; color:var(--accent); animation:riseIn 1.1s var(--e-rise) both; position:relative; z-index:2; }
 #enter .ttl{ font-family:'Anton'; font-weight:400; font-size:clamp(22px,4vw,34px); letter-spacing:.01em; margin-top:18px; animation:fadeIn .8s .4s both; }
 #enter .sub{ font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--faint); margin-top:6px; animation:fadeIn .8s .6s both; }
 .enter-btns{ display:flex; gap:12px; margin-top:34px; flex-wrap:wrap; justify-content:center; animation:fadeIn .8s .9s both; }
@@ -159,7 +159,7 @@ body.menu-open .wa{ opacity:0; pointer-events:none; }
 @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
 
 /* ── purple fire ── */
-.flame{ position:relative; width:34px; height:60px; margin-top:-4px; }
+.flame{ position:relative; width:40px; height:70px; margin-top:-5px; }
 .flame i{ position:absolute; left:50%; top:0; transform:translateX(-50%); transform-origin:top center; border-radius:46% 46% 62% 62%/38% 38% 64% 64%; }
 .flame .f1{ width:28px; height:56px; background:linear-gradient(to bottom, rgba(112,98,240,.95), rgba(112,98,240,0) 88%); animation:flick .3s ease-in-out infinite alternate; }
 .flame .f2{ width:17px; height:40px; background:linear-gradient(to bottom, rgba(154,142,245,.95), rgba(154,142,245,0) 85%); animation:flick .24s .07s ease-in-out infinite alternate; }
