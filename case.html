@@ -26,7 +26,7 @@
      own slightly different timings, which read as a different product. */
   --e-rise:cubic-bezier(.2,.7,.2,1);
   --e-media:cubic-bezier(.2,0,0,1);
-  --t-tap:.18s; --t-media:.6s; --t-rise:.9s;
+  --t-tap:.18s; --t-ui:.3s; --t-media:.6s; --t-rise:.9s;
 }
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
 body{ background:var(--bg); color:var(--ink); font-family:'DM Sans',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
@@ -131,11 +131,40 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
 .lb figcaption{ margin-top:14px; font-size:13px; letter-spacing:.05em; color:var(--dim); text-align:center; }
 .lb-x{ position:absolute; top:calc(16px + env(safe-area-inset-top)); right:18px; width:46px; height:46px; border-radius:100px; border:1px solid var(--line); background:rgba(13,13,21,.7); color:var(--ink); font-size:20px; cursor:pointer; display:grid; place-items:center; }
 .lb-x:hover{ border-color:var(--brand); }
-@media(prefers-reduced-motion:reduce){ .lb{ transition:none; } }
+@media(prefers-reduced-motion:reduce){
+  .hv,.hv::before,.hv-lift{ transition:none; }
+  .hv:hover,.hv-lift:hover,.hv:active,.hv-lift:active{ transform:none; } .lb{ transition:none; } }
+
 
 /* rise motion */
 .up{ opacity:0; transform:translateY(36px); transition:opacity var(--t-rise) var(--e-rise), transform var(--t-rise) var(--e-rise); transition-delay:var(--d,0ms); }
 .up.in{ opacity:1; transform:none; }
+
+/* ── presence ──────────────────────────────────────────────────────────
+   Interactive elements lean toward the cursor: a breath of scale, a lift,
+   and a soft brand-purple glow. The glow lives on a ::before layer and
+   only its opacity animates, so any number of elements stay cheap.
+   Touch devices get a press state instead of a hover they cannot make. */
+.hv.hv{ position:relative; transition:transform .42s var(--e-rise), background var(--t-ui), color var(--t-tap), border-color var(--t-tap), opacity var(--t-ui); }
+.hv::before{ content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none; opacity:0;
+  box-shadow:0 0 0 1px rgba(154,142,245,.26), 0 10px 30px -8px rgba(112,98,240,.5), 0 24px 64px -20px rgba(112,98,240,.38);
+  transition:opacity .42s var(--e-rise); }
+.hv:focus-visible::before{ opacity:1; }
+.hv:active{ transform:translateY(-1px) scale(.985); transition-duration:.14s; }
+/* lift-only cousin, for elements whose pseudo layers are already spoken for */
+.hv-lift.hv-lift{ transition:transform .42s var(--e-rise); }
+.hv-lift:active{ transform:scale(.975); transition-duration:.14s; }
+@media(hover:hover) and (pointer:fine){
+  .hv:hover{ transform:translateY(-4px) scale(1.035); z-index:5; }
+  .hv:hover::before{ opacity:1; }
+  .hv-lift:hover{ transform:translateY(-4px) scale(1.03); }
+}
+@media(hover:none){
+  .hv:active{ transform:scale(.965); }
+  .hv:active::before{ opacity:.9; transition-duration:.12s; }
+}
+
+
 
 @media(min-width:700px){
   .meta{ grid-template-columns:repeat(4,1fr); }
@@ -155,7 +184,7 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
 <header class="bar" id="bar">
   <a class="back" href="index.html#work">← All work</a>
   <a class="brand" href="index.html"><svg><use href="#rr"/></svg><span>RankRise</span></a>
-  <a class="wa-mini" href="https://wa.me/96170991555" target="_blank" rel="noopener">WhatsApp</a>
+  <a class="wa-mini hv" href="https://wa.me/96170991555" target="_blank" rel="noopener">WhatsApp</a>
 </header>
 
 <main id="case"></main>
@@ -179,7 +208,7 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
     root.innerHTML='<section class="sec wrap" style="padding-top:22vh;text-align:center">'
       +'<span class="eyebrow">Not found</span><h1 style="font-size:clamp(30px,6vw,64px);margin-top:14px">That case isn\'t here.</h1>'
       +'<p style="color:var(--dim);margin-top:14px">Pick one from the work.</p>'
-      +'<a class="btn" href="index.html#work">← All work</a></section>';
+      +'<a class="btn hv" href="index.html#work">← All work</a></section>';
     return;
   }
 
@@ -207,7 +236,7 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
   const colCount = () => innerWidth >= 1000 ? 3 : innerWidth >= 700 ? 2 : 1;
 
   const tile = e => `
-    <figure class="gi up">
+    <figure class="gi up hv-lift">
       ${e.video
         ? `<video data-src="${esc(e.video)}" ${e.poster?`poster="${esc(e.poster)}"`:''}${e.w?` width="${e.w}" height="${e.h}"`:''} muted loop playsinline preload="none"></video>`
         : `<img src="${esc(e.img)}" alt="${esc(e.cap||'')}"${e.w?` width="${e.w}" height="${e.h}"`:''} loading="lazy" decoding="async">`}
@@ -250,7 +279,7 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
 
   <section class="sec" style="padding-top:0"><div class="wrap">
     <div class="up"><span class="eyebrow">Execution</span><h2 style="font-size:clamp(24px,3.6vw,40px);margin-top:12px">The work.</h2>
-    ${c.chapters&&c.chapters.length>1?`<nav class="chnav" aria-label="Chapters">${c.chapters.map((ch,n)=>`<a href="#ch${n+1}"><b>${String(n+1).padStart(2,'0')}</b>${esc(ch.title||'')}</a>`).join('')}</nav>`:''}</div>
+    ${c.chapters&&c.chapters.length>1?`<nav class="chnav" aria-label="Chapters">${c.chapters.map((ch,n)=>`<a class="hv" href="#ch${n+1}"><b>${String(n+1).padStart(2,'0')}</b>${esc(ch.title||'')}</a>`).join('')}</nav>`:''}</div>
     ${c.chapters && c.chapters.length
       ? c.chapters.map((ch,n)=>`
         <div class="chap" id="ch${n+1}">
@@ -277,8 +306,8 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
   <section class="cta wrap">
     <h2>Ready to <span>rise?</span></h2>
     <div class="cta-row">
-      <a class="btn" href="https://wa.me/96170991555?text=${encodeURIComponent('Hi RankRise! I saw your '+c.title+' case study and I\'d like to hear more about this kind of work.')}" target="_blank" rel="noopener">Ask about this work</a>
-      <a class="btn ghost" href="https://wa.me/96170991555" target="_blank" rel="noopener">Start a project</a>
+      <a class="btn hv" href="https://wa.me/96170991555?text=${encodeURIComponent('Hi RankRise! I saw your '+c.title+' case study and I\'d like to hear more about this kind of work.')}" target="_blank" rel="noopener">Ask about this work</a>
+      <a class="btn ghost hv" href="https://wa.me/96170991555" target="_blank" rel="noopener">Start a project</a>
     </div>
   </section>`;
 
