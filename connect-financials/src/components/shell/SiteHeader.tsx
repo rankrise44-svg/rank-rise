@@ -133,14 +133,21 @@ export function SiteHeader() {
                     >
                       {group.items.map((item) => (
                         <Link
-                          key={item.to}
+                          key={`${item.to}-${item.label}`}
                           to={item.to}
                           className="block rounded-[var(--radius-md)] px-3 py-2.5
                                      transition-colors duration-[var(--duration-fast)]
                                      hover:bg-surface-2"
                         >
-                          <span className="block text-[14px] font-semibold text-text">
+                          <span className="flex items-center gap-2 text-[14px] font-semibold text-text">
                             {item.label}
+                            {item.tag && (
+                              <span className="rounded-[var(--radius-sm)] border border-accent/30
+                                               bg-accent-quiet px-1.5 py-0.5 text-[10px]
+                                               font-bold tracking-wide text-accent">
+                                {item.tag}
+                              </span>
+                            )}
                           </span>
                           {item.description && (
                             <span className="mt-0.5 block text-[12px] leading-snug text-text-muted">
@@ -176,8 +183,14 @@ export function SiteHeader() {
               <Button to={ROUTES.portal} variant="ghost" size="sm">
                 Client portal
               </Button>
+              {/* Wrapped, not `hidden lg:inline-flex` — see the note below. */}
+              <span className="hidden lg:block">
+                <Button variant="secondary" size="sm" onClick={() => openAccountModal('demo')}>
+                  Free demo
+                </Button>
+              </span>
               <Button variant="primary" size="sm" onClick={() => openAccountModal('plus')}>
-                Open account
+                Open live
               </Button>
             </div>
 
@@ -224,7 +237,7 @@ export function SiteHeader() {
                   </span>
                   {group.items.map((item) => (
                     <NavLink
-                      key={item.to}
+                      key={`${item.to}-${item.label}`}
                       to={item.to}
                       className={({ isActive }) =>
                         [
@@ -233,7 +246,16 @@ export function SiteHeader() {
                         ].join(' ')
                       }
                     >
-                      <span className="block text-[15px] font-semibold">{item.label}</span>
+                      <span className="flex items-center gap-2 text-[15px] font-semibold">
+                        {item.label}
+                        {item.tag && (
+                          <span className="rounded-[var(--radius-sm)] border border-accent/30
+                                           bg-accent-quiet px-1.5 py-0.5 text-[10px] font-bold
+                                           tracking-wide text-accent">
+                            {item.tag}
+                          </span>
+                        )}
+                      </span>
                       {item.description && (
                         <span className="mt-0.5 block text-[13px] text-text-muted">
                           {item.description}
@@ -254,6 +276,16 @@ export function SiteHeader() {
                   }}
                 >
                   Open account
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    openAccountModal('demo');
+                  }}
+                >
+                  Open a free demo
                 </Button>
                 <Button to={ROUTES.portal} variant="secondary" size="lg">
                   Client portal

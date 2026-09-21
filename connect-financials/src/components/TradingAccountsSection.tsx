@@ -161,7 +161,7 @@ export const TradingAccountsSection: React.FC<Props> = ({ onOpenAccount, showHea
                   <button
                     id={`open-btn-${tier.id}`}
                     onClick={() => onOpenAccount(tier.id)}
-                    className={`w-full py-2.5 rounded-xl font-bold text-xs transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 transform hover:-translate-y-0.5 active:translate-y-0.5 active:scale-[0.99] whitespace-nowrap glow-gold-hover ${
+                    className={`w-full px-3 py-2.5 rounded-xl font-bold text-xs transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 text-center leading-tight glow-gold-hover ${
                       isPopular
                         ? 'bg-gold-metallic hover:bg-gold-metallic-hover text-slate-950 font-extrabold shadow-gold hover:shadow-gold-lg'
                         : isVip

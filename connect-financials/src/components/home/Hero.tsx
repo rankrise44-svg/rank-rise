@@ -1,5 +1,7 @@
-import { ArrowRight, TrendingDown, TrendingUp } from 'lucide-react';
+import { ArrowRight, Calculator, Check, MonitorPlay, TrendingDown, TrendingUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { EagleEyeMotionVisual } from '../EagleEyeMotionVisual';
+import { MotionChartBackground } from '../MotionChartBackground';
 import { Button } from '../ui/Button';
 import { Container } from '../ui/Layout';
 import { Eyebrow } from '../ui/Badge';
@@ -7,6 +9,19 @@ import { ROUTES } from '../../config/site';
 import { productClaims } from '../../config/compliance';
 import { useTrading } from '../../state/TradingProvider';
 import { useUI } from '../../state/UIProvider';
+
+/**
+ * Hero trust row.
+ *
+ * Sourced from the compliance config so a claim can be withdrawn in one place.
+ * `segregatedFunds` is a regulatory statement: it only appears while the config
+ * asserts it, and the site-wide draft banner flags that it is unconfirmed.
+ */
+function trustPoints(): string[] {
+  const points = ['Low spreads', 'Instant $0 deposit', `Free ${productClaims.demoAccountBalance} practice`];
+  if (productClaims.segregatedFunds) points.splice(1, 0, 'Segregated client funds');
+  return points;
+}
 
 /**
  * Landing hero.
@@ -23,6 +38,19 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden border-b border-line">
+      {/* The animated chart/earth backdrop, restored — but confined to the hero
+          instead of running fixed behind every route. The translateZ makes this
+          wrapper a containing block, so the component's own `fixed inset-0` is
+          clipped to the hero rather than covering the viewport, and the reduced
+          opacity keeps the headline readable over it. */}
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden opacity-45"
+        style={{ transform: 'translateZ(0)' }}
+        aria-hidden="true"
+      >
+        <MotionChartBackground />
+      </div>
+
       <div className="fintech-grid-pattern absolute inset-0 opacity-60" aria-hidden="true" />
 
       <Container wide className="relative">
@@ -40,29 +68,59 @@ export function Hero() {
               execution, and the risk tooling to size every position before you take it.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button variant="primary" size="lg" onClick={() => openAccountModal('plus')}>
-                Open an account
+                Open live account
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Button>
-              <Button to={ROUTES.platform} variant="secondary" size="lg">
-                Explore the platform
+              <Button variant="secondary" size="lg" onClick={() => openAccountModal('demo')}>
+                Try free {productClaims.demoAccountBalance} demo
               </Button>
             </div>
 
-            <p className="mt-4 text-small text-text-subtle">
-              Or practise first with a free {productClaims.demoAccountBalance} demo account — no
-              deposit required.
-            </p>
+            {/* Secondary entry points. The original hero surfaced both of these
+                as buttons; they are destinations, not conversions, so they read
+                as links here. */}
+            <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2">
+              <Link
+                to={ROUTES.tools}
+                className="inline-flex items-center gap-2 text-small font-medium text-text-muted
+                           transition-colors hover:text-accent"
+              >
+                <Calculator className="h-4 w-4" aria-hidden="true" />
+                Risk calculator
+              </Link>
+              <Link
+                to={ROUTES.platform}
+                className="inline-flex items-center gap-2 text-small font-medium text-text-muted
+                           transition-colors hover:text-accent"
+              >
+                <MonitorPlay className="h-4 w-4" aria-hidden="true" />
+                Web terminal
+              </Link>
+            </div>
 
-            {/* Proof points. Deliberately excludes any regulatory claim: those
-                live in the footer, sourced from the compliance config. */}
+            {/* Trust row, restored from the original hero. Each claim is drawn
+                from the compliance config rather than typed into the markup, so
+                any of them can be pulled in one place. */}
+            <ul className="mt-7 flex flex-wrap gap-x-5 gap-y-2.5">
+              {trustPoints().map((point) => (
+                <li key={point} className="flex items-center gap-1.5 text-small text-text-muted">
+                  <Check className="h-3.5 w-3.5 shrink-0 text-accent" aria-hidden="true" />
+                  {point}
+                </li>
+              ))}
+            </ul>
+
+            {/* Proof points. Max leverage is read from the compliance config
+                because it is jurisdiction-dependent — retail leverage is capped
+                far lower in the EU and UK than the headline figure. */}
             <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-line pt-8 sm:grid-cols-4">
               {[
                 { value: '0.0', unit: 'pips', label: 'Min. spread' },
-                { value: '<10', unit: 'ms', label: 'Execution' },
+                { value: '<10', unit: 'ms', label: 'Avg. execution' },
+                { value: productClaims.maxLeverage, unit: '', label: 'Max leverage' },
                 { value: '50+', unit: '', label: 'Instruments' },
-                { value: '24/5', unit: '', label: 'Support' },
               ].map((item) => (
                 <div key={item.label}>
                   <dt className="sr-only">{item.label}</dt>

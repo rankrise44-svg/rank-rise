@@ -621,14 +621,17 @@ export const EagleEyeMotionVisual: React.FC<Props> = ({
 
       {/* Sub-label helper guide */}
       <div className="mt-2.5 flex items-center justify-between w-full px-2 text-xs text-slate-400 font-mono">
-        <span className="flex items-center gap-1.5">
-          <Eye className="w-3.5 h-3.5 text-cyan-400" />
-          <span>
-            {activeMode === 'eagleEye'
-              ? ''
-              : 'Choose between Trading Accounts, News, or History'}
+        {/* In eagle-eye mode the HUD inside the panel already says how to enter
+            Motion FX, so this row has nothing to add — render nothing rather
+            than an icon beside an empty string. */}
+        {activeMode === 'eagleEye' ? (
+          <span />
+        ) : (
+          <span className="flex items-center gap-1.5">
+            <Eye className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Choose between Trading Accounts, News, or History</span>
           </span>
-        </span>
+        )}
         <button
           onClick={() => setActiveMode(activeMode === 'eagleEye' ? 'motionFx' : 'eagleEye')}
           className="text-amber-400 hover:text-amber-300 underline font-medium cursor-pointer"

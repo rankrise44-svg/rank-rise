@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ShieldCheck,
   Building2,
@@ -25,10 +25,17 @@ interface Props {
   onOpenAccount?: () => void;
   /** Set false when a page header above already carries the title. */
   showHeading?: boolean;
+  /** Opens on this policy tab — lets /legal?tab=aml link straight to it. */
+  initialTab?: 'terms' | 'risk' | 'execution' | 'aml' | 'privacy' | 'deposits';
 }
 
-export const LegalTermsAndContactSection: React.FC<Props> = ({ onOpenAccount, showHeading = true }) => {
-  const [activeTab, setActiveTab] = useState<'terms' | 'risk' | 'execution' | 'aml' | 'privacy' | 'deposits'>('terms');
+export const LegalTermsAndContactSection: React.FC<Props> = ({ onOpenAccount, showHeading = true, initialTab = 'terms' }) => {
+  const [activeTab, setActiveTab] = useState<'terms' | 'risk' | 'execution' | 'aml' | 'privacy' | 'deposits'>(initialTab);
+
+  /* Follow later navigations to a different ?tab= value. */
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   const handleCopyEmail = (email: string) => {
