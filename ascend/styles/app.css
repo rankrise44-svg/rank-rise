@@ -1,0 +1,148 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   RankRise Ascend — design system
+
+   Inherited verbatim from rankrise.media so the product reads as the same
+   company: the same near-black canvas, the same violet, Anton over DM Sans,
+   and the --e-rise curve that makes everything arrive from below.
+
+   What the site didn't need and the product does: surfaces (the site is
+   flat, an app needs cards that sit above the page), form controls, and a
+   verdict scale — green/amber/red — for scores and findings.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* ── canvas & ink — from the site ── */
+  --bg:#08080d;  --bg2:#0d0d15;
+  --ink:#f5f4fa; --dim:rgba(245,244,250,.62); --faint:rgba(245,244,250,.36);
+  --accent:#7062f0; --accent-2:#9a8ef5; --accent-3:#cbc4fb;
+  --line:rgba(245,244,250,.12);
+
+  /* ── surfaces — new; an app needs planes the site never did ── */
+  --surface:rgba(245,244,250,.035);
+  --surface-2:rgba(245,244,250,.06);
+  --surface-hi:rgba(112,98,240,.10);
+  --line-hi:rgba(245,244,250,.2);
+
+  /* ── verdict scale — new; scores and findings need a temperature.
+        Chosen to sit on #08080d at >=4.5:1 against the canvas, and to stay
+        distinguishable to red-green colour blindness by leaning the "bad"
+        end toward rose rather than pure red. Never the only signal: every
+        use pairs with a word (Strong / Watch / Blocked). ── */
+  --good:#3ddc97; --good-dim:rgba(61,220,151,.14);
+  --warn:#f5b942; --warn-dim:rgba(245,185,66,.14);
+  --bad:#ff5c72;  --bad-dim:rgba(255,92,114,.14);
+
+  /* ── metrics ── */
+  --pad:clamp(20px,5vw,60px);
+  --maxw:1220px;
+  --r:14px;     /* cards    */
+  --r-sm:10px;  /* controls */
+
+  /* ── motion — the site's four durations and three curves, unchanged ── */
+  --e-rise:cubic-bezier(.2,.7,.2,1);
+  --e-media:cubic-bezier(.2,0,0,1);
+  --e-both:cubic-bezier(.65,0,.35,1);
+  --t-tap:.18s; --t-ui:.3s; --t-media:.6s; --t-rise:.9s;
+  --stagger:70ms;
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:'DM Sans',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  min-height:100dvh; overflow-x:hidden;
+}
+a{ color:inherit; text-decoration:none; }
+img,svg,video{ display:block; max-width:100%; }
+button,input,select,textarea{ font:inherit; color:inherit; }
+::selection{ background:var(--accent); color:#fff; }
+:focus-visible{ outline:2px solid var(--accent-2); outline-offset:3px; border-radius:4px; }
+
+h1,h2,h3{ font-family:'Anton',sans-serif; font-weight:400; letter-spacing:.005em; line-height:.98; }
+
+/* The aurora. One fixed layer, two radial washes in brand violet — the
+   still cousin of the site's WebGL nebula. No canvas, no rAF, no battery. */
+.aurora{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(60vw 60vh at 12% -8%,  rgba(112,98,240,.20), transparent 62%),
+    radial-gradient(52vw 52vh at 92% 12%,  rgba(154,142,245,.12), transparent 60%),
+    radial-gradient(70vw 40vh at 50% 106%, rgba(112,98,240,.10), transparent 68%);
+}
+.aurora::after{  /* grain — stops the gradients from banding on wide screens */
+  content:""; position:absolute; inset:0; opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── shell ─────────────────────────────────────────────────────────── */
+.shell{ position:relative; z-index:1; display:flex; flex-direction:column; min-height:100dvh; }
+.wrap{ width:100%; max-width:var(--maxw); margin-inline:auto; padding-inline:var(--pad); }
+
+.topbar{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; gap:18px;
+  padding:calc(13px + env(safe-area-inset-top)) var(--pad) 13px;
+  background:rgba(8,8,13,.72); backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.logo{ display:flex; align-items:center; gap:9px; font-family:'Anton'; font-size:17px; white-space:nowrap; }
+.logo svg{ width:23px; height:20px; color:var(--accent-2); flex:none; }
+.logo em{ font-family:'DM Sans'; font-style:normal; font-weight:600; font-size:10px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--accent-2);
+  border:1px solid rgba(154,142,245,.4); border-radius:100px; padding:3px 8px; }
+.topbar .spacer{ flex:1; }
+
+main{ flex:1; padding-block:clamp(30px,6vh,64px) clamp(60px,12vh,120px); }
+
+/* ── type ──────────────────────────────────────────────────────────── */
+.eyebrow{
+  display:inline-flex; align-items:center; gap:10px;
+  font-size:11px; font-weight:600; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--accent-2);
+}
+.eyebrow::before{ content:""; width:24px; height:1px; background:currentColor; }
+.h1{ font-size:clamp(34px,6.4vw,66px); margin-top:16px; }
+.h2{ font-size:clamp(24px,3.6vw,40px); }
+.h3{ font-size:clamp(17px,2vw,21px); }
+.lede{ font-size:clamp(16px,1.6vw,19px); line-height:1.6; color:var(--dim); max-width:62ch; }
+.muted{ color:var(--dim); } .faint{ color:var(--faint); }
+.mono{ font-variant-numeric:tabular-nums; font-feature-settings:"tnum"; }
+
+/* ── buttons ───────────────────────────────────────────────────────── */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  font-weight:600; font-size:15px; padding:15px 26px; border-radius:100px;
+  border:1px solid transparent; background:none; cursor:pointer;
+  transition:background var(--t-tap), border-color var(--t-tap), transform var(--t-tap), opacity var(--t-tap);
+}
+.btn-p{ background:var(--accent); color:#fff; box-shadow:0 10px 34px -12px rgba(112,98,240,.6); }
+.btn-p:hover:not(:disabled){ background:#574ae0; transform:translateY(-2px); }
+.btn-o{ border-color:var(--line); }
+.btn-o:hover:not(:disabled){ border-color:var(--ink); }
+.btn-q{ color:var(--dim); padding-inline:14px; }
+.btn-q:hover:not(:disabled){ color:var(--ink); }
+.btn:disabled{ opacity:.4; cursor:not-allowed; }
+.btn-sm{ font-size:13px; padding:10px 18px; }
+
+/* ── cards ─────────────────────────────────────────────────────────── */
+.card{
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--r); padding:clamp(20px,3vw,30px);
+}
+.card-hi{ background:var(--surface-hi); border-color:rgba(154,142,245,.3); }
+.grid{ display:grid; gap:14px; }
+@media(min-width:700px){ .grid-2{ grid-template-columns:repeat(2,1fr); } }
+@media(min-width:900px){ .grid-3{ grid-template-columns:repeat(3,1fr); } }
+
+/* ── the rise: the app's one entrance animation ────────────────────── */
+.rise{ opacity:0; transform:translateY(22px);
+  animation:rise var(--t-rise) var(--e-rise) forwards; animation-delay:var(--d,0ms); }
+@keyframes rise{ to{ opacity:1; transform:none; } }
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important;
+    transition-duration:.01ms !important; }
+  .rise{ opacity:1; transform:none; }
+}

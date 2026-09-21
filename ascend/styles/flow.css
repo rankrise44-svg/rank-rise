@@ -1,0 +1,195 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   RankRise Ascend — the consultation flow
+
+   Everything specific to the five stages: the stage rail, the intake form,
+   the analysis wait, and the readiness verdict. Tokens come from app.css.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── stage rail ────────────────────────────────────────────────────────
+   The spine of the product: five stages, always visible, so nobody ever
+   wonders how deep they are. Collapses to a bar + label on phones, where
+   five labels would each get 60px and become unreadable. */
+.rail{ display:flex; align-items:center; gap:0; overflow:hidden; }
+.rail-step{
+  display:flex; align-items:center; gap:8px;
+  font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--faint); white-space:nowrap;
+  transition:color var(--t-ui);
+}
+.rail-step + .rail-step::before{
+  content:""; width:clamp(14px,3vw,34px); height:1px; margin-inline:10px;
+  background:var(--line); flex:none;
+}
+.rail-step i{
+  width:20px; height:20px; border-radius:100px; flex:none;
+  border:1px solid var(--line); display:grid; place-items:center;
+  font-style:normal; font-size:10px; font-weight:700;
+  transition:border-color var(--t-ui), background var(--t-ui), color var(--t-ui);
+}
+.rail-step[data-state="done"]{ color:var(--dim); }
+.rail-step[data-state="done"] i{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.rail-step[data-state="now"]{ color:var(--ink); }
+.rail-step[data-state="now"] i{ border-color:var(--accent-2); color:var(--accent-2); box-shadow:0 0 0 4px rgba(112,98,240,.16); }
+@media(max-width:860px){ .rail-step span{ display:none; } .rail-step[data-state="now"] span{ display:inline; } }
+
+/* ── intake ────────────────────────────────────────────────────────── */
+.intake{ max-width:760px; margin-inline:auto; }
+.section-count{ font-size:12px; font-weight:600; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--accent-2); }
+
+.progress{ height:2px; background:var(--line); border-radius:2px; overflow:hidden; margin-block:22px 34px; }
+.progress i{ display:block; height:100%; background:var(--accent);
+  transition:width var(--t-media) var(--e-media); }
+
+.q{ padding-block:22px; border-bottom:1px solid var(--line); }
+.q:last-of-type{ border-bottom:0; }
+.q-label{ display:block; font-size:16px; font-weight:600; margin-bottom:4px; }
+.q-label .req{ color:var(--accent-2); margin-inline-start:4px; }
+.q-help{ font-size:13.5px; line-height:1.5; color:var(--faint); margin-bottom:14px; max-width:58ch; }
+
+.field{
+  width:100%; background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--r-sm); padding:13px 15px; font-size:15px;
+  transition:border-color var(--t-tap), background var(--t-tap);
+}
+.field::placeholder{ color:var(--faint); }
+.field:hover{ border-color:var(--line-hi); }
+.field:focus{ outline:none; border-color:var(--accent-2); background:var(--surface-2); }
+textarea.field{ min-height:96px; resize:vertical; line-height:1.55; }
+select.field{
+  appearance:none; cursor:pointer; padding-inline-end:40px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a8ef5' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 15px center;
+}
+select.field option{ background:var(--bg2); color:var(--ink); }
+
+/* chips — used for both single and multi choice; the only difference is
+   whether picking one clears the others, which is the JS's business. */
+.chips{ display:flex; flex-wrap:wrap; gap:9px; }
+.chip{
+  border:1px solid var(--line); border-radius:100px; background:var(--surface);
+  padding:10px 17px; font-size:14px; cursor:pointer; color:var(--dim);
+  transition:border-color var(--t-tap), background var(--t-tap), color var(--t-tap);
+}
+.chip:hover{ border-color:var(--line-hi); color:var(--ink); }
+.chip[aria-pressed="true"]{
+  background:var(--surface-hi); border-color:var(--accent-2); color:var(--ink);
+}
+
+/* scale — a 1–5 row that reads as one control, not five buttons */
+.scale{ display:flex; gap:7px; }
+.scale button{
+  flex:1; border:1px solid var(--line); border-radius:var(--r-sm);
+  background:var(--surface); padding:14px 0; cursor:pointer;
+  font-family:'Anton'; font-size:18px; color:var(--faint);
+  transition:border-color var(--t-tap), background var(--t-tap), color var(--t-tap);
+}
+.scale button:hover{ border-color:var(--line-hi); color:var(--ink); }
+.scale button[aria-pressed="true"]{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.scale-ends{ display:flex; justify-content:space-between; font-size:12px; color:var(--faint); margin-top:8px; }
+
+.nav-row{ display:flex; align-items:center; gap:12px; margin-top:34px; }
+.nav-row .spacer{ flex:1; }
+
+/* ── analysis wait ─────────────────────────────────────────────────────
+   A real progress narrative, not a spinner. Each line is a step the engine
+   is actually doing, and it advances as bytes arrive from the model — so
+   what the screen claims is happening is what is happening. */
+.working{ max-width:620px; margin-inline:auto; text-align:center; padding-block:clamp(40px,10vh,90px); }
+.pulse{
+  width:76px; height:76px; margin:0 auto 34px; border-radius:100px;
+  border:1px solid rgba(154,142,245,.35); display:grid; place-items:center;
+  animation:pulse 2.4s var(--e-both) infinite;
+}
+.pulse svg{ width:30px; height:26px; color:var(--accent-2); }
+@keyframes pulse{
+  0%,100%{ box-shadow:0 0 0 0 rgba(112,98,240,.30); }
+  50%    { box-shadow:0 0 0 20px rgba(112,98,240,0); }
+}
+.steps{ display:grid; gap:11px; margin-top:34px; text-align:start; }
+.step{ display:flex; align-items:center; gap:12px; font-size:14.5px; color:var(--faint);
+  transition:color var(--t-ui); }
+.step i{ width:16px; height:16px; border-radius:100px; border:1px solid var(--line);
+  flex:none; transition:all var(--t-ui); }
+.step[data-state="now"]{ color:var(--ink); }
+.step[data-state="now"] i{ border-color:var(--accent-2); box-shadow:0 0 0 3px rgba(112,98,240,.18); }
+.step[data-state="done"]{ color:var(--dim); }
+.step[data-state="done"] i{ background:var(--accent); border-color:var(--accent); }
+
+/* ── readiness verdict ─────────────────────────────────────────────────
+   The number is the hook — it is the one thing a judge remembers. Anton at
+   display size, inside a ring that draws itself once on reveal. */
+.verdict{ display:grid; gap:clamp(26px,4vw,44px); align-items:center; }
+@media(min-width:860px){ .verdict{ grid-template-columns:auto 1fr; } }
+
+.ring{ position:relative; width:clamp(190px,26vw,236px); aspect-ratio:1; margin-inline:auto; }
+.ring svg{ width:100%; height:100%; transform:rotate(-90deg); }
+.ring circle{ fill:none; stroke-width:9; stroke-linecap:round; }
+.ring .track{ stroke:var(--line); }
+.ring .fill{
+  stroke:var(--score, var(--accent));
+  stroke-dasharray:var(--circ); stroke-dashoffset:var(--circ);
+  animation:draw 1.5s var(--e-rise) .25s forwards;
+  filter:drop-shadow(0 0 14px color-mix(in srgb, var(--score, var(--accent)) 45%, transparent));
+}
+@keyframes draw{ to{ stroke-dashoffset:var(--offset); } }
+.ring .mid{
+  position:absolute; inset:0; display:grid; place-content:center; text-align:center; gap:2px;
+}
+.ring .num{ font-family:'Anton'; font-size:clamp(54px,8vw,70px); line-height:.9;
+  font-variant-numeric:tabular-nums; }
+.ring .out-of{ font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); }
+.ring .band{ font-size:12px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--score, var(--accent)); margin-top:6px; }
+
+/* pillars */
+.pillars{ display:grid; gap:2px; border:1px solid var(--line); border-radius:var(--r); overflow:hidden; }
+.pillar{ display:grid; grid-template-columns:1fr auto; gap:4px 16px; align-items:center;
+  padding:15px clamp(15px,2.4vw,22px); background:var(--surface); }
+.pillar-name{ font-weight:600; font-size:15px; }
+.pillar-val{ font-family:'Anton'; font-size:21px; color:var(--score);
+  font-variant-numeric:tabular-nums; }
+.pillar-bar{ grid-column:1/-1; height:3px; border-radius:3px; background:var(--line); overflow:hidden; }
+.pillar-bar i{ display:block; height:100%; background:var(--score); width:0;
+  animation:grow 1.1s var(--e-media) forwards; animation-delay:var(--d,0ms); }
+@keyframes grow{ to{ width:var(--w); } }
+.pillar-note{ grid-column:1/-1; font-size:13.5px; line-height:1.5; color:var(--faint); }
+
+/* findings */
+.finding{ display:grid; grid-template-columns:auto 1fr; gap:4px 14px;
+  padding-block:18px; border-bottom:1px solid var(--line); }
+.finding:last-child{ border-bottom:0; }
+/* The pill carries its own shape, so it reads the same inside a finding and
+   standing alone above the ad-viability verdict. */
+.tag{
+  display:inline-block; align-self:start; white-space:nowrap;
+  font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  padding:5px 10px; border-radius:100px;
+}
+.tag-bad { background:var(--bad-dim);  color:var(--bad);  }
+.tag-warn{ background:var(--warn-dim); color:var(--warn); }
+.tag-good{ background:var(--good-dim); color:var(--good); }
+.finding h4{ font-family:'DM Sans'; font-weight:600; font-size:16px; line-height:1.35; align-self:center; }
+.finding p{ grid-column:2; font-size:14.5px; line-height:1.6; color:var(--dim); }
+.finding .fix{ grid-column:2; font-size:14px; line-height:1.55; color:var(--accent-3); }
+.finding .fix b{ color:var(--accent-2); font-weight:600; }
+@media(max-width:560px){
+  .finding{ grid-template-columns:1fr; }
+  .finding p,.finding .fix{ grid-column:1; }
+}
+
+/* ── honesty banner ────────────────────────────────────────────────────
+   Shown whenever the screen is rendering the bundled sample rather than a
+   live analysis. Non-negotiable: a demo must never pass fiction off as a
+   real result — least of all in front of judges who will ask. */
+.sample-note{
+  display:flex; align-items:center; gap:10px; margin-bottom:22px;
+  border:1px dashed var(--warn); background:var(--warn-dim); color:var(--warn);
+  border-radius:var(--r-sm); padding:11px 15px; font-size:13px; line-height:1.45;
+}
+.sample-note b{ font-weight:700; letter-spacing:.06em; text-transform:uppercase; font-size:11px; }
+
+.error-note{
+  border:1px solid var(--bad); background:var(--bad-dim); color:var(--bad);
+  border-radius:var(--r-sm); padding:14px 16px; font-size:14px; line-height:1.5;
+}

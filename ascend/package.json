@@ -1,0 +1,15 @@
+{
+  "name": "rankrise-ascend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "RankRise Ascend — the consultation-first marketing engine. Diagnose the business, then build and run the plan.",
+  "type": "module",
+  "scripts": {
+    "dev": "netlify dev",
+    "serve": "python3 -m http.server 8000"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.70.0",
+    "zod": "^3.25.0"
+  }
+}

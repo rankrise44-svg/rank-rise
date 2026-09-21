@@ -1,0 +1,29 @@
+# RankRise Ascend — hosting.
+#
+# The app is static files; the only server-side code is the Claude proxy in
+# netlify/functions. The API key never reaches the browser.
+
+[build]
+  publish    = "."
+  command    = "echo 'static — nothing to build'"
+  functions  = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Claude calls stream, and a diagnosis on a real business can run long.
+# 26s is the ceiling Netlify allows on a synchronous function.
+[functions."*"]
+  timeout = 26
+
+[[redirects]]
+  from   = "/api/*"
+  to     = "/.netlify/functions/:splat"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
