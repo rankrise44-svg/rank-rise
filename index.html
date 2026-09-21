@@ -145,11 +145,25 @@ body.menu-open .wa{ opacity:0; pointer-events:none; }
 .mnav-foot{ display:flex; gap:12px; flex-wrap:wrap; }
 .mnav-foot .chip{ font-size:14px; padding:14px 22px; }
 
-.bar-links{ display:none; gap:26px; }
-.bar-links a{ font-size:13px; font-weight:500; color:var(--dim); display:inline-block; transition:color var(--t-tap), transform .3s var(--e-rise); }
-.bar-links a:hover{ transform:translateY(-2px); }
-.bar-links a:hover{ color:#fff; }
-.bar-right{ display:flex; align-items:center; gap:10px; }
+.bar-links{ display:none; gap:30px; }
+.bar-links a{ position:relative; font-size:11.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); display:inline-block; padding:6px 0; transition:color var(--t-ui), transform .3s var(--e-rise); }
+.bar-links a::after{ content:""; position:absolute; left:0; bottom:0; height:1.5px; width:100%; border-radius:2px; background:linear-gradient(90deg,var(--accent-2),var(--teal-2)); transform:scaleX(0); transform-origin:left; transition:transform .34s var(--e-rise); }
+.bar-links a:hover{ color:var(--ink); transform:translateY(-2px); }
+.bar-links a:hover::after{ transform:scaleX(1); }
+/* the little rocket that crosses the bar on entry — it launches beside the
+   brand, streaks to the right edge and burns out, and each nav word lights
+   up the moment it passes overhead. Start point and per-word delays are
+   measured in JS so the wake matches the real layout. */
+.skyrocket{ position:absolute; left:0; top:50%; z-index:1; display:none; align-items:center; pointer-events:none; will-change:transform; filter:drop-shadow(0 0 10px rgba(127,100,208,.55)); }
+.skyrocket svg{ width:17px; height:15px; transform:rotate(90deg); color:var(--accent); }
+.skyrocket i{ order:-1; width:46px; height:2px; margin-right:3px; border-radius:2px; transform-origin:right center;
+  background:linear-gradient(90deg, transparent, rgba(127,100,208,.12) 30%, var(--accent-2) 75%, #E4DCFA); animation:tailflick .16s ease-in-out infinite alternate; }
+@keyframes tailflick{ from{ transform:scaleX(.72); opacity:.8; } to{ transform:scaleX(1.08); opacity:1; } }
+.bar.flying .skyrocket{ display:flex; animation:skyfly var(--fly-t,1.6s) cubic-bezier(.45,.05,.6,1) forwards; }
+@keyframes skyfly{ from{ transform:translate(var(--fly-x0,120px),-50%); opacity:1; } 92%{ opacity:1; } to{ transform:translate(calc(100vw + 80px),-50%); opacity:0; } }
+.bar.flying .bar-links a{ opacity:0; transform:translateY(9px); animation:navIn .55s var(--e-rise) var(--nd,0ms) forwards; }
+@keyframes navIn{ to{ opacity:1; transform:none; } }
+.bar-right{ display:flex; align-items:center; gap:10px; position:relative; z-index:2; }
 .chip{ display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:600; padding:10px 16px; border-radius:100px; border:1px solid var(--line); background:rgba(5,5,8,.5); backdrop-filter:blur(10px); transition:var(--t-tap); cursor:pointer; }
 .chip:hover{ border-color:var(--accent); color:#fff; }
 .chip.solid{ background:var(--accent); border-color:var(--accent); color:#fff; }
@@ -488,6 +502,7 @@ footer .g{ color:var(--accent-2); }
 <!-- BAR -->
 <header class="bar" id="bar">
   <a class="brand" href="#top" aria-label="RankRise home"><span class="spin3d"><span class="s3o"><svg><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><i class="s3e" aria-hidden="true"></i></span></span>RankRise</a>
+  <span class="skyrocket" id="skyrocket" aria-hidden="true"><svg><use href="#rr"/></svg><i></i></span>
   <nav class="bar-links" aria-label="Primary">
     <a href="#work">Work</a><a href="#services">Services</a><a href="#expand">Expanding</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>
   </nav>
@@ -827,6 +842,20 @@ function doEnter(withSound){
   enterEl.classList.add('done');
   if(withSound) setSound(true);
   const hv=document.getElementById('heroVid'); hv&&hv.play&&hv.play().catch(()=>{});
+  /* rocket flyby across the bar — nav words light up in its wake */
+  if(!reduce){
+    const bar=document.getElementById('bar');
+    const br=document.querySelector('.bar .brand').getBoundingClientRect();
+    const x0=Math.round(br.right+16), T=1600, end=innerWidth+80;
+    bar.style.setProperty('--fly-x0',x0+'px'); bar.style.setProperty('--fly-t',T+'ms');
+    bar.querySelectorAll('.bar-links a').forEach(a=>{
+      const x=a.getBoundingClientRect().left;
+      a.style.setProperty('--nd', Math.max(0,Math.round(T*(x-x0)/(end-x0)))+'ms');
+    });
+    bar.classList.add('flying');
+    const rk=document.getElementById('skyrocket');
+    rk.addEventListener('animationend',e=>{ if(e.animationName==='skyfly') rk.style.display='none'; });
+  }
 }
 document.getElementById('enterSound').addEventListener('click',()=>doEnter(true));
 document.getElementById('enterMute').addEventListener('click',()=>doEnter(false));
