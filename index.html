@@ -128,16 +128,20 @@ h1,h2,h3{ font-family:'Anton',sans-serif; font-weight:400; letter-spacing:.005em
 
 .mnav{ position:fixed; inset:0; z-index:85; background:rgba(5,5,8,.96); backdrop-filter:blur(18px);
   display:flex; flex-direction:column; justify-content:center; gap:40px; padding:calc(70px + env(safe-area-inset-top)) var(--pad) calc(34px + env(safe-area-inset-bottom));
-  opacity:0; visibility:hidden; transition:opacity var(--t-ui) var(--e-both), visibility var(--t-ui); }
+  opacity:0; visibility:hidden; transition:opacity .45s var(--e-both), visibility .45s; }
 .mnav.open{ opacity:1; visibility:visible; }
 /* the menu carries its own WhatsApp — the floating one bows out while it's open */
 body.menu-open .wa{ opacity:0; pointer-events:none; }
-.mnav nav{ display:flex; flex-direction:column; gap:6px; }
-.mnav nav a{ display:flex; align-items:baseline; gap:16px; font-family:'Anton'; font-weight:400; font-size:clamp(30px,9vw,44px); letter-spacing:.005em; padding:8px 0;
-  opacity:0; transform:translateY(26px); transition:opacity var(--t-media) var(--e-rise), transform var(--t-media) var(--e-rise); transition-delay:var(--d,0ms); }
-.mnav.open nav a{ opacity:1; transform:none; }
-.mnav nav a em{ font-family:'DM Sans'; font-style:normal; font-weight:600; font-size:12px; letter-spacing:.2em; color:var(--accent-2); }
-.mnav nav a:active{ color:var(--accent-2); }
+/* each link rises out of its own mask, staggered — the same line reveal the
+   hero uses. The mask lives on an inner span so the presence glow on the
+   link itself never gets clipped. */
+.mnav nav{ display:flex; flex-direction:column; gap:4px; transform:translateY(12px); transition:transform .6s var(--e-rise); }
+.mnav.open nav{ transform:none; }
+.mnav nav a{ font-family:'DM Sans',sans-serif; font-weight:600; font-size:clamp(26px,7.4vw,40px); letter-spacing:.015em; color:var(--dim); padding:10px 14px; margin-inline:-14px; border-radius:14px; }
+.mnav nav a .msk{ display:block; overflow:hidden; }
+.mnav nav a .msk>span{ display:block; transform:translateY(118%); transition:transform .65s var(--e-rise); transition-delay:var(--d,0ms); }
+.mnav.open nav a .msk>span{ transform:none; }
+.mnav nav a:hover,.mnav nav a:active{ color:var(--ink); }
 .mnav-foot{ display:flex; gap:12px; flex-wrap:wrap; }
 .mnav-foot .chip{ font-size:14px; padding:14px 22px; }
 
@@ -440,7 +444,7 @@ footer .g{ color:var(--accent-2); }
   .fly{ position:static; width:100% !important; height:auto !important; aspect-ratio:4/3; transform:none !important; }
   .rocket,.milestone{ display:none; }
   .curdot,.curring{ display:none; }
-  .mnav,.mnav nav a{ transition:none; transform:none; }
+  .mnav,.mnav nav,.mnav nav a,.mnav nav a .msk>span{ transition:none; transform:none; }
   .hv,.hv::before,.hv-lift{ transition:none; }
   .hv:hover,.hv-lift:hover,.hv:active,.hv-lift:active{ transform:none; }
   .up{ opacity:1; transform:none; transition:none; transition-delay:0ms !important; }
@@ -498,11 +502,11 @@ footer .g{ color:var(--accent-2); }
 <!-- MOBILE MENU — the only navigation below 1000px -->
 <div class="mnav" id="mnav" aria-hidden="true">
   <nav aria-label="Menu">
-    <a href="#work"><em>01</em>Work</a>
-    <a href="#services"><em>02</em>Services</a>
-    <a href="#expand"><em>03</em>Expanding</a>
-    <a href="#faq"><em>04</em>FAQ</a>
-    <a href="#contact"><em>05</em>Contact</a>
+    <a class="hv hv-soft" href="#work"><span class="msk"><span>Work</span></span></a>
+    <a class="hv hv-soft" href="#services"><span class="msk"><span>Services</span></span></a>
+    <a class="hv hv-soft" href="#expand"><span class="msk"><span>Expanding</span></span></a>
+    <a class="hv hv-soft" href="#faq"><span class="msk"><span>FAQ</span></span></a>
+    <a class="hv hv-soft" href="#contact"><span class="msk"><span>Contact</span></span></a>
   </nav>
   <div class="mnav-foot">
     <a class="chip hv" href="portal.html">Client Login</a>
