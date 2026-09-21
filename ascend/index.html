@@ -19,6 +19,7 @@
 
 <link rel="stylesheet" href="styles/app.css">
 <link rel="stylesheet" href="styles/flow.css">
+<link rel="stylesheet" href="styles/plan.css">
 
 <style>
   /* Print is a real surface here: the diagnosis is the thing an owner
@@ -31,7 +32,9 @@
     .lede,.muted,.pillar-note,.finding p{ color:#333; }
     .rise{ animation:none; opacity:1; transform:none; }
     .ring .fill{ animation:none; stroke-dashoffset:var(--offset); }
-    .pillar-bar i{ animation:none; width:var(--w); }
+    .pillar-bar i,.split-bar i{ animation:none; width:var(--w); }
+    .timeline::before,.phase-dot{ border-color:#ccc; color:#555; background:#fff; }
+    .action,.north,.action-ties{ background:#fafafa; border-color:#ddd; }
   }
 </style>
 </head>

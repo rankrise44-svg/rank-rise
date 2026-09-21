@@ -127,3 +127,103 @@ export const SAMPLE_DIAGNOSIS = {
     'A label that carries the roast date on the front.',
   ],
 };
+
+export const SAMPLE_PLAN = {
+  headline: 'Fix the counter, then sell bags to people who never walk past.',
+
+  north_star: {
+    metric: '250g bags sold per month',
+    why:    'Footfall is capped by one machine and one barista, so growth has to come from the thing that does not queue. Bags also carry your best margin and travel further than your street.',
+    check:  'A paper tally by the till, counted every Sunday night. You have no tracking today, so week one builds the simplest thing that cannot break.',
+  },
+
+  phases: [
+    {
+      n:1, name:'Stop the leak', days:'Days 1–30',
+      goal:  'Nothing is lost between someone asking and someone paying, and you finally know what a bag earns you.',
+      why:   'Every pound of attention you generate later flows through this gap. Widening the top of a leaking funnel just loses more people, more expensively.',
+      actions: [
+        { week:1, title:'Set a WhatsApp greeting and two saved replies', owner:'you', hours:1,
+          detail:'Turn on WhatsApp Business auto-greeting with your hours, and save replies for the two questions you get most — price and whether you have beans in. Anyone messaging out of hours gets an answer instead of silence.',
+          ties_to:'Messages sit unanswered until someone notices' },
+        { week:1, title:'Fix two message slots a day', owner:'you', hours:2.5,
+          detail:'11am and 5pm, one person clears every channel — WhatsApp, DMs, everything. Ten minutes each. The goal is that nobody waits more than a few hours, not that you answer instantly.',
+          ties_to:'Messages sit unanswered until someone notices' },
+        { week:2, title:'Cost one 250g bag end to end', owner:'you', hours:3,
+          detail:'Green beans, roast loss, bag, label, labour. One afternoon with a calculator. Until this number exists, nobody can tell you whether an ad is a win or a slow loss.',
+          ties_to:'You do not know what a bag earns you' },
+        { week:2, title:'Start the till tally', owner:'your team', hours:0.5,
+          detail:'One sheet of paper by the register: how did you hear about us? Five options and a box for other. Every new face, one tick. Nothing more sophisticated is needed for 90 days.',
+          ties_to:'Nothing tells you where a customer came from' },
+        { week:3, title:'Put the roast date on the profile', owner:'you', hours:1,
+          detail:'Rewrite the Instagram bio so the first line is the roast-date claim, and pin one post that explains it. This is the one thing your competitors cannot answer, and almost nothing you publish currently says it.',
+          ties_to:'Roast date is an advantage nobody nearby can copy' },
+      ],
+    },
+    {
+      n:2, name:'Make the bag look like the coffee', days:'Days 31–60',
+      goal:  'The bag becomes something a first-time buyer trusts and an existing customer photographs.',
+      why:   'Now that replies land and you know your margin, it is worth making the thing you are selling look worth buying. Doing this first would have meant a prettier bag nobody could ask about.',
+      actions: [
+        { week:5, title:'Redesign the label on existing stock', owner:'a freelancer', hours:8,
+          detail:'One label, not a rebrand. Roast date large on the front, origin below it, your mark small. It has to work printed on the bags you already own — no new stock, no waiting.',
+          ties_to:'The bag does not look like the coffee tastes' },
+        { week:6, title:'Shoot the bag properly once', owner:'a freelancer', hours:6,
+          detail:'Half a day, natural light, the new label, ten usable frames — on a counter, in a hand, in a kitchen. This is the photo set the next three months run on, so it is worth doing once rather than weekly on a phone.',
+          ties_to:'A logo and phone photos' },
+        { week:7, title:'Post three times a week, same three shapes', owner:'you', hours:9,
+          detail:'One roast-date post, one customer or review post, one behind-the-counter post. Same three every week. Consistency is what makes two of your posts look like one business, and it is cheaper than variety.',
+          ties_to:'Posted to a few times a month — too thin to compound' },
+        { week:8, title:'Ask ten regulars for a line each', owner:'you', hours:2,
+          detail:'The ones who come back. One sentence about why. You already have reviews; what you do not have is permission to use them with a name and a face.',
+          ties_to:'Roast date is an advantage nobody nearby can copy' },
+      ],
+    },
+    {
+      n:3, name:'Reach past the street', days:'Days 61–90',
+      goal:  'Bags start selling to people who have never walked past the shop, with a first small paid test that can be measured.',
+      why:   'Only now is spending defensible: replies land, the margin is known, the tally says where people come from, and the creative exists. Any of those missing and the spend is a guess.',
+      actions: [
+        { week:9,  title:'Open orders for bags over WhatsApp', owner:'you', hours:4,
+          detail:'A pinned post and a bio link that starts a WhatsApp message with the bag pre-filled. No store to build, no checkout to maintain — it is where your customers already are.',
+          ties_to:'Orders arrive on three channels' },
+        { week:10, title:'Run one small paid test, one audience', owner:'you', hours:5,
+          detail:'One creative, one audience, the smallest budget your band allows, run for two weeks without touching it. The question it answers is what a bag sale costs you — not whether ads "work".',
+          ties_to:'Unknown margin, under $200 a month and no tracking' },
+        { week:12, title:'Compare the tally against the spend', owner:'you', hours:2,
+          detail:'Sunday night, two numbers: bags sold, and what the test cost. Against your bag margin, that tells you whether to spend more, differently, or not at all. This is the whole reason week two mattered.',
+          ties_to:'Nothing tells you where a customer came from' },
+      ],
+    },
+  ],
+
+  budget: {
+    monthly: 'Under $200 a month',
+    splits: [
+      { channel:'Instagram — one bag campaign', share:'100%',
+        rationale:'Your buyers are already there, and it is the only channel where your new photography does any work.' },
+    ],
+    note: 'This budget is too small to split, so it does not get split — a hundred dollars spread over three platforms buys nothing anywhere. It also stays at zero until day 61: the first two phases spend no media money at all, because the diagnosis says you cannot yet measure what it bought.',
+  },
+
+  cadence: {
+    posts_per_week: 3, stories_per_week: 5,
+    rationale: 'You said 1–3 hours a week. Three posts on a fixed template and a handful of stories fit inside that with the photo set from phase two. A daily schedule would look better on paper and be abandoned by week three.',
+  },
+
+  week_one: [
+    'Turn on the WhatsApp greeting and write two saved replies.',
+    'Put 11am and 5pm in your phone as message slots.',
+    'Print the till tally sheet and put it by the register.',
+    'Book one afternoon this month to cost a bag.',
+  ],
+
+  risks: [
+    { risk:'The message slots slip in a busy week.',
+      mitigation:'Tie them to something that already happens — the lull after the morning rush and the moment before close. A slot attached to an existing habit survives; a reminder does not.' },
+    { risk:'Bag sales pull people into the shop and the queue collapses anyway.',
+      mitigation:'Keep the WhatsApp order path for bags so collection can be off-peak, and say so in the post. Bag buyers do not need to stand in the coffee queue.' },
+    { risk:'The paid test gets touched mid-flight and the result becomes unreadable.',
+      mitigation:'Two weeks, no edits, written down before it starts. A test you adjust halfway teaches you nothing, and you only get a few of these at this budget.' },
+  ],
+};

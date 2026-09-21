@@ -12,16 +12,18 @@ import { stream, EngineError } from './lib/api.js';
 import { PRODUCT, MARK, STAGES } from './brand.js';
 import { Welcome }   from './screens/welcome.js';
 import { Intake }    from './screens/intake.js';
-import { Working }   from './screens/working.js';
+import { Working, DIAGNOSE_STEPS, PLAN_STEPS } from './screens/working.js';
 import { Diagnosis } from './screens/diagnosis.js';
-import { SAMPLE_INTAKE, SAMPLE_DIAGNOSIS } from './data/sample.js';
+import { Plan }      from './screens/plan.js';
+import { SAMPLE_INTAKE, SAMPLE_DIAGNOSIS, SAMPLE_PLAN } from './data/sample.js';
 
 const state = {
-  screen:    'welcome',   // welcome · intake · working · diagnosis
+  screen:    'welcome',   // welcome · intake · working · diagnosis · plan
   stage:     'consult',   // which rail step is lit
   intake:    {},          // the user's own answers — never overwritten by the sample
   language:  'en',
-  result:    null,
+  result:    null,        // the diagnosis
+  plan:      null,        // the 90-day plan, built from the diagnosis
   resultFor: '',          // business the current result describes; the sample
                           // has its own name and must not claim the user's
   isSample:  false,
@@ -93,7 +95,13 @@ function paint() {
       break;
 
     case 'working':
-      view = Working({ businessName: state.intake.name });
+      view = state.stage === 'plan'
+        ? Working({
+            steps: PLAN_STEPS,
+            title: 'Building the plan',
+            note:  'Turning the diagnosis into 90 days of work sized to the hours you have.',
+          })
+        : Working({ businessName: state.intake.name, steps: DIAGNOSE_STEPS });
       break;
 
     case 'diagnosis':
@@ -101,15 +109,25 @@ function paint() {
         result:       state.result,
         isSample:     state.isSample,
         businessName: state.resultFor,
-        onPlan:       () => {
-          // Stage 3 is the next build. Saying so plainly beats a button
-          // that silently does nothing in front of an audience.
-          alert('The 90-day plan is the next stage being built. The diagnosis it runs on is finished.');
-        },
+        onPlan:       runPlan,
         onRestart: () => {
-          state.intake = {}; state.result = null;
+          state.intake = {}; state.result = null; state.plan = null;
           state.resultFor = ''; state.isSample = false;
           save(); go('welcome', 'consult');
+        },
+      });
+      break;
+
+    case 'plan':
+      view = Plan({
+        result:       state.plan,
+        isSample:     state.isSample,
+        businessName: state.resultFor,
+        onBack:       () => go('diagnosis', 'diagnose'),
+        onCreate:     () => {
+          // Stage 4 is next. Saying so plainly beats a button that
+          // silently does nothing in front of an audience.
+          alert('Stage 4 — the calendar and the content — is being built next. Stages 1 to 3 are finished.');
         },
       });
       break;
@@ -131,6 +149,7 @@ function paint() {
    answers, not to the sample's. */
 function showSample() {
   state.result    = SAMPLE_DIAGNOSIS;
+  state.plan      = SAMPLE_PLAN;
   state.resultFor = SAMPLE_INTAKE.name;
   state.isSample  = true;
   go('diagnosis', 'diagnose');
@@ -176,6 +195,45 @@ async function runDiagnosis(answers, language) {
     screen.fail?.(
       err.message ?? 'The diagnosis failed.',
       () => runDiagnosis(answers, language),
+      showSample);
+  }
+}
+
+/* ── stage 3 ────────────────────────────────────────────────────────────
+   The plan takes the finished diagnosis as input, not just the intake.
+   That is what makes it read as the answer to the problem rather than as
+   generic advice — and it is why this call cannot run before stage 2. */
+async function runPlan() {
+  if (!state.result) return go('diagnosis', 'diagnose');
+
+  // The sample carries its own plan; re-deriving it would burn a real call
+  // to arrive somewhere the bundled copy already is.
+  if (state.isSample) { state.plan = SAMPLE_PLAN; return go('plan', 'plan'); }
+
+  // Already built for this diagnosis — don't pay for it twice.
+  if (state.plan) return go('plan', 'plan');
+
+  go('working', 'plan');
+  const screen = root.querySelector('main > div');
+  inflight?.abort();
+  inflight = new AbortController();
+
+  try {
+    state.plan = await stream(
+      'plan',
+      { intake:state.intake, diagnosis:state.result },
+      { onProgress:(chars) => screen.advance?.(chars) },
+      inflight.signal,
+    );
+    screen.finish?.();
+    go('plan', 'plan');
+  } catch (err) {
+    if (err.name === 'AbortError') return;
+    screen.fail?.(
+      err instanceof EngineError && err.kind === 'no_key'
+        ? 'No ANTHROPIC_API_KEY is set on this deployment, so the plan cannot be generated live. The bundled sample includes a finished plan you can walk instead.'
+        : err.message ?? 'The plan failed.',
+      runPlan,
       showSample);
   }
 }
