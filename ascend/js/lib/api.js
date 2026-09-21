@@ -41,6 +41,19 @@ export async function stream(path, payload, { onProgress } = {}, signal) {
     const body = await res.json().catch(() => ({}));
     if (body.error === 'no_key') throw new EngineError(body.message ?? 'No API key configured.', 'no_key');
   }
+
+  // No engine behind this host at all — a static preview, or a deploy that
+  // dropped netlify/functions. Static servers disagree on which status a
+  // POST to a missing path deserves (404 missing, 405 wrong method, 501
+  // method not implemented — Python's http.server picks that last one), so
+  // all three mean the same thing here. Distinct from a missing key, and
+  // worth saying so: "the engine returned 501" tells a viewer nothing.
+  if (res.status === 404 || res.status === 405 || res.status === 501) {
+    throw new EngineError(
+      'This is a static preview with no engine behind it, so a live analysis cannot run. Everything else works — walk the bundled sample to see the full output.',
+      'no_backend');
+  }
+
   if (!res.ok || !res.body) {
     const body = await res.json().catch(() => ({}));
     throw new EngineError(body.message ?? `The engine returned ${res.status}.`);

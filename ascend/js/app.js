@@ -216,7 +216,7 @@ async function runDiagnosis(answers, language) {
 
     // No key configured is the expected state on a fresh deployment, not a
     // crash — offer the sample rather than a dead end.
-    if (err instanceof EngineError && err.kind === 'no_key') {
+    if (err instanceof EngineError && (err.kind === 'no_key' || err.kind === 'no_backend')) {
       state.hasKey = false;
       screen.fail?.(
         'No ANTHROPIC_API_KEY is set on this deployment, so the engine cannot run a live analysis. Everything else works — you can walk the finished sample to see the full output.',
@@ -263,8 +263,8 @@ async function runPlan() {
   } catch (err) {
     if (err.name === 'AbortError') return;
     screen.fail?.(
-      err instanceof EngineError && err.kind === 'no_key'
-        ? 'No ANTHROPIC_API_KEY is set on this deployment, so the plan cannot be generated live. The bundled sample includes a finished plan you can walk instead.'
+      err instanceof EngineError && (err.kind === 'no_key' || err.kind === 'no_backend')
+        ? `${err.message} The bundled sample includes a finished plan.`
         : err.message ?? 'The plan failed.',
       runPlan,
       showSample);
@@ -294,8 +294,8 @@ async function runCalendar() {
   } catch (err) {
     if (err.name === 'AbortError') return;
     screen.fail?.(
-      err instanceof EngineError && err.kind === 'no_key'
-        ? 'No ANTHROPIC_API_KEY is set on this deployment, so the calendar cannot be generated live. The bundled sample includes a finished month you can walk instead.'
+      err instanceof EngineError && (err.kind === 'no_key' || err.kind === 'no_backend')
+        ? `${err.message} The bundled sample includes a finished month.`
         : err.message ?? 'The calendar failed.',
       runCalendar,
       showSample);
@@ -321,8 +321,8 @@ function writePost(slot, key, { onProgress, onDone, onFail }) {
     .then(onDone)
     .catch((err) => {
       if (err.name === 'AbortError') return;
-      onFail(err instanceof EngineError && err.kind === 'no_key'
-        ? 'No ANTHROPIC_API_KEY is set on this deployment.'
+      onFail(err instanceof EngineError && (err.kind === 'no_key' || err.kind === 'no_backend')
+        ? err.message
         : err.message ?? 'Writing the post failed.');
     });
 }
