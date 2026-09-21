@@ -200,10 +200,10 @@ body.menu-open .wa{ opacity:0; pointer-events:none; }
 #enter .sub{ font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--faint); margin-top:6px; animation:fadeIn .9s 3.35s both; }
 .enter-btns{ display:flex; gap:12px; margin-top:34px; flex-wrap:wrap; justify-content:center; animation:fadeIn .9s 3.6s both; }
 @keyframes approach{ 0%{ transform:scale(.05); opacity:0; } 14%{ opacity:1; } 100%{ transform:scale(1); opacity:1; } }
-/* pressing Enter dives the camera straight through the spinning mark */
-#enter.leaving .spin3d{ animation:dive .7s var(--e-media) forwards; }
-#enter.leaving .flame,#enter.leaving .ttl,#enter.leaving .sub,#enter.leaving .enter-btns{ opacity:0; transition:opacity .3s; }
-@keyframes dive{ to{ transform:scale(9); opacity:0; } }
+/* pressing Enter: the mark and the words slip away, the stars kick back
+   into warp for a beat, and the site fades in out of the rush */
+#enter.leaving .spin3d,#enter.leaving .flame,#enter.leaving .ttl,#enter.leaving .sub,#enter.leaving .enter-btns{ animation:fadeOutQ .35s var(--e-both) forwards; }
+@keyframes fadeOutQ{ to{ opacity:0; } }
 @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
 
 /* ── purple fire ── */
@@ -861,12 +861,14 @@ let entered=false;
     for(const s of S){ cx.fillStyle='rgba(226,224,240,'+(.25+(1-s.z)*.6)+')'; cx.fillRect(s.x/s.z*CX+CX, s.y/s.z*CY+CY, 2*DPR, 2*DPR); }
     return;
   }
-  const t0=performance.now(); let stop=false;
+  const t0=performance.now(); let stop=false, warpAt=0;
   window.__stopEnterStars=()=>{ stop=true; };
+  window.__warpEnterStars=()=>{ warpAt=performance.now(); };
   (function frame(now){
     if(stop) return;
     const t=(now-t0)/1000;
-    const k = t<3.6 ? .048-(t/3.6)*.044 : .004;   /* warp → drift */
+    let k = t<3.6 ? .048-(t/3.6)*.044 : .004;   /* warp → drift */
+    if(warpAt) k = .006 + Math.min(1,(now-warpAt)/450)*.055;  /* exit warp */
     cx.fillStyle='rgba(5,5,8,.46)'; cx.fillRect(0,0,W,H);
     for(const s of S){
       const px=s.x/s.z*CX+CX, py=s.y/s.z*CY+CY;
@@ -883,25 +885,32 @@ let entered=false;
 
 function doEnter(withSound){
   if(entered) return; entered=true;
+  /* the mark and words fade, the stars surge back into warp, then the
+     site opens out of the rush */
   enterEl.classList.add('leaving');
-  setTimeout(()=>{ enterEl.classList.add('done'); setTimeout(()=>window.__stopEnterStars&&window.__stopEnterStars(),900); },340);
+  window.__warpEnterStars&&window.__warpEnterStars();
+  const wait = reduce ? 0 : 1250;
+  setTimeout(()=>{
+    enterEl.classList.add('done');
+    setTimeout(()=>window.__stopEnterStars&&window.__stopEnterStars(),900);
+    /* rocket flyby across the bar — nav words light up in its wake */
+    if(!reduce){
+      const bar=document.getElementById('bar');
+      const br=document.querySelector('.bar .brand').getBoundingClientRect();
+      const x0=Math.round(br.right+16), T=3200, end=innerWidth+80;
+      bar.style.setProperty('--fly-x0',x0+'px'); bar.style.setProperty('--fly-t',T+'ms');
+      bar.querySelectorAll('.bar-links a').forEach(a=>{
+        const x=a.getBoundingClientRect().left;
+        a.style.setProperty('--nd', Math.max(0,Math.round(T*(x-x0)/(end-x0)))+'ms');
+        a.addEventListener('animationend',()=>a.classList.add('in'),{once:true});
+      });
+      bar.classList.add('flying');
+      const rk=document.getElementById('skyrocket');
+      rk.addEventListener('animationend',e=>{ if(e.animationName==='skyfly') rk.style.display='none'; });
+    }
+  },wait);
   if(withSound) setSound(true);
   const hv=document.getElementById('heroVid'); hv&&hv.play&&hv.play().catch(()=>{});
-  /* rocket flyby across the bar — nav words light up in its wake */
-  if(!reduce){
-    const bar=document.getElementById('bar');
-    const br=document.querySelector('.bar .brand').getBoundingClientRect();
-    const x0=Math.round(br.right+16), T=3200, end=innerWidth+80;
-    bar.style.setProperty('--fly-x0',x0+'px'); bar.style.setProperty('--fly-t',T+'ms');
-    bar.querySelectorAll('.bar-links a').forEach(a=>{
-      const x=a.getBoundingClientRect().left;
-      a.style.setProperty('--nd', Math.max(0,Math.round(T*(x-x0)/(end-x0)))+'ms');
-      a.addEventListener('animationend',()=>a.classList.add('in'),{once:true});
-    });
-    bar.classList.add('flying');
-    const rk=document.getElementById('skyrocket');
-    rk.addEventListener('animationend',e=>{ if(e.animationName==='skyfly') rk.style.display='none'; });
-  }
 }
 document.getElementById('enterSound').addEventListener('click',()=>doEnter(true));
 document.getElementById('enterMute').addEventListener('click',()=>doEnter(false));
