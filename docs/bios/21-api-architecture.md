@@ -77,7 +77,7 @@ event: step      {id, agent, status}
 event: grounding {coverage, proceeding: bool, missing: []}
 event: token     {text}                       ← streamed prose
 event: finding   {finding}                    ← structured, as produced
-event: cost      {tokens, usd, credits}
+event: cost      {tokens, credits}
 event: done      {finding_set_id, status}
 event: error     {code, message, partial: bool}
 ```

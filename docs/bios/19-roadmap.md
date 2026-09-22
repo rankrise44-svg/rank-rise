@@ -30,7 +30,7 @@ website crawl · documents · Brief Compiler · grounding gate · Orchestrator �
 3 agents · findings · strategy · evaluation harness.
 
 **Exit criteria:** the demo script runs end to end; error rate < 5%; uncited
-claims = 0; 8+ design partners active; cost per deep analysis < $2.50.
+claims = 0; 8+ design partners active; a deep analysis costs ≤ 60 credits.
 
 **Team:** 2–3 engineers, 1 designer (part-time), 1 founder on customer
 development.
@@ -154,9 +154,9 @@ away in the moment:
 
 - **Design partners say the brain is not worth paying for without connectors** →
   pull V2.1 forward, cut MVP strategy generation.
-- **Cost per analysis exceeds $5 at real usage** → stop feature work, spend a
-  full sprint on routing, caching and precompute. Unit economics are not a
-  later problem.
+- **Cost per analysis runs more than ~2× the modelled credit budget at real
+  usage** → stop feature work, spend a full sprint on routing, caching and
+  precompute. Unit economics are not a later problem.
 - **Agencies will not accept shared infrastructure** → build the isolated-
   instance tier earlier, and reprice.
 - **A frontier model ships native long-context company memory with provenance** →

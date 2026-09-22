@@ -135,7 +135,7 @@ Measured on 8–12 design partners, weighted toward agencies:
 | Uncited claims reaching the user | **0** | The Critic either works or it does not |
 | Corrections per session (weeks 1–2) | 2–8 | Zero means users are not checking; >10 means extraction is poor |
 | "I don't know" rate on unsupported questions | > 90% | The anti-hallucination guarantee |
-| Cost per deep analysis | < $2.50 | Unit economics viability |
+| Credits per deep analysis | ≤ 60 | Unit economics viability ([25](25-unit-economics.md)) |
 | Would be disappointed if it disappeared | > 40% | The standard product-market-fit signal |
 
 Two of these deserve emphasis. **Uncited claims must be zero**, not low — it

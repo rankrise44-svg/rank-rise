@@ -47,20 +47,24 @@ intent := {
 ```
 
 Depth is decided, not requested — though the user can override it. "What's our
-CPA this month?" is a `lookup`: one SQL query, one short generation, ~$0.01.
-"Why are sales falling?" is a `diagnostic`: multi-agent, ~$1–3. Treating the
-first like the second is how a product loses money on its most engaged users;
-treating the second like the first is how it loses their trust.
+CPA this month?" is a `lookup`: one SQL query, one short generation. "Why are
+sales falling?" is a `diagnostic`: multi-agent, two orders of magnitude more
+expensive. Treating the first like the second is how a product loses money on
+its most engaged users; treating the second like the first is how it loses
+their trust.
+
+Cost below is in **credits**, the product's own unit, where 1 credit is the
+cost of a single cheap lookup. See [25-unit-economics.md](25-unit-economics.md).
 
 | Intent | Typical plan | Indicative cost |
 |---|---|---|
-| lookup | Resolve + format | $0.005–0.02 |
-| diagnostic | Compute → Quant → Customer/Market → reconcile → QC | $0.40–3.00 |
-| comparative | Research → Customer/Market → QC | $0.30–1.50 |
-| strategic | Analyst → Quant → C&M → Strategist → Critic | $1.50–8.00 |
-| creative | Brand slots → Strategist(creative skill) → Critic | $0.20–1.00 |
-| operational | Deterministic + confirmation | $0.00–0.05 |
-| meta ("what do you know about us?") | Gap report, no LLM synthesis needed | ~$0.00 |
+| lookup | Resolve + format | 1 |
+| diagnostic | Compute → Quant → Customer/Market → reconcile → QC | 40–150 |
+| comparative | Research → Customer/Market → QC | 30–80 |
+| strategic | Analyst → Quant → C&M → Strategist → Critic | 150–400 |
+| creative | Brand slots → Strategist(creative skill) → Critic | 20–50 |
+| operational | Deterministic + confirmation | 0–3 |
+| meta ("what do you know about us?") | Gap report, no LLM synthesis needed | 0 |
 
 Roughly 60% of real traffic is `lookup` or `meta`. Routing those away from the
 multi-agent path is the difference between viable and not.
@@ -107,7 +111,7 @@ model only for novel ones.
 ```json
 {
   "run_id": "run_…", "intent": "diagnostic", "depth": "standard",
-  "budget": {"tokens": 180000, "usd": 2.50, "wall_clock_s": 120, "max_steps": 9},
+  "budget": {"tokens": 180000, "credits": 120, "wall_clock_s": 120, "max_steps": 9},
   "steps": [
     {"id":"s1","kind":"compute","tool":"funnel_delta","params":{"window":"2025-10"}},
     {"id":"s2","kind":"compute","tool":"anomaly_scan","params":{"domains":["marketing","sales"]}},
@@ -145,7 +149,7 @@ intuitive design and saving a great deal of money:
 Shallow answer produced
   → confidence < 0.5, OR contradictions found, OR user asks "go deeper"
   → escalate: more agents, wider window, research enabled
-  → escalation is announced with its cost: "Deeper analysis ≈ 18 credits. Run it?"
+  → escalation is announced with its cost: "Deeper analysis ≈ 40 credits. Run it?"
 ```
 
 ---

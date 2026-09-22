@@ -31,8 +31,10 @@ year from one source. That number, not user count, is what sizes the database.
 
 ### First — inference cost (V2 early)
 
-Before any technical limit is reached, the bill arrives. At 1,000 runs/day at
-an unoptimised $2 average, that is $60k/month against far less revenue.
+Before any technical limit is reached, the bill arrives. At 1,000 runs/day, an
+unoptimised run costing a few hundred credits instead of a few dozen turns
+inference into the largest line in the company's cost base — well ahead of
+revenue.
 
 **Mitigations, roughly in order of impact:** tiered routing, prompt caching,
 brief caching, deterministic computation, nightly precompute, per-plan

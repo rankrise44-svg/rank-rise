@@ -190,7 +190,7 @@ rather than passing malformed data downstream.
     {"type": "agent", "who": "customer_market",
      "what": "Check whether objections changed after the pricing update"}
   ],
-  "cost": {"input_tokens": 12840, "output_tokens": 1610, "usd": 0.19}
+  "cost": {"input_tokens": 12840, "output_tokens": 1610, "credits": 19}
 }
 ```
 

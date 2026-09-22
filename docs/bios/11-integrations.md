@@ -60,7 +60,7 @@ is not worth either.
 ```json
 { "name":"metrics.compute", "version":"1.2",
   "input_schema":{...}, "output_schema":{...},
-  "risk_tier":"ANALYZE", "cost_estimate_usd":0.001,
+  "risk_tier":"ANALYZE", "cost_estimate_credits":0.1,
   "timeout_ms":5000, "idempotent":true,
   "allowed_roles":["quant","company_analyst"],
   "requires_autonomy_level":1,

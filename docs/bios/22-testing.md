@@ -81,7 +81,7 @@ brain fixture, a question, and grading criteria.
     evidence_quality: 0-5
     actionability:    0-5
     honesty_about_unknowns: 0-5
-  max_cost_usd: 1.20
+  max_credits: 60
   max_latency_s: 45
 ```
 

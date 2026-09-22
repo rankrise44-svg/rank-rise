@@ -192,9 +192,9 @@ to automated decision-making.
 The spec's canonical flow — "sales are falling" → seven agents analyse →
 cross-analysis → verification → strategy → plan → QC — is, with realistic
 context sizes (30–80k tokens per agent on a frontier model) and a verification
-pass, somewhere between **$3 and $25 of inference per question**. A motivated
-user asks thirty questions in their first week. A $299/month plan is
-underwater by Wednesday.
+pass, several hundred times the cost of a simple lookup **per question**. A
+motivated user asks thirty questions in their first week; an agency runs ten
+clients. On a flat monthly fee the account is underwater almost immediately.
 
 The spec never mentions this. It is the most common cause of death for
 products of this shape.

@@ -81,7 +81,7 @@ loop rather than a slogan.
 | 28 | Testing strategy | [22-testing.md](22-testing.md) |
 | 29 | Scalability plan | [23-scalability.md](23-scalability.md) |
 | 30 | Security / privacy plan | [24-privacy-compliance.md](24-privacy-compliance.md) |
-| — | Unit economics (added; the spec omitted it and it is the thing most likely to kill the product) | [25-unit-economics.md](25-unit-economics.md) |
+| — | Cost governance (added; the spec omitted it and it is the thing most likely to kill the product) | [25-unit-economics.md](25-unit-economics.md) |
 | — | Honest critique of the vision | [01-critique.md](01-critique.md) |
 
 Every component document follows the required template: what it is, why it

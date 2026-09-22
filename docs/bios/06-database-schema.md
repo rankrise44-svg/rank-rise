@@ -404,9 +404,9 @@ create table runs (
                                                -- completed|failed|budget_exceeded
   plan           jsonb,
   budget_tokens  int not null,
-  budget_usd_cap numeric,
+  budget_credits int,
   used_tokens    int not null default 0,
-  used_usd       numeric not null default 0,
+  used_credits   int not null default 0,
   started_at timestamptz, finished_at timestamptz,
   error jsonb
 );
@@ -421,7 +421,7 @@ create table run_steps (
   brief_id      text,
   model_id      text,
   status        text not null,
-  input_tokens int, output_tokens int, cost_usd numeric,
+  input_tokens int, output_tokens int, cost_credits numeric,
   latency_ms    int,
   output        jsonb,                         -- schema-validated agent envelope
   attempts      int not null default 1,
@@ -586,7 +586,8 @@ create table model_calls (
   provider      text not null, model_id text not null,
   purpose       text not null,
   input_tokens int, output_tokens int, cached_tokens int,
-  cost_usd      numeric,
+  cost_micros   bigint,     -- provider cost, minor units, for reconciliation
+  cost_credits  numeric,    -- the user-facing unit
   latency_ms    int,
   status        text not null,
   fallback_from text,
