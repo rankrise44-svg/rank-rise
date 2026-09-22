@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RankRise Ascend — Concept Document</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   RankRise Ascend — concept document
+   A4 portrait. Dark cover, light body: the cover carries the brand,
+   the body has to survive being printed and read under a desk lamp.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root{
+  --ink:#14121c;
+  --body:#3c3950;
+  --soft:#6b6880;
+  --hair:#e3e0ee;
+  --accent:#5a4ae3;
+  --accent-2:#7062f0;
+  --accent-3:#efecfd;
+  --dark:#08080d;
+  --paper:#ffffff;
+  --good:#1a9c68; --warn:#b07806; --bad:#d13a52;
+}
+
+@page{ size:A4; margin:17mm 16mm 18mm; }
+@page:first{ margin:0; }
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+body{
+  font-family:'DM Sans','Noto Sans Arabic',system-ui,sans-serif;
+  color:var(--body); background:var(--paper);
+  font-size:10.3pt; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{ font-family:'Anton',sans-serif; font-weight:400; color:var(--ink);
+  letter-spacing:.005em; line-height:1.04; }
+strong,b{ color:var(--ink); font-weight:600; }
+em{ font-style:italic; }
+
+/* ── page mechanics ───────────────────────────────────────────── */
+.page{ page-break-after:always; break-after:page; }
+.page:last-child{ page-break-after:auto; break-after:auto; }
+.keep{ page-break-inside:avoid; break-inside:avoid; }
+
+/* ── cover ────────────────────────────────────────────────────── */
+.cover{
+  position:relative; width:210mm; height:297mm; overflow:hidden;
+  background:
+    radial-gradient(70% 55% at 10% -5%,  rgba(112,98,240,.38), transparent 62%),
+    radial-gradient(60% 50% at 95% 18%,  rgba(154,142,245,.20), transparent 60%),
+    radial-gradient(90% 45% at 50% 108%, rgba(112,98,240,.22), transparent 66%),
+    var(--dark);
+  color:#f5f4fa;
+  padding:26mm 20mm;
+  display:flex; flex-direction:column;
+}
+.cover-mark{ display:flex; align-items:center; gap:9px; font-family:'Anton'; font-size:15pt; }
+.cover-mark svg{ width:22px; height:19px; color:#9a8ef5; }
+.cover-mark em{ font-family:'DM Sans'; font-style:normal; font-weight:600; font-size:7.5pt;
+  letter-spacing:.24em; text-transform:uppercase; color:#9a8ef5;
+  border:1px solid rgba(154,142,245,.45); border-radius:99px; padding:3px 9px; }
+.cover-mid{ flex:1; display:flex; flex-direction:column; justify-content:center; }
+.cover h1{ font-size:44pt; line-height:.98; color:#fff; }
+.cover h1 span{ color:#9a8ef5; display:block; }
+.cover .sub{ font-size:12.5pt; line-height:1.55; color:rgba(245,244,250,.7);
+  margin-top:11mm; max-width:132mm; }
+.cover .kicker{ font-size:8pt; font-weight:600; letter-spacing:.3em; text-transform:uppercase;
+  color:#9a8ef5; display:flex; align-items:center; gap:10px; margin-bottom:7mm; }
+.cover .kicker::before{ content:""; width:26px; height:1px; background:currentColor; }
+.cover-foot{ display:flex; justify-content:space-between; align-items:flex-end;
+  font-size:8.5pt; color:rgba(245,244,250,.5); border-top:1px solid rgba(245,244,250,.14);
+  padding-top:6mm; }
+.cover-foot b{ color:rgba(245,244,250,.85); font-weight:600; display:block; }
+
+/* ── section headers ──────────────────────────────────────────── */
+.sec-num{ font-size:7.5pt; font-weight:700; letter-spacing:.26em; text-transform:uppercase;
+  color:var(--accent); display:flex; align-items:center; gap:9px; }
+.sec-num::before{ content:""; width:20px; height:1px; background:currentColor; }
+h2{ font-size:22pt; margin:4mm 0 4mm; }
+h3{ font-size:12.5pt; margin:7mm 0 2.5mm; }
+h4{ font-family:'DM Sans'; font-weight:700; font-size:10.3pt; color:var(--ink);
+  margin:5mm 0 1.5mm; }
+p{ margin-bottom:3.2mm; }
+p.lead{ font-size:11.6pt; line-height:1.56; color:var(--ink); margin-bottom:5mm; }
+
+/* ── lists ────────────────────────────────────────────────────── */
+ul,ol{ margin:0 0 3.6mm 4.6mm; }
+li{ margin-bottom:1.8mm; padding-left:1mm; }
+li::marker{ color:var(--accent-2); }
+
+/* ── callouts ─────────────────────────────────────────────────── */
+.note{
+  border-left:2.5px solid var(--accent); background:var(--accent-3);
+  padding:4mm 5mm; margin:4.5mm 0; border-radius:0 3px 3px 0;
+}
+.note b:first-child{ display:block; font-size:7.5pt; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--accent); margin-bottom:1.5mm; }
+.note.fill{ border-left-color:var(--warn); background:#fdf6e6; }
+.note.fill b:first-child{ color:var(--warn); }
+
+.quote{ font-size:12.5pt; line-height:1.5; color:var(--ink); font-weight:500;
+  border-left:2.5px solid var(--accent-2); padding-left:6mm; margin:5mm 0; }
+
+/* ── tables ───────────────────────────────────────────────────── */
+table{ width:100%; border-collapse:collapse; margin:4mm 0; font-size:9.3pt; }
+th{ text-align:left; font-weight:700; color:var(--ink); font-size:7.8pt;
+  letter-spacing:.14em; text-transform:uppercase;
+  border-bottom:1.5px solid var(--ink); padding:0 3mm 2mm 0; vertical-align:bottom; }
+td{ padding:2.6mm 3mm 2.6mm 0; border-bottom:1px solid var(--hair); vertical-align:top; }
+td:last-child,th:last-child{ padding-right:0; }
+tr{ page-break-inside:avoid; break-inside:avoid; }
+
+/* ── stage cards ──────────────────────────────────────────────── */
+.stage{ display:grid; grid-template-columns:13mm 1fr; gap:0 5mm; margin-bottom:6mm; }
+.stage-n{ font-family:'Anton'; font-size:20pt; color:var(--accent-2); line-height:1; }
+.stage h3{ margin:0 0 1.5mm; font-size:13pt; }
+.stage .what{ font-size:9.6pt; }
+.stage .out{ font-size:8.6pt; color:var(--soft); margin-top:2mm;
+  border-top:1px solid var(--hair); padding-top:2mm; }
+.stage .out b{ color:var(--accent); font-weight:700; font-size:7.5pt;
+  letter-spacing:.14em; text-transform:uppercase; }
+
+/* ── two column ───────────────────────────────────────────────── */
+.two{ display:grid; grid-template-columns:1fr 1fr; gap:6mm; margin:4mm 0; }
+.box{ border:1px solid var(--hair); border-radius:4px; padding:4.5mm 5mm; }
+.box.hi{ border-color:var(--accent-2); background:var(--accent-3); }
+.box h4{ margin-top:0; }
+.box p:last-child{ margin-bottom:0; }
+
+/* ── the worked example ───────────────────────────────────────── */
+.score-row{ display:flex; align-items:center; gap:6mm; margin:4mm 0 5mm;
+  border:1px solid var(--hair); border-radius:4px; padding:5mm; }
+.score-n{ font-family:'Anton'; font-size:38pt; line-height:.85; color:var(--bad); }
+.score-n small{ display:block; font-family:'DM Sans'; font-size:7.5pt; font-weight:600;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--soft); margin-top:2mm; }
+.pill-bars{ flex:1; display:grid; gap:2.2mm; }
+.pb{ display:grid; grid-template-columns:32mm 1fr 10mm; align-items:center; gap:3mm;
+  font-size:8.6pt; }
+.pb i{ height:4px; border-radius:4px; background:var(--hair); display:block; position:relative; }
+.pb i b{ position:absolute; inset:0 auto 0 0; border-radius:4px; display:block; }
+.pb span:last-child{ font-family:'Anton'; font-size:10pt; text-align:right; }
+
+.cap{ font-family:'DM Sans'; font-size:9.2pt; line-height:1.65;
+  background:#f7f6fb; border:1px solid var(--hair); border-radius:4px;
+  padding:4mm 5mm; margin:3mm 0; white-space:pre-line; }
+.cap[dir="rtl"]{ text-align:right; font-size:10.5pt; line-height:1.9;
+  font-family:'Noto Sans Arabic',sans-serif; }
+[dir="rtl"]{ font-family:'Noto Sans Arabic',sans-serif; }
+
+/* ── footer ───────────────────────────────────────────────────── */
+.foot{ margin-top:8mm; padding-top:3mm; border-top:1px solid var(--hair);
+  font-size:8pt; color:var(--soft); display:flex; justify-content:space-between; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════ COVER ══════════════════════════ -->
+<section class="page cover">
+  <div class="cover-mark">
+    <svg viewBox="0 0 2270 2008"><path fill="currentColor" d="M 798.2,368.2 C 447.0,719.7 465.9,700.2 451.9,724.2 C 437.1,749.7 427.6,779.6 424.9,810.0 C 423.6,823.3 423.3,1175.0 424.5,1175.0 C 425.0,1175.0 583.5,1016.8 776.8,823.5 L 1128.3,472.0 L 1341.3,685.0 L 1554.3,898.0 L 1452.8,999.5 L 1351.3,1101.0 L 1239.7,989.4 L 1128.1,877.8 L 584.2,1422.0 C 285.1,1721.3 40.1,1966.6 40.0,1967.1 C 39.7,1967.7 108.8,1967.9 229.5,1967.7 C 405.3,1967.4 420.1,1967.3 429.8,1965.7 C 469.5,1959.0 501.8,1944.8 531.7,1920.8 C 535.9,1917.4 671.8,1782.3 833.8,1620.4 L 1128.3,1326.1 L 1422.8,1620.3 C 1584.8,1782.2 1720.9,1917.4 1725.3,1921.0 C 1754.9,1944.5 1787.8,1959.1 1826.8,1965.6 C 1836.6,1967.3 1850.8,1967.4 2027.1,1967.7 C 2131.4,1967.9 2216.8,1967.7 2216.8,1967.3 C 2216.8,1966.9 2069.2,1818.9 1888.8,1638.5 L 1560.8,1310.5 L 1770.0,1101.3 L 1979.3,892.0 L 1553.3,466.0 C 1319.0,231.7 1127.1,40.0 1126.8,40.0 C 1126.5,40.0 978.7,187.7 798.2,368.2"/></svg>
+    RankRise <em>Ascend</em>
+  </div>
+
+  <div class="cover-mid">
+    <div class="kicker">Concept document</div>
+    <h1>Most marketing tools start at the post.<span>This one starts at the business.</span></h1>
+    <p class="sub">An AI marketing system that runs a real consultation first, tells a business
+      owner what is actually costing them money, and only then builds the plan, writes the
+      content and runs the spend. Plus a second track that turns the work into paid,
+      supervised training for students.</p>
+  </div>
+
+  <div class="cover-foot">
+    <div><b>RankRise</b>Sin El Fil, Beirut, Lebanon · rankrise.media</div>
+    <div style="text-align:right"><b>Version 1</b>Prepared for competition submission</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ 01 ══════════════════════════ -->
+<section class="page">
+  <div class="sec-num">01 · The problem</div>
+  <h2>Small businesses do not have a content problem. They have a system problem.</h2>
+
+  <p class="lead">Every marketing tool on the market opens with the same question: <em>what do
+    you want to post?</em> That question assumes the business behind the post is ready to
+    receive the attention. Most of the time, it is not.</p>
+
+  <p>A shop owner who spends on ads while messages sit unanswered for a day is not
+    under-marketed. A brand that does not know its margin cannot tell a winning campaign from
+    a slow loss, and will not find out until the money is gone. A business with no way to
+    record where a customer came from cannot repeat anything that works, so every quarter
+    starts from zero.</p>
+
+  <p>None of these are content problems, and no content generator will surface them. It will
+    cheerfully produce thirty posts for a business that loses most of its buyers between
+    "how much?" and payment — and then the owner concludes that marketing does not work.</p>
+
+  <div class="quote">The gap is not between businesses that post and businesses that don't.
+    It is between businesses that have a system and businesses that have a feed.</div>
+
+  <h3>Why the existing tools cannot close it</h3>
+  <p>Canva, Predis, AdCreative, Buffer, Later, Hootsuite and the rest are genuinely good at
+    what they do. But they are all downstream of the decision that matters. They are
+    production tools sold to people whose problem is diagnosis, and the reason is structural:
+    diagnosis requires knowing what to ask, which is consulting, not software.</p>
+
+  <p>The other half of the gap is language and context. An international tool writes Modern
+    Standard Arabic that nobody in a Beirut comment section has ever written — grammatically
+    perfect and socially wrong. It assumes card checkout when the market runs on cash and
+    local wallets. It treats WhatsApp as a support channel when here it is the till.</p>
+
+  <div class="note fill">
+    <b>To complete</b>
+    Add your own evidence here before submitting: how many small businesses you have spoken
+    to, what they said about their current spend and returns, and any letters of intent. Cite
+    every market-size figure to a named, dated source. A number without a source is the
+    fastest way to lose a judging panel.
+  </div>
+
+  <div class="foot"><span>RankRise Ascend — Concept document</span><span>01 · The problem</span></div>
+</section>
+
+<!-- ══════════════════════════ 02 ══════════════════════════ -->
+<section class="page">
+  <div class="sec-num">02 · The idea</div>
+  <h2>A consultation, a diagnosis, then a machine that runs the answer.</h2>
+
+  <p class="lead">RankRise Ascend is one continuous system in five stages. You answer questions
+    about your business — not your feed. It scores how ready you are to market, names what is
+    costing you money, builds a 90-day plan that repairs exactly those things, writes the
+    content that plan needs, and then runs, watches and reports on it.</p>
+
+  <p>The order is the product. Each stage is only possible because the one before it happened,
+    and each stage visibly answers the one before it. The plan cites the diagnosis. The
+    calendar cites the plan. Nothing is generic, because nothing starts from a blank page.</p>
+
+  <div class="stage keep">
+    <div class="stage-n">01</div>
+    <div>
+      <h3>Consult</h3>
+      <p class="what">A structured intake of 34 questions across seven sections: the business,
+        the offer, the customer, the current presence, the system behind the counter, the next
+        90 days, and the competition. It asks about margin, reply speed, how orders arrive and
+        what breaks when you get busy — the things an agency asks in the first meeting and no
+        software asks at all.</p>
+      <p class="out"><b>Output</b> &nbsp;A complete, structured picture of the business.</p>
+    </div>
+  </div>
+
+  <div class="stage keep">
+    <div class="stage-n">02</div>
+    <div>
+      <h3>Diagnose</h3>
+      <p class="what">A Marketing Readiness Score out of 100, six scored pillars — offer,
+        brand, channels, conversion, measurement, ad readiness — and findings ranked by what
+        each one costs, every finding carrying its own first fix. Plus a direct verdict on
+        whether this business should be spending on ads at all yet, and a short list of what
+        must be true before it does.</p>
+      <p class="out"><b>Output</b> &nbsp;One number the owner remembers, and a ranked list they can act on.</p>
+    </div>
+  </div>
+
+  <div class="stage keep">
+    <div class="stage-n">03</div>
+    <div>
+      <h3>Plan</h3>
+      <p class="what">A 90-day plan in three phases, sized to the hours and budget the owner
+        actually reported. Every action names the diagnosis finding it repairs. Phase one
+        stops what leaks, phase two builds the engine, phase three pushes volume through it.
+        With a budget split, a publishing cadence, a first-seven-days checklist and the
+        specific risks that would derail it.</p>
+      <p class="out"><b>Output</b> &nbsp;A plan the owner can start on Monday, not a strategy deck.</p>
+    </div>
+  </div>
+
+  <div class="stage keep">
+    <div class="stage-n">04</div>
+    <div>
+      <h3>Create</h3>
+      <p class="what">Three or four content pillars so nobody ever faces a blank page, then
+        four weeks of slots at the cadence the plan committed to — each slot carrying a format
+        the business can actually produce and an angle tied to a plan action. One tap turns any
+        slot into a finished post: hook, caption, hashtags, shot list, alt text. In English,
+        Modern Standard Arabic, spoken Lebanese, or the mixed register most brands here
+        actually write in.</p>
+      <p class="out"><b>Output</b> &nbsp;A month of work, ready to shoot and publish.</p>
+    </div>
+  </div>
+
+  <div class="stage keep">
+    <div class="stage-n">05</div>
+    <div>
+      <h3>Run</h3>
+      <p class="what">Scheduling and publishing, story reminders, performance reporting in
+        plain language, and a competitor watch built on the ad libraries the platforms publish
+        by law — so the owner is told when a rival launches a campaign, and what it appears to
+        be selling. Media-buying plans and boost strategies are prepared by the system and
+        launched by the owner.</p>
+      <p class="out"><b>Output</b> &nbsp;The plan actually happens, and the owner learns from it.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>RankRise Ascend — Concept document</span><span>02 · The idea</span></div>
+</section>
+
+<!-- ══════════════════════════ 03 ══════════════════════════ -->
+<section class="page">
+  <div class="sec-num">03 · What it looks like</div>
+  <h2>A worked example, end to end.</h2>
+
+  <p class="lead">This is the example that ships inside the product so the flow can be walked
+    without a network. The business is invented — it is not a client, and it carries no
+    client's data — but the reasoning is exactly what the engine produces from real answers.</p>
+
+  <h3>The business</h3>
+  <p>A one-branch specialty coffee shop in Beirut. Roasts in-house. Sells bags at $14. Around
+    5,000 followers, posts a few times a month, no ads beyond occasional boosts, orders arrive
+    by walk-in, WhatsApp and Instagram DM. The owner runs marketing between everything else and
+    has one to three hours a week. Budget: under $200 a month. Asked about margin, the owner
+    answered <em>"I honestly don't know."</em></p>
+
+  <h3>The diagnosis</h3>
+  <div class="score-row keep">
+    <div class="score-n">41<small>Patchy</small></div>
+    <div class="pill-bars">
+      <div class="pb"><span>Offer</span><i><b style="width:68%;background:#b07806"></b></i><span>68</span></div>
+      <div class="pb"><span>Brand</span><i><b style="width:34%;background:#d13a52"></b></i><span>34</span></div>
+      <div class="pb"><span>Channels</span><i><b style="width:45%;background:#b07806"></b></i><span>45</span></div>
+      <div class="pb"><span>Conversion</span><i><b style="width:22%;background:#d13a52"></b></i><span>22</span></div>
+      <div class="pb"><span>Measurement</span><i><b style="width:12%;background:#d13a52"></b></i><span>12</span></div>
+      <div class="pb"><span>Ad readiness</span><i><b style="width:28%;background:#d13a52"></b></i><span>28</span></div>
+    </div>
+  </div>
+
+  <div class="quote">"Your coffee is not the problem — your counter is."</div>
+
+  <p>The engine found three blockers before it found anything to post about: messages answered
+    "whenever we see it", an unknown margin, and no record of where any customer came from. Its
+    verdict on ad spend was <strong>not yet</strong> — not because $200 is too little, but
+    because money spent now could not be measured and the traffic it bought could not be
+    answered. It also found one strength worth everything: the roast date on the bag is a
+    specific, checkable claim no competitor on that street can make, and almost nothing the
+    business publishes says it.</p>
+
+  <h3>The plan that follows</h3>
+  <p>Three phases — <em>Stop the leak</em>, <em>Make the bag look like the coffee</em>,
+    <em>Reach past the street</em> — with every action naming the finding it repairs. Media
+    spend stays at zero until day 61, because the diagnosis said so. The north star is bag
+    sales per month, not followers: bags do not queue behind one espresso machine, they carry
+    the best margin, and they reach people who will never walk down that street.</p>
+
+  <h3>The content it writes</h3>
+  <p>Twelve slots across four weeks at three posts a week — the cadence the plan sized to one
+    to three hours. One tap on the first slot, written in spoken Lebanese:</p>
+
+  <div class="cap" dir="rtl">شوف التاريخ عالكيس.
+
+كل كيس عنا فيه تاريخ التحميص. مش تاريخ إنتاج، مش تاريخ صلاحية — تاريخ التحميص.
+
+هيدا الكيس تحمّص اليوم. رح يوصلك وهو لسا ما مرق عليه أسبوعين.
+
+روح شوف الكيس يلي عندك بالبيت هلق. إذا ما في تاريخ تحميص عليه، في سبب.</div>
+
+  <p style="font-size:9pt;color:var(--soft)">Shipped with a shot list a person with a phone can
+    follow, hashtags mixing product, city and brand reach, and alt text for accessibility. The
+    working notes stay in English; only what gets published is in the content language.</p>
+
+  <div class="foot"><span>RankRise Ascend — Concept document</span><span>03 · What it looks like</span></div>
+</section>
+
+<!-- ══════════════════════════ 04 ══════════════════════════ -->
+<section class="page">
+  <div class="sec-num">04 · Why this is defensible</div>
+  <h2>Four things a competitor cannot copy by shipping a feature.</h2>
+
+  <p class="lead">"AI writes your posts" is not a moat — it is a commodity with better-funded
+    incumbents. These four are where the actual defensibility sits, and they are ordered by how
+    hard they are to copy.</p>
+
+  <h3>1 · The consultation is productised agency judgement</h3>
+  <p>The scoring rubric is not arithmetic on dropdown values — a weighted sum of menu indices
+    would produce a number that looks precise and means nothing. It is a written judgement
+    framework: what a low margin implies for paid spend, why a dormant account scores below no
+    account, why an unknown margin is itself a low score. That framework comes from running
+    campaigns for real clients, and it improves every time a diagnosis is checked against what
+    the business actually did next. A competitor can copy the questions in an afternoon. They
+    cannot copy the answers.</p>
+
+  <h3>2 · Language that matches how the market writes</h3>
+  <p>Every international generator returns Modern Standard Arabic. The rules inside Ascend are
+    specific down to individual words — <span dir="rtl">بدي</span> not
+    <span dir="rtl">عايز</span>, <span dir="rtl">هلق</span> not
+    <span dir="rtl">دلوقتي</span>, <span dir="rtl">عم</span> + verb for the present,
+    <span dir="rtl">رح</span> for the future — and they keep English mixed in the way Lebanese
+    brands genuinely write it, rather than sanitising it out. "Write in Lebanese dialect" as an
+    instruction reliably returns Egyptian with a few words swapped. This is market knowledge
+    encoded as rules, not a dropdown.</p>
+
+  <h3>3 · Built for how business is actually done here</h3>
+  <p>WhatsApp is a primary sales channel, not a support inbox. Cash and local wallets dominate
+    over card checkout. Instagram outweighs almost everything else. Budgets of $150 a month are
+    the normal case, not a degenerate one — and a business with $200 needs a different strategy,
+    not a scaled-down version of a $5,000 one. Tools built elsewhere get all of this wrong by
+    default, and fixing it is not a setting.</p>
+
+  <h3>4 · It comes from an agency with live clients</h3>
+  <p>RankRise already runs this process by hand for real businesses. That is the difference
+    between "we have an idea for a tool" and "we have a system that works and we are productising
+    it" — and it means every client engagement is both revenue and a test of the engine.</p>
+
+  <div class="note">
+    <b>The rule that protects all of it</b>
+    The engine is forbidden from inventing a metric, a benchmark, a competitor statistic or a
+    case study. Where it has no number it describes the mechanism instead. This is enforced in
+    the system's own instructions, not left to chance — because a fabricated percentage
+    collapses the first time anyone checks, and it would take the product's credibility with it.
+  </div>
+
+  <div class="foot"><span>RankRise Ascend — Concept document</span><span>04 · Defensibility</span></div>
+</section>
+
+<!-- ══════════════════════════ 05 ══════════════════════════ -->
+<section class="page">
+  <div class="sec-num">05 · The second track</div>
+  <h2>RankRise Academy — the work becomes paid training.</h2>
+
+  <p class="lead">The same platform has a second surface. Marketing work that comes out of stage
+    four and five has to be executed by somebody. Students need real experience and cannot get
+    it. Small businesses need execution and cannot afford an agency. Ascend already knows
+    exactly what work needs doing, because it wrote the plan.</p>
+
+  <h3>How it works</h3>
+  <ol>
+    <li><strong>A student enrols and picks a track</strong> — content, design, video, paid
+      media, copy — and is levelled by a short assessment rather than by what they claim.</li>
+    <li><strong>The system assigns a real task from a real plan</strong>, scoped to that level:
+      a caption set, a carousel, a short edit, an ad variant. The task comes from a live
+      business's calendar, not from an exercise sheet.</li>
+    <li><strong>The student submits work with their reasoning attached.</strong></li>
+    <li><strong>The AI reviews it against the brief</strong> — what works, what does not, what
+      would be rejected by a client and why — and sets a timed re-attempt where it matters.</li>
+    <li><strong>A human supervisor signs off</strong> before anything reaches a client. The AI
+      accelerates review; it does not replace judgement, and a student's grade is never decided
+      by a model alone.</li>
+    <li><strong>The student earns a RankRise certificate</strong> backed by a portfolio of
+      actual published work, and the strongest ones get hired.</li>
+  </ol>
+
+  <h3>Why this is strong, not a side feature</h3>
+  <div class="two">
+    <div class="box hi">
+      <h4>It is a two-sided marketplace</h4>
+      <p>Businesses get execution at a price they can pay. Students get experience nobody else
+        will give them. Each side makes the other more valuable, which is the hardest thing to
+        build and the hardest to displace.</p>
+    </div>
+    <div class="box">
+      <h4>It is a talent pipeline</h4>
+      <p>The agency sees hundreds of students doing graded real work before hiring any of them.
+        That is a recruiting advantage no job posting can match.</p>
+    </div>
+    <div class="box">
+      <h4>It has genuine social weight</h4>
+      <p>Paid, supervised, portfolio-backed training for students in a market with very few
+        routes into the industry. This is real impact, not impact framing.</p>
+    </div>
+    <div class="box">
+      <h4>It closes the loop</h4>
+      <p>Every graded submission is data on what good work looks like for a given brief — which
+        makes the engine that wrote the brief better.</p>
+    </div>
+  </div>
+
+  <div class="note fill">
+    <b>Built in from day one, not bolted on</b>
+    Client data reaching students is a real privacy obligation. The design requires explicit
+    client consent per engagement, an anonymisation mode that strips identifying details from
+    training tasks, a signed undertaking from every student, and supervisor sign-off before any
+    student work reaches a client account. Expect a judge to ask about this; the answer should
+    be ready.
+  </div>
+
+  <div class="foot"><span>RankRise Ascend — Concept document</span><span>05 · The Academy</span></div>
+</section>
+
+<!-- ══════════════════════════ 06 ══════════════════════════ -->
+<section class="page">
+  <div class="sec-num">06 · Who it is for</div>
+  <h2>Three customers, one platform.</h2>
+
+  <table>
+    <thead><tr><th style="width:26%">Segment</th><th style="width:37%">What they have today</th><th>What Ascend gives them</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>The owner-operator</strong><br><span style="font-size:8.6pt;color:var(--soft)">Shop, clinic, café, salon, trades</span></td>
+        <td>Runs marketing themselves between everything else. A few hours a week at most. Posts when they remember. Spends on boosts without knowing what came back.</td>
+        <td>A straight answer on what is broken, a plan sized to the hours they really have, and content ready to publish without hiring anyone.</td>
+      </tr>
+      <tr>
+        <td><strong>The small marketing team</strong><br><span style="font-size:8.6pt;color:var(--soft)">One or two people in-house</span></td>
+        <td>Capable but stretched. Spends most of its time producing rather than deciding. No structured way to justify budget upward.</td>
+        <td>The diagnosis and plan as an argument to management, and the calendar and content as the production load lifted.</td>
+      </tr>
+      <tr>
+        <td><strong>The agency</strong><br><span style="font-size:8.6pt;color:var(--soft)">Small shops and freelancers</span></td>
+        <td>Wins clients on instinct. Onboarding and audits eat unbilled hours. Quality varies by whoever is assigned.</td>
+        <td>A white-label audit and plan that makes onboarding a repeatable product, plus Academy students as vetted capacity.</td>
+      </tr>
+      <tr>
+        <td><strong>The student</strong><br><span style="font-size:8.6pt;color:var(--soft)">Academy side</span></td>
+        <td>A degree, no portfolio, and no route to real client work. Internships are scarce and mostly unpaid.</td>
+        <td>Graded real tasks, a supervisor, a portfolio of published work, a certificate, and a route to being hired.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Where we start</h3>
+  <p>Lebanon first — it is where RankRise operates, where the language and payment realities are
+    understood, and where the gap is widest. The same conditions hold across the region and in
+    diaspora-owned businesses, which is the expansion path: Gulf, Egypt, Türkiye, then Arabic and
+    English-speaking diaspora markets. The product does not need rebuilding to travel; the
+    language rules and the payment assumptions are configuration, not architecture.</p>
+
+  <div class="foot"><span>RankRise Ascend — Concept document</span><span>06 · Who it is for</span></div>
+</section>
+
+<!-- ══════════════════════════ 07 ══════════════════════════ -->
+<section class="page">
+  <div class="sec-num">07 · How it makes money</div>
+  <h2>Five streams, and only one of them is a subscription.</h2>
+
+  <p class="lead">A single subscription line is fragile — it caps at what a small business will
+    pay monthly, and in this market that ceiling is low. These five compound instead, and three
+    of them grow with the customer rather than with the headcount.</p>
+
+  <table>
+    <thead><tr><th style="width:22%">Stream</th><th style="width:44%">What it is</th><th>Why it holds</th></tr></thead>
+    <tbody>
+      <tr><td><strong>1 · Subscription</strong></td>
+        <td>Tiered monthly access to the platform. A free diagnosis, a paid tier for plan and
+          content, a higher tier for publishing, competitor watch and multiple brands.</td>
+        <td>Predictable base. The free diagnosis is the acquisition engine — it delivers real
+          value before asking for anything.</td></tr>
+      <tr><td><strong>2 · Execution marketplace</strong></td>
+        <td>A commission on work executed through the Academy: the business pays for the task,
+          the student is paid, the platform takes a margin.</td>
+        <td>Grows with usage, not with sales headcount, and it is the piece competitors cannot
+          bolt on.</td></tr>
+      <tr><td><strong>3 · Academy fees</strong></td>
+        <td>Students or their institutions pay for enrolment, supervision and certification.
+          Universities are a channel, not just a customer.</td>
+        <td>Counter-cyclical to the business side, and institutionally sticky once a university
+          adopts it.</td></tr>
+      <tr><td><strong>4 · Media-spend share</strong></td>
+        <td>A percentage of managed ad spend, for businesses that let the platform prepare and
+          run campaigns.</td>
+        <td>Scales with the customer's success. The one line that grows without the customer
+          feeling a price rise.</td></tr>
+      <tr><td><strong>5 · White label</strong></td>
+        <td>Agencies license the diagnosis and plan under their own brand, per seat or per
+          client audit.</td>
+        <td>Turns the nearest competitor into a distribution channel.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note fill">
+    <b>To complete before submission</b>
+    Set your actual price points per tier, the commission percentage, and your own unit
+    economics — what it costs you to serve one account per month against what that account
+    pays. Judges will ask, and the answer has to be yours, not a placeholder. Price in the
+    currencies and rails your customers actually use: local wallets and cash matter more here
+    than card subscriptions, and the billing design has to reflect that from the start.
+  </div>
+
+  <h3>Why the free diagnosis is the whole go-to-market</h3>
+  <p>The stage that costs least to deliver is the one that creates most trust, because it tells
+    people things they did not know and sometimes tells them not to spend money. A business that
+    receives an honest "do not run ads yet" has been given something no competitor's free tier
+    offers. That is what earns the second conversation — and the second conversation is where
+    the plan, the content and the execution are sold.</p>
+
+  <div class="foot"><span>RankRise Ascend — Concept document</span><span>07 · Business model</span></div>
+</section>
+
+<!-- ══════════════════════════ 08 ══════════════════════════ -->
+<section class="page">
+  <div class="sec-num">08 · Status</div>
+  <h2>What is built today, honestly.</h2>
+
+  <p class="lead">This is not a concept looking for an engineer. Four of the five stages run
+    end to end against a live model, in a working application, and can be demonstrated on
+    request.</p>
+
+  <table>
+    <thead><tr><th style="width:9%">Stage</th><th style="width:47%">What it does</th><th>State</th></tr></thead>
+    <tbody>
+      <tr><td><strong>01 Consult</strong></td><td>34-question intake across seven sections, saved as you go, required-answer gating</td><td><strong style="color:var(--good)">Built</strong></td></tr>
+      <tr><td><strong>02 Diagnose</strong></td><td>Readiness score, six scored pillars, ranked findings with fixes, ad-spend verdict</td><td><strong style="color:var(--good)">Built</strong> — live model</td></tr>
+      <tr><td><strong>03 Plan</strong></td><td>90-day plan in three phases, every action tied to a finding, budget split, week-one checklist</td><td><strong style="color:var(--good)">Built</strong> — live model</td></tr>
+      <tr><td><strong>04 Create</strong></td><td>Content pillars, four-week calendar, one-tap post writing in four language registers</td><td><strong style="color:var(--good)">Built</strong> — live model</td></tr>
+      <tr><td><strong>05 Run</strong></td><td>Publishing, competitor ad watch, reporting</td><td><strong style="color:var(--warn)">In progress</strong></td></tr>
+      <tr><td><strong>Academy</strong></td><td>Student tracks, task assignment, AI review, supervisor sign-off</td><td>Designed, not started</td></tr>
+    </tbody>
+  </table>
+
+  <h3>How it is built</h3>
+  <p>A static front end with a small serverless back end, so it deploys anywhere in minutes and
+    costs almost nothing to run while it is small. The model API key never reaches the browser.
+    Every generating call streams, so a screen never sits blank while the engine thinks — and
+    the progress a user sees is driven by bytes actually received, never by a timer pretending
+    to be progress.</p>
+
+  <p>Every generated document is defined as a strict schema and validated before it reaches the
+    screen, so a half-formed result fails loudly rather than rendering as a broken score. And
+    the whole flow works with no API key at all, on a bundled worked example that is clearly
+    marked as a sample — because venue wi-fi fails, and a demo that dies without a network dies
+    on stage.</p>
+
+  <h3>What is deliberately not automated yet</h3>
+  <p>Publishing directly to Instagram and TikTok requires platform app review, which takes weeks
+    of waiting rather than weeks of work. Until that is granted, the system prepares the post
+    and the owner presses publish. The same applies to spending money: campaigns are built and
+    costed by the system and launched by the owner. Handing a machine unsupervised access to
+    someone's ad budget is a decision that should be earned, not defaulted to.</p>
+
+  <div class="foot"><span>RankRise Ascend — Concept document</span><span>08 · Status</span></div>
+</section>
+
+<!-- ══════════════════════════ 09 ══════════════════════════ -->
+<section class="page">
+  <div class="sec-num">09 · Roadmap</div>
+  <h2>What happens next, in order.</h2>
+
+  <table>
+    <thead><tr><th style="width:17%">Horizon</th><th>What ships</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Now</strong></td>
+        <td>Stage 5: scheduling, story reminders, plain-language reporting, and competitor ad
+          watch built on public ad libraries. Owner-launched publishing while platform review is
+          pending.</td></tr>
+      <tr><td><strong>Next</strong></td>
+        <td>Accounts and saved brands, so a diagnosis can be re-run in 90 days and scored against
+          the first one. Brand kit memory so every generated asset stays on-brand. Client approval
+          flow — the owner sees, approves, and then it publishes.</td></tr>
+      <tr><td><strong>Then</strong></td>
+        <td>Academy v1: student tracks, levelling, task assignment from live calendars, AI review
+          with supervisor sign-off, certificates. Launched with one university partner rather than
+          opened to everyone.</td></tr>
+      <tr><td><strong>After</strong></td>
+        <td>Platform publishing approvals granted and automated. Generated visuals and short video
+          from the brand kit. Agency white-label. Regional language packs beyond Lebanese.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Risks, and what we do about them</h3>
+  <table>
+    <thead><tr><th style="width:33%">Risk</th><th>Response</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Platform API approval is slow and outside our control</strong></td>
+        <td>The product is designed to be fully useful without it. Prepared-and-launched is the
+          default; automated publishing is an upgrade, not a dependency. No part of the pitch
+          rests on approval we do not have.</td></tr>
+      <tr><td><strong>An incumbent adds a "diagnosis" feature</strong></td>
+        <td>They can copy the questions; the rubric is judgement built from running real
+          campaigns, and it compounds with every engagement. The language and market knowledge
+          are a second wall, and the Academy is a third they cannot build from outside.</td></tr>
+      <tr><td><strong>The model produces something wrong or invented</strong></td>
+        <td>Invented metrics and case studies are forbidden in the engine's own instructions;
+          every output is schema-validated; and nothing in the Academy reaches a client without a
+          human sign-off. Where the system has no number it says so.</td></tr>
+      <tr><td><strong>Client data exposed through the Academy</strong></td>
+        <td>Explicit consent per engagement, an anonymisation mode for training tasks, signed
+          undertakings from students, and supervisor review before anything is published.</td></tr>
+      <tr><td><strong>Competitor intelligence crosses a line</strong></td>
+        <td>Public sources only — the ad libraries platforms publish by law, and what anyone can
+          see from outside an account. No scraping of private data, and the product never implies
+          otherwise.</td></tr>
+      <tr><td><strong>Small businesses churn after the free diagnosis</strong></td>
+        <td>The diagnosis is designed to be re-run at 90 days and scored against the first one.
+          Progress against your own previous number is the retention mechanic, and it only exists
+          because stage two exists.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="foot"><span>RankRise Ascend — Concept document</span><span>09 · Roadmap &amp; risks</span></div>
+</section>
+
+<!-- ══════════════════════════ 10 ══════════════════════════ -->
+<section class="page">
+  <div class="sec-num">10 · The ask</div>
+  <h2>What the funding buys.</h2>
+
+  <p class="lead">The engine works. What money buys is the distance between a working engine and
+    a business: the execution layer, the Academy, and enough runway to prove retention with real
+    paying customers rather than with a demo.</p>
+
+  <div class="two">
+    <div class="box">
+      <h4>Engineering</h4>
+      <p>Complete stage five, ship accounts and brand memory, and build Academy v1. The largest
+        single line, and the one that turns four working stages into a product people pay for
+        every month.</p>
+    </div>
+    <div class="box">
+      <h4>Model and infrastructure</h4>
+      <p>The per-run cost of the engine at real volume, plus hosting. Small per account, and the
+        one cost that rises directly with usage.</p>
+    </div>
+    <div class="box">
+      <h4>Academy operations</h4>
+      <p>Supervisors, the first university partnership, and the legal and privacy work that has
+        to be right before a single student touches a client account.</p>
+    </div>
+    <div class="box">
+      <h4>Go to market</h4>
+      <p>Getting the free diagnosis in front of enough businesses to learn what converts, and
+        building the agency white-label channel.</p>
+    </div>
+  </div>
+
+  <div class="note fill">
+    <b>To complete before submission</b>
+    Replace this section with your actual figures: the amount requested, the split across these
+    four lines, the runway it produces, and the specific milestones that money reaches. State
+    what you have already invested — the working product is itself evidence of commitment. If
+    the competition asks for projections, build them from your own unit economics and label
+    every assumption. Do not include a number you cannot defend in the room.
+  </div>
+
+  <h3>What we will have proven by the end of that runway</h3>
+  <ul>
+    <li>That businesses complete a 34-question consultation — the single biggest product risk,
+      and the one a demo cannot answer.</li>
+    <li>That the diagnosis changes what an owner does next, measured by re-running it at 90 days.</li>
+    <li>That the execution marketplace clears: real tasks, real students, real client acceptance.</li>
+    <li>That at least one university will put its name to the Academy certificate.</li>
+  </ul>
+
+  <div class="quote" style="margin-top:9mm">We are not asking anyone to believe an idea works.
+    Four of the five stages are built and can be walked through right now. The ask is for the
+    distance between that and a business.</div>
+
+  <div style="margin-top:12mm;padding-top:5mm;border-top:1px solid var(--hair);font-size:9pt;color:var(--soft)">
+    <strong style="color:var(--ink)">RankRise</strong> · Sin El Fil, Behind Antoun Library, Beirut, Lebanon<br>
+    rankrise.media · hello@rankrise.media
+  </div>
+
+  <div class="foot"><span>RankRise Ascend — Concept document</span><span>10 · The ask</span></div>
+</section>
+
+</body>
+</html>
