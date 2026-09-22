@@ -1,0 +1,1007 @@
+<title>BIOS Platform Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+/* ============ TOKENS — light is the base palette ============ */
+:root{
+  --bg:#F4F3F7; --surface:#FFFFFF; --raised:#FAF9FC; --sunken:#EEECF3;
+  --line:#E3E0EB; --line-strong:#CDC8DA;
+  --ink:#191B22; --ink-2:#4C505F; --muted:#767C8C;
+  --accent:#5B3FC4; --accent-2:#7F64D0; --accent-soft:#EDE8FB; --accent-line:#C9BCF0;
+  --ok:#1C7668; --ok-soft:#E1F1EE;
+  --warn:#8E6210; --warn-soft:#F8EEDB;
+  --bad:#AC4534; --bad-soft:#F9E7E3;
+  --unknown:#6E7689; --unknown-soft:#ECEDF1;
+  --btn-fg:#FFFFFF;
+  --shadow:0 1px 2px rgba(20,18,40,.05), 0 8px 24px -12px rgba(20,18,40,.14);
+  --shadow-lift:0 2px 4px rgba(20,18,40,.06), 0 18px 40px -18px rgba(20,18,40,.28);
+  --r:10px; --r-lg:16px;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'DM Sans',system-ui,-apple-system,Segoe UI,sans-serif;
+  --display:'Anton',var(--sans);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#0B0D13; --surface:#131620; --raised:#1A1E29; --sunken:#0E1118;
+  --line:#242936; --line-strong:#394154;
+  --ink:#E9EAF0; --ink-2:#AFB5C6; --muted:#848A9D;
+  --accent:#A38FE3; --accent-2:#C9BCF0; --accent-soft:#221C39; --accent-line:#463A6E;
+  --ok:#52BCA9; --ok-soft:#10241F;
+  --warn:#D6A74F; --warn-soft:#241C0D;
+  --bad:#E08068; --bad-soft:#2A1512;
+  --unknown:#8B92A6; --unknown-soft:#181C25;
+  --btn-fg:#0B0D13;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+  --shadow-lift:0 2px 6px rgba(0,0,0,.45), 0 24px 50px -20px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  --bg:#0B0D13; --surface:#131620; --raised:#1A1E29; --sunken:#0E1118;
+  --line:#242936; --line-strong:#394154;
+  --ink:#E9EAF0; --ink-2:#AFB5C6; --muted:#848A9D;
+  --accent:#A38FE3; --accent-2:#C9BCF0; --accent-soft:#221C39; --accent-line:#463A6E;
+  --ok:#52BCA9; --ok-soft:#10241F;
+  --warn:#D6A74F; --warn-soft:#241C0D;
+  --bad:#E08068; --bad-soft:#2A1512;
+  --unknown:#8B92A6; --unknown-soft:#181C25;
+  --btn-fg:#0B0D13;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+  --shadow-lift:0 2px 6px rgba(0,0,0,.45), 0 24px 50px -20px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.15}
+p{margin:0}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ============ PROTOTYPE CHROME ============ */
+.protobar{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:10px 18px;background:color-mix(in srgb,var(--surface) 88%,transparent);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:8px;margin-right:auto}
+.brand b{font-family:var(--display);font-size:20px;letter-spacing:.06em;font-weight:400}
+.brand span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.seg{display:flex;background:var(--sunken);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{padding:5px 15px;border-radius:999px;font-size:13px;font-weight:500;color:var(--muted)}
+.seg button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.proto-note{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  border:1px dashed var(--line-strong);border-radius:999px;padding:3px 10px}
+
+/* ============ SHARED BITS ============ */
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:500}
+.lede{color:var(--ink-2);font-size:17px;max-width:62ch}
+.chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:11px;
+  padding:2px 7px;border-radius:5px;border:1px solid var(--line);background:var(--raised);
+  color:var(--muted);white-space:nowrap;vertical-align:middle}
+.chip::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;flex:none}
+.chip.v{color:var(--ok);background:var(--ok-soft);border-color:color-mix(in srgb,var(--ok) 28%,transparent)}
+.chip.u{color:var(--warn);background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 28%,transparent)}
+.chip.c{color:var(--bad);background:var(--bad-soft);border-color:color-mix(in srgb,var(--bad) 28%,transparent)}
+.chip.i{color:var(--accent);background:var(--accent-soft);border-color:var(--accent-line)}
+.chip.k{color:var(--unknown);background:var(--unknown-soft)}
+.conf{display:inline-flex;gap:2px;vertical-align:middle}
+.conf i{width:12px;height:5px;border-radius:1px;background:var(--line-strong);display:block}
+.conf i.on{background:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:var(--r);
+  background:var(--accent);color:var(--btn-fg);font-weight:500;font-size:14px;
+  box-shadow:var(--shadow);text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line-strong);box-shadow:none}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg)}
+
+/* ============ WEBSITE ============ */
+.site section{padding-block:76px}
+.hero{padding-block:84px 60px}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(38px,7.2vw,76px);
+  letter-spacing:.005em;line-height:.98;text-transform:uppercase;max-width:19ch}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lede{margin-top:22px;font-size:19px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.flowfig{margin-top:56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.flownode{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:14px;position:relative}
+.flownode h4{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.flownode p{font-size:13px;color:var(--ink-2);margin-top:6px}
+.flownode.brainnode{background:var(--accent-soft);border-color:var(--accent-line)}
+.flownode.brainnode h4{color:var(--accent)}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}
+.answer{padding:20px;border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;gap:12px}
+.answer.generic{background:var(--sunken)}
+.answer.bios{border-color:var(--accent-line);box-shadow:var(--shadow-lift)}
+.answer h4{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.answer .body{font-size:14px;color:var(--ink-2);line-height:1.65}
+.answer .body b{color:var(--ink);font-weight:500}
+.verdict{font-size:12.5px;color:var(--muted);border-top:1px dashed var(--line-strong);padding-top:10px;margin-top:auto}
+
+.layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:28px;counter-reset:l}
+.layer{padding:18px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);counter-increment:l}
+.layer::before{content:counter(l);font-family:var(--mono);font-size:11px;color:var(--accent);
+  display:block;margin-bottom:10px;border:1px solid var(--accent-line);width:22px;height:22px;
+  border-radius:50%;display:grid;place-items:center;background:var(--accent-soft)}
+.layer h3{font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+.layer p{font-size:13.5px;color:var(--ink-2);margin-top:8px}
+.layer ul{margin:10px 0 0;padding-left:16px;font-size:13px;color:var(--muted)}
+
+.agents{display:grid;grid-template-columns:repeat(auto-fit,minmax(275px,1fr));gap:14px;
+  margin-top:26px;max-width:1000px}
+.agent{padding:16px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface)}
+.agent h4{font-size:14px}
+.agent .role{font-family:var(--mono);font-size:10.5px;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
+.agent p{font-size:13px;color:var(--ink-2);margin-top:7px}
+
+.tierlist{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:26px}
+.tier{padding:18px;border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface)}
+.tier.feat{border-color:var(--accent-line);background:var(--accent-soft)}
+.tier h4{font-size:16px}
+.tier ul{list-style:none;padding:0;margin:12px 0 0;font-size:13px;color:var(--ink-2);display:grid;gap:7px}
+.tier li::before{content:"—  ";color:var(--muted)}
+
+/* ============ APP ============ */
+.app{display:grid;grid-template-columns:232px 1fr;min-height:70vh;border-top:1px solid var(--line)}
+.rail{background:var(--surface);border-right:1px solid var(--line);padding:16px 12px;display:flex;flex-direction:column;gap:18px}
+.ws{border:1px solid var(--line);border-radius:var(--r);padding:9px 11px;background:var(--raised);
+  display:flex;align-items:center;gap:9px}
+.ws .dot{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  flex:none;display:grid;place-items:center;font-size:11px;font-weight:700;color:#0B0D13;font-family:var(--mono)}
+.ws .n{font-size:13px;font-weight:500;line-height:1.2}
+.ws .s{font-size:11px;color:var(--muted)}
+.navgroup h5{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  font-weight:500;margin:0 0 6px 10px}
+.rail nav{display:grid;gap:2px}
+.rail nav button{text-align:left;padding:7px 10px;border-radius:8px;font-size:13.5px;color:var(--ink-2);
+  display:flex;align-items:center;gap:9px;width:100%}
+.rail nav button:hover{background:var(--sunken)}
+.rail nav button[aria-current="page"]{background:var(--accent-soft);color:var(--accent);font-weight:500}
+.rail nav button .k{font-family:var(--mono);font-size:10px;color:var(--muted);margin-left:auto}
+.credits{margin-top:auto;border-top:1px solid var(--line);padding-top:12px;font-size:12px;color:var(--muted)}
+.credits .bar{height:5px;border-radius:3px;background:var(--sunken);margin:7px 0 5px;overflow:hidden}
+.credits .bar i{display:block;height:100%;width:42%;background:var(--accent);border-radius:3px}
+
+.screen{padding:24px 26px 56px;min-width:0}
+.screenhead{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.screenhead h2{font-size:22px;letter-spacing:-.01em}
+.screenhead p{font-size:13.5px;color:var(--muted);margin-top:3px}
+.screenhead .right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+.alerts{display:grid;gap:10px}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:13px 15px;border-radius:var(--r);
+  background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--line-strong)}
+.alert.biz{border-left-color:var(--bad)}
+.alert.data{border-left-color:var(--warn);background:repeating-linear-gradient(135deg,var(--surface),var(--surface) 8px,var(--raised) 8px,var(--raised) 16px)}
+.alert .tag{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  padding:2px 6px;border-radius:4px;flex:none;margin-top:2px}
+.alert.biz .tag{color:var(--bad);background:var(--bad-soft)}
+.alert.data .tag{color:var(--warn);background:var(--warn-soft)}
+.alert .t{font-size:14px;font-weight:500}
+.alert .d{font-size:12.5px;color:var(--muted);margin-top:2px}
+.alert .go{margin-left:auto;font-size:12.5px;color:var(--accent);font-weight:500;white-space:nowrap;align-self:center}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px}
+.tile{padding:14px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+.tile .l{font-size:11.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;display:flex;gap:6px;align-items:center}
+.tile .v{font-family:var(--mono);font-size:25px;font-weight:500;margin-top:7px;letter-spacing:-.02em}
+.tile .d{font-size:12px;margin-top:3px;font-family:var(--mono)}
+.tile .d.up{color:var(--ok)} .tile .d.down{color:var(--bad)}
+.tile .spark{margin-top:9px;display:block}
+
+.grid2{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.panel > header{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.panel > header h3{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.panel .pad{padding:16px}
+
+/* ASK */
+.qbar{display:flex;gap:10px;align-items:center;padding:12px 14px;border:1px solid var(--line-strong);
+  border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow)}
+.qbar .q{flex:1;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.suggest{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.suggest button{font-size:12.5px;padding:6px 11px;border-radius:999px;border:1px solid var(--line);
+  background:var(--surface);color:var(--ink-2)}
+.suggest button:hover{border-color:var(--accent-line);color:var(--accent)}
+.suggest button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent)}
+
+.trace{display:grid;gap:0;font-size:13px}
+.step{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line)}
+.step:last-child{border-bottom:0}
+.step .ic{width:17px;height:17px;border-radius:50%;flex:none;margin-top:1px;border:1.5px solid var(--line-strong);
+  display:grid;place-items:center;font-size:9px;color:var(--muted)}
+.step.done .ic{border-color:var(--ok);color:var(--ok)}
+.step.run .ic{border-color:var(--accent);border-right-color:transparent;animation:spin .8s linear infinite}
+.step .n{font-weight:500}
+.step .m{color:var(--muted);font-size:12px;font-family:var(--mono)}
+.step .t{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.step.run .ic{animation:none}}
+
+.ans{font-size:14.5px;line-height:1.7;color:var(--ink-2);display:grid;gap:14px}
+.ans b{color:var(--ink);font-weight:600}
+.ans h4{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.finding{border:1px solid var(--line);border-left:3px solid var(--line-strong);border-radius:var(--r);padding:13px 15px;background:var(--raised)}
+.finding.problem{border-left-color:var(--bad)}
+.finding.insight{border-left-color:var(--accent)}
+.finding.opp{border-left-color:var(--ok)}
+.finding.unknown{border-left-color:var(--unknown);background:var(--unknown-soft);border-style:dashed}
+.finding .kind{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.finding .h{font-size:14.5px;font-weight:600;color:var(--ink);margin-top:3px}
+.finding .b{font-size:13.5px;margin-top:6px}
+.finding .f{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:11.5px;color:var(--muted)}
+
+.evlist{display:grid;gap:9px;font-size:12.5px}
+.ev{display:flex;gap:9px;align-items:flex-start;padding-bottom:9px;border-bottom:1px dashed var(--line)}
+.ev:last-child{border-bottom:0;padding-bottom:0}
+.ev .id{font-family:var(--mono);font-size:10.5px;color:var(--accent);flex:none}
+.ev .txt{color:var(--ink-2);min-width:0}
+.ev .src{color:var(--muted);font-size:11px;display:block;margin-top:2px}
+.sidelist{display:grid;gap:7px;font-size:12.5px;color:var(--ink-2);padding-left:16px;margin:0}
+.sidelist li::marker{color:var(--muted)}
+
+/* BRAIN */
+.domains{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:11px}
+.dom{padding:13px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);text-align:left;width:100%}
+.dom:hover{border-color:var(--accent-line)}
+.dom[aria-current="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.dom .n{font-size:13.5px;font-weight:500;text-transform:capitalize}
+.dom .meta{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:6px;display:flex;gap:8px;flex-wrap:wrap}
+.dom .hbar{height:4px;border-radius:2px;background:var(--sunken);margin-top:9px;overflow:hidden}
+.dom .hbar i{display:block;height:100%;border-radius:2px;background:var(--accent)}
+.dom .hbar i.low{background:var(--warn)}
+.slots{display:grid}
+.slot{display:grid;grid-template-columns:200px 1fr auto;gap:14px;align-items:baseline;
+  padding:11px 16px;border-bottom:1px solid var(--line);font-size:13.5px}
+.slot:last-child{border-bottom:0}
+.slot:hover{background:var(--raised)}
+.slot .k{color:var(--muted);font-family:var(--mono);font-size:11.5px;word-break:break-word}
+.slot .val{color:var(--ink);min-width:0}
+.slot .val.unk{color:var(--unknown);font-style:italic}
+.slot .act{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.fix{font-size:11.5px;color:var(--accent);font-weight:500}
+.conflict{border:1px solid color-mix(in srgb,var(--bad) 40%,transparent);background:var(--bad-soft);
+  border-radius:var(--r);padding:14px 16px;display:grid;gap:11px}
+.conflict h4{font-size:13px;color:var(--bad);letter-spacing:.06em;text-transform:uppercase}
+.cvals{display:grid;gap:8px}
+.cval{display:grid;grid-template-columns:110px 1fr;gap:12px;align-items:baseline;font-size:13px}
+.cval .num{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--ink)}
+.cval .who{color:var(--ink-2);font-size:12.5px}
+.resolve{display:flex;gap:8px;flex-wrap:wrap}
+.resolve button{font-size:12.5px;padding:6px 12px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface)}
+
+/* LEARN */
+.outcome{display:grid;gap:12px}
+.okv{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.okv div{padding:11px 13px;border-radius:var(--r);background:var(--raised);border:1px solid var(--line)}
+.okv .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.okv .v{font-family:var(--mono);font-size:19px;font-weight:500;margin-top:4px}
+.confound{border:1px dashed var(--warn);background:var(--warn-soft);border-radius:var(--r);padding:12px 14px}
+.confound h5{margin:0;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--warn)}
+.confound ul{margin:8px 0 0;padding-left:17px;font-size:13px;color:var(--ink-2);display:grid;gap:5px}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:900px){
+  .grid2{grid-template-columns:1fr}
+  .split{grid-template-columns:1fr}
+  .app{grid-template-columns:1fr}
+  .rail{flex-direction:row;overflow-x:auto;gap:12px;align-items:center;border-right:0;border-bottom:1px solid var(--line)}
+  .rail .navgroup{flex:none} .rail nav{grid-auto-flow:column;grid-auto-columns:max-content}
+  .rail nav button .k{display:none}
+  .rail .navgroup h5,.rail .credits,.rail .ws .s{display:none}
+  .rail .credits{display:none}
+  .slot{grid-template-columns:1fr;gap:4px}
+  .slot .act{justify-content:flex-start}
+  .cval{grid-template-columns:1fr;gap:2px}
+}
+@media (max-width:520px){
+  .screen{padding:18px 16px 44px}
+  .hero{padding-block:52px 40px}
+  .site section{padding-block:52px}
+}
+.hidden{display:none!important}
+</style>
+
+<!-- ============================ CHROME ============================ -->
+<div class="protobar">
+  <div class="brand"><b>BIOS</b><span>by RankRise</span></div>
+  <div class="seg" role="tablist" aria-label="Prototype view">
+    <button role="tab" id="tab-app" aria-selected="true" aria-controls="view-app">Product</button>
+    <button role="tab" id="tab-site" aria-selected="false" aria-controls="view-site">Website</button>
+  </div>
+  <span class="proto-note">Prototype · sample data</span>
+</div>
+
+<!-- ============================ PRODUCT ============================ -->
+<main id="view-app">
+  <div class="app">
+    <aside class="rail">
+      <div class="ws">
+        <span class="dot">M</span>
+        <span><span class="n">Meridian Supply</span><br><span class="s">Agency · client 4 of 11</span></span>
+      </div>
+      <div class="navgroup">
+        <h5>Work</h5>
+        <nav id="nav">
+          <button data-screen="home" aria-current="page">Home <span class="k">H</span></button>
+          <button data-screen="ask">Ask <span class="k">A</span></button>
+        </nav>
+      </div>
+      <div class="navgroup">
+        <h5>Understand</h5>
+        <nav id="nav2">
+          <button data-screen="brain">Company Brain <span class="k">B</span></button>
+          <button data-screen="findings">Findings <span class="k">F</span></button>
+        </nav>
+      </div>
+      <div class="navgroup">
+        <h5>Plan &amp; learn</h5>
+        <nav id="nav3">
+          <button data-screen="strategy">Strategy <span class="k">S</span></button>
+          <button data-screen="learn">Outcomes <span class="k">O</span></button>
+        </nav>
+      </div>
+      <div class="credits">
+        <span>Credits this month</span>
+        <span class="bar"><i></i></span>
+        <span class="mono">418 / 1,000 used</span>
+      </div>
+    </aside>
+    <section class="screen" id="screen"></section>
+  </div>
+</main>
+
+<!-- ============================ WEBSITE ============================ -->
+<main id="view-site" class="site hidden">
+  <div class="wrap">
+
+    <section class="hero">
+      <p class="eyebrow">Business intelligence operating system</p>
+      <h1>Your business.<br>One <em>intelligence</em> system.</h1>
+      <p class="lede">It learns what your company actually is — from your site, your
+        documents, your ad accounts and your CRM — then finds what matters, plans what's
+        next, and remembers what happened when you did it.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#difference">See the difference</a>
+        <button class="btn ghost" data-goto="app">Open the product</button>
+      </div>
+
+      <div class="flowfig">
+        <div class="flownode"><h4>Your data</h4><p>Website, documents, ads, CRM, analytics, the things in your team's heads.</p></div>
+        <div class="flownode brainnode"><h4>Company Brain</h4><p>Every claim kept with its source, its date and how sure we are.</p></div>
+        <div class="flownode"><h4>AI workforce</h4><p>Six specialists, one manager, every answer cited.</p></div>
+        <div class="flownode"><h4>Decisions</h4><p>Strategy, plans and work — with the reasoning attached.</p></div>
+        <div class="flownode"><h4>Results</h4><p>What happened goes back into the brain. That's the loop.</p></div>
+      </div>
+    </section>
+
+    <section id="difference">
+      <p class="eyebrow">The difference</p>
+      <h2 style="font-size:clamp(24px,3.4vw,34px);margin-top:8px">Same question. Two very different answers.</h2>
+      <p class="lede" style="margin-top:12px">“Why did our leads drop in October?” — asked of a general
+        assistant, and asked of a system that knows your business.</p>
+      <div class="split">
+        <div class="answer generic">
+          <h4>A general AI assistant</h4>
+          <div class="body">
+            There are several possible reasons leads may have declined in October.
+            Seasonality often affects demand in Q4. You may also want to check whether
+            your ad spend changed, whether your landing page converts well, and whether
+            competitors increased their activity. I'd recommend reviewing your analytics
+            and testing new creative.
+          </div>
+          <div class="verdict">Fluent, plausible, and true of every business on earth.
+            It has no idea what you sell or what you changed.</div>
+        </div>
+        <div class="answer bios">
+          <h4>BIOS</h4>
+          <div class="body">
+            Leads fell <b>32.6%</b> <span class="chip v">GA4 · 2 Oct</span> while spend held
+            flat <span class="chip v">Google Ads · 2 Oct</span> — so this is conversion, not
+            traffic. Two things changed in the window: checkout was redesigned on
+            <b>12 Sept</b> <span class="chip u">Sara · unverified</span>, and Meta frequency
+            <span class="chip v">Meta · 2 Oct</span> doubled to <b>4.1</b>. Landing-page
+            conversion fell on mobile only.<br>
+            <b>I can't yet tell you</b> whether the checkout change or creative fatigue
+            dominates — there's no creative-level data before 12 Sept.
+          </div>
+          <div class="verdict">Every number carries its source and its date. The gap in the
+            evidence is stated, not papered over.</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <p class="eyebrow">How it works</p>
+      <h2 style="font-size:clamp(24px,3.4vw,34px);margin-top:8px">Four layers, one loop</h2>
+      <div class="layers">
+        <div class="layer"><h3>Understand</h3>
+          <p>Everything your company knows, kept as claims with sources and dates — never overwritten.</p>
+          <ul><li>Website crawl</li><li>Document extraction</li><li>Connected platforms</li><li>Gaps and conflicts</li></ul></div>
+        <div class="layer"><h3>Plan</h3>
+          <p>Ask a real business question. Specialists analyse, a critic checks, you get evidence.</p>
+          <ul><li>Findings, not chat</li><li>Strategy options</li><li>Plans down to tasks</li></ul></div>
+        <div class="layer"><h3>Execute</h3>
+          <p>Drafts, campaigns and updates prepared for you — with approval gates that match the risk.</p>
+          <ul><li>Preview before approval</li><li>Spend always gated</li><li>Everything audited</li></ul></div>
+        <div class="layer"><h3>Learn</h3>
+          <p>What you did, what followed, and what else was going on at the time.</p>
+          <ul><li>Plan vs actual</li><li>Confounders named</li><li>Written back to the brain</li></ul></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="eyebrow">The workforce</p>
+      <h2 style="font-size:clamp(24px,3.4vw,34px);margin-top:8px">Six specialists, one manager</h2>
+      <p class="lede" style="margin-top:12px">Not twenty-three chatbots in a trench coat. Six roles,
+        each with its own data scope, its own tools, and its own quality bar.</p>
+      <div class="agents">
+        <div class="agent"><span class="role">Company Analyst</span><h4>Knows what you know</h4>
+          <p>States what's established, what's missing, what's gone stale.</p></div>
+        <div class="agent"><span class="role">Research</span><h4>Looks outward</h4>
+          <p>Market, competitors, regulation. The only agent allowed on the open web.</p></div>
+        <div class="agent"><span class="role">Quant</span><h4>Does the arithmetic</h4>
+          <p>Funnels, cohorts, unit economics. Computed in SQL, never guessed.</p></div>
+        <div class="agent"><span class="role">Customer &amp; Market</span><h4>Reads the demand</h4>
+          <p>Segments, objections, positioning — backed by counted evidence.</p></div>
+        <div class="agent"><span class="role">Strategist</span><h4>Proposes</h4>
+          <p>Options with a mechanism, a cost, a risk and a way to tell if it worked.</p></div>
+        <div class="agent"><span class="role">Critic</span><h4>Deletes the nonsense</h4>
+          <p>Reviews every answer in isolation. Uncited claims never reach you.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="eyebrow">Built for agencies</p>
+      <h2 style="font-size:clamp(24px,3.4vw,34px);margin-top:8px">Every client, sealed from every other</h2>
+      <p class="lede" style="margin-top:12px">Isolation isn't a setting — it's enforced in the database.
+        No brief, no cache, no model request ever spans two clients. Agents keep no memory
+        between runs, so nothing your team learns for one client can surface in another's plan.</p>
+      <div class="tierlist">
+        <div class="tier"><h4>Starter</h4><ul><li>1 workspace</li><li>Website + documents</li><li>Brain, Ask, findings</li><li>Drafts only</li></ul></div>
+        <div class="tier feat"><h4>Growth</h4><ul><li>3 workspaces</li><li>10 connected sources</li><li>Strategy + plans</li><li>Approval workflow</li></ul></div>
+        <div class="tier"><h4>Agency</h4><ul><li>15+ client workspaces</li><li>Client templates</li><li>Guest report links</li><li>Per-client cost view</li></ul></div>
+        <div class="tier"><h4>Enterprise</h4><ul><li>SSO &amp; SCIM</li><li>Data residency</li><li>Audit export</li><li>Dedicated instance</li></ul></div>
+      </div>
+      <p style="margin-top:16px;font-size:13px;color:var(--muted)">Usage is metered in credits — a quick
+        question costs 1, a deep analysis 40. Refusals and failed runs are never charged.</p>
+    </section>
+
+  </div>
+</main>
+
+<script>
+/* ===================== SAMPLE DATA (fictional company) ===================== */
+const CHIP = {
+  v:(s,d)=>`<span class="chip v">${s} · ${d}</span>`,
+  u:(s,d)=>`<span class="chip u">${s} · ${d}</span>`,
+  i:(s)=>`<span class="chip i">${s}</span>`,
+  k:(s)=>`<span class="chip k">${s}</span>`
+};
+const conf = n => `<span class="conf" aria-label="confidence ${n} of 4">${
+  [1,2,3,4].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')}</span>`;
+
+const SPARK = (pts,down)=>{
+  const w=112,h=26,max=Math.max(...pts),min=Math.min(...pts);
+  const d=pts.map((p,i)=>`${i?'L':'M'}${(i/(pts.length-1)*w).toFixed(1)},${(h-((p-min)/((max-min)||1))*(h-4)-2).toFixed(1)}`).join(' ');
+  const c=down?'var(--bad)':'var(--ok)';
+  const last=pts.length-1, lx=w, ly=(h-((pts[last]-min)/((max-min)||1))*(h-4)-2).toFixed(1);
+  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w+3} ${h}" aria-hidden="true">
+    <path d="${d}" fill="none" stroke="${c}" stroke-width="1.5" stroke-linejoin="round"/>
+    <circle cx="${lx}" cy="${ly}" r="2.2" fill="${c}"/></svg>`;
+};
+
+const QUESTIONS = {
+  leads:{
+    q:"Why did leads drop in October?",
+    credits:38,
+    steps:[
+      ["Reading the brain","customers · marketing · sales · finance","0.4s"],
+      ["Computing funnel deltas","sql · funnel_by_month · n=1,204","1.1s"],
+      ["Scanning for anomalies","robust-z over 14 metrics","0.9s"],
+      ["Quant analysing","balanced model · 11k tokens","6.2s"],
+      ["Customer &amp; Market analysing","balanced model · 9k tokens","5.8s"],
+      ["Reconciling findings","deterministic · 2 agree, 1 unique","0.1s"],
+      ["Critic reviewing","2 uncited sentences removed","3.4s"]
+    ],
+    lead:`Leads fell <b>32.6%</b> month on month — 412 in October against 611 in September
+      — while paid spend was flat within 2%. So this is a <b>conversion problem, not a
+      traffic problem</b>: sessions were down only 4%.`,
+    findings:[
+      {k:"problem",kind:"Problem · severity 4",h:"Mobile checkout conversion collapsed after 12 September",
+       b:`Mobile conversion went 3.1% → 1.9% in the seven days after the checkout redesign.
+          Desktop was unchanged at 4.4%. That single split accounts for roughly
+          <b>three quarters</b> of the lead shortfall.`,
+       f:`${conf(3)} <span>High confidence</span> ${CHIP.v('GA4','2 Oct')} ${CHIP.u('Sara · timeline','28 Sept')}`},
+      {k:"problem",kind:"Problem · severity 3",h:"Meta creative is fatigued",
+       b:`Frequency doubled to 4.1 and CTR fell 38% over 14 days on the same three creatives,
+          which have been live since 3 September. CPA rose from €31.40 to €41.20.`,
+       f:`${conf(3)} <span>High confidence</span> ${CHIP.v('Meta Ads','2 Oct')}`},
+      {k:"opp",kind:"Opportunity",h:"Returning-customer segment is under-served",
+       b:`Repeat buyers convert at 6.8% — more than double first-time visitors — but receive
+          no dedicated campaign and 4% of spend.`,
+       f:`${conf(2)} <span>Moderate</span> ${CHIP.v('Shopify','1 Oct')} ${CHIP.v('Meta Ads','2 Oct')}`},
+      {k:"unknown",kind:"We don't know",h:"Whether creative fatigue or checkout dominates",
+       b:`There is no creative-level breakdown before 12 September, so the two causes can't be
+          separated in the data you have. <b>Turning on creative-level reporting would resolve
+          this in about two weeks.</b>`,
+       f:`${CHIP.k('No evidence available')}`}
+    ],
+    evidence:[
+      ["asr_a11","Leads, October 2025 — 412","GA4 · synced 2 Oct · definition lead_v2"],
+      ["asr_a12","Leads, September 2025 — 611","GA4 · synced 2 Oct · definition lead_v2"],
+      ["asr_b07","Mobile conversion 3.1% → 1.9%","GA4 · device split · from 12 Sept only"],
+      ["asr_c14","Meta frequency 2.0 → 4.1","Meta Ads · synced 2 Oct"],
+      ["asr_c15","Meta CPA €31.40 → €41.20","Meta Ads · synced 2 Oct"],
+      ["evt_771","Checkout redesign shipped","Timeline · entered by Sara, 28 Sept · unverified"],
+      ["asr_d02","Repeat-buyer conversion 6.8%","Shopify · synced 1 Oct"]
+    ],
+    assumptions:["Conversion tracking unchanged across both months",
+                 "Traffic mix comparable September to October",
+                 "The 12 Sept deploy went live to 100% of mobile traffic at once"],
+    unknowns:["Creative-level performance before 12 Sept",
+              "Whether the consent banner change on 9 Oct affected GA4 counts",
+              "Competitor pricing moves in the window"],
+    conflicts:[`Active customers has two live values (12,400 from HubSpot, 3,100 from your
+                profile). Neither was used in this answer.`]
+  },
+  churn:{
+    q:"What's our churn rate?",
+    credits:0,
+    refusal:true,
+    steps:[
+      ["Reading the brain","customers domain","0.3s"],
+      ["Grounding check","coverage 0.18 · below threshold","0.1s"],
+      ["Stopping the run","no charge applied","—"]
+    ],
+    lead:`<b>I don't know, and I'd rather say so.</b> There's no retention or subscription
+      data in this workspace — Shopify is connected for orders only, and nothing tracks a
+      customer past their first purchase. Anything I told you about churn would be a guess
+      dressed up as analysis.`,
+    findings:[
+      {k:"unknown",kind:"What would fix this",h:"Three ways to get a real churn number",
+       b:`<b>1.</b> Enable Shopify customer-level order history — gives repeat-purchase rate
+          within a day.<br>
+          <b>2.</b> Connect your email platform — unsubscribes and engagement decay are a
+          usable proxy in the meantime.<br>
+          <b>3.</b> Define what churn means for you. You sell equipment, not subscriptions, so
+          "churned" probably means "no repeat order in 9 months" — that's a decision, not a
+          calculation, and it should be yours.`,
+       f:`${CHIP.k('Grounding gate · run stopped')} <span>0 credits charged</span>`}
+    ],
+    evidence:[["—","No assertions found for customers.retention","Coverage 18% of required slots"]],
+    assumptions:[],
+    unknowns:["Retention, repeat-purchase rate, customer lifetime value, cohort behaviour"],
+    conflicts:[]
+  },
+  competitors:{
+    q:"How is our pricing positioned against competitors?",
+    credits:26,
+    steps:[
+      ["Reading the brain","business · competitors · brand","0.4s"],
+      ["Research agent · web","4 competitor sites · robots respected","8.1s"],
+      ["Customer &amp; Market analysing","balanced model · 13k tokens","6.6s"],
+      ["Critic reviewing","1 claim downgraded to estimate","2.9s"]
+    ],
+    lead:`You sit in the <b>upper-middle</b> of the visible market: above the two volume
+      sellers, below the two specialist brands. Your published range is €180–€640
+      ${CHIP.v('Website','1 Oct')}.`,
+    findings:[
+      {k:"insight",kind:"Insight",h:"You are priced like a specialist and marketed like a volume seller",
+       b:`Your entry price is 34% above the two volume competitors, but your homepage leads with
+          free shipping and a discount code — the same messages they lead with. The specialist
+          brands you price alongside lead with provenance and service instead.`,
+       f:`${conf(2)} <span>Moderate</span> ${CHIP.v('Website','1 Oct')} ${CHIP.i('Competitor pages · claims, not facts')}`},
+      {k:"unknown",kind:"We don't know",h:"What Orsa actually charges",
+       b:`Orsa publishes no list prices. Two third-party listings suggest €210–€290, so they're
+          shown as a <b>range, not a point</b>, and nothing in this analysis depends on the exact figure.`,
+       f:`${CHIP.k('Estimated from 2 third-party listings')}`}
+    ],
+    evidence:[
+      ["asr_p31","Published price range €180–€640","Website crawl · 1 Oct · confirmed by Sara"],
+      ["asr_p32","Competitor A entry price €134","competitor-a.com/pricing · accessed 14 Oct"],
+      ["asr_p33","Competitor B entry price €139","competitor-b.com/shop · accessed 14 Oct"],
+      ["clm_o08","Orsa: no public pricing","orsa.example/products · accessed 14 Oct"]
+    ],
+    assumptions:["Published list prices reflect what customers actually pay",
+                 "Competitor sets are comparable on specification"],
+    unknowns:["Discounting behaviour","Bundle and trade pricing","Orsa's real list price"],
+    conflicts:[]
+  }
+};
+
+const DOMAINS = [
+  {n:"business",   health:82, verified:24, total:31, conflicts:0, stale:1},
+  {n:"customers",  health:41, verified:9,  total:28, conflicts:1, stale:3},
+  {n:"brand",      health:74, verified:12, total:17, conflicts:0, stale:0},
+  {n:"marketing",  health:88, verified:41, total:47, conflicts:0, stale:2},
+  {n:"sales",      health:36, verified:5,  total:19, conflicts:0, stale:4},
+  {n:"finance",    health:63, verified:14, total:22, conflicts:1, stale:1},
+  {n:"competitors",health:58, verified:8,  total:16, conflicts:0, stale:0},
+  {n:"history",    health:47, verified:11, total:24, conflicts:0, stale:0}
+];
+
+const SLOTS = {
+  customers:[
+    ["customers.segments","Home enthusiasts (54%) · Small cafés (31%) · Gifting (15%)","u","Sara · onboarding","11 Aug",2],
+    ["customers.count.active","12,400","c","HubSpot · conflicted","2 Oct",2],
+    ["customers.objections","Price vs. a cheaper import · unsure about servicing","u","3 sales calls, transcribed","22 Sept",2],
+    ["customers.ltv","—","k","",""],
+    ["customers.retention.repeat_rate","—","k","",""],
+    ["customers.feedback_themes","Delivery time (14 of 96 reviews) · Packaging praise (22)","v","Reviews export · counted","28 Sept",3],
+    ["customers.acquisition_source","Paid social 46% · Organic 29% · Direct 18% · Referral 7%","v","GA4","2 Oct",4]
+  ],
+  business:[
+    ["business.model","Direct-to-consumer ecommerce, single brand","v","Confirmed by Sara","11 Aug",4],
+    ["business.products","Espresso machines (7) · Grinders (4) · Accessories (23)","v","Website crawl · confirmed","1 Oct",4],
+    ["business.pricing","€180 – €640 published range","v","Website crawl · confirmed","1 Oct",4],
+    ["business.margins.gross","—","k","",""],
+    ["business.distribution","Own store · 2 stockists in Beirut","u","Sara · onboarding","11 Aug",2]
+  ],
+  marketing:[
+    ["marketing.channels","Meta · Google Search · Organic · Email","v","Connected accounts","2 Oct",4],
+    ["marketing.performance.cpa","€41.20 (October, Meta)","v","Meta Ads","2 Oct",4],
+    ["marketing.budget.monthly","€9,000","u","Sara · onboarding","11 Aug",2],
+    ["marketing.content_pillars","Brewing technique · Product care · Origin stories","u","Instagram · inferred from 60 posts","14 Sept",2],
+    ["marketing.email.list_size","—","k","",""]
+  ],
+  brand:[
+    ["brand.positioning","“Serious equipment for people who actually care.”","u","Homepage hero · claim","1 Oct",2],
+    ["brand.promises","Free shipping over €200 · 2-year warranty · lifetime servicing","v","Website · confirmed","1 Oct",4],
+    ["brand.perception_gap","Priced as specialist, messaged as volume seller","i","Inferred · 4 assertions","14 Oct",2],
+    ["brand.visual_identity","Brand guidelines v3.pdf — extracted, 11 rules","v","Uploaded document","12 Aug",3]
+  ],
+  sales:[["sales.cycle_length","—","k","",""],["sales.close_rate","—","k","",""],
+    ["sales.objections","Price · servicing availability","u","3 calls","22 Sept",2]],
+  finance:[["finance.revenue.monthly","€148,000 (September)","v","Shopify","1 Oct",4],
+    ["finance.budgets.marketing","€9,000/month","u","Sara","11 Aug",2],
+    ["finance.platform_budget","Stated separately — not the marketing budget","v","Sara","11 Aug",4],
+    ["finance.investment_capacity","—","k","",""]],
+  competitors:[["competitors.direct","Competitor A · Competitor B · Orsa · Levant Coffee Co.","u","Research agent","14 Oct",2],
+    ["competitors.pricing","A €134 · B €139 · Orsa €210–290 (est.)","u","Public pages","14 Oct",2]],
+  history:[["history.decisions","Checkout redesign (12 Sept) · Price rise 8% (June)","u","Sara · timeline","28 Sept",2],
+    ["history.learnings","Creative refresh cut Meta CPA ~20% when frequency >3.5","i","1 outcome · 2 confounders","20 Oct",1]]
+};
+
+/* ===================== SCREENS ===================== */
+const S = {};
+
+S.home = () => `
+  <div class="screenhead">
+    <div><h2>Monday, 20 October</h2>
+      <p>Three things want your attention. Everything else is running.</p></div>
+    <div class="right"><span class="chip v">All sources synced · 2h ago</span></div>
+  </div>
+
+  <div class="alerts">
+    <div class="alert biz"><span class="tag">Business</span>
+      <div><div class="t">Meta CPA up 31% over 14 days</div>
+      <div class="d">Frequency doubled to 4.1 on three creatives live since 3 Sept. Explanation already computed.</div></div>
+      <span class="go">Investigate →</span></div>
+    <div class="alert data"><span class="tag">Data</span>
+      <div><div class="t">HubSpot hasn't synced for 3 days</div>
+      <div class="d">Token expired 17 Oct. Lead counts after that date are incomplete — answers are being caveated.</div></div>
+      <span class="go">Reconnect →</span></div>
+    <div class="alert biz"><span class="tag">Conflict</span>
+      <div><div class="t">Two live values for active customers</div>
+      <div class="d">12,400 (HubSpot) vs 3,100 (your profile). Probably different definitions, not different facts.</div></div>
+      <span class="go">Resolve →</span></div>
+  </div>
+
+  <h3 style="margin:26px 0 12px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">This month</h3>
+  <div class="tiles">
+    <div class="tile"><span class="l">Revenue <span class="chip v">1 Oct</span></span>
+      <span class="v">€148k</span><span class="d up">+4.1% vs Sept</span>${SPARK([112,118,124,131,129,142,148])}</div>
+    <div class="tile"><span class="l">Leads <span class="chip v">2 Oct</span></span>
+      <span class="v">412</span><span class="d down">−32.6% vs Sept</span>${SPARK([540,588,602,611,540,470,412],true)}</div>
+    <div class="tile"><span class="l">CPA <span class="chip v">2 Oct</span></span>
+      <span class="v">€41.20</span><span class="d down">+31.2% vs Sept</span>${SPARK([29,30,31,31.4,34,38,41.2],true)}</div>
+    <div class="tile"><span class="l">Conversion <span class="chip u">partial</span></span>
+      <span class="v">2.4%</span><span class="d down">−0.9pp</span>${SPARK([3.3,3.4,3.3,3.1,2.8,2.6,2.4],true)}</div>
+  </div>
+
+  <div class="grid2" style="margin-top:22px">
+    <div class="panel"><header><h3>In motion</h3></header>
+      <div class="pad" style="display:grid;gap:11px;font-size:13.5px">
+        <div style="display:flex;gap:10px"><span class="chip i">Strategy</span>
+          <span>Mobile checkout recovery — <b>week 2 of 6</b>, 3 of 9 tasks done</span></div>
+        <div style="display:flex;gap:10px"><span class="chip i">Strategy</span>
+          <span>Repeat-buyer campaign — awaiting your approval on budget</span></div>
+        <div style="display:flex;gap:10px"><span class="chip u">Waiting</span>
+          <span>2 drafts ready for review · 1 spend change needs an admin</span></div>
+        <div style="display:flex;gap:10px"><span class="chip v">Measuring</span>
+          <span>Creative refresh — outcome window closes in 4 days</span></div>
+      </div></div>
+    <div class="panel"><header><h3>Brain health</h3></header>
+      <div class="pad">
+        <div style="font-family:var(--mono);font-size:30px;font-weight:500">61%</div>
+        <p style="font-size:13px;color:var(--muted);margin-top:4px">Up from 44% at onboarding.</p>
+        <p style="font-size:13.5px;color:var(--ink-2);margin-top:12px">
+          Biggest gap: <b>sales</b> at 36%. Nothing tracks what happens after a lead arrives,
+          so I can't tell you which channels produce customers rather than enquiries.</p>
+        <p style="margin-top:12px"><span class="fix">Fix the top 3 gaps →</span></p>
+      </div></div>
+  </div>`;
+
+S.ask = (key='leads') => {
+  const d = QUESTIONS[key];
+  const pills = Object.entries(QUESTIONS).map(([k,v])=>
+    `<button data-q="${k}" aria-pressed="${k===key}">${v.q}</button>`).join('');
+  return `
+  <div class="screenhead"><div><h2>Ask</h2>
+    <p>Answers are assembled from your brain, and every claim carries where it came from.</p></div></div>
+
+  <div class="qbar"><span class="chip i">Question</span><span class="q">${d.q}</span>
+    <button class="btn ghost" id="replay" style="padding:6px 12px;font-size:13px">Replay run</button></div>
+  <div class="suggest">${pills}</div>
+
+  <div class="grid2" style="margin-top:20px">
+    <div style="display:grid;gap:16px;min-width:0">
+      <div class="panel"><header><h3>Run trace</h3>
+        <span class="chip ${d.refusal?'k':'i'}" style="margin-left:auto">${
+          d.refusal?'stopped · 0 credits':d.credits+' credits'}</span></header>
+        <div class="pad"><div class="trace" id="trace">${d.steps.map((s,i)=>
+          `<div class="step done" data-i="${i}"><span class="ic">✓</span>
+            <span><span class="n">${s[0]}</span><br><span class="m">${s[1]}</span></span>
+            <span class="t">${s[2]}</span></div>`).join('')}</div></div></div>
+
+      <div class="panel"><header><h3>Answer</h3></header>
+        <div class="pad ans">
+          <p>${d.lead}</p>
+          ${d.findings.map(f=>`<div class="finding ${f.k}">
+            <div class="kind">${f.kind}</div><div class="h">${f.h}</div>
+            <div class="b">${f.b}</div><div class="f">${f.f}</div></div>`).join('')}
+          ${d.refusal?'':`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px">
+            <button class="btn" style="padding:7px 14px;font-size:13px">Save as findings</button>
+            <button class="btn ghost" style="padding:7px 14px;font-size:13px">Build a strategy from this</button>
+            <button class="btn ghost" style="padding:7px 14px;font-size:13px">Go deeper · 40 credits</button></div>`}
+        </div></div>
+    </div>
+
+    <div style="display:grid;gap:14px">
+      <div class="panel"><header><h3>Evidence used</h3>
+        <span class="chip" style="margin-left:auto">${d.evidence.length}</span></header>
+        <div class="pad evlist">${d.evidence.map(e=>`<div class="ev">
+          <span class="id">${e[0]}</span>
+          <span class="txt">${e[1]}<span class="src">${e[2]}</span></span></div>`).join('')}</div></div>
+
+      ${d.assumptions.length?`<div class="panel"><header><h3>Assumptions</h3></header>
+        <div class="pad"><ul class="sidelist">${d.assumptions.map(a=>`<li>${a}</li>`).join('')}</ul></div></div>`:''}
+
+      <div class="panel"><header><h3>We don't know</h3></header>
+        <div class="pad"><ul class="sidelist">${d.unknowns.map(u=>`<li>${u}</li>`).join('')}</ul></div></div>
+
+      ${d.conflicts.length?`<div class="panel"><header><h3>Conflicts noted</h3></header>
+        <div class="pad" style="font-size:12.5px;color:var(--ink-2)">${d.conflicts.join('<br>')}</div></div>`:''}
+    </div>
+  </div>`;
+};
+
+S.brain = (dom='customers') => {
+  const rows = (SLOTS[dom]||[]).map(([k,v,st,src,date,c])=>{
+    const cls = st==='k'?'unk':'';
+    const chip = st==='k' ? CHIP.k('unknown')
+      : st==='i' ? CHIP.i('inferred · '+src)
+      : st==='c' ? `<span class="chip c">conflicted · ${src}</span>`
+      : st==='v' ? CHIP.v(src,date) : CHIP.u(src,date);
+    return `<div class="slot"><span class="k">${k}</span>
+      <span class="val ${cls}">${st==='k'?'not known':v}</span>
+      <span class="act">${chip}${c?conf(c):''}
+        <span class="fix">${st==='k'?'Add':'Correct'}</span></span></div>`;
+  }).join('');
+  return `
+  <div class="screenhead"><div><h2>Company Brain</h2>
+    <p>Everything the system believes about Meridian Supply — and how sure it is of each thing.</p></div>
+    <div class="right"><span class="chip">61% complete</span><span class="chip c">2 conflicts</span>
+      <span class="chip u">11 stale</span></div></div>
+
+  <div class="domains" id="domains">${DOMAINS.map(d=>`
+    <button class="dom" data-dom="${d.n}" aria-current="${d.n===dom}">
+      <span class="n">${d.n}</span>
+      <span class="meta"><span>${d.verified}/${d.total} verified</span>${
+        d.conflicts?`<span style="color:var(--bad)">${d.conflicts} conflict</span>`:''}${
+        d.stale?`<span style="color:var(--warn)">${d.stale} stale</span>`:''}</span>
+      <span class="hbar"><i class="${d.health<50?'low':''}" style="width:${d.health}%"></i></span>
+    </button>`).join('')}</div>
+
+  ${dom==='customers'?`
+  <div class="conflict" style="margin-top:20px">
+    <h4>Conflict — active customers, September</h4>
+    <div class="cvals">
+      <div class="cval"><span class="num">12,400</span>
+        <span class="who">HubSpot export · synced 2 Oct · definition <span class="mono">active_customers_v2</span></span></div>
+      <div class="cval"><span class="num">3,100</span>
+        <span class="who">Company profile · entered 4 Sept · definition <span class="mono">active_customers_v2</span></span></div>
+      <div class="cval"><span class="num">50,000</span>
+        <span class="who">Homepage headline · crawled 1 Oct · <b>no definition attached</b></span></div>
+    </div>
+    <p style="font-size:13px;color:var(--ink-2);margin:0">
+      <b>Likely explanation (inference, unconfirmed):</b> the homepage figure sits in a marketing
+      headline and probably counts every registration since launch. The profile figure predates
+      the September import. These may be three different metrics rather than one disputed number.</p>
+    <div class="resolve">
+      <button>HubSpot is authoritative</button>
+      <button>Profile is authoritative</button>
+      <button>Neither — let's define it</button>
+      <button>Mark the homepage figure as a marketing claim</button>
+    </div>
+  </div>`:''}
+
+  <div class="panel" style="margin-top:20px"><header>
+    <h3>${dom}</h3><span class="chip" style="margin-left:auto">${(SLOTS[dom]||[]).length} slots</span></header>
+    <div class="slots">${rows||'<div class="pad" style="color:var(--muted)">No slots in this sample.</div>'}</div></div>
+
+  <p style="font-size:12.5px;color:var(--muted);margin-top:14px">
+    Nothing here is ever overwritten. Correcting a value writes a new one and keeps the old,
+    so the system can still tell you what you believed in August.</p>`;
+};
+
+S.findings = () => `
+  <div class="screenhead"><div><h2>Findings</h2>
+    <p>Durable objects, not chat history. Each one keeps its evidence and its status.</p></div>
+    <div class="right"><span class="chip">12 open</span><span class="chip v">4 actioned</span></div></div>
+  <div style="display:grid;gap:12px;max-width:820px">
+    ${QUESTIONS.leads.findings.map(f=>`<div class="finding ${f.k}">
+      <div class="kind">${f.kind} · from “Why did leads drop in October?” · 20 Oct</div>
+      <div class="h">${f.h}</div><div class="b">${f.b}</div><div class="f">${f.f}</div></div>`).join('')}
+    ${QUESTIONS.competitors.findings.map(f=>`<div class="finding ${f.k}">
+      <div class="kind">${f.kind} · from “How is our pricing positioned?” · 14 Oct</div>
+      <div class="h">${f.h}</div><div class="b">${f.b}</div><div class="f">${f.f}</div></div>`).join('')}
+  </div>`;
+
+S.strategy = () => `
+  <div class="screenhead"><div><h2>Mobile checkout recovery</h2>
+    <p>Proposed 20 Oct from 3 findings · approved by Sara 21 Oct · week 2 of 6</p></div>
+    <div class="right"><span class="chip v">Active</span></div></div>
+
+  <div class="grid2">
+    <div style="display:grid;gap:14px;min-width:0">
+      <div class="panel"><header><h3>Objective</h3></header><div class="pad" style="font-size:14.5px">
+        Return mobile conversion to its pre-12-September level of 3.1% within six weeks,
+        recovering an estimated 140–190 leads per month.</div></div>
+
+      <div class="panel"><header><h3>Mechanism — why this should work</h3></header>
+        <div class="pad" style="font-size:14px;color:var(--ink-2);line-height:1.65">
+        Desktop conversion was unaffected by the same deploy, which points at the mobile
+        checkout flow rather than at demand, pricing or traffic quality. If the cause is in
+        the flow, then finding and removing the specific step where mobile users now drop
+        should restore the previous rate. <b>If mobile conversion doesn't move within three
+        weeks of the fix, this reasoning was wrong</b> and the cause is more likely creative
+        fatigue or a demand shift — at which point we stop and rediagnose.</div></div>
+
+      <div class="panel"><header><h3>Plan</h3></header><div class="slots">
+        ${[["Session recordings of mobile checkout drop-off","Rami","24 Oct","done"],
+           ["Fix the address-form validation bug found in step 1","Rami","28 Oct","done"],
+           ["Restore the one-page checkout for mobile only","Rami","4 Nov","done"],
+           ["A/B test: new flow vs restored flow","Sara","11 Nov","todo"],
+           ["Re-measure mobile conversion over 14 days","system","25 Nov","todo"]]
+          .map(t=>`<div class="slot"><span class="k">${t[3]==='done'?'✓':'○'} ${t[2]}</span>
+            <span class="val">${t[0]}</span>
+            <span class="act"><span class="chip ${t[3]==='done'?'v':''}">${t[1]}</span></span></div>`).join('')}
+      </div></div>
+    </div>
+
+    <div style="display:grid;gap:14px">
+      <div class="panel"><header><h3>How we'll know</h3></header><div class="pad">
+        <div class="okv"><div><span class="l">Primary KPI</span><span class="v">3.1%</span>
+          <span style="font-size:11.5px;color:var(--muted)">mobile conversion</span></div>
+        <div><span class="l">Window</span><span class="v">14d</span>
+          <span style="font-size:11.5px;color:var(--muted)">after ship</span></div></div>
+        <p style="font-size:12.5px;color:var(--muted);margin-top:10px">
+          Declared before the work started, so the result can't be graded against a metric
+          chosen afterwards.</p></div></div>
+
+      <div class="panel"><header><h3>Risks</h3></header><div class="pad">
+        <ul class="sidelist"><li>Reverting the checkout undoes accessibility work shipped in the same release</li>
+        <li>Meta fatigue runs in parallel and will muddy the read</li>
+        <li>Two of five tasks depend on one developer</li></ul></div></div>
+
+      <div class="panel"><header><h3>Tried before?</h3></header><div class="pad"
+        style="font-size:13px;color:var(--ink-2)">
+        <b>Yes — partly.</b> A checkout simplification in March 2024 lifted mobile conversion
+        0.6pp and held. Same mechanism, different cause.
+        <span class="chip v" style="margin-top:8px">out_4102 · measured</span></div></div>
+    </div>
+  </div>`;
+
+S.learn = () => `
+  <div class="screenhead"><div><h2>Outcomes</h2>
+    <p>What you did, what followed, and what else was going on at the time.</p></div></div>
+
+  <div class="panel" style="max-width:900px"><header>
+    <h3>Meta creative refresh</h3><span class="chip v" style="margin-left:auto">Measured · 14 days</span></header>
+    <div class="pad outcome">
+      <div class="okv">
+        <div><span class="l">Target</span><span class="v">≤ €35</span></div>
+        <div><span class="l">Actual</span><span class="v" style="color:var(--ok)">€33.10</span></div>
+        <div><span class="l">Baseline</span><span class="v">€41.20</span></div>
+        <div><span class="l">Verdict</span><span class="v" style="font-size:15px">Likely positive</span></div>
+      </div>
+
+      <div class="confound"><h5>Three things also changed in this window</h5>
+        <ul><li>Budget increased 20% on day 3 — a separate approved action</li>
+          <li>A seasonal promotion ran days 6–14</li>
+          <li>The GA4 consent banner changed on day 9, so tracking may not be comparable</li></ul></div>
+
+      <p style="font-size:14px;color:var(--ink-2);line-height:1.65">
+        Most tools would call this a win and move on. <b>The honest read is that the creative
+        refresh probably helped, and the size of the effect can't be separated from the budget
+        change and the promotion.</b> A clean read next time needs a holdout audience —
+        that has been added to the experiment backlog.</p>
+
+      <div style="border-top:1px dashed var(--line-strong);padding-top:13px">
+        <div class="kind mono" style="font-size:10.5px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase">Written back to the brain</div>
+        <p style="font-size:14px;margin-top:6px"><b>“Refreshing creative cut Meta CPA by roughly
+          20% when frequency was above 3.5 and creative was older than 21 days.”</b></p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:9px">
+          ${CHIP.i('history.learnings')}${conf(1)}
+          <span class="chip u">1 observation · 2 confounders</span>
+          <span class="chip k">applies when: frequency &gt; 3.5</span></div>
+        <p style="font-size:12.5px;color:var(--muted);margin-top:9px">
+          Confidence stays low until it repeats. One result is an anecdote, and the system
+          records exactly how many it has.</p>
+      </div>
+    </div></div>`;
+
+/* ===================== WIRING ===================== */
+const screenEl = document.getElementById('screen');
+let state = {screen:'home', q:'leads', dom:'customers'};
+
+function render(){
+  const s = state.screen;
+  screenEl.innerHTML = s==='ask' ? S.ask(state.q) : s==='brain' ? S.brain(state.dom) : S[s]();
+  document.querySelectorAll('.rail nav button').forEach(b=>{
+    if(b.dataset.screen===s) b.setAttribute('aria-current','page');
+    else b.removeAttribute('aria-current');
+  });
+}
+
+document.querySelectorAll('.rail nav button').forEach(b=>
+  b.addEventListener('click',()=>{state.screen=b.dataset.screen;render();}));
+
+screenEl.addEventListener('click',e=>{
+  const q = e.target.closest('[data-q]');
+  if(q){ state.q=q.dataset.q; render(); return; }
+  const d = e.target.closest('[data-dom]');
+  if(d){ state.dom=d.dataset.dom; render(); return; }
+  if(e.target.id==='replay') replay();
+});
+
+function replay(){
+  const steps=[...document.querySelectorAll('#trace .step')];
+  if(!steps.length) return;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  steps.forEach(s=>{s.className='step';s.querySelector('.ic').textContent='';});
+  let i=0;
+  const tick=()=>{
+    if(i>0){steps[i-1].className='step done';steps[i-1].querySelector('.ic').textContent='✓';}
+    if(i>=steps.length) return;
+    steps[i].className='step run';
+    i++;
+    setTimeout(tick, reduced?120:520);
+  };
+  tick();
+}
+
+/* view switch */
+const views={app:document.getElementById('view-app'),site:document.getElementById('view-site')};
+const tabs={app:document.getElementById('tab-app'),site:document.getElementById('tab-site')};
+function show(v){
+  views.app.classList.toggle('hidden',v!=='app');
+  views.site.classList.toggle('hidden',v!=='site');
+  tabs.app.setAttribute('aria-selected',v==='app');
+  tabs.site.setAttribute('aria-selected',v==='site');
+  try{localStorage.setItem('bios-view',v)}catch(e){}
+  window.scrollTo({top:0});
+}
+tabs.app.addEventListener('click',()=>show('app'));
+tabs.site.addEventListener('click',()=>show('site'));
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-goto]'); if(g) show(g.dataset.goto);
+});
+
+let start='app';
+try{ const v=localStorage.getItem('bios-view'); if(v==='site'||v==='app') start=v; }catch(e){}
+render(); show(start);
+</script>
