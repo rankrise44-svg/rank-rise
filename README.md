@@ -49,3 +49,14 @@ through a local web server (not `file://`):
 ```bash
 python3 -m http.server 8000    # then open http://localhost:8000/
 ```
+
+## Product architecture — BIOS
+
+`docs/bios/` holds the architecture set for **BIOS**, the AI business
+intelligence and marketing platform: 26 documents covering the product,
+system, data, Company Brain, agent, orchestration, security, tenancy, UX,
+execution and learning architectures, plus the MVP, roadmap, stack options,
+testing, scalability, privacy and unit-economics plans.
+
+Start with [`docs/bios/00-index.md`](docs/bios/00-index.md). It is a design
+set, separate from this website — no code here depends on it.
