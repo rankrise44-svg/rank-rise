@@ -26,4 +26,5 @@ window.RANKRISE_PROJECTS = [
   { id: 6, logo: 'assets/brands/hatem.png', title: 'Hatem Rmaite Forex — Case Study',   client: 'Hatem Rmaite Forex',  cat: 'Social', mLabel: 'Case Study',          cover: 'assets/covers/hatem.jpg',  link: 'case.html?id=hatem' },
   { id: 7, title: 'Bazzi Podiatry — Brand Identity',   client: 'Bazzi Podiatry',      cat: 'Brand',  mLabel: 'Brand Identity',      cover: 'assets/covers/bazzi.jpg',  link: 'case.html?id=bazzi' },
   { id: 8, title: 'Valmuntra — Brand Identity',   client: 'Valmuntra',           cat: 'Brand',  mLabel: 'Brand Identity',      logo: 'assets/brands/valmuntra/white-on-oxblood.png', tile: true, link: 'case.html?id=valmuntra' },
+  { id: 9, title: 'Jack — 3D Creator',            client: 'Sample',              cat: 'Brand',  mLabel: 'Web Design · Sample', link: 'drafts/jack-3d-creator/preview/index.html' },
 ];

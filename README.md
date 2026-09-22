@@ -10,6 +10,7 @@ index.html          →  the website (design + layout)
 projects.js         →  ★ your portfolio DATA — edit this to manage projects
 assets/covers/      →  project cover images
 projects/           →  the case-study pages that open on click
+drafts/             →  design samples & concepts (see drafts/README.md)
 robots.txt, sitemap.xml, netlify.toml   →  hosting / SEO
 ```
 
