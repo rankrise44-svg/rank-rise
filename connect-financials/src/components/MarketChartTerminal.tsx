@@ -186,7 +186,7 @@ export const MarketChartTerminal: React.FC<Props> = ({
     const height = rect.height;
 
     // Clear background
-    ctx.fillStyle = '#090d16'; // deep navy/slate
+    ctx.fillStyle = '#050b1a'; // deep navy/slate
     ctx.fillRect(0, 0, width, height);
 
     if (candles.length === 0) return;
@@ -219,7 +219,7 @@ export const MarketChartTerminal: React.FC<Props> = ({
     };
 
     // Draw grid lines (horizontal price grid)
-    ctx.strokeStyle = '#1e293b';
+    ctx.strokeStyle = '#16253f';
     ctx.lineWidth = 1;
     const priceSteps = 6;
     for (let i = 0; i <= priceSteps; i++) {
@@ -231,7 +231,7 @@ export const MarketChartTerminal: React.FC<Props> = ({
       ctx.stroke();
 
       // Price label on right axis
-      ctx.fillStyle = '#64748b';
+      ctx.fillStyle = '#6b82a6';
       ctx.font = '10px JetBrains Mono, monospace';
       ctx.textAlign = 'left';
       ctx.fillText(p.toFixed(instrument.digits), plotWidth + 8, y + 3);
@@ -248,14 +248,14 @@ export const MarketChartTerminal: React.FC<Props> = ({
         const x = idx * candleSlotWidth + candleSlotWidth / 2;
         const vH = (c.volume / maxVolume) * volumeHeight;
         const y = pricePaneHeight - vH;
-        ctx.fillStyle = c.close >= c.open ? 'rgba(16, 185, 129, 0.18)' : 'rgba(244, 63, 94, 0.18)';
+        ctx.fillStyle = c.close >= c.open ? 'rgba(217, 180, 90, 0.18)' : 'rgba(62, 134, 216, 0.18)';
         ctx.fillRect(x - candleWidth / 2, y, candleWidth, vH);
       });
     }
 
     // Draw Bollinger Bands
     if (indicators.bollinger) {
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+      ctx.strokeStyle = 'rgba(77, 163, 255, 0.4)';
       ctx.lineWidth = 1;
       ctx.beginPath();
       let startedUpper = false;
@@ -292,7 +292,7 @@ export const MarketChartTerminal: React.FC<Props> = ({
 
     // Draw Moving Average 20
     if (indicators.ma20) {
-      ctx.strokeStyle = '#f59e0b'; // Amber
+      ctx.strokeStyle = '#d4af37'; // Amber
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       let started = false;
@@ -313,7 +313,7 @@ export const MarketChartTerminal: React.FC<Props> = ({
 
     // Draw Moving Average 50
     if (indicators.ma50) {
-      ctx.strokeStyle = '#818cf8'; // Indigo
+      ctx.strokeStyle = '#5b8fc7'; // Indigo
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       let started = false;
@@ -342,7 +342,7 @@ export const MarketChartTerminal: React.FC<Props> = ({
         const lowY = priceToY(c.low);
         const isGreen = c.close >= c.open;
 
-        const color = isGreen ? '#10b981' : '#f43f5e';
+        const color = isGreen ? '#d9b45a' : '#3e86d8';
         ctx.strokeStyle = color;
         ctx.fillStyle = color;
 
@@ -374,14 +374,14 @@ export const MarketChartTerminal: React.FC<Props> = ({
         ctx.lineTo(candleSlotWidth / 2, pricePaneHeight);
         ctx.closePath();
         const gradient = ctx.createLinearGradient(0, 0, 0, pricePaneHeight);
-        gradient.addColorStop(0, 'rgba(6, 182, 212, 0.35)');
-        gradient.addColorStop(1, 'rgba(6, 182, 212, 0.0)');
+        gradient.addColorStop(0, 'rgba(77, 163, 255, 0.35)');
+        gradient.addColorStop(1, 'rgba(77, 163, 255, 0.0)');
         ctx.fillStyle = gradient;
         ctx.fill();
       }
 
       ctx.beginPath();
-      ctx.strokeStyle = '#06b6d4';
+      ctx.strokeStyle = '#4da3ff';
       ctx.lineWidth = 2;
       candles.forEach((c, idx) => {
         const x = idx * candleSlotWidth + candleSlotWidth / 2;
@@ -395,7 +395,7 @@ export const MarketChartTerminal: React.FC<Props> = ({
     // Current Price Indicator Line
     const currentPriceY = priceToY(instrument.bid);
     ctx.setLineDash([4, 4]);
-    ctx.strokeStyle = '#06b6d4';
+    ctx.strokeStyle = '#4da3ff';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(0, currentPriceY);
@@ -404,9 +404,9 @@ export const MarketChartTerminal: React.FC<Props> = ({
     ctx.setLineDash([]);
 
     // Current Price Badge on Right Axis
-    ctx.fillStyle = '#06b6d4';
+    ctx.fillStyle = '#4da3ff';
     ctx.fillRect(plotWidth, currentPriceY - 9, rightMargin, 18);
-    ctx.fillStyle = '#090d16';
+    ctx.fillStyle = '#050b1a';
     ctx.font = 'bold 10px JetBrains Mono, monospace';
     ctx.textAlign = 'left';
     ctx.fillText(instrument.bid.toFixed(instrument.digits), plotWidth + 6, currentPriceY + 3.5);
@@ -415,7 +415,7 @@ export const MarketChartTerminal: React.FC<Props> = ({
     if (indicators.rsi) {
       const rsiTop = pricePaneHeight;
       // Divider
-      ctx.strokeStyle = '#334155';
+      ctx.strokeStyle = '#1e3055';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(0, rsiTop);
@@ -430,22 +430,22 @@ export const MarketChartTerminal: React.FC<Props> = ({
       const y70 = rsiToY(70);
       const y30 = rsiToY(30);
 
-      ctx.fillStyle = 'rgba(244, 63, 94, 0.05)';
+      ctx.fillStyle = 'rgba(62, 134, 216, 0.05)';
       ctx.fillRect(0, rsiTop, plotWidth, y70 - rsiTop);
 
-      ctx.fillStyle = 'rgba(16, 185, 129, 0.05)';
+      ctx.fillStyle = 'rgba(217, 180, 90, 0.05)';
       ctx.fillRect(0, y30, plotWidth, rsiTop + rsiPaneHeight - y30);
 
       // 70 Line
       ctx.setLineDash([2, 4]);
-      ctx.strokeStyle = 'rgba(244, 63, 94, 0.4)';
+      ctx.strokeStyle = 'rgba(62, 134, 216, 0.4)';
       ctx.beginPath();
       ctx.moveTo(0, y70);
       ctx.lineTo(plotWidth, y70);
       ctx.stroke();
 
       // 30 Line
-      ctx.strokeStyle = 'rgba(16, 185, 129, 0.4)';
+      ctx.strokeStyle = 'rgba(217, 180, 90, 0.4)';
       ctx.beginPath();
       ctx.moveTo(0, y30);
       ctx.lineTo(plotWidth, y30);
@@ -453,17 +453,17 @@ export const MarketChartTerminal: React.FC<Props> = ({
       ctx.setLineDash([]);
 
       // RSI Label
-      ctx.fillStyle = '#94a3b8';
+      ctx.fillStyle = '#9bb0ce';
       ctx.font = '10px sans-serif';
       ctx.fillText('RSI (14)', 8, rsiTop + 14);
 
-      ctx.fillStyle = '#64748b';
+      ctx.fillStyle = '#6b82a6';
       ctx.font = '9px JetBrains Mono, monospace';
       ctx.fillText('70', plotWidth + 8, y70 + 3);
       ctx.fillText('30', plotWidth + 8, y30 + 3);
 
       // Plot RSI Line
-      ctx.strokeStyle = '#c084fc'; // Purple
+      ctx.strokeStyle = '#7cbaff'; // Purple
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       let startedRsi = false;
@@ -484,7 +484,7 @@ export const MarketChartTerminal: React.FC<Props> = ({
 
     // Time axis at bottom
     const bottomY = height - 6;
-    ctx.fillStyle = '#64748b';
+    ctx.fillStyle = '#6b82a6';
     ctx.font = '10px JetBrains Mono, monospace';
     ctx.textAlign = 'center';
     const timeStep = Math.max(1, Math.floor(candleCount / 5));
@@ -499,7 +499,7 @@ export const MarketChartTerminal: React.FC<Props> = ({
     // Crosshair rendering
     if (hoverData) {
       ctx.setLineDash([3, 3]);
-      ctx.strokeStyle = '#94a3b8';
+      ctx.strokeStyle = '#9bb0ce';
       ctx.lineWidth = 0.8;
 
       // Vertical line
@@ -517,9 +517,9 @@ export const MarketChartTerminal: React.FC<Props> = ({
 
         // Price tooltip badge
         if (hoverData.price) {
-          ctx.fillStyle = '#334155';
+          ctx.fillStyle = '#1e3055';
           ctx.fillRect(plotWidth, hoverData.y - 9, rightMargin, 18);
-          ctx.fillStyle = '#f8fafc';
+          ctx.fillStyle = '#f2f6fd';
           ctx.font = '10px JetBrains Mono, monospace';
           ctx.textAlign = 'left';
           ctx.fillText(hoverData.price.toFixed(instrument.digits), plotWidth + 6, hoverData.y + 3.5);

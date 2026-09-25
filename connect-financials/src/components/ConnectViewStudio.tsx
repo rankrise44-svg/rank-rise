@@ -154,8 +154,8 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
         { timeIndex: 98, price: 3375 }
       ],
       text: 'FVG (Fair Value Gap)',
-      color: 'rgba(148, 163, 184, 0.4)',
-      fillColor: 'rgba(148, 163, 184, 0.22)'
+      color: 'rgba(155, 176, 206, 0.4)',
+      fillColor: 'rgba(155, 176, 206, 0.22)'
     },
     {
       id: 'pre-bos-1',
@@ -185,7 +185,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
         { timeIndex: 68, price: 3390 },
         { timeIndex: 78, price: 3360 }
       ],
-      color: '#38bdf8'
+      color: '#4da3ff'
     }
   ]);
 
@@ -322,7 +322,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
         id: 'draw-' + Date.now(),
         type: 'horizontal',
         points: [{ timeIndex, price }],
-        color: '#eab308'
+        color: '#d4af37'
       };
       pushHistory([...drawings, newD]);
       setCurrentPoints([]);
@@ -345,17 +345,17 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           points: newPoints,
           color:
             activeTool === 'bos'
-              ? '#94a3b8'
+              ? '#9bb0ce'
               : activeTool === 'choch'
-              ? '#eab308'
+              ? '#d4af37'
               : activeTool === 'rectangle'
-              ? 'rgba(56, 189, 248, 0.4)'
-              : '#38bdf8',
+              ? 'rgba(77, 163, 255, 0.4)'
+              : '#4da3ff',
           fillColor:
             activeTool === 'rectangle'
-              ? 'rgba(56, 189, 248, 0.15)'
+              ? 'rgba(77, 163, 255, 0.15)'
               : activeTool === 'longPosition'
-              ? 'rgba(16, 185, 129, 0.2)'
+              ? 'rgba(217, 180, 90, 0.2)'
               : undefined
         };
         pushHistory([...drawings, newD]);
@@ -370,7 +370,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           id: 'draw-' + Date.now(),
           type: 'elliott12345',
           points: newPoints,
-          color: '#38bdf8'
+          color: '#4da3ff'
         };
         pushHistory([...drawings, newD]);
         setCurrentPoints([]);
@@ -384,7 +384,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           id: 'draw-' + Date.now(),
           type: 'elliottABC',
           points: newPoints,
-          color: '#f59e0b'
+          color: '#d4af37'
         };
         pushHistory([...drawings, newD]);
         setCurrentPoints([]);
@@ -515,11 +515,11 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
     const timeToX = (tIdx: number) => (tIdx - startIndex) * barW + barW / 2;
 
     // 1. CLEAR & BACKGROUND
-    ctx.fillStyle = '#0a0e17'; // Authentic TradingView deep dark background
+    ctx.fillStyle = '#050b1a'; // Authentic TradingView deep dark background
     ctx.fillRect(0, 0, width, height);
 
     // 2. HORIZONTAL & VERTICAL GRID
-    ctx.strokeStyle = '#151c2c';
+    ctx.strokeStyle = '#0f1b33';
     ctx.lineWidth = 1;
 
     // Price Grid (Horizontal)
@@ -536,7 +536,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
       ctx.stroke();
 
       // Price scale labels on right sidebar
-      ctx.fillStyle = '#64748b';
+      ctx.fillStyle = '#6b82a6';
       ctx.fillText(p.toFixed(currentInstrument.digits), chartW + 8, y + 3);
     }
 
@@ -558,7 +558,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           timeframe === 'D1'
             ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
             : date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-        ctx.fillStyle = '#64748b';
+        ctx.fillStyle = '#6b82a6';
         ctx.fillText(label, x, mainChartH + 18);
       }
     }
@@ -566,7 +566,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
     // 3. MOVING AVERAGES (EMA 20 & EMA 50)
     if (indicators.ema20) {
       ctx.beginPath();
-      ctx.strokeStyle = '#38bdf8'; // Cyan EMA 20
+      ctx.strokeStyle = '#4da3ff'; // Cyan EMA 20
       ctx.lineWidth = 1.5;
       let first = true;
       visibleCandles.forEach((c, i) => {
@@ -587,7 +587,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
 
     if (indicators.ema50) {
       ctx.beginPath();
-      ctx.strokeStyle = '#eab308'; // Amber EMA 50
+      ctx.strokeStyle = '#d4af37'; // Amber EMA 50
       ctx.lineWidth = 1.5;
       let first = true;
       visibleCandles.forEach((c, i) => {
@@ -617,7 +617,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
       const lowY = priceToY(c.low);
 
       const isBull = c.close >= c.open;
-      const candleColor = isBull ? '#089981' : '#f23645'; // Authentic TradingView Green & Red
+      const candleColor = isBull ? '#d9b45a' : '#3e86d8'; // Authentic TradingView Green & Red
 
       // Wicks (Thin 1px)
       ctx.strokeStyle = candleColor;
@@ -651,7 +651,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
       if (indicators.volume) {
         const maxVol = 85000;
         const volH = Math.min(45, (c.volume / maxVol) * 45);
-        ctx.fillStyle = isBull ? 'rgba(8, 153, 129, 0.28)' : 'rgba(242, 54, 69, 0.28)';
+        ctx.fillStyle = isBull ? 'rgba(217, 180, 90, 0.28)' : 'rgba(62, 134, 216, 0.28)';
         ctx.fillRect(cx - candleBodyW / 2, mainChartH - volH, candleBodyW, volH);
       }
     });
@@ -659,7 +659,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
     // 5. DRAWINGS RENDERING (Support, Resistance, Rectangles, Elliott Waves, Fib, etc.)
     if (!hideAllDrawings) {
       drawings.forEach((d) => {
-        const color = d.color || '#38bdf8';
+        const color = d.color || '#4da3ff';
         const isSelected = selectedDrawingId === d.id;
 
         ctx.save();
@@ -726,7 +726,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
             const rw = Math.abs(x2 - x1);
             const rh = Math.abs(y2 - y1);
 
-            ctx.fillStyle = d.fillColor || 'rgba(56, 189, 248, 0.16)';
+            ctx.fillStyle = d.fillColor || 'rgba(77, 163, 255, 0.16)';
             ctx.fillRect(rx, ry, rw, rh);
             ctx.strokeRect(rx, ry, rw, rh);
 
@@ -752,7 +752,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
             ctx.setLineDash([]);
 
             // Text tag
-            ctx.fillStyle = d.type === 'bos' ? '#94a3b8' : '#eab308';
+            ctx.fillStyle = d.type === 'bos' ? '#9bb0ce' : '#d4af37';
             ctx.font = 'bold 10px sans-serif';
             ctx.fillText(d.type.toUpperCase(), (x1 + x2) / 2 - 12, y1 - 4);
           }
@@ -772,7 +772,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
             const x = timeToX(pt.timeIndex);
             const y = priceToY(pt.price);
 
-            ctx.fillStyle = '#0a0e17';
+            ctx.fillStyle = '#050b1a';
             ctx.beginPath();
             ctx.arc(x, y, 9, 0, Math.PI * 2);
             ctx.fill();
@@ -802,7 +802,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
             const x = timeToX(pt.timeIndex);
             const y = priceToY(pt.price);
 
-            ctx.fillStyle = '#0a0e17';
+            ctx.fillStyle = '#050b1a';
             ctx.beginPath();
             ctx.arc(x, y, 9, 0, Math.PI * 2);
             ctx.fill();
@@ -827,13 +827,13 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
             const endX = Math.max(chartW, Math.max(x1, x2));
 
             const fibLevels = [
-              { r: 0.0, c: '#787b86' },
-              { r: 0.236, c: '#f23645' },
-              { r: 0.382, c: '#ff9800' },
-              { r: 0.5, c: '#4caf50' },
-              { r: 0.618, c: '#089981' },
-              { r: 0.786, c: '#2962ff' },
-              { r: 1.0, c: '#787b86' }
+              { r: 0.0, c: '#6b82a6' },
+              { r: 0.236, c: '#3e86d8' },
+              { r: 0.382, c: '#e0a93c' },
+              { r: 0.5, c: '#d9b45a' },
+              { r: 0.618, c: '#d9b45a' },
+              { r: 0.786, c: '#2e7fe8' },
+              { r: 1.0, c: '#6b82a6' }
             ];
 
             fibLevels.forEach((lvl) => {
@@ -857,9 +857,9 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
             const x = timeToX(d.points[0].timeIndex);
             const y = priceToY(d.points[0].price);
 
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+            ctx.fillStyle = 'rgba(5, 11, 26, 0.85)';
             ctx.fillRect(x - 4, y - 18, 120, 24);
-            ctx.strokeStyle = '#38bdf8';
+            ctx.strokeStyle = '#4da3ff';
             ctx.strokeRect(x - 4, y - 18, 120, 24);
 
             ctx.fillStyle = '#ffffff';
@@ -875,7 +875,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
     // 6. IN-PROGRESS DRAWING PREVIEW
     if (currentPoints.length > 0 && mousePos) {
       ctx.save();
-      ctx.strokeStyle = '#38bdf8';
+      ctx.strokeStyle = '#4da3ff';
       ctx.setLineDash([4, 4]);
       ctx.lineWidth = 1.5;
 
@@ -913,7 +913,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
 
       // Floating Price Badge on Y-axis
       const hoverPrice = yToPrice(mousePos.y);
-      ctx.fillStyle = '#2962ff';
+      ctx.fillStyle = '#2e7fe8';
       ctx.fillRect(chartW, mousePos.y - 10, chartRightPad, 20);
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 10px monospace';
@@ -928,7 +928,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
     if (lastCandle) {
       const liveY = priceToY(lastCandle.close);
       ctx.save();
-      ctx.strokeStyle = '#2962ff';
+      ctx.strokeStyle = '#2e7fe8';
       ctx.lineWidth = 1;
       ctx.setLineDash([4, 2]);
       ctx.beginPath();
@@ -938,7 +938,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
       ctx.setLineDash([]);
 
       // Current Price Badge on right Y-Axis
-      ctx.fillStyle = '#2962ff';
+      ctx.fillStyle = '#2e7fe8';
       ctx.fillRect(chartW, liveY - 11, chartRightPad, 22);
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 11px monospace';
@@ -952,16 +952,16 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
       const rsiH = height - rsiTop - 20;
 
       ctx.save();
-      ctx.fillStyle = '#0d131f';
+      ctx.fillStyle = '#0a1428';
       ctx.fillRect(0, rsiTop, chartW, rsiH);
-      ctx.strokeStyle = '#1e293b';
+      ctx.strokeStyle = '#16253f';
       ctx.strokeRect(0, rsiTop, chartW, rsiH);
 
       // Overbought 70 & Oversold 30 levels
       const y70 = rsiTop + rsiH * 0.3;
       const y30 = rsiTop + rsiH * 0.7;
 
-      ctx.strokeStyle = 'rgba(148, 163, 184, 0.4)';
+      ctx.strokeStyle = 'rgba(155, 176, 206, 0.4)';
       ctx.setLineDash([3, 3]);
       ctx.beginPath();
       ctx.moveTo(0, y70);
@@ -973,7 +973,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
 
       // RSI Curve
       ctx.beginPath();
-      ctx.strokeStyle = '#a855f7';
+      ctx.strokeStyle = '#5b8fc7';
       ctx.lineWidth = 1.5;
       visibleCandles.forEach((c, i) => {
         const x = i * barW + barW / 2;
@@ -985,7 +985,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
       });
       ctx.stroke();
 
-      ctx.fillStyle = '#a855f7';
+      ctx.fillStyle = '#5b8fc7';
       ctx.font = 'bold 9px sans-serif';
       ctx.fillText('RSI (14) 58.4', 12, rsiTop + 14);
 
@@ -1013,19 +1013,19 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
     <div
       ref={containerRef}
       id="connectview-technical-studio"
-      className="flex flex-col w-full h-full min-h-[680px] bg-[#0a0e17] text-slate-200 select-none overflow-hidden relative font-sans border border-navy-800 rounded-xl shadow-2xl"
+      className="flex flex-col w-full h-full min-h-[680px] bg-[#050b1a] text-slate-200 select-none overflow-hidden relative font-sans border border-navy-800 rounded-xl shadow-2xl"
     >
       {/* ========================================================================= */}
       {/* 1. TOP HEADER BAR (EXACT TRADINGVIEW TOP BAR STRUCTURE)                   */}
       {/* ========================================================================= */}
-      <header className="h-12 bg-[#131722] border-b border-[#2a2e39] flex items-center justify-between px-3 shrink-0 z-30">
+      <header className="h-12 bg-[#0a1428] border-b border-[#1e3055] flex items-center justify-between px-3 shrink-0 z-30">
         {/* Left Controls: Symbol, Timeframes, Chart Styles, Indicators */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Back button (if modal / standalone) */}
           {onClose && (
             <button
               onClick={onClose}
-              className="p-1.5 rounded hover:bg-[#2a2e39] text-slate-400 hover:text-white transition-colors cursor-pointer mr-1"
+              className="p-1.5 rounded hover:bg-[#1e3055] text-slate-400 hover:text-white transition-colors cursor-pointer mr-1"
               title="Return to Brokerage"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -1036,7 +1036,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           <div className="relative">
             <button
               onClick={() => setShowSymbolSearch(!showSymbolSearch)}
-              className="flex items-center gap-2 px-2.5 py-1 rounded bg-[#2a2e39] hover:bg-[#363a45] text-white font-bold text-xs font-mono transition-colors cursor-pointer border border-[#363a45]"
+              className="flex items-center gap-2 px-2.5 py-1 rounded bg-[#1e3055] hover:bg-[#2c4570] text-white font-bold text-xs font-mono transition-colors cursor-pointer border border-[#2c4570]"
             >
               <div className="w-2 h-2 rounded-full bg-amber-400" />
               <span>{currentInstrument.symbol.replace('/', '')}</span>
@@ -1046,8 +1046,8 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
 
             {/* Symbol Search Modal */}
             {showSymbolSearch && (
-              <div className="absolute top-full left-0 mt-1 w-72 bg-[#1e222d] border border-[#2a2e39] rounded-lg shadow-2xl z-50 p-2 space-y-1">
-                <div className="flex items-center gap-2 px-2 py-1.5 bg-[#131722] rounded border border-[#2a2e39] mb-2">
+              <div className="absolute top-full left-0 mt-1 w-72 bg-[#0f1b33] border border-[#1e3055] rounded-lg shadow-2xl z-50 p-2 space-y-1">
+                <div className="flex items-center gap-2 px-2 py-1.5 bg-[#0a1428] rounded border border-[#1e3055] mb-2">
                   <Search className="w-3.5 h-3.5 text-slate-400" />
                   <input
                     type="text"
@@ -1069,7 +1069,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
                           setShowSymbolSearch(false);
                         }}
                         className={`w-full flex items-center justify-between p-2 rounded text-xs transition-colors cursor-pointer ${
-                          inst.id === selectedSymbolId ? 'bg-amber-400/20 text-amber-300 font-bold' : 'hover:bg-[#2a2e39] text-slate-300'
+                          inst.id === selectedSymbolId ? 'bg-amber-400/20 text-amber-300 font-bold' : 'hover:bg-[#1e3055] text-slate-300'
                         }`}
                       >
                         <div className="flex items-center gap-2">
@@ -1084,7 +1084,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
             )}
           </div>
 
-          <div className="h-4 w-[1px] bg-[#2a2e39] mx-1" />
+          <div className="h-4 w-[1px] bg-[#1e3055] mx-1" />
 
           {/* Timeframes: 1m, 5m, 15m, 1h, 4h, D1 */}
           <div className="flex items-center gap-0.5">
@@ -1093,7 +1093,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
                 key={tf}
                 onClick={() => setTimeframe(tf)}
                 className={`px-2 py-1 rounded text-xs font-mono font-semibold transition-colors cursor-pointer ${
-                  timeframe === tf ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-slate-200 hover:bg-[#2a2e39]'
+                  timeframe === tf ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-slate-200 hover:bg-[#1e3055]'
                 }`}
               >
                 {tf}
@@ -1101,14 +1101,14 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
             ))}
           </div>
 
-          <div className="h-4 w-[1px] bg-[#2a2e39] mx-1 hidden sm:block" />
+          <div className="h-4 w-[1px] bg-[#1e3055] mx-1 hidden sm:block" />
 
           {/* Chart Type Selector */}
           <div className="flex items-center gap-0.5 hidden sm:flex">
             <button
               onClick={() => setChartType('candlestick')}
               className={`p-1.5 rounded transition-colors cursor-pointer ${
-                chartType === 'candlestick' ? 'bg-[#2a2e39] text-white' : 'text-slate-400 hover:text-white'
+                chartType === 'candlestick' ? 'bg-[#1e3055] text-white' : 'text-slate-400 hover:text-white'
               }`}
               title="Candlesticks"
             >
@@ -1117,7 +1117,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
             <button
               onClick={() => setChartType('hollow')}
               className={`p-1.5 rounded transition-colors cursor-pointer ${
-                chartType === 'hollow' ? 'bg-[#2a2e39] text-white' : 'text-slate-400 hover:text-white'
+                chartType === 'hollow' ? 'bg-[#1e3055] text-white' : 'text-slate-400 hover:text-white'
               }`}
               title="Hollow Candlesticks"
             >
@@ -1126,7 +1126,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
             <button
               onClick={() => setChartType('line')}
               className={`p-1.5 rounded transition-colors cursor-pointer ${
-                chartType === 'line' ? 'bg-[#2a2e39] text-white' : 'text-slate-400 hover:text-white'
+                chartType === 'line' ? 'bg-[#1e3055] text-white' : 'text-slate-400 hover:text-white'
               }`}
               title="Line Chart"
             >
@@ -1134,12 +1134,12 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
             </button>
           </div>
 
-          <div className="h-4 w-[1px] bg-[#2a2e39] mx-1" />
+          <div className="h-4 w-[1px] bg-[#1e3055] mx-1" />
 
           {/* Indicators Button */}
           <button
             onClick={() => setShowIndicatorsModal(!showIndicatorsModal)}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#2a2e39]/60 hover:bg-[#2a2e39] text-slate-200 text-xs font-medium transition-colors cursor-pointer border border-[#363a45]/50"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#1e3055]/60 hover:bg-[#1e3055] text-slate-200 text-xs font-medium transition-colors cursor-pointer border border-[#2c4570]/50"
           >
             <Sliders className="w-3 h-3 text-cyan-400" />
             <span>Indicators</span>
@@ -1151,7 +1151,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
             <button
               onClick={handleUndo}
               disabled={history.length === 0}
-              className="p-1.5 rounded hover:bg-[#2a2e39] text-slate-400 hover:text-white disabled:opacity-30 cursor-pointer"
+              className="p-1.5 rounded hover:bg-[#1e3055] text-slate-400 hover:text-white disabled:opacity-30 cursor-pointer"
               title="Undo (Ctrl+Z)"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -1174,7 +1174,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
 
           <button
             onClick={toggleFullscreen}
-            className="p-1.5 rounded hover:bg-[#2a2e39] text-slate-400 hover:text-white transition-colors cursor-pointer"
+            className="p-1.5 rounded hover:bg-[#1e3055] text-slate-400 hover:text-white transition-colors cursor-pointer"
             title="Toggle Fullscreen"
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -1190,12 +1190,12 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
         {/* LEFT VERTICAL TOOLBAR NAVIGATOR (TRADINGVIEW SIGNATURE LEFT PANEL)      */}
         {/* Support & Resistance, Elliott Wave, Rectangles, Fibonacci, Measure...   */}
         {/* ======================================================================= */}
-        <aside className="w-12 bg-[#131722] border-r border-[#2a2e39] flex flex-col items-center py-2 gap-1 shrink-0 z-20">
+        <aside className="w-12 bg-[#0a1428] border-r border-[#1e3055] flex flex-col items-center py-2 gap-1 shrink-0 z-20">
           {/* 1. Pointer / Crosshair */}
           <button
             onClick={() => setActiveTool('cursor')}
             className={`p-2 rounded-lg transition-colors cursor-pointer relative group ${
-              activeTool === 'cursor' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white hover:bg-[#2a2e39]'
+              activeTool === 'cursor' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white hover:bg-[#1e3055]'
             }`}
             title="Crosshair Cursor (V)"
           >
@@ -1206,7 +1206,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           <button
             onClick={() => setActiveTool('trendline')}
             className={`p-2 rounded-lg transition-colors cursor-pointer relative group ${
-              activeTool === 'trendline' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white hover:bg-[#2a2e39]'
+              activeTool === 'trendline' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white hover:bg-[#1e3055]'
             }`}
             title="Trend Line (Click & Drag)"
           >
@@ -1217,7 +1217,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           <button
             onClick={() => setActiveTool('horizontal')}
             className={`p-2 rounded-lg transition-colors cursor-pointer relative group ${
-              activeTool === 'horizontal' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white hover:bg-[#2a2e39]'
+              activeTool === 'horizontal' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white hover:bg-[#1e3055]'
             }`}
             title="Horizontal Line (Instant Support / Resistance)"
           >
@@ -1228,7 +1228,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           <button
             onClick={() => setActiveTool('fibonacci')}
             className={`p-2 rounded-lg transition-colors cursor-pointer relative group ${
-              activeTool === 'fibonacci' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white hover:bg-[#2a2e39]'
+              activeTool === 'fibonacci' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white hover:bg-[#1e3055]'
             }`}
             title="Fibonacci Retracement"
           >
@@ -1239,7 +1239,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           <button
             onClick={() => setActiveTool('rectangle')}
             className={`p-2 rounded-lg transition-colors cursor-pointer relative group ${
-              activeTool === 'rectangle' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white hover:bg-[#2a2e39]'
+              activeTool === 'rectangle' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white hover:bg-[#1e3055]'
             }`}
             title="Rectangle (Order Block / Supply & Demand Zone)"
           >
@@ -1250,7 +1250,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           <button
             onClick={() => setActiveTool('elliott12345')}
             className={`p-2 rounded-lg transition-colors cursor-pointer relative group ${
-              activeTool === 'elliott12345' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white hover:bg-[#2a2e39]'
+              activeTool === 'elliott12345' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white hover:bg-[#1e3055]'
             }`}
             title="Elliott Impulse Wave (1-2-3-4-5)"
           >
@@ -1261,7 +1261,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           <button
             onClick={() => setActiveTool('elliottABC')}
             className={`p-2 rounded-lg transition-colors cursor-pointer relative group ${
-              activeTool === 'elliottABC' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white hover:bg-[#2a2e39]'
+              activeTool === 'elliottABC' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white hover:bg-[#1e3055]'
             }`}
             title="Elliott Correction Wave (A-B-C)"
           >
@@ -1272,7 +1272,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           <button
             onClick={() => setActiveTool('text')}
             className={`p-2 rounded-lg transition-colors cursor-pointer relative group ${
-              activeTool === 'text' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white hover:bg-[#2a2e39]'
+              activeTool === 'text' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white hover:bg-[#1e3055]'
             }`}
             title="Text Note / Label"
           >
@@ -1283,14 +1283,14 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           <button
             onClick={() => setActiveTool('bos')}
             className={`p-2 rounded-lg transition-colors cursor-pointer relative group ${
-              activeTool === 'bos' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white hover:bg-[#2a2e39]'
+              activeTool === 'bos' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white hover:bg-[#1e3055]'
             }`}
             title="BOS (Break of Structure)"
           >
             <Zap className="w-4 h-4 text-cyan-400" />
           </button>
 
-          <div className="w-6 h-[1px] bg-[#2a2e39] my-1" />
+          <div className="w-6 h-[1px] bg-[#1e3055] my-1" />
 
           {/* 10. Hide / Show Drawings Toggle */}
           <button
@@ -1360,7 +1360,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
                 <span className="text-sm">{currentInstrument.bid.toFixed(currentInstrument.digits)}</span>
               </button>
 
-              <div className="px-2 py-1 rounded bg-[#1e222d] border border-[#2a2e39] text-center font-mono text-[10px] text-slate-300">
+              <div className="px-2 py-1 rounded bg-[#0f1b33] border border-[#1e3055] text-center font-mono text-[10px] text-slate-300">
                 <span className="text-slate-500 text-[8px] block">SPREAD</span>
                 <span className="font-bold text-amber-400">{currentInstrument.spread}</span>
               </div>
@@ -1380,14 +1380,14 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
                 min="0.01"
                 max="100"
                 onChange={(e) => setTradeLots(parseFloat(e.target.value) || 1.0)}
-                className="w-14 px-1.5 py-1.5 bg-[#1e222d] border border-[#2a2e39] rounded text-xs font-mono text-center text-white focus:outline-none"
+                className="w-14 px-1.5 py-1.5 bg-[#0f1b33] border border-[#1e3055] rounded text-xs font-mono text-center text-white focus:outline-none"
                 title="Trade Lots"
               />
             </div>
 
             {/* SMC Active Formula Display as seen in screenshot */}
             {indicators.smc && (
-              <div className="text-[10px] font-mono text-slate-400 flex items-center gap-1.5 bg-[#131722]/80 px-2 py-0.5 rounded border border-[#2a2e39]/60 w-fit">
+              <div className="text-[10px] font-mono text-slate-400 flex items-center gap-1.5 bg-[#0a1428]/80 px-2 py-0.5 rounded border border-[#1e3055]/60 w-fit">
                 <span className="text-cyan-400 font-bold">SMC Structures & FVG:</span>
                 <span>5 — 1 — 1 — 1 10 0.786 — 1 0.705 — 1 0.618 — 1 0.5 — 1 Ø</span>
               </div>
@@ -1395,52 +1395,52 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           </div>
 
           {/* Floating Top Quick Drawing Tools (TradingView Floating Bar as in screenshot) */}
-          <div className="absolute top-2 right-24 z-10 hidden lg:flex items-center gap-1 px-2 py-1 bg-[#1e222d]/90 backdrop-blur-md border border-[#2a2e39] rounded-lg shadow-xl">
+          <div className="absolute top-2 right-24 z-10 hidden lg:flex items-center gap-1 px-2 py-1 bg-[#0f1b33]/90 backdrop-blur-md border border-[#1e3055] rounded-lg shadow-xl">
             <button
               onClick={() => setActiveTool('cursor')}
-              className={`p-1 rounded ${activeTool === 'cursor' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white'}`}
+              className={`p-1 rounded ${activeTool === 'cursor' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white'}`}
               title="Cursor"
             >
               <Crosshair className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setActiveTool('trendline')}
-              className={`p-1 rounded ${activeTool === 'trendline' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white'}`}
+              className={`p-1 rounded ${activeTool === 'trendline' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white'}`}
               title="Trend Line"
             >
               <TrendingUp className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setActiveTool('horizontal')}
-              className={`p-1 rounded ${activeTool === 'horizontal' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white'}`}
+              className={`p-1 rounded ${activeTool === 'horizontal' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white'}`}
               title="Horizontal Support/Resistance"
             >
               <Minus className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setActiveTool('rectangle')}
-              className={`p-1 rounded ${activeTool === 'rectangle' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white'}`}
+              className={`p-1 rounded ${activeTool === 'rectangle' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white'}`}
               title="Rectangle Zone"
             >
               <Square className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setActiveTool('elliott12345')}
-              className={`p-1 rounded ${activeTool === 'elliott12345' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white'}`}
+              className={`p-1 rounded ${activeTool === 'elliott12345' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white'}`}
               title="Elliott Wave 12345"
             >
               <Activity className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setActiveTool('fibonacci')}
-              className={`p-1 rounded ${activeTool === 'fibonacci' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white'}`}
+              className={`p-1 rounded ${activeTool === 'fibonacci' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white'}`}
               title="Fibonacci Retracement"
             >
               <Percent className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setActiveTool('text')}
-              className={`p-1 rounded ${activeTool === 'text' ? 'bg-[#2962ff] text-white' : 'text-slate-400 hover:text-white'}`}
+              className={`p-1 rounded ${activeTool === 'text' ? 'bg-[#2e7fe8] text-white' : 'text-slate-400 hover:text-white'}`}
               title="Text Annotation"
             >
               <Type className="w-3.5 h-3.5" />
@@ -1474,7 +1474,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
           />
 
           {/* Bottom Bar: Time Range Selector (1D, 5D, 1M, 3M, 6M, 1Y, ALL) as seen in TradingView */}
-          <div className="h-8 bg-[#131722] border-t border-[#2a2e39] flex items-center justify-between px-3 text-[11px] font-mono text-slate-400 shrink-0 z-10">
+          <div className="h-8 bg-[#0a1428] border-t border-[#1e3055] flex items-center justify-between px-3 text-[11px] font-mono text-slate-400 shrink-0 z-10">
             <div className="flex items-center gap-1">
               {['1D', '5D', '1M', '3M', '6M', 'YTD', '1Y', '5Y', 'ALL'].map((range) => (
                 <button
@@ -1484,7 +1484,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
                     else if (range === '1M') setBarsVisible(80);
                     else setBarsVisible(120);
                   }}
-                  className="px-2 py-0.5 rounded hover:bg-[#2a2e39] hover:text-white transition-colors cursor-pointer"
+                  className="px-2 py-0.5 rounded hover:bg-[#1e3055] hover:text-white transition-colors cursor-pointer"
                 >
                   {range}
                 </button>
@@ -1504,8 +1504,8 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
       {/* ========================================================================= */}
       {showIndicatorsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md bg-[#1e222d] border border-[#2a2e39] rounded-xl shadow-2xl overflow-hidden p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-[#2a2e39] pb-3">
+          <div className="w-full max-w-md bg-[#0f1b33] border border-[#1e3055] rounded-xl shadow-2xl overflow-hidden p-5 space-y-4">
+            <div className="flex items-center justify-between border-b border-[#1e3055] pb-3">
               <div className="flex items-center gap-2">
                 <Sliders className="w-4 h-4 text-cyan-400" />
                 <h3 className="text-sm font-bold text-white">Indicators & Technical Metrics</h3>
@@ -1519,7 +1519,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
             </div>
 
             <div className="space-y-2 text-xs">
-              <label className="flex items-center justify-between p-2 rounded hover:bg-[#2a2e39] cursor-pointer">
+              <label className="flex items-center justify-between p-2 rounded hover:bg-[#1e3055] cursor-pointer">
                 <span>Smart Money Concepts (BOS, CHoCH, FVG)</span>
                 <input
                   type="checkbox"
@@ -1529,7 +1529,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
                 />
               </label>
 
-              <label className="flex items-center justify-between p-2 rounded hover:bg-[#2a2e39] cursor-pointer">
+              <label className="flex items-center justify-between p-2 rounded hover:bg-[#1e3055] cursor-pointer">
                 <span>Exponential Moving Average (EMA 20)</span>
                 <input
                   type="checkbox"
@@ -1539,7 +1539,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
                 />
               </label>
 
-              <label className="flex items-center justify-between p-2 rounded hover:bg-[#2a2e39] cursor-pointer">
+              <label className="flex items-center justify-between p-2 rounded hover:bg-[#1e3055] cursor-pointer">
                 <span>Exponential Moving Average (EMA 50)</span>
                 <input
                   type="checkbox"
@@ -1549,7 +1549,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
                 />
               </label>
 
-              <label className="flex items-center justify-between p-2 rounded hover:bg-[#2a2e39] cursor-pointer">
+              <label className="flex items-center justify-between p-2 rounded hover:bg-[#1e3055] cursor-pointer">
                 <span>Volume Profile & Sub-Bars</span>
                 <input
                   type="checkbox"
@@ -1559,7 +1559,7 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
                 />
               </label>
 
-              <label className="flex items-center justify-between p-2 rounded hover:bg-[#2a2e39] cursor-pointer">
+              <label className="flex items-center justify-between p-2 rounded hover:bg-[#1e3055] cursor-pointer">
                 <span>Relative Strength Index (RSI 14)</span>
                 <input
                   type="checkbox"
@@ -1570,10 +1570,10 @@ export const ConnectViewStudio: React.FC<ConnectViewStudioProps> = ({
               </label>
             </div>
 
-            <div className="pt-3 border-t border-[#2a2e39] flex justify-end">
+            <div className="pt-3 border-t border-[#1e3055] flex justify-end">
               <button
                 onClick={() => setShowIndicatorsModal(false)}
-                className="px-4 py-2 bg-[#2962ff] hover:bg-blue-600 text-white rounded text-xs font-semibold cursor-pointer"
+                className="px-4 py-2 bg-[#2e7fe8] hover:bg-blue-600 text-white rounded text-xs font-semibold cursor-pointer"
               >
                 Apply Indicators
               </button>

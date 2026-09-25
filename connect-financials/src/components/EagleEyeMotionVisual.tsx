@@ -309,13 +309,13 @@ export const EagleEyeMotionVisual: React.FC<Props> = ({
                   title="Click Crosshair to Enter Motion FX"
                 >
                   {/* Central Sapphire Pupil Indicator */}
-                  <span className="block w-4 h-4 rounded-full bg-cyan-300 shadow-[0_0_20px_#38bdf8,0_0_40px_#0284c7] group-hover:scale-130 transition-transform duration-300 group-hover:bg-white" />
+                  <span className="block w-4 h-4 rounded-full bg-cyan-300 shadow-[0_0_20px_#4da3ff,0_0_40px_#1b5fc4] group-hover:scale-130 transition-transform duration-300 group-hover:bg-white" />
 
                   {/* HIGH-PRECISION RETICLE CROSSHAIR LINES (+) */}
                   {/* Horizontal Line */}
-                  <div className="absolute w-36 h-[2px] bg-gradient-to-r from-transparent via-cyan-300 to-transparent shadow-[0_0_8px_#38bdf8] pointer-events-none" />
+                  <div className="absolute w-36 h-[2px] bg-gradient-to-r from-transparent via-cyan-300 to-transparent shadow-[0_0_8px_#4da3ff] pointer-events-none" />
                   {/* Vertical Line */}
-                  <div className="absolute h-36 w-[2px] bg-gradient-to-b from-transparent via-cyan-300 to-transparent shadow-[0_0_8px_#38bdf8] pointer-events-none" />
+                  <div className="absolute h-36 w-[2px] bg-gradient-to-b from-transparent via-cyan-300 to-transparent shadow-[0_0_8px_#4da3ff] pointer-events-none" />
 
                   {/* Corner Target Markers */}
                   <div className="absolute -top-6 -left-6 w-3 h-3 border-t-2 border-l-2 border-cyan-300" />
