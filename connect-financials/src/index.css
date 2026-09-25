@@ -157,7 +157,11 @@ section {
     align-items: center;
     gap: 0.5rem;
     background-image: none;
-    transition: color var(--duration-fast) var(--ease-out);
+    transform-origin: center;
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      transform var(--duration-base) var(--ease-out),
+      filter var(--duration-base) var(--ease-out);
   }
 
   .hover-metal:hover .btn-label,
@@ -174,6 +178,11 @@ section {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+    /* Two shadows: a tight one for the metal's edge, a wide soft one for the
+       bloom. A single large shadow reads as blur rather than glow. */
+    filter:
+      drop-shadow(0 0 7px rgb(216 180 55 / 0.55))
+      drop-shadow(0 0 20px rgb(216 180 55 / 0.3));
   }
 
   .hover-metal:hover .btn-label svg,
@@ -182,10 +191,24 @@ section {
     color: var(--color-accent-hover);
   }
 
+  /* Lift the whole control a little as its label rises, so the two read as one
+     movement rather than text sliding out of its own button. */
+  .hover-metal {
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out),
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out);
+  }
+
   /* For plain links and nav items that have no background of their own, the
      gradient can go straight on the element. */
   .link-metal {
-    transition: color var(--duration-fast) var(--ease-out);
+    transform-origin: center;
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      transform var(--duration-base) var(--ease-out),
+      filter var(--duration-base) var(--ease-out);
   }
   .link-metal:hover,
   .link-metal:focus-visible {
@@ -201,6 +224,9 @@ section {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+    filter:
+      drop-shadow(0 0 7px rgb(216 180 55 / 0.55))
+      drop-shadow(0 0 20px rgb(216 180 55 / 0.3));
   }
   .link-metal:hover svg,
   .link-metal:focus-visible svg {
@@ -211,6 +237,56 @@ section {
   /* Safari and Chrome do not animate background-clip:text, so the arrival is
      softened with the border and background transition on the button instead.
      Under reduced motion nothing here animates anyway. */
+
+
+  /* Zoom and lift.
+     Kept in a no-preference query rather than relying on the global
+     reduced-motion rule: that rule only shortens transitions, so the transform
+     would still be applied — instantly. Here it is never applied at all, and
+     the glow and colour change carry the hover on their own. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hover-metal:hover .btn-label,
+    .hover-metal:focus-visible .btn-label {
+      transform: translateY(-2px) scale(1.045);
+    }
+
+    .hover-metal:hover,
+    .hover-metal:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px -10px rgb(216 180 55 / 0.45);
+    }
+
+    .hover-metal:active .btn-label {
+      transform: translateY(0) scale(1.01);
+    }
+    .hover-metal:active {
+      transform: translateY(0);
+    }
+
+    .link-metal:hover,
+    .link-metal:focus-visible {
+      transform: translateY(-2px) scale(1.05);
+    }
+
+    /* The primary button takes no metallic label — gold on gold is invisible —
+       so it gets the same lift and glow on the control itself. */
+    .bg-gold-metallic:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 0 14px rgb(216 180 55 / 0.4),
+        0 8px 22px -12px rgb(216 180 55 / 0.6);
+    }
+    .bg-gold-metallic:active {
+      transform: translateY(0);
+    }
+  }
+
+  .bg-gold-metallic {
+    transition:
+      background var(--duration-base) var(--ease-out),
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out);
+  }
 
   /* Elevation without colour. */
   .shadow-gold {

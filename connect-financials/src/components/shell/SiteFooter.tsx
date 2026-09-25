@@ -128,7 +128,7 @@ export function SiteFooter() {
                   <li key={`${item.to}-${item.label}`}>
                     <Link
                       to={item.to}
-                      className="link-metal text-small text-text-muted"
+                      className="link-metal inline-block text-small text-text-muted"
                     >
                       {item.label}
                     </Link>

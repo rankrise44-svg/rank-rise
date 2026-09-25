@@ -85,8 +85,9 @@ export function SiteHeader() {
                     to={group.items[0].to}
                     className={({ isActive }) =>
                       [
-                        'rounded-[var(--radius-md)] px-3 py-2 text-[14px] font-medium',
-                        'transition-colors duration-[var(--duration-fast)]',
+                        /* inline-block: transform is ignored on an inline box,
+                           so without it the lift and zoom do nothing here. */
+                        'inline-block rounded-[var(--radius-md)] px-3 py-2 text-[14px] font-medium',
                         isActive
                           ? 'bg-accent-quiet text-accent'
                           : 'link-metal text-text-muted',
