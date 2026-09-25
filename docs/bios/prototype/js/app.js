@@ -11,11 +11,13 @@ B.after = B.after || {};
 
 B.NAV = [
   {items:[['overview','Overview','◧'],['ask','Ask BIOS','⌕'],['brain','Company Brain','◎'],['maps','Maps','⌗']]},
-  {sec:'Understand', items:[['u-company','Company'],['u-customers','Customers'],['u-market','Market'],['u-competitors','Competitors'],['u-brand','Brand'],['u-marketing','Marketing'],['u-sales','Sales'],['u-finance','Finance'],['u-team','Team'],['u-research','Research'],['u-sources','Data Sources'],['u-documents','Documents']]},
   {sec:'Company Information', items:[['ci-home','Profile overview'],['ci-start','Who are you?'],['ci-identity','Identity & story'],['ci-mission','Mission & positioning'],['ci-offer','Products & services'],['ci-customers','Customers'],['ci-finance','Financial data'],['ci-sales','Sales'],['ci-marketing','Marketing'],['ci-brand','Brand'],['ci-competitors','Competitors'],['ci-operations','Operations'],['ci-history','History & performance'],['ci-goals','Goals'],['ci-problems','Problems & challenges'],['ci-vault','Data Vault'],['ci-followup','AI follow-ups'],['ci-review','Validate & classify'],['ci-agents','Agent context']]},
+  {sec:'Understand', items:[['u-company','Company'],['u-customers','Customers'],['u-market','Market'],['u-competitors','Competitors'],['u-brand','Brand'],['u-marketing','Marketing'],['u-sales','Sales'],['u-finance','Finance'],['u-team','Team'],['u-research','Research'],['u-sources','Data Sources'],['u-documents','Documents']]},
   {sec:'Plan', items:[['p-strategy','Strategy'],['p-goals','Goals'],['p-marketing','Marketing Plans'],['p-content','Content Plans'],['p-campaigns','Campaigns'],['p-projects','Projects'],['p-experiments','Experiments']]},
   {sec:'Execute', items:[['x-tasks','Tasks'],['x-content','Content'],['x-creative','Creative'],['x-ads','Ads'],['x-automations','Automations'],['x-integrations','Integrations']]},
   {sec:'Learn & improve', items:[['l-performance','Performance'],['l-results','Results'],['l-insights','Insights'],['l-experiments','Experiments'],['l-learnings','Learnings'],['l-recommendations','Recommendations'],['l-history','History']]},
+  {sec:'Experiments', items:[['ex-active','Active Experiments'],['ex-completed','Completed Experiments'],['ex-history','Experiment History']]},
+  {sec:'Evaluation', items:[['ev-overview','Overview'],['ev-worked','What Worked'],['ev-weak','Weak Points'],['ev-why','Why This Result?'],['ev-roi','ROI'],['ev-ppc','PPC'],['ev-ppv','Pay Per View'],['ev-hook','Hook Analysis'],['ev-creative','Creative Analysis'],['ev-audience','Audience Analysis'],['ev-compare','Historical Comparison'],['ev-improve','Improvement Plan'],['ev-missing','Missing Data'],['ev-next','Next Experiments'],['ev-ask','Ask AI']]},
   {sec:'AI workforce', items:[['w-orchestrator','Orchestrator'],['w-agents','Agents'],['w-activity','Agent Activity'],['w-builder','Agent Builder']]},
   {items:[['reports','Reports','▤'],['settings','Settings','⚙']]}
 ];

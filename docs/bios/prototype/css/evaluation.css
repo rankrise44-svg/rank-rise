@@ -1,0 +1,13 @@
+@charset "UTF-8";
+/* Experiments & Evaluation. Built on system.css tokens. */
+.evlab{font-size:9.5px;letter-spacing:.08em;padding:1px 6px;flex:none}
+.evstmt{display:flex;gap:9px;align-items:baseline;font-size:13.5px;color:var(--ink-2);line-height:1.55}
+.evstmt b{color:var(--ink);font-weight:600}
+.evq{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.evrow{display:grid;grid-template-columns:170px minmax(0,1fr);gap:10px;font-size:13px;color:var(--ink-2);align-items:baseline}
+.evchain{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.evchain > div{background:var(--raised);padding:9px 11px;font-size:12.5px;color:var(--ink-2);display:grid;gap:4px;align-content:start}
+.evchain .label{font-size:10px}
+.evask{margin-top:8px;padding:9px 11px;border-radius:8px;background:var(--warn-soft);border:1px dashed color-mix(in srgb,var(--warn) 45%,transparent);font-size:12.5px}
+.tile.evmain{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}
+@media (max-width:980px){ .evchain{grid-template-columns:minmax(0,1fr)} .evrow{grid-template-columns:minmax(0,1fr);gap:2px} }
