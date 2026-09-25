@@ -7,7 +7,8 @@ story around a 3D eagle. Only content and data come from the original app
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm run build      # typecheck + production build
+npm run build      # typecheck + production build (chunked, for real hosting)
+npm run build:preview   # one self-contained HTML file for sharing a preview
 ```
 
 Review switches (URL params): `?eagle=procedural|glb|sequence` · `?quality=low|high`
@@ -47,20 +48,29 @@ Everything important is real HTML over the canvas. The canvas only decorates.
 
 ## Scroll timeline
 
-| # | Label | Status |
+Beats 1–5 run on one master GSAP timeline over the pinned story track (labels
+`hero`, `opening`, `wings-open`, `flight`, `transform`). Beats 6–12 are real
+page sections; each has its own scrubbed timeline that writes only its own
+progress value (`story.p.*`), and `view()` in `story/state.ts` combines them, so
+timelines never fight over one property.
+
+| # | Beat | What happens |
 |---|---|---|
-| 1 | `hero`: closed wings, split title, ticker | built |
-| 2 | `opening`: wings open, candles light, price cards | built |
-| 3 | `wings-open`: menu on the wings | built |
-| 4 | `flight`: bank and rotate, camera orbit, navy→grid | next |
-| 5 | `transform`: dissolve and scan line across the eagle (`story.mix`); direction to agree now the default look is the glass eagle | next |
-| 6 | `markets`: eagle aside, 3D-tilted Market Watch and chart terminal | next |
-| 7 | `card`: eagle → portrait card, About types in | next |
-| 8 | `words`: SPEED ═ PRECISION / TRUST ═ GROWTH | next |
-| 9 | `accounts`: glass tier cards | next |
-| 10 | `tools`: calculators and economic calendar | next |
-| 11 | `partners`: logo grid with hover reveal | next |
-| 12 | `closing`: wings fold, quote, CTA, full nav | next |
+| 1 | hero | Folded eagle, split title, ticker; title blurs away |
+| 2 | opening | Wings open, candles light body→tips, live price cards drift in |
+| 3 | wings-open | Six options pinned to the wings (grid on phones) |
+| 4 | flight | Eagle banks and turns 360°, camera orbits, navy/gold grid, cards fly past, eagle gilds to a statue |
+| 5 | transform | Scan line dissolves the statue into living candlestick glass |
+| 6 | markets | Eagle docks beside the terminal; Market Watch, chart, order book tilt in; currencies |
+| 7 | card | Eagle folds into the portrait frame; About types in |
+| 8 | words | SPEED ═ PRECISION / TRUST ═ GROWTH, layered cards |
+| 9 | accounts | Six tier cards (glass, gold edges, pointer tilt) |
+| 10 | tools | Forex calculators, capital & risk, economic calendar |
+| 11 | partners | Platform tiles with generated hover visuals |
+| 12 | closing | Eagle returns, wings fold; quote, CTA, full nav |
+
+Also: legal & contact sections, footer, Open Account modal (4 steps), live
+support chat, Trader Portal at `#portal`.
 
 ## Modes
 

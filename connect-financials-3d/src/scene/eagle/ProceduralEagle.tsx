@@ -17,14 +17,14 @@ import {
   Vector3,
 } from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { story } from '../../story/state';
+import { story, view } from '../../story/state';
 import { anchorObjects, clearAnchors, type MenuId } from './anchors';
 import { eagleMaterials, eagleUniforms } from './eagleMaterial';
 
 /**
  * PLACEHOLDER eagle, built from primitives so the scroll story can be
  * reviewed before the real rigged eagle.glb exists. It follows the same
- * contract as the other sources: reads `story.open` (0 closed → 1 spread)
+ * contract as the other sources: reads `view().open` (0 closed → 1 spread)
  * and registers the six wing anchors.
  */
 
@@ -379,7 +379,7 @@ export function ProceduralEagle() {
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
-    const o = story.open;
+    const o = view().open;
     const eo = ease(o);
 
     for (const w of rig.wings) {

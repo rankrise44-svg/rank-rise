@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing';
-import { story } from '../story/state';
 import type { Quality } from '../lib/device';
 import { AnchorProjector } from './AnchorProjector';
 import { Background } from './Background';
@@ -10,24 +8,18 @@ import { EagleRoot } from './eagle/EagleRoot';
 import { Particles } from './Particles';
 
 /**
- * The fixed WebGL layer behind every HTML layer. Renders only while the story
- * is on screen; with reduced motion it renders on demand (a still frame).
+ * The fixed WebGL layer behind every HTML layer; the eagle stays with the
+ * reader down the page. With reduced motion it renders on demand (a still frame).
  */
 export function Stage({ quality, still }: { quality: Quality; still: boolean }) {
   const high = quality === 'high';
-  const [active, setActive] = useState(true);
-
-  useEffect(() => {
-    const id = window.setInterval(() => setActive((a) => (a === story.active ? a : story.active)), 250);
-    return () => window.clearInterval(id);
-  }, []);
 
   return (
     <div className="fixed inset-0 z-0" aria-hidden="true">
       <Canvas
         flat
         dpr={high ? [1, 2] : [1, 1.5]}
-        frameloop={still ? 'demand' : active ? 'always' : 'never'}
+        frameloop={still ? 'demand' : 'always'}
         camera={{ fov: 34, position: [0, 0.15, 9], near: 0.1, far: 60 }}
         gl={{ antialias: high, powerPreference: 'high-performance', alpha: false, stencil: false }}
       >

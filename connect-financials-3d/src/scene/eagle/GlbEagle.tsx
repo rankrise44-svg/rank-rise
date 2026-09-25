@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { AnimationMixer, Box3, Group, Mesh, Object3D, Vector3 } from 'three';
 import { EAGLE_CONFIG } from '../../config/eagle';
-import { story } from '../../story/state';
+import { story, view } from '../../story/state';
 import { anchorObjects, clearAnchors, MENU } from './anchors';
 import { eagleMaterials, eagleUniforms, type EaglePart } from './eagleMaterial';
 
@@ -70,7 +70,7 @@ export function GlbEagle() {
   useFrame((state) => {
     if (action) {
       // Scroll owns the clock: wings open on scroll down, close on scroll up.
-      action.time = story.open * duration * 0.999;
+      action.time = view().open * duration * 0.999;
       mixer.update(0);
     }
     const t = state.clock.elapsedTime;

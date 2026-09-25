@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { AdditiveBlending, CanvasTexture, Mesh, PlaneGeometry, SRGBColorSpace, MeshBasicMaterial } from 'three';
 import type { FramesManifest } from '../../config/eagle';
-import { story } from '../../story/state';
+import { story, view } from '../../story/state';
 import { isNarrow } from '../../lib/device';
 
 /**
@@ -66,7 +66,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
   }, [manifest]);
 
   useFrame(() => {
-    const want = Math.round(story.open * (manifest.count - 1));
+    const want = Math.round(view().open * (manifest.count - 1));
     let img: HTMLImageElement | null = null;
     for (let d = 0; d < manifest.count && !img; d++) img = frames.current[want - d] ?? frames.current[want + d] ?? null;
     if (!img || last.current === want) return;

@@ -7,7 +7,8 @@
     "dev": "vite --host 0.0.0.0 --port 5173",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0 --port 4173",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:preview": "vite build --mode artifact && node scripts/inline-artifact.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
@@ -18,7 +19,6 @@
     "postprocessing": "^6.39.5",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "react-router-dom": "^7.18.4",
     "three": "^0.186.1"
   },
   "devDependencies": {

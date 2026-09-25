@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Color, Mesh, PlaneGeometry, ShaderMaterial } from 'three';
-import { story } from '../story/state';
+import { story, view } from '../story/state';
 
 /**
  * Full-screen backdrop drawn inside the WebGL scene (so bloom and colour
@@ -52,7 +52,7 @@ export function Background() {
             vec2 g = vec2(p.x / (0.35 + vUv.y), 1.0 / (0.25 + vUv.y) + uTime * 0.05) * 6.0;
             vec2 gl = abs(fract(g) - 0.5) / fwidth(g);
             float line = 1.0 - min(min(gl.x, gl.y), 1.0);
-            col = mix(col, col + uGold * line * 0.35, uGrid * smoothstep(0.75, 0.2, vUv.y));
+            col = mix(col, col + uGold * line * 0.16, uGrid * smoothstep(0.7, 0.15, vUv.y));
           }
 
           float vig = smoothstep(1.25, 0.35, length(p * vec2(0.85, 1.0)));
@@ -73,7 +73,7 @@ export function Background() {
     const u = (mesh.material as ShaderMaterial).uniforms;
     u.uTime.value = state.clock.elapsedTime;
     u.uGlow.value = story.glow;
-    u.uGrid.value = story.grid;
+    u.uGrid.value = view().grid;
     u.uAspect.value = state.size.width / state.size.height;
   });
 

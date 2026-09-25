@@ -15,6 +15,7 @@
 }
 
 html {
+  color-scheme: dark;
   background: var(--color-abyss);
   color: var(--color-ink);
   font-family: var(--font-sans);
@@ -22,7 +23,7 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
-body { margin: 0; overflow-x: hidden; }
+body { margin: 0; overflow-x: hidden; background: var(--color-abyss); color: var(--color-ink); }
 ::selection { background: var(--color-gold); color: var(--color-abyss); }
 
 /* Lenis */

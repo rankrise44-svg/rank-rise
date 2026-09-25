@@ -17,7 +17,9 @@ import { Color, DoubleSide, ShaderMaterial, Vector3 } from 'three';
 export const eagleUniforms = {
   uTime: { value: 0 },
   uReveal: { value: 0 },
-  uMix: { value: 0 },
+  uMix: { value: 1 },
+  /** 0 → 1 the scan line sweeps top to bottom; behind it the eagle is living candlestick glass */
+  uScan: { value: 0 },
   uGlow: { value: 1 },
   /** Half the wingspan in world units at full open; normalises the reveal sweep */
   uSpan: { value: 4 },
@@ -54,7 +56,7 @@ const vertex = /* glsl */ `
 `;
 
 const fragment = /* glsl */ `
-  uniform float uTime, uReveal, uMix, uGlow, uSpan;
+  uniform float uTime, uReveal, uMix, uGlow, uSpan, uScan;
   const float uDensityCut = 0.38;
   uniform vec3 uLightDir, uGold, uGoldHi, uGoldDark, uRim, uObsidian;
   varying vec2 vUv;
@@ -73,14 +75,14 @@ const fragment = /* glsl */ `
   }
 
   // A grid of candlesticks. Returns the candle mask; cell id/random out.
-  float candles(vec2 uv, vec2 grid, float seed, out float rnd, out float up, out float wickOut) {
+  float candles(vec2 uv, vec2 grid, float seed, float anim, out float rnd, out float up, out float wickOut) {
     vec2 g = uv * grid;
     vec2 id = floor(g);
     vec2 f = fract(g) - 0.5;
     rnd = hash(id + seed * 13.17);
     float r2 = hash(id.yx + seed * 7.31 + 3.0);
     up = step(0.42, r2);
-    float bodyH = mix(0.12, 0.34, rnd);
+    float bodyH = mix(0.12, 0.34, mix(rnd, 0.5 + 0.5 * sin(uTime * (1.2 + r2 * 2.5) + rnd * 40.0), anim));
     float cy = (r2 - 0.5) * 0.18;
     float body = box(f - vec2(0.0, cy), vec2(0.2, bodyH));
     float inner = box(f - vec2(0.0, cy), vec2(0.12, max(bodyH - 0.07, 0.0)));
@@ -108,6 +110,14 @@ const fragment = /* glsl */ `
     env = mix(env, uGoldHi * 1.1, smoothstep(0.7, 1.0, envT) * uGlow);
     float fres = pow(1.0 - max(dot(N, V), 0.0), 3.0);
 
+    // Beat 5: a scan line sweeps down; everything it has passed is living candlestick glass.
+    float lineY = uScan >= 0.999 ? -1e3 : mix(3.4, -3.6, uScan);
+    float grain = hash(floor(vWorld.xy * 24.0)) - 0.5;
+    float passed = smoothstep(lineY - 0.04, lineY + 0.04, vWorld.y + grain * 0.22);
+    float m = mix(uMix, 1.0, passed);
+    float live = passed;
+    float band = exp(-abs(vWorld.y + grain * 0.22 - lineY) * 14.0) * step(uScan, 0.999) * step(0.001, uScan);
+
     // --- solid gold sculpture
     vec3 gold = uGold * (0.03 + 0.38 * ndl * uGlow) + env * uGold * 0.85 + uGoldHi * spec * 1.2 * uGlow;
     // --- obsidian glass
@@ -117,20 +127,20 @@ const fragment = /* glsl */ `
       vec3 col = gold + uGoldHi * spec * 0.6;   // beak and talons stay gold in every look
       col += uRim * fres * 0.3;
     #else
-      vec3 col = mix(gold, glass, uMix);
-      col += uRim * fres * (0.55 + 0.45 * uMix);
+      vec3 col = mix(gold, glass, m);
+      col += uRim * fres * (0.55 + 0.45 * m);
     #endif
 
     #if defined(FEATHER) || defined(BODY)
       float rnd, up;
       #ifdef FEATHER
         float wick;
-        float c = candles(vUv, vec2(2.0, 10.0), vSeed, rnd, up, wick);
+        float c = candles(vUv, vec2(2.0, 10.0), vSeed, live, rnd, up, wick);
         // Spine (rachis) down the middle of the vane
         float spine = box(vec2(vUv.x - 0.5, 0.0), vec2(0.018, 1.0)) * smoothstep(1.0, 0.6, vUv.y);
       #else
         float wick;
-        float c = candles(vUv, vec2(30.0, 18.0), 0.0, rnd, up, wick);
+        float c = candles(vUv, vec2(30.0, 18.0), 0.0, live, rnd, up, wick);
         float spine = 0.0;
       #endif
 
@@ -141,28 +151,30 @@ const fragment = /* glsl */ `
       float flicker = 0.85 + 0.15 * sin(uTime * 3.0 + rnd * 40.0);
 
       #ifdef BODY
-        float strength = mix(0.55, 0.3, uMix);
+        float strength = mix(0.55, 0.3, m);
       #else
         float strength = 1.0;
       #endif
 
       float cw = max(c, wick);
       // Unlit: engraved grooves (gold) or faint etching (glass).
-      col *= 1.0 - cw * (1.0 - lit) * 0.5 * (1.0 - uMix);
-      col += uGoldDark * cw * (1.0 - lit) * 0.2 * uMix;
+      col *= 1.0 - cw * (1.0 - lit) * 0.5 * (1.0 - m);
+      col += uGoldDark * cw * (1.0 - lit) * 0.2 * m;
       // Lit. Sculpture: gold light. Glass (the artwork): white candle bodies, gold wicks.
       vec3 goldCandle = mix(uGoldHi, uGold, 1.0 - up);
       vec3 glassCandle = mix(vec3(1.0, 0.97, 0.9), uGoldHi, (1.0 - up) * 0.55);
-      vec3 candleCol = mix(goldCandle, glassCandle, uMix);
-      col += candleCol * c * lit * flicker * strength * (1.1 + 1.1 * uMix);
-      col += uGoldHi * wick * lit * strength * (1.0 + 0.8 * uMix);
-      col += uGoldHi * spine * (0.2 + 0.7 * lit) * strength * (1.0 - 0.5 * uMix);
+      vec3 candleCol = mix(goldCandle, glassCandle, m);
+      col += candleCol * c * lit * flicker * strength * (1.1 + 1.1 * m);
+      col += uGoldHi * wick * lit * strength * (1.0 + 0.8 * m);
+      col += uGoldHi * spine * (0.2 + 0.7 * lit) * strength * (1.0 - 0.5 * m);
       #ifdef FEATHER
         // Glass vanes catch light along their edges, so each feather reads separately.
         float edge = smoothstep(0.36, 0.5, abs(vUv.x - 0.5)) * smoothstep(0.02, 0.2, vUv.y);
-        col += vec3(0.62, 0.72, 0.95) * edge * 0.35 * uMix;
+        col += vec3(0.62, 0.72, 0.95) * edge * 0.35 * m;
       #endif
     #endif
+
+    col += (uGoldHi * 2.2 + vec3(0.6)) * band * (0.6 + 0.4 * hash(floor(vWorld.xy * 60.0) + floor(uTime * 12.0)));
 
     #ifdef EYE
       col = uGoldHi * 2.6 + uGold * spec;

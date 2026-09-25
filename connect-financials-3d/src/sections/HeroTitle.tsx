@@ -1,6 +1,7 @@
 import { COMPANY } from '../config/company';
 import { scrollToId } from '../story/smoothScroll';
 import { RiskNote } from '../ui/RiskNote';
+import { openAccount } from '../ui/openAccount';
 
 /**
  * Beat 1. "CONNECT ——— FINANCIALS" split either side of the folded eagle,
@@ -26,7 +27,7 @@ export function HeroTitle() {
         <div className="flex flex-wrap items-center justify-center gap-3">
           <a
             href="#open-account"
-            onClick={(e) => (e.preventDefault(), scrollToId('open-account'))}
+            onClick={(e) => (e.preventDefault(), openAccount())}
             className="rounded-full bg-gradient-to-b from-gold-hi to-gold px-6 py-2.5 text-sm font-semibold text-abyss shadow-[0_0_30px_rgba(212,175,55,0.4)] transition hover:brightness-110"
           >
             Open Account

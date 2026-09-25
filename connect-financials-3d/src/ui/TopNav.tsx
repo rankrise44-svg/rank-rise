@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { MENU } from '../scene/eagle/anchors';
 import { scrollToId } from '../story/smoothScroll';
+import { openAccount } from './openAccount';
 import { RiskNote } from './RiskNote';
+import logo from '../assets/logo.png';
 
 /** Logo, Open Account and a full-screen menu so every option is always one tap away. */
 export function TopNav() {
@@ -26,22 +27,23 @@ export function TopNav() {
   const go = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault();
     setOpen(false);
-    scrollToId(id);
+    if (id === 'open-account') openAccount();
+    else scrollToId(id);
   };
 
   return (
     <>
       <header className="fixed inset-x-0 top-8 z-40 flex h-16 items-center justify-between px-4 sm:px-8">
         <a href="#top" onClick={go('top')} className="flex items-center gap-2.5" aria-label="Connect Financials — back to top">
-          <img src="/favicon.png" alt="" width={28} height={28} className="h-7 w-7" />
+          <img src={logo} alt="" width={28} height={28} className="h-7 w-7" />
           <span className="font-display text-[13px] font-semibold uppercase tracking-[0.28em] text-ink">
             Connect <span className="text-gold">Financials</span>
           </span>
         </a>
         <div className="flex items-center gap-2 sm:gap-4">
-          <Link to="/portal" className="hidden text-[13px] font-medium text-muted transition-colors hover:text-gold-hi sm:block">
+          <a href="#portal" className="hidden text-[13px] font-medium text-muted transition-colors hover:text-gold-hi sm:block">
             Trader Portal
-          </Link>
+          </a>
           <a
             href="#open-account"
             onClick={go('open-account')}
@@ -100,9 +102,9 @@ export function TopNav() {
                 </li>
               ))}
               <li>
-                <Link to="/portal" className="flex items-baseline gap-4 font-display text-[clamp(1.25rem,3vw,2rem)] font-semibold uppercase text-muted hover:text-gold-hi">
+                <a href="#portal" onClick={() => setOpen(false)} className="flex items-baseline gap-4 font-display text-[clamp(1.25rem,3vw,2rem)] font-semibold uppercase text-muted hover:text-gold-hi">
                   <span className="num text-sm text-gold">07</span>Trader Portal
-                </Link>
+                </a>
               </li>
             </ol>
           </nav>

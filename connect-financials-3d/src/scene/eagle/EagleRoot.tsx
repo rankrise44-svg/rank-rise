@@ -4,6 +4,7 @@ import type { Quality } from '../../lib/device';
 import { GlbEagle } from './GlbEagle';
 import { ProceduralEagle } from './ProceduralEagle';
 import { SequenceEagle } from './SequenceEagle';
+import { EagleStage } from './EagleStage';
 
 type Resolved = { kind: EagleSourceKind; manifest?: FramesManifest };
 
@@ -31,6 +32,8 @@ async function loadManifest(): Promise<FramesManifest | undefined> {
 async function resolveSource(quality: Quality): Promise<Resolved> {
   const override = new URLSearchParams(window.location.search).get('eagle') as EagleSourceKind | null;
   const want = override ?? EAGLE_CONFIG.source;
+  // The single-file preview build ships no model or frames: skip the probes.
+  if (import.meta.env.MODE === 'artifact') return { kind: 'procedural' };
 
   if (want === 'procedural') return { kind: 'procedural' };
   if (want === 'glb' || want === 'auto') {
@@ -62,6 +65,14 @@ class Fallback extends Component<{ children: ReactNode }, { failed: boolean }> {
 }
 
 export function EagleRoot({ quality }: { quality: Quality }) {
+  return (
+    <EagleStage>
+      <EagleSource quality={quality} />
+    </EagleStage>
+  );
+}
+
+function EagleSource({ quality }: { quality: Quality }) {
   const [src, setSrc] = useState<Resolved | null>(null);
   useEffect(() => {
     resolveSource(quality).then((r) => {

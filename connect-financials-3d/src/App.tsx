@@ -1,18 +1,16 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { useView } from './lib/route';
 import Home from './pages/Home';
 
 const Portal = lazy(() => import('./pages/Portal'));
 
 export default function App() {
-  return (
-    <BrowserRouter>
+  const view = useView();
+  if (view === 'portal')
+    return (
       <Suspense fallback={null}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/portal" element={<Portal />} />
-        </Routes>
+        <Portal />
       </Suspense>
-    </BrowserRouter>
-  );
+    );
+  return <Home />;
 }
