@@ -357,7 +357,7 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
   <section class="tour" id="tour" style="--n:${t.stops.length}" aria-label="3D walkthrough">
     <div class="wrap tour-head up"><span class="eyebrow">Walkthrough</span><h2>${esc(t.title||'Walk the room.')}</h2>
       <p class="tour-hint">Scroll to move through the space.</p>
-      ${c.draft?'<span class="draft-note">Prototype · placeholder room</span>':''}</div>
+      ${!t.model&&!t.room?'<span class="draft-note">Prototype · placeholder room</span>':''}</div>
     <div class="tour-stage"><div class="tour-pin">
       ${t.poster?`<img class="tour-poster" src="${esc(t.poster)}" alt="${esc(c.title)} — room overview" loading="lazy">`:''}
       <ol class="tour-cards">${t.stops.map((s,n)=>`

@@ -283,54 +283,74 @@ window.RANKRISE_CASES = {
   },
 
 
-  /* ── 3D walkthrough — PROTOTYPE ─────────────────────────────────
-     `draft: true` keeps this out of search, and it is not listed in
-     projects.js or the sitemap. The room is a placeholder drawn by
-     tour.js; nothing here describes a real client. When the interior
-     designer's files arrive, the real case gets its own entry and
-     this one is deleted.
+  /* ── Blue Mango — interior design, with a 3D walkthrough ───────
+     `draft: true` keeps it out of search until the client facts are
+     confirmed; it is not in projects.js or the sitemap yet.
 
-     tour.model   a .glb of the room. Nodes named after_* are the
-                  design; the before/after slider fades them out.
-                  Leave it out to get the placeholder room.
-     tour.poster  still shown without WebGL / under reduced motion.
+     tour.room    'blue-mango' → rooms/blue-mango.js, a model of the
+                  café built by hand from the site photographs.
+                  (tour.model takes a .glb instead, if a CAD file of
+                  a future project exists.)
      stops[]      cam / look / spot are [x, y, z] in metres, in the
-                  model's own space — read them off with #tune.
-                  before + after (image paths) give a photo slider;
-                  compare3d: true gives the in-room slider. */
-  'interior-prototype': {
+                  room's own space — read them off with #tune.
+                  compare3d: true gives the before/after slider,
+                  which strips out everything named after_*. */
+  'blue-mango': {
     draft: true,
-    title: '3D walkthrough — prototype',
-    tagline: 'Walk the room.',
-    client: 'Prototype',
-    sector: 'Interior design',
-    year: '2026',
-    scope: ['3D', 'Walkthrough'],
-    accent: '#c9a27a',
-    hero: 'assets/tour/prototype-poster.jpg',
-    challenge: 'Interior design is sold in photographs, and a photograph shows one angle. This prototype tests a case page where the visitor moves through the room instead.',
-    approach: 'The designer’s own 3D file is exported to the web, the lighting baked in, and the camera tied to the scroll — so every stop lands on one decision: a material, a piece, the light, the before and after.',
+    title: 'Blue Mango',
+    tagline: 'Step inside Blue Mango.',
+    client: 'Blue Mango',
+    sector: 'Frozen yogurt café · Interior design',
+    scope: ['Interior design', '3D walkthrough'],
+    accent: '#6f8fe0',
+    hero: 'assets/brands/bluemango/3p5a9635.jpg',
+    challenge: 'One open room had to hold a working counter, somewhere to sit and a glass shopfront onto the car park — and read as Blue Mango from the doorway.',
+    approach: 'The brand’s blue went into the counter tiles; oak, terracotta and white plaster warm everything around it. The seating curves along a mural wall, the ceiling over the counter becomes a lit grid, and light is tucked under every edge.',
     tour: {
-      title: 'Walk the room.',
-      poster: 'assets/tour/prototype-poster.jpg',
+      title: 'Walk into Blue Mango.',
+      room: 'blue-mango',
+      poster: 'assets/brands/bluemango/3p5a9635.jpg',
       stops: [
-        { kicker: 'Overview', title: 'The whole room, at a glance.',
-          text: 'Placeholder room. This stop opens on the space as a whole — the layout before any detail.',
-          cam: [0, 2.3, 6.4], look: [0, 1.0, -1.3] },
-        { kicker: 'Materials', title: 'Oak underfoot, lime plaster on the walls.',
-          text: 'Placeholder text. Each material stop names what was specified and why.',
-          cam: [-1.3, 1.4, 0.7], look: [-3.4, 1.0, -1.7], spot: [-2.3, 1.7, -2.99] },
-        { kicker: 'Furniture', title: 'One long, low sofa.',
-          text: 'Placeholder text. Furniture stops point at a single piece: its maker, its fabric, its reason for being there.',
-          cam: [0.9, 1.05, 0.5], look: [-0.1, 0.55, -2.2], spot: [0.35, 0.62, -2.25] },
-        { kicker: 'Light', title: 'Daylight from one side.',
-          text: 'Placeholder text. Where the light enters, and what was done to hold it.',
-          cam: [0.2, 1.5, 1.5], look: [3.6, 1.3, -1.2], spot: [4.0, 1.9, -0.8] },
-        { kicker: 'Before / after', title: 'Drag to see the bare room.',
-          text: 'The slider fades the design out of the model, leaving the shell as it was handed over.',
-          cam: [0, 2.1, 5.2], look: [0, 0.8, -1.3], compare3d: true },
+        { kicker: 'Outside', title: 'Glass from wall to wall.',
+          text: 'The shopfront is dressed in the brand — the monkey, the menu, “life in full flavor” — under the blue sign box.',
+          cam: [0.6, 1.8, 11.5], look: [0.5, 2.0, 3.5] },
+        { kicker: 'The counter', title: 'A block of blue.',
+          text: 'Blue tiles in shifting shades, the logo raised on the front, a white top — and a line of light underneath, so the counter floats over the oak floor.',
+          cam: [1.9, 1.45, 1.3], look: [2.4, 0.9, -2.0], spot: [2.45, 0.55, -1.2] },
+        { kicker: 'The back wall', title: 'Everything in one oak wall.',
+          text: 'The menu screens, three soft-serve machines set into white niches and the staff door, all built into one panelled wall with light along its edge.',
+          cam: [2.2, 1.55, 0.4], look: [2.0, 1.55, -3.6], spot: [1.84, 1.98, -3.42] },
+        { kicker: 'The ceiling', title: 'Look up.',
+          text: 'Over the counter the ceiling is a coffered grid, every cell washed with warm light, with spotlights hung on terracotta straps in a zigzag.',
+          cam: [2.3, 1.3, 1.3], look: [2.5, 3.2, -1.2], spot: [2.05, 2.25, -0.95] },
+        { kicker: 'The curve', title: 'Sit in the bend.',
+          text: 'The banquette follows an S-curve in terracotta upholstery, a planter growing out of its back, floating on a line of light over the terrazzo.',
+          cam: [-1.4, 1.35, 1.9], look: [-4.0, 0.5, -0.6], spot: [-3.3, 0.47, -0.55] },
+        { kicker: 'The mural', title: 'A story on the wall.',
+          text: 'Illustrated panels climb the wall above the planter, their edges traced in light. The only figures in the room.',
+          cam: [-2.2, 1.75, 0.9], look: [-5.0, 1.9, -0.6], spot: [-4.98, 2.2, -0.9] },
+        { kicker: 'The grove', title: 'Where the wood takes over.',
+          text: 'The back wall turns to oak, with a planter running along the top and the lit Blue Mango sign above it.',
+          cam: [-1.5, 1.45, 1.2], look: [-2.8, 2.2, -3.6], spot: [-3.4, 2.78, -3.5] },
+        { kicker: 'Before / after', title: 'Drag to take it all out.',
+          text: 'The slider strips the fit-out from the model — counter, wood, ceiling, seating, mural — and leaves the shell.',
+          cam: [0.2, 2.5, 3.2], look: [0, 0.9, -1.6], compare3d: true },
       ]
-    }
+    },
+    execution: [
+      { img: 'assets/brands/bluemango/3p5a9635.jpg', cap: 'The counter and the oak wall', w: 1400, h: 934 },
+      { img: 'assets/brands/bluemango/3p5a9644.jpg', cap: 'The curved banquette', w: 1400, h: 934 },
+      { img: 'assets/brands/bluemango/dsc06088.jpg', cap: 'The mural', w: 788, h: 1400 },
+      { img: 'assets/brands/bluemango/dsc06166.jpg', cap: 'Menus, machines, the staff door', w: 1400, h: 788 },
+      { img: 'assets/brands/bluemango/dsc06054.jpg', cap: 'Blue tile, raised logo, light underneath', w: 788, h: 1400 },
+      { img: 'assets/brands/bluemango/dsc06160.jpg', cap: 'The coffered ceiling and strap spotlights', w: 1400, h: 788 },
+      { img: 'assets/brands/bluemango/dsc06051.jpg', cap: 'Round tables, square stools', w: 788, h: 1400 },
+      { img: 'assets/brands/bluemango/dsc06157.jpg', cap: 'The grove wall and sign', w: 1400, h: 788 },
+      { img: 'assets/brands/bluemango/dsc06109.jpg', cap: 'Machines set into the oak', w: 788, h: 1400 },
+      { img: 'assets/brands/bluemango/dsc06118.jpg', cap: 'The washroom', w: 788, h: 1400 },
+      { img: 'assets/brands/bluemango/dsc06055.jpg', cap: 'The shopfront', w: 788, h: 1400 },
+      { img: 'assets/brands/bluemango/dsc06082.jpg', cap: 'The terrace', w: 788, h: 1400 },
+    ]
   },
 
 };

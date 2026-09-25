@@ -40,16 +40,18 @@ depths, fbm nebula in brand purple, scroll-velocity warp), with a 2D
 canvas fallback. Open question: whether to push further — e.g. depth on
 the Ascent section itself.
 
-### 3D interior walkthrough — prototype
-`case.html?id=interior-prototype` (draft, noindex, not in the grid).
-`tour.js` pins a WebGL stage and drives the camera from the scroll:
-stops with a hotspot each, and a before/after slider that fades
-`after_*` nodes out of the model. three.js r169 is self-hosted in
-`vendor/three/`. The room is a placeholder until the interior
-designer's files arrive: ideally a .glb (or the SketchUp / 3ds Max /
-Blender source) with the furniture on its own `after_*` nodes, plus
-real material notes for each stop. Camera stops are read off with
-`#tune` in the URL.
+### Blue Mango — interior case with a 3D walkthrough (draft)
+`case.html?id=blue-mango` — draft, noindex, not yet in the grid.
+The café is modelled by hand in `rooms/blue-mango.js` from the site
+photographs (no CAD file exists); the mural, menus, posters and signs
+are textures cut from those photos (`assets/brands/bluemango/tex/`).
+`tour.js` pins the stage, scrolls the camera through eight stops and
+strips the fit-out stage by stage on the before/after slider.
+three.js r169 is self-hosted in `vendor/three/`. `#tune` in the URL
+frees the camera for authoring stops.
+Before it goes live: confirm the year, what RankRise's brief covered,
+the challenge/approach wording, and material names (tile, wood,
+upholstery) — the copy only states what the photos show.
 
 ### Portfolio covers
 Six of seven covers in `assets/covers/` are still screenshots of the old

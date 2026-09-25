@@ -11,8 +11,9 @@
    designer's SketchUp / 3ds Max / Blender file. Any node whose name
    starts with `after_` is treated as the design itself: the
    before/after slider fades those nodes out to show the bare room.
-   With no model, a placeholder room is drawn so the engine can be
-   reviewed before the real files arrive.
+   A room can also be modelled in code: `tour.room: 'name'` loads
+   rooms/name.js, whose build() returns the scene group. With neither,
+   a placeholder room is drawn so the engine can be reviewed.
 
    Add #tune to the URL to fly the camera freely and read off the
    cam / look numbers for each stop.
@@ -67,7 +68,9 @@ export async function mount(section, tour) {
 
   let room;
   try {
-    room = tour.model ? await loadModel(tour.model, load) : placeholderRoom();
+    room = tour.model ? await loadModel(tour.model, load)
+         : /^[a-z0-9-]+$/.test(tour.room || '') ? await (await import(`./rooms/${tour.room}.js`)).build({ small })
+         : placeholderRoom();
   } catch (e) {
     console.warn('[tour] model failed to load', e);
     canvas.remove(); load.remove(); renderer.dispose();
@@ -75,31 +78,43 @@ export async function mount(section, tour) {
   }
   scene.add(room);
   load.remove();
+  // a room can set its own mood: sky colour, fog, reflections
+  const mood = room.userData.mood || {};
+  if (mood.background != null) { scene.background.set(mood.background); scene.fog.color.set(mood.background); }
+  if (mood.fog) { scene.fog.near = mood.fog[0]; scene.fog.far = mood.fog[1]; }
+  if (mood.env != null) scene.environmentIntensity = mood.env;
+  if (mood.exposure != null) renderer.toneMappingExposure = mood.exposure;
 
   // Everything named after_* is the design; the rest is the bare room.
-  const after = [];
+  // Each after_* group is one stage. The slider strips them in reverse of
+  // the order they appear in the model — the last thing built goes first —
+  // and only one stage is mid-fade at a time, so plain transparency never
+  // has two fading surfaces fighting over which one draws on top.
+  const after = [], stages = [];
   room.traverse(o => {
-    let n = o, hit = false;
-    while (n) { if (n.userData.after || /^after_/i.test(n.name)) { hit = true; break; } n = n.parent; }
-    if (!hit) return;
+    let n = o, top = null;
+    while (n) { if (n.userData.after || /^after_/i.test(n.name)) top = n; n = n.parent; }
+    if (!top) return;
+    let k = stages.indexOf(top); if (k < 0) { stages.push(top); k = stages.length - 1; }
     if (o.isMesh) {
       o.material = Array.isArray(o.material) ? o.material.map(m => m.clone()) : o.material.clone();
-      after.push({ o, base: [].concat(o.material).map(m => m.opacity), y: o.position.y });
+      const ms = [].concat(o.material);
+      after.push({ o, k, base: ms.map(m => m.opacity), clear: ms.map(m => m.transparent) });
     } else if (o.isLight) {
-      after.push({ o, base: [o.intensity] });
+      after.push({ o, k, base: [o.intensity] });
     }
   });
   let afterAmt = 1;
   function setAfter(a) {
     if (Math.abs(a - afterAmt) < 1e-3) return;
     afterAmt = a;
+    const n = stages.length;
     for (const it of after) {
-      if (it.o.isLight) { it.o.intensity = it.base[0] * a; continue; }
-      [].concat(it.o.material).forEach((m, i) => {
-        m.transparent = a < 1; m.opacity = it.base[i] * a; m.depthWrite = a > 0.5;
-      });
-      it.o.visible = a > 0.01;
-      it.o.castShadow = a > 0.5 && !!it.o.userData.cs;
+      const s = clamp(a * n - it.k);
+      if (it.o.isLight) { it.o.intensity = it.base[0] * s; continue; }
+      [].concat(it.o.material).forEach((m, i) => { m.transparent = it.clear[i] || s < 1; m.opacity = it.base[i] * s; });
+      it.o.visible = s > 0.01;
+      it.o.castShadow = s > 0.5 && !!it.o.userData.cs;
     }
     dirty = true;
   }
