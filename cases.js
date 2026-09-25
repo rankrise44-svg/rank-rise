@@ -282,4 +282,55 @@ window.RANKRISE_CASES = {
     next: 'bbcorp'
   },
 
+
+  /* ── 3D walkthrough — PROTOTYPE ─────────────────────────────────
+     `draft: true` keeps this out of search, and it is not listed in
+     projects.js or the sitemap. The room is a placeholder drawn by
+     tour.js; nothing here describes a real client. When the interior
+     designer's files arrive, the real case gets its own entry and
+     this one is deleted.
+
+     tour.model   a .glb of the room. Nodes named after_* are the
+                  design; the before/after slider fades them out.
+                  Leave it out to get the placeholder room.
+     tour.poster  still shown without WebGL / under reduced motion.
+     stops[]      cam / look / spot are [x, y, z] in metres, in the
+                  model's own space — read them off with #tune.
+                  before + after (image paths) give a photo slider;
+                  compare3d: true gives the in-room slider. */
+  'interior-prototype': {
+    draft: true,
+    title: '3D walkthrough — prototype',
+    tagline: 'Walk the room.',
+    client: 'Prototype',
+    sector: 'Interior design',
+    year: '2026',
+    scope: ['3D', 'Walkthrough'],
+    accent: '#c9a27a',
+    hero: 'assets/tour/prototype-poster.jpg',
+    challenge: 'Interior design is sold in photographs, and a photograph shows one angle. This prototype tests a case page where the visitor moves through the room instead.',
+    approach: 'The designer’s own 3D file is exported to the web, the lighting baked in, and the camera tied to the scroll — so every stop lands on one decision: a material, a piece, the light, the before and after.',
+    tour: {
+      title: 'Walk the room.',
+      poster: 'assets/tour/prototype-poster.jpg',
+      stops: [
+        { kicker: 'Overview', title: 'The whole room, at a glance.',
+          text: 'Placeholder room. This stop opens on the space as a whole — the layout before any detail.',
+          cam: [0, 2.3, 6.4], look: [0, 1.0, -1.3] },
+        { kicker: 'Materials', title: 'Oak underfoot, lime plaster on the walls.',
+          text: 'Placeholder text. Each material stop names what was specified and why.',
+          cam: [-1.3, 1.4, 0.7], look: [-3.4, 1.0, -1.7], spot: [-2.3, 1.7, -2.99] },
+        { kicker: 'Furniture', title: 'One long, low sofa.',
+          text: 'Placeholder text. Furniture stops point at a single piece: its maker, its fabric, its reason for being there.',
+          cam: [0.9, 1.05, 0.5], look: [-0.1, 0.55, -2.2], spot: [0.35, 0.62, -2.25] },
+        { kicker: 'Light', title: 'Daylight from one side.',
+          text: 'Placeholder text. Where the light enters, and what was done to hold it.',
+          cam: [0.2, 1.5, 1.5], look: [3.6, 1.3, -1.2], spot: [4.0, 1.9, -0.8] },
+        { kicker: 'Before / after', title: 'Drag to see the bare room.',
+          text: 'The slider fades the design out of the model, leaving the shell as it was handed over.',
+          cam: [0, 2.1, 5.2], look: [0, 0.8, -1.3], compare3d: true },
+      ]
+    }
+  },
+
 };

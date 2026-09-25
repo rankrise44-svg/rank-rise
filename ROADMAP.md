@@ -40,6 +40,17 @@ depths, fbm nebula in brand purple, scroll-velocity warp), with a 2D
 canvas fallback. Open question: whether to push further — e.g. depth on
 the Ascent section itself.
 
+### 3D interior walkthrough — prototype
+`case.html?id=interior-prototype` (draft, noindex, not in the grid).
+`tour.js` pins a WebGL stage and drives the camera from the scroll:
+stops with a hotspot each, and a before/after slider that fades
+`after_*` nodes out of the model. three.js r169 is self-hosted in
+`vendor/three/`. The room is a placeholder until the interior
+designer's files arrive: ideally a .glb (or the SketchUp / 3ds Max /
+Blender source) with the furniture on its own `after_*` nodes, plus
+real material notes for each stop. Camera stops are read off with
+`#tune` in the URL.
+
 ### Portfolio covers
 Six of seven covers in `assets/covers/` are still screenshots of the old
 case pages, text and navigation bars included. The client's rule: a cover

@@ -12,6 +12,7 @@
 <meta property="og:description" content="Real client work, end to end — film, branding, social and growth. Challenge, approach, execution, result.">
 <meta property="og:image" content="https://rankrise.media/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
+<script type="importmap">{"imports":{"three":"./vendor/three/three.module.min.js","three/addons/":"./vendor/three/addons/"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
@@ -184,6 +185,61 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
 }
 
 
+/* ── 3D walkthrough ────────────────────────────────────────────────────
+   Without WebGL (or before tour.js arrives) the stops are plain cards
+   under a still. Once tour.js mounts, .live pins a full-screen stage and
+   the page's scroll drives the camera; the cards take turns over it. */
+.tour{ padding-block:clamp(64px,11vh,120px) 0; }
+.tour-head h2{ font-size:clamp(24px,3.6vw,40px); margin-top:12px; }
+.tour-hint{ color:var(--dim); margin-top:10px; font-size:14px; }
+.tour-pin{ position:relative; }
+.tour-poster{ width:100%; max-width:var(--maxw); margin:clamp(24px,4vh,40px) auto 0; aspect-ratio:16/9; object-fit:cover; border-radius:14px; border:1px solid var(--line); }
+.tour-cards{ list-style:none; display:grid; gap:16px; max-width:var(--maxw); margin:22px auto 0; padding-inline:var(--pad); }
+@media(min-width:700px){ .tour-cards{ grid-template-columns:repeat(2,1fr); } }
+.tcard{ border:1px solid var(--line); border-radius:14px; background:rgba(17,18,23,.78); padding:20px 20px 22px; }
+.tcard .tk{ font-size:11px; font-weight:600; letter-spacing:.24em; text-transform:uppercase; color:var(--brand); }
+.tcard h3{ font-size:clamp(20px,2.4vw,28px); line-height:1.05; margin-top:10px; }
+.tcard p{ color:var(--dim); font-size:14.5px; line-height:1.65; margin-top:10px; }
+.draft-note{ display:inline-block; margin-top:14px; font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:#1a1206; background:var(--brand); border-radius:100px; padding:7px 12px; }
+
+/* before / after — image pair with a drag handle */
+.cmp{ position:relative; margin-top:14px; border-radius:10px; overflow:hidden; border:1px solid var(--line); --x:50%; aspect-ratio:4/3; }
+.cmp img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.cmp .cmp-b{ clip-path:inset(0 calc(100% - var(--x)) 0 0); }
+.cmp::after{ content:""; position:absolute; top:0; bottom:0; left:var(--x); width:2px; margin-left:-1px; background:#fff; box-shadow:0 0 12px rgba(0,0,0,.5); pointer-events:none; }
+.cmp input{ position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:ew-resize; margin:0; }
+.cmp small{ position:absolute; bottom:8px; font-size:10px; letter-spacing:.2em; text-transform:uppercase; background:rgba(5,5,8,.7); padding:4px 8px; border-radius:100px; pointer-events:none; }
+.cmp .l{ left:8px; } .cmp .r{ right:8px; }
+/* before / after — in the 3D room itself */
+.cmp3{ display:flex; align-items:center; gap:12px; margin-top:16px; font-size:11px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--dim); }
+.cmp3 input{ flex:1; accent-color:var(--brand); min-height:32px; }
+.tour:not(.live) .cmp3{ display:none; }
+
+.tour.live .tour-stage{ height:calc(var(--n) * 110svh + 40svh); margin-top:clamp(24px,4vh,40px); }
+.tour.live .tour-pin{ position:sticky; top:0; height:100svh; overflow:hidden; }
+.tour.live .tour-poster{ display:none; }
+.tour-cv{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+.tour.live .tour-pin::after{ content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to bottom, var(--bg) 0, transparent 14%, transparent 70%, rgba(5,5,8,.85) 100%); }
+.tour.live .tour-cards{ position:absolute; z-index:3; left:0; right:0; bottom:calc(28px + env(safe-area-inset-bottom)); margin:0; display:block; pointer-events:none; }
+.tour.live .tcard{ position:absolute; left:var(--pad); bottom:0; width:min(400px, calc(100% - 2 * var(--pad)));
+  background:rgba(10,10,14,.72); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  opacity:0; transform:translateY(18px); transition:opacity var(--t-media) var(--e-rise), transform var(--t-media) var(--e-rise); }
+.tour.live .tcard.on{ opacity:1; transform:none; pointer-events:auto; }
+.tour-load{ position:absolute; inset:0; display:grid; place-items:center; color:var(--dim); font-size:13px; letter-spacing:.14em; text-transform:uppercase; }
+.tour-spot{ position:absolute; z-index:2; left:0; top:0; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%;
+  background:var(--brand); box-shadow:0 0 0 0 var(--brand); opacity:0; transition:opacity var(--t-ui); pointer-events:none; }
+.tour-spot.on{ opacity:1; animation:spotPulse 2s var(--e-rise) infinite; }
+@keyframes spotPulse{ 0%{ box-shadow:0 0 0 0 color-mix(in srgb, var(--brand) 70%, transparent); } 100%{ box-shadow:0 0 0 22px transparent; } }
+.tour-rail{ position:absolute; z-index:3; right:calc(var(--pad) - 12px); top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:2px; }
+.tour-rail button{ width:36px; height:36px; display:grid; place-items:center; background:none; border:0; cursor:pointer; }
+.tour-rail span{ width:8px; height:8px; border-radius:50%; border:1px solid var(--ink); opacity:.5; transition:all var(--t-ui); }
+.tour-rail .on span{ background:var(--brand); border-color:var(--brand); opacity:1; transform:scale(1.35); }
+.tour-tune{ position:absolute; z-index:4; top:80px; left:var(--pad); font:12px/1.5 ui-monospace,monospace; background:rgba(0,0,0,.8); padding:10px 12px; border-radius:8px; color:#9f9; user-select:all; }
+.tuning .tour-cards{ display:none !important; }
+@media(max-width:700px){ .tour.live .tcard{ padding:16px 16px 18px; } .tour.live .tcard p{ font-size:13.5px; } }
+
 
 @media(min-width:700px){
   .meta{ grid-template-columns:repeat(4,1fr); }
@@ -255,6 +311,9 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
     dateCreated:c.year,description:desc});
   document.head.appendChild(ld);
 
+  // A draft case renders at its URL for review but is kept out of search.
+  if(c.draft){ const r=document.createElement('meta'); r.name='robots'; r.content='noindex,nofollow'; document.head.appendChild(r); }
+
   const meta=[['Client',c.client],['Sector',c.sector],c.markets?['Markets',c.markets]:null,['Year',c.year],['Scope',(c.scope||[]).join(' · ')]]
     .filter(Boolean).slice(0,4);
 
@@ -287,11 +346,33 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
     return cols.map(c => `<div class="gcol">${c.html}</div>`).join('');
   };
 
+  // 3D walkthrough — see tour.js. Rendered here as plain cards so the
+  // stops read fine with no WebGL; tour.js upgrades them in place.
+  const t = c.tour;
+  const compare = s => s.before && s.after ? `
+    <div class="cmp"><img src="${esc(s.after)}" alt="${esc(s.title||'')} — after" loading="lazy"><img class="cmp-b" src="${esc(s.before)}" alt="${esc(s.title||'')} — before" loading="lazy">
+      <input type="range" min="0" max="100" value="50" aria-label="Before / after"><small class="l">Before</small><small class="r">After</small></div>`
+    : s.compare3d ? `<label class="cmp3"><span>Before</span><input type="range" min="0" max="100" value="100" aria-label="Before / after"><span>After</span></label>` : '';
+  const tourHtml = t && t.stops && t.stops.length ? `
+  <section class="tour" id="tour" style="--n:${t.stops.length}" aria-label="3D walkthrough">
+    <div class="wrap tour-head up"><span class="eyebrow">Walkthrough</span><h2>${esc(t.title||'Walk the room.')}</h2>
+      <p class="tour-hint">Scroll to move through the space.</p>
+      ${c.draft?'<span class="draft-note">Prototype · placeholder room</span>':''}</div>
+    <div class="tour-stage"><div class="tour-pin">
+      ${t.poster?`<img class="tour-poster" src="${esc(t.poster)}" alt="${esc(c.title)} — room overview" loading="lazy">`:''}
+      <ol class="tour-cards">${t.stops.map((s,n)=>`
+        <li class="tcard" data-i="${n}"><span class="tk">${String(n+1).padStart(2,'0')} · ${esc(s.kicker||'')}</span>
+          <h3>${esc(s.title||'')}</h3>${s.text?`<p>${esc(s.text)}</p>`:''}${compare(s)}</li>`).join('')}
+      </ol>
+    </div></div>
+  </section>` : '';
+  const hasWork = (c.chapters&&c.chapters.length) || (c.execution&&c.execution.length);
+
   const heroMedia = c.heroVideo
     ? `<video src="${esc(c.heroVideo)}" poster="${esc(c.heroPoster||'')}" autoplay muted loop playsinline preload="metadata"></video>`
     : `<img src="${esc(c.hero)}" alt="${esc(c.title)} — case study cover" fetchpriority="high">`;
 
-  function paint(){
+  let paint=function(){
   root.innerHTML=`
   <section class="hero">
     <div class="bgm">${heroMedia}</div>
@@ -308,7 +389,9 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
     <div class="blk up"><span class="eyebrow">The approach</span><h2>How we moved.</h2><p>${esc(c.approach)}</p></div>
   </div></section>
 
-  <section class="sec" style="padding-top:0"><div class="wrap">
+  ${tourHtml}
+
+  ${hasWork?`<section class="sec"${tourHtml?'':' style="padding-top:0"'}><div class="wrap">
     <div class="up"><span class="eyebrow">Execution</span><h2 style="font-size:clamp(24px,3.6vw,40px);margin-top:12px">The work.</h2>
     ${c.chapters&&c.chapters.length>1?`<nav class="chnav" aria-label="Chapters">${c.chapters.map((ch,n)=>`<a class="hv" href="#ch${n+1}"><b>${String(n+1).padStart(2,'0')}</b>${esc(ch.title||'')}</a>`).join('')}</nav>`:''}</div>
     ${c.chapters && c.chapters.length
@@ -322,15 +405,15 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
           <div class="gal">${gallery(ch.items)}</div>
         </div>`).join('')
       : `<div class="gal">${gallery(c.execution)}</div>`}
-  </div></section>
+  </div></section>`:''}
 
-  <section class="sec result"><div class="wrap up">
+  ${c.result?`<section class="sec result"><div class="wrap up">
     <span class="eyebrow">The result</span>
     ${c.result&&c.result.stat
         ? `<div class="res-stat" style="margin-top:16px">${esc(c.result.stat)}</div><div class="res-lab">${esc(c.result.statLabel)}</div>`
         : (c.result&&c.result.pull ? `<div class="res-pull" style="margin-top:16px">${esc(c.result.pull)}</div>` : '')}
     <p class="res-text">${esc(c.result?c.result.text:'')}</p>
-  </div></section>
+  </div></section>`:''}
 
   ${c.next&&CASES[c.next]?`<a class="next wrap" href="case.html?id=${esc(c.next)}"><small>Next case</small><h2>${esc(CASES[c.next].title)} →</h2></a>`:''}
 
@@ -371,6 +454,28 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
     }
   }
   }
+
+  // before/after image sliders
+  function wireCompares(){
+    document.querySelectorAll('.cmp input').forEach(r=>r.addEventListener('input',()=>r.parentNode.style.setProperty('--x',r.value+'%')));
+  }
+  // The walkthrough only loads when the case has one, and never under
+  // reduced motion — a scroll-driven camera is exactly what that asks to avoid.
+  let tourApi=null, tourGen=0;
+  function mountTour(){
+    const el=document.getElementById('tour');
+    if(!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const gen=++tourGen;
+    import('./tour.js').then(m=>m.mount(el,c.tour)).then(api=>{
+      if(gen!==tourGen){ api&&api.dispose(); return; }
+      tourApi=api;
+    }).catch(e=>console.warn('[tour]',e));
+  }
+  const paintBase=paint;
+  paint=function(){
+    tourGen++; if(tourApi){ tourApi.dispose(); tourApi=null; }
+    paintBase(); wireCompares(); mountTour();
+  };
 
   paint();
 
