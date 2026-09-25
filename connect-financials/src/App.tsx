@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AppShell } from './components/shell/AppShell';
 import { HomePage } from './routes/HomePage';
 import { PlatformPage } from './routes/PlatformPage';
+import { ConnectViewPage } from './routes/ConnectViewPage';
 import { MarketsPage } from './routes/MarketsPage';
 import { AccountsPage } from './routes/AccountsPage';
 import { ToolsPage } from './routes/ToolsPage';
@@ -28,6 +29,7 @@ export default function App() {
             <Route element={<AppShell />}>
               <Route path={ROUTES.home} element={<HomePage />} />
               <Route path={ROUTES.platform} element={<PlatformPage />} />
+              <Route path={ROUTES.connectview} element={<ConnectViewPage />} />
               <Route path={ROUTES.markets} element={<MarketsPage />} />
               <Route path={ROUTES.accounts} element={<AccountsPage />} />
               <Route path={ROUTES.tools} element={<ToolsPage />} />

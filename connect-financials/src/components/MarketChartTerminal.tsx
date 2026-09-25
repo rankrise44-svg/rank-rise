@@ -18,6 +18,10 @@ import {
 import { Instrument, Candle, ChartTimeframe, ChartType, IndicatorConfig } from '../types';
 
 interface Props {
+  /** Hides the order-entry ribbon. The home page shows the chart as proof of
+      the product; placing an order belongs on the platform page, and the
+      ribbon's 12-column grid collapses badly in a narrow container. */
+  showOrderEntry?: boolean;
   instrument: Instrument;
   candles: Candle[];
   timeframe: ChartTimeframe;
@@ -37,7 +41,8 @@ export const MarketChartTerminal: React.FC<Props> = ({
   candles,
   timeframe,
   setTimeframe,
-  onExecuteTrade
+  onExecuteTrade,
+  showOrderEntry = true
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -783,7 +788,7 @@ export const MarketChartTerminal: React.FC<Props> = ({
       </div>
 
       {/* Direct Quick Execution Trade Ribbon */}
-      <div className="bg-navy-950 border-t border-navy-700/90 p-4">
+      <div className={`bg-navy-950 border-t border-navy-700/90 p-4 ${showOrderEntry ? '' : 'hidden'}`}>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
           {/* Sell Button */}
           <div className="md:col-span-4">

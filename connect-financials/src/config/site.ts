@@ -10,6 +10,7 @@
 export const ROUTES = {
   home: '/',
   platform: '/platform',
+  connectview: '/connectview',
   markets: '/markets',
   accounts: '/accounts',
   tools: '/tools',
@@ -63,14 +64,19 @@ export const primaryNav: NavGroup[] = [
         description: 'Candlestick charting with depth of market',
       },
       {
-        label: 'ConnectView studio',
-        to: ROUTES.platform,
-        description: 'Elliott waves, order blocks, Fibonacci and volume profile',
-      },
-      {
         label: 'Trader portal',
         to: ROUTES.portal,
         description: 'Positions, funding, history and verification',
+      },
+    ],
+  },
+  {
+    label: 'ConnectView',
+    items: [
+      {
+        label: 'Chart analysis studio',
+        to: ROUTES.connectview,
+        description: 'Structure, Elliott waves, order blocks and Fibonacci',
       },
     ],
   },
@@ -152,7 +158,7 @@ export const footerNav: NavGroup[] = [
       { label: 'Tradable currencies & FX', to: ROUTES.markets },
       { label: 'Live market watch screener', to: ROUTES.markets },
       { label: 'Live candlestick terminal', to: ROUTES.platform },
-      { label: 'ConnectView studio', to: ROUTES.platform },
+      { label: 'ConnectView chart analysis', to: ROUTES.connectview },
       { label: 'Economic calendar', to: ROUTES.tools },
     ],
   },

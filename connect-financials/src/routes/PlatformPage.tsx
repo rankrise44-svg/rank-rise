@@ -1,23 +1,16 @@
-import { Maximize2 } from 'lucide-react';
 import { MarketChartTerminal } from '../components/MarketChartTerminal';
 import { MarketDepthOrderBook } from '../components/MarketDepthOrderBook';
-import { ConnectViewStudio } from '../components/ConnectViewStudio';
-import { Button } from '../components/ui/Button';
-import { Container, PageHeader, Section, SectionHeading } from '../components/ui/Layout';
+import { Container, PageHeader, Section } from '../components/ui/Layout';
 import { useTrading } from '../state/TradingProvider';
-import { useUI } from '../state/UIProvider';
 
 export function PlatformPage() {
   const {
-    instruments,
     currentInstrument,
     currentCandles,
     timeframe,
     setTimeframe,
-    selectedInstrumentId,
     executeTrade,
   } = useTrading();
-  const { openStudio } = useUI();
 
   return (
     <>
@@ -27,6 +20,10 @@ export function PlatformPage() {
         title="Trading terminal"
         description="Charting, Level II depth and order entry on one screen. Prices and fills shown here are simulated."
       />
+
+      {/* The ConnectView studio moved to its own route: two full charting
+          surfaces on one page competed with each other, and the analysis tools
+          were buried under a scroll. */}
 
       {/* Terminal + depth */}
       <Section spacing="sm">
@@ -51,30 +48,6 @@ export function PlatformPage() {
         </Container>
       </Section>
 
-      {/* Analysis studio */}
-      <Section spacing="sm" bordered={false}>
-        <Container wide>
-          <SectionHeading
-            eyebrow="ConnectView"
-            title="Chart studio"
-            description="Support and resistance, Elliott wave counts, order blocks, Fibonacci retracements, market structure and volume profile."
-            actions={
-              <Button variant="secondary" size="sm" onClick={() => openStudio(selectedInstrumentId)}>
-                <Maximize2 className="h-4 w-4" aria-hidden="true" />
-                Fullscreen
-              </Button>
-            }
-          />
-
-          <div className="mt-8 h-[520px] overflow-hidden rounded-[var(--radius-lg)] border border-line sm:h-[620px]">
-            <ConnectViewStudio
-              instruments={instruments}
-              initialSymbol={selectedInstrumentId}
-              onExecuteTrade={executeTrade}
-            />
-          </div>
-        </Container>
-      </Section>
     </>
   );
 }

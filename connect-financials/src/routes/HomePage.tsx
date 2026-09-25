@@ -8,11 +8,13 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { Hero, LivePricingStrip } from '../components/home/Hero';
+import { MarketChartTerminal } from '../components/MarketChartTerminal';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Container, Section, SectionHeading } from '../components/ui/Layout';
 import { ROUTES } from '../config/site';
 import { productClaims } from '../config/compliance';
+import { useTrading } from '../state/TradingProvider';
 import { useUI } from '../state/UIProvider';
 
 const capabilities = [
@@ -41,6 +43,8 @@ const platformFeatures = [
 
 export function HomePage() {
   const { openAccountModal } = useUI();
+  const { currentInstrument, currentCandles, timeframe, setTimeframe, executeTrade } =
+    useTrading();
 
   return (
     <>
@@ -96,28 +100,19 @@ export function HomePage() {
               </div>
             </div>
 
-            <Card padding="none" className="overflow-hidden">
-              <div className="flex items-center gap-2 border-b border-line px-4 py-3">
-                <span className="h-2 w-2 rounded-full bg-line-strong" aria-hidden="true" />
-                <span className="h-2 w-2 rounded-full bg-line-strong" aria-hidden="true" />
-                <span className="h-2 w-2 rounded-full bg-line-strong" aria-hidden="true" />
-                <span className="ml-2 font-mono text-[12px] text-text-subtle">
-                  EUR/USD · D1 · Connect NY4
-                </span>
-              </div>
-              {/* Static representation, not a second live chart instance — the
-                  home page should not pay the cost of a canvas render loop. */}
-              <div className="fintech-grid-pattern flex h-[280px] items-end gap-[3px] px-4 pb-4 pt-8 sm:h-[320px]">
-                {SPARK.map((h, i) => (
-                  <span
-                    key={i}
-                    className={`flex-1 rounded-[1px] ${i % 3 === 0 ? 'bg-up/35' : 'bg-line-strong'}`}
-                    style={{ height: `${h}%` }}
-                    aria-hidden="true"
-                  />
-                ))}
-              </div>
-            </Card>
+            {/* The real terminal, not a drawing of one. It was a static bar
+                illustration before, which meant the home page was showing a
+                picture of the product instead of the product. */}
+            <div className="overflow-hidden rounded-[var(--radius-lg)] border border-line">
+              <MarketChartTerminal
+                instrument={currentInstrument}
+                candles={currentCandles}
+                timeframe={timeframe}
+                setTimeframe={setTimeframe}
+                onExecuteTrade={executeTrade}
+                showOrderEntry={false}
+              />
+            </div>
           </div>
         </Container>
       </Section>
@@ -146,8 +141,3 @@ export function HomePage() {
   );
 }
 
-/* Fixed bar heights for the static chart illustration above. */
-const SPARK = [
-  34, 46, 40, 52, 48, 61, 55, 67, 60, 72, 64, 58, 70, 66, 78, 71, 83, 76, 88, 80, 74, 86, 79, 91,
-  84, 76, 88, 81, 93, 85, 77, 89, 82, 94, 87, 79, 71, 83, 75, 67,
-];
