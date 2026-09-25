@@ -48,12 +48,17 @@ function buildSeries(count: number): Candle[] {
   let price = 0.5;
 
   for (let i = 0; i < count; i++) {
-    const drift = (hash(i * 3.1) - 0.47) * 0.055;
+    /* Larger steps than a realistic series would take: the point here is
+       silhouette, and small steps read as a flat ribbon at this opacity. */
+    const drift = (hash(i * 3.1) - 0.47) * 0.145;
     const open = price;
-    price = Math.min(0.92, Math.max(0.08, price + drift));
+    price = Math.min(0.94, Math.max(0.06, price + drift));
     const close = price;
 
-    const wick = 0.012 + hash(i * 7.7) * 0.03;
+    /* Every so often a much longer wick, so the field has a skyline instead of
+       an even hedge. */
+    const spike = hash(i * 11.3) > 0.86 ? 0.09 : 0;
+    const wick = 0.02 + hash(i * 7.7) * 0.05 + spike;
     candles.push({
       i,
       open,
@@ -65,8 +70,8 @@ function buildSeries(count: number): Candle[] {
   return candles;
 }
 
-const COLUMN_WIDTH = 26;
-const SERIES_LENGTH = 220;
+const COLUMN_WIDTH = 34;
+const SERIES_LENGTH = 260;
 
 export function ForexBackdrop({ opacity = 0.5, className = '' }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -124,10 +129,10 @@ export function ForexBackdrop({ opacity = 0.5, className = '' }: Props) {
 
       ctx.clearRect(0, 0, width, height);
 
-      const baseline = height * 0.62;
-      const amplitude = height * 0.3;
+      const baseline = height * 0.58;
+      const amplitude = height * 0.44;
       /* Scroll drives the field leftward; velocity adds a momentary push. */
-      const offset = reduced ? 0 : y * 0.22 + t * 9 + velocity * 5;
+      const offset = reduced ? 0 : y * 0.26 + t * 14 + velocity * 6;
       const lift = reduced ? 0 : velocity * 0.45;
 
       const priceY = (p: number) => baseline - (p - 0.5) * amplitude * 2 + lift;
@@ -162,7 +167,8 @@ export function ForexBackdrop({ opacity = 0.5, className = '' }: Props) {
         const rising = candle.close >= candle.open;
 
         ctx.strokeStyle = rising ? chart.upWick : chart.downWick;
-        ctx.globalAlpha = 0.5;
+        ctx.lineWidth = 1.5;
+        ctx.globalAlpha = 0.62;
         ctx.beginPath();
         ctx.moveTo(Math.round(x) + 0.5, priceY(candle.high));
         ctx.lineTo(Math.round(x) + 0.5, priceY(candle.low));
@@ -170,9 +176,9 @@ export function ForexBackdrop({ opacity = 0.5, className = '' }: Props) {
 
         const top = priceY(Math.max(candle.open, candle.close));
         const bottom = priceY(Math.min(candle.open, candle.close));
-        ctx.globalAlpha = 0.34;
+        ctx.globalAlpha = 0.46;
         ctx.fillStyle = rising ? chart.up : chart.down;
-        ctx.fillRect(Math.round(x) - 5, top, 10, Math.max(1.5, bottom - top));
+        ctx.fillRect(Math.round(x) - 7, top, 14, Math.max(2, bottom - top));
       }
       ctx.globalAlpha = 1;
 

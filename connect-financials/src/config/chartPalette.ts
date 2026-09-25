@@ -14,11 +14,11 @@
 
 export const chart = {
   /* Frame */
-  background: '#050b1a',
-  panel: '#0a1428',
-  panelAlt: '#0f1b33',
-  border: '#1e3055',
-  borderStrong: '#2c4570',
+  background: '#071734',
+  panel: '#0b2044',
+  panelAlt: '#0f2851',
+  border: '#1d3c6e',
+  borderStrong: '#2a4f8a',
 
   /* Grid — low-contrast blue so candles sit clearly on top of it. */
   grid: 'rgba(77, 163, 255, 0.07)',

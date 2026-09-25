@@ -76,7 +76,7 @@ export function AppShell() {
       {/* Market backdrop, under every route at low opacity. Replaces the old
           spinning-planet canvas, which was off-topic and opaque enough to
           compete with the copy in front of it. */}
-      <ForexBackdrop opacity={0.42} />
+      <ForexBackdrop opacity={0.55} />
       <ScrollProgress />
 
       <ComplianceDraftNotice />

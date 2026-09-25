@@ -26,19 +26,20 @@
 
 @theme {
   /* ---------------------------------------------------------------------------
-     Surfaces — a true blue ramp, not neutral grey. Each step lifts toward the
-     viewer; the steps stay close together because panels separate with
-     hairlines, not with heavy contrast jumps.
+     Surfaces — a navy ramp. Lifted out of near-black so the blue is a colour
+     you can actually see rather than an implication; the steps stay close
+     together because panels separate with hairlines, not contrast jumps.
+     White text on `canvas` sits around 15:1, gold around 6.5:1.
      --------------------------------------------------------------------------- */
-  --color-canvas: #050b1a;
-  --color-surface-1: #0a1428;
-  --color-surface-2: #0f1b33;
-  --color-surface-3: #16253f;
-  --color-surface-raised: #1d3054;
+  --color-canvas: #071734;
+  --color-surface-1: #0b2044;
+  --color-surface-2: #0f2851;
+  --color-surface-3: #153264;
+  --color-surface-raised: #1b3c76;
 
   /* Hairlines. `line` is the default; `line-strong` marks active/focused edges. */
-  --color-line: #1e3055;
-  --color-line-strong: #2c4570;
+  --color-line: #1d3c6e;
+  --color-line-strong: #2a4f8a;
 
   /* ---------------------------------------------------------------------------
      Text — blue-tinted throughout. `text-bright` is the rationed pure white,
@@ -68,7 +69,7 @@
   --color-accent-hover: #e3c65c;
   --color-accent-press: #a8821f;
   --color-accent-quiet: #d4af3724; /* ~14% */
-  --color-on-accent: #050b1a;
+  --color-on-accent: #071734;
 
   /* ---------------------------------------------------------------------------
      Market direction.
@@ -161,12 +162,12 @@
 
 @theme {
   /* Navy → the blue surface ramp. */
-  --color-navy-950: #050b1a;
-  --color-navy-900: #0a1428;
-  --color-navy-850: #0f1b33;
-  --color-navy-800: #16253f;
-  --color-navy-700: #1e3055;
-  --color-navy-600: #2c4570;
+  --color-navy-950: #071734;
+  --color-navy-900: #0b2044;
+  --color-navy-850: #0f2851;
+  --color-navy-800: #153264;
+  --color-navy-700: #1d3c6e;
+  --color-navy-600: #2a4f8a;
 
   /* Gold. */
   --color-gold-300: #f5dfa3;
@@ -190,13 +191,13 @@
   --color-cyan-400: #4da3ff;
   --color-cyan-500: #2e7fe8;
   --color-cyan-600: #1b5fc4;
-  --color-cyan-950: #0b1c33;
+  --color-cyan-950: #0d2450;
   --color-sky-400: #4da3ff;
   --color-sky-500: #2e7fe8;
   --color-blue-400: #4da3ff;
   --color-blue-500: #2e7fe8;
-  --color-blue-900: #0f2444;
-  --color-blue-950: #0a1932;
+  --color-blue-900: #12305e;
+  --color-blue-950: #0b2044;
 
   /* Market direction: emerald/green become gold, red/rose become blue. */
   --color-emerald-300: #ecd18a;
@@ -222,7 +223,7 @@
   --color-rose-200: #c3dbf7;
   --color-rose-600: #2b6bb8;
   --color-rose-700: #1f5091;
-  --color-rose-950: #0b1c33;
+  --color-rose-950: #0d2450;
   --color-teal-400: #e3c65c;
   --color-teal-500: #d9b45a;
   --color-lime-400: #e3c65c;
@@ -242,7 +243,7 @@
   --color-slate-300: #b6c7e2;
   --color-slate-400: #9bb0ce;
   --color-slate-500: #6b82a6;
-  --color-slate-800: #16253f;
-  --color-slate-900: #0a1428;
-  --color-slate-950: #050b1a;
+  --color-slate-800: #153264;
+  --color-slate-900: #0b2044;
+  --color-slate-950: #071734;
 }
