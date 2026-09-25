@@ -132,6 +132,10 @@ function apply(ws, op){
       break; }
     case 'answers.set': {
       ws.answers = Object.assign(ws.answers||{}, op.answers); break; }
+    default: {
+      /* Extension point: modules register their own ops (e.g. Company Information). */
+      const h = (B.opHandlers||{})[op.op]; if(h) h(ws, op, mem);
+    }
   }
 }
 B._apply = apply;
