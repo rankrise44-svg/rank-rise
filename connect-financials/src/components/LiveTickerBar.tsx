@@ -19,7 +19,7 @@ export const LiveTickerBar: React.FC<Props> = ({
     /* Not sticky: the header below it is, and two elements pinned to top-0 sat
        on top of each other as soon as the page scrolled. The ticker scrolls
        away and the header takes the top edge. */
-    <div id="live-ticker-bar" className="w-full bg-surface-1 border-b border-line text-xs overflow-x-auto no-scrollbar select-none">
+    <div id="live-ticker-bar" className="relative z-10 w-full bg-surface-1 border-b border-line text-xs overflow-x-auto no-scrollbar select-none">
       <div className="flex items-center min-w-max px-3 py-1.5 gap-2.5">
         <div className="flex items-center gap-1.5 text-amber-300 font-bold px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-[10px] uppercase tracking-wider whitespace-nowrap shadow-sm">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />

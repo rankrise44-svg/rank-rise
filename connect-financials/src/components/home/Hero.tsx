@@ -1,7 +1,6 @@
 import { ArrowRight, Calculator, Check, MonitorPlay, TrendingDown, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { EagleEyeMotionVisual } from '../EagleEyeMotionVisual';
-import { MotionChartBackground } from '../MotionChartBackground';
 import { Button } from '../ui/Button';
 import { Container } from '../ui/Layout';
 import { Eyebrow } from '../ui/Badge';
@@ -38,19 +37,6 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden border-b border-line">
-      {/* The animated chart/earth backdrop, restored — but confined to the hero
-          instead of running fixed behind every route. The translateZ makes this
-          wrapper a containing block, so the component's own `fixed inset-0` is
-          clipped to the hero rather than covering the viewport, and the reduced
-          opacity keeps the headline readable over it. */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden opacity-45"
-        style={{ transform: 'translateZ(0)' }}
-        aria-hidden="true"
-      >
-        <MotionChartBackground />
-      </div>
-
       <div className="fintech-grid-pattern absolute inset-0 opacity-60" aria-hidden="true" />
 
       <Container wide className="relative">

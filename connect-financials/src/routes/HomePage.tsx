@@ -11,6 +11,7 @@ import { Hero, LivePricingStrip } from '../components/home/Hero';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Container, Section, SectionHeading } from '../components/ui/Layout';
+import { Reveal } from '../components/ui/Reveal';
 import { ROUTES } from '../config/site';
 import { productClaims } from '../config/compliance';
 import { useUI } from '../state/UIProvider';
@@ -50,19 +51,25 @@ export function HomePage() {
       {/* What the firm actually offers */}
       <Section>
         <Container>
-          <SectionHeading
-            eyebrow="Why Connect"
-            title="Built around execution quality"
-            description="Three things determine what a trading account is worth over a year: the price you get, the speed you get it, and whether you sized the position correctly in the first place."
-          />
+          <Reveal>
+            <SectionHeading
+              eyebrow="Why Connect"
+              title="Built around execution quality"
+              description="Three things determine what a trading account is worth over a year: the price you get, the speed you get it, and whether you sized the position correctly in the first place."
+            />
+          </Reveal>
 
           <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {capabilities.map(({ icon: Icon, title, body }) => (
-              <Card key={title} padding="lg">
-                <Icon className="h-5 w-5 text-accent" aria-hidden="true" />
-                <h3 className="mt-5 text-h3 font-semibold text-text">{title}</h3>
-                <p className="mt-3 text-small leading-relaxed text-text-muted">{body}</p>
-              </Card>
+            {capabilities.map(({ icon: Icon, title, body }, i) => (
+              /* index drives the 70ms stagger — the heading lands, then each
+                 card follows, rather than all four arriving together. */
+              <Reveal key={title} index={i + 1}>
+                <Card padding="lg" className="h-full">
+                  <Icon className="h-5 w-5 text-accent" aria-hidden="true" />
+                  <h3 className="mt-5 text-h3 font-semibold text-text">{title}</h3>
+                  <p className="mt-3 text-small leading-relaxed text-text-muted">{body}</p>
+                </Card>
+              </Reveal>
             ))}
           </div>
         </Container>
@@ -72,7 +79,7 @@ export function HomePage() {
       <Section>
         <Container>
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-            <div>
+            <Reveal>
               <SectionHeading
                 eyebrow="The terminal"
                 title="A platform that shows you the whole book"
@@ -94,8 +101,9 @@ export function HomePage() {
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </div>
-            </div>
+            </Reveal>
 
+            <Reveal index={1}>
             <Card padding="none" className="overflow-hidden">
               <div className="flex items-center gap-2 border-b border-line px-4 py-3">
                 <span className="h-2 w-2 rounded-full bg-line-strong" aria-hidden="true" />
@@ -118,6 +126,7 @@ export function HomePage() {
                 ))}
               </div>
             </Card>
+            </Reveal>
           </div>
         </Container>
       </Section>
@@ -125,6 +134,7 @@ export function HomePage() {
       {/* Closing call to action */}
       <Section bordered={false}>
         <Container>
+          <Reveal>
           <Card padding="lg" className="text-center">
             <h2 className="text-h2 font-bold text-text">Start on a demo, move when you're ready</h2>
             <p className="mx-auto mt-4 max-w-xl text-body text-text-muted">
@@ -140,6 +150,7 @@ export function HomePage() {
               </Button>
             </div>
           </Card>
+          </Reveal>
         </Container>
       </Section>
     </>
