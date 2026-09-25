@@ -20,15 +20,17 @@ const base =
   'disabled:opacity-45 disabled:pointer-events-none active:translate-y-[0.5px]';
 
 const variants: Record<Variant, string> = {
-  /* Gold fill. At most one per view — this is the action we want taken. */
+  /* Brushed gold fill, brightening on hover. Its label stays dark navy — gold
+     text on a gold fill would disappear, so this is the one variant that does
+     not take the metallic hover. */
   primary:
-    'bg-accent border-accent text-on-accent hover:bg-accent-hover hover:border-accent-hover',
+    'bg-gold-metallic bg-gold-metallic-hover border-accent text-on-accent hover:border-accent-hover',
   /* Bordered. The default for everything else. */
   secondary:
-    'bg-surface-1 border-line text-text hover:bg-surface-2 hover:border-line-strong',
+    'hover-metal bg-surface-1 border-line text-text hover:bg-surface-2 hover:border-accent/50',
   /* No chrome until hovered. Nav, table actions, tertiary links. */
   ghost:
-    'bg-transparent border-transparent text-text-muted hover:text-text hover:bg-surface-2',
+    'hover-metal bg-transparent border-transparent text-text-muted hover:bg-surface-2',
 };
 
 const sizes: Record<Size, string> = {
@@ -56,11 +58,15 @@ export function Button(props: ButtonProps | InternalLinkProps | ExternalLinkProp
   const { variant = 'secondary', size = 'md', className = '', children } = props;
   const cls = `${base} ${variants[variant]} ${sizes[size]} ${className}`;
 
+  /* .btn-label is what the metallic hover gradient clips to. See index.css:
+     putting background-clip:text on the button itself would erase its fill. */
+  const label = <span className="btn-label">{children}</span>;
+
   if ('to' in props && props.to !== undefined) {
     const { variant: _v, size: _s, className: _c, children: _ch, to, ...rest } = props;
     return (
       <Link to={to} className={cls} {...rest}>
-        {children}
+        {label}
       </Link>
     );
   }
@@ -69,7 +75,7 @@ export function Button(props: ButtonProps | InternalLinkProps | ExternalLinkProp
     const { variant: _v, size: _s, className: _c, children: _ch, ...rest } = props;
     return (
       <a className={cls} {...rest}>
-        {children}
+        {label}
       </a>
     );
   }
@@ -77,7 +83,7 @@ export function Button(props: ButtonProps | InternalLinkProps | ExternalLinkProp
   const { variant: _v, size: _s, className: _c, children: _ch, ...rest } = props as ButtonProps;
   return (
     <button className={cls} {...rest}>
-      {children}
+      {label}
     </button>
   );
 }

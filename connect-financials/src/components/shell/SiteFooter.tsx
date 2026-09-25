@@ -128,8 +128,7 @@ export function SiteFooter() {
                   <li key={`${item.to}-${item.label}`}>
                     <Link
                       to={item.to}
-                      className="text-small text-text-muted transition-colors
-                                 duration-[var(--duration-fast)] hover:text-text"
+                      className="link-metal text-small text-text-muted"
                     >
                       {item.label}
                     </Link>

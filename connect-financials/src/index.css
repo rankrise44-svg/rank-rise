@@ -104,8 +104,9 @@ section {
   .text-gold-gradient {
     background: linear-gradient(
       135deg,
-      #e8d49a 0%,
-      var(--color-accent) 55%,
+      var(--color-accent-press) 0%,
+      #f0da92 38%,
+      var(--color-accent) 62%,
       var(--color-accent-press) 100%
     );
     -webkit-background-clip: text;
@@ -120,18 +121,96 @@ section {
     background: linear-gradient(
       135deg,
       var(--color-accent-press) 0%,
-      var(--color-accent-hover) 52%,
-      var(--color-accent-press) 100%
+      #f0da92 42%,
+      var(--color-accent) 58%,
+      #8f7222 100%
     );
   }
   .bg-gold-metallic-hover:hover {
     background: linear-gradient(
       135deg,
       var(--color-accent) 0%,
-      #e4c67a 52%,
-      var(--color-accent) 100%
+      #fdf3cc 42%,
+      var(--color-accent-hover) 58%,
+      var(--color-accent-press) 100%
     );
   }
+
+
+  /* ---------------------------------------------------------------------------
+     Metallic hover
+     ---------------------------------------------------------------------------
+     On hover the label turns to brushed gold.
+
+     The gradient has to be applied to a *label span*, never to the button
+     itself: `background-clip: text` clips the element's background to its
+     glyphs, so putting it on the button would delete the button's own fill.
+     <Button> wraps its children in .btn-label for exactly this reason.
+
+     Icons are separate — an SVG inside the clipped span would inherit
+     `-webkit-text-fill-color: transparent` and disappear, so it is given the
+     colour back explicitly.
+     --------------------------------------------------------------------------- */
+
+  .btn-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-image: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .hover-metal:hover .btn-label,
+  .hover-metal:focus-visible .btn-label {
+    background-image: linear-gradient(
+      135deg,
+      #a8862a 0%,
+      #f0da92 34%,
+      #d8b437 58%,
+      #e8c95a 78%,
+      #a8862a 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .hover-metal:hover .btn-label svg,
+  .hover-metal:focus-visible .btn-label svg {
+    -webkit-text-fill-color: var(--color-accent-hover);
+    color: var(--color-accent-hover);
+  }
+
+  /* For plain links and nav items that have no background of their own, the
+     gradient can go straight on the element. */
+  .link-metal {
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  .link-metal:hover,
+  .link-metal:focus-visible {
+    background-image: linear-gradient(
+      135deg,
+      #a8862a 0%,
+      #f0da92 34%,
+      #d8b437 58%,
+      #e8c95a 78%,
+      #a8862a 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .link-metal:hover svg,
+  .link-metal:focus-visible svg {
+    -webkit-text-fill-color: var(--color-accent-hover);
+    color: var(--color-accent-hover);
+  }
+
+  /* Safari and Chrome do not animate background-clip:text, so the arrival is
+     softened with the border and background transition on the button instead.
+     Under reduced motion nothing here animates anyway. */
 
   /* Elevation without colour. */
   .shadow-gold {

@@ -20,37 +20,37 @@
 
 @theme {
   /* ---------------------------------------------------------------------------
-     Surfaces — a five-step neutral ramp with a faint blue cast.
-     Steps are close together on purpose: institutional UI separates with
-     hairlines, not with heavy contrast jumps between panels.
+     Surfaces — built around the brand navy #23234A, which is the page colour.
+     Panels step *up* from it rather than down, so cards lift off the page.
+     White text on the canvas sits at roughly 13:1.
      --------------------------------------------------------------------------- */
-  --color-canvas: #0a0d14;
-  --color-surface-1: #10141d;
-  --color-surface-2: #151a25;
-  --color-surface-3: #1c2331;
-  --color-surface-raised: #212a3a;
+  --color-canvas: #23234a;
+  --color-surface-1: #2a2a57;
+  --color-surface-2: #313164;
+  --color-surface-3: #3a3a74;
+  --color-surface-raised: #444488;
 
   /* Hairlines. `line` is the default; `line-strong` is for active/focused edges. */
-  --color-line: #222b3a;
-  --color-line-strong: #303c50;
+  --color-line: #3c3c7a;
+  --color-line-strong: #4e4e9b;
 
   /* ---------------------------------------------------------------------------
      Text — three weights of emphasis. If a fourth is ever needed, the layout is
      doing too much work with colour and not enough with space.
      --------------------------------------------------------------------------- */
-  --color-text: #e9edf4;
-  --color-text-muted: #98a3b6;
-  --color-text-subtle: #667184;
+  --color-text: #ececf6;
+  --color-text-muted: #a8a8c8;
+  --color-text-subtle: #7a7aa3;
 
   /* ---------------------------------------------------------------------------
-     Accent — gold. Desaturated from the original #D4AF37 so it reads as metal
-     rather than neon, and passes contrast on dark surfaces at text sizes.
+     Accent — brand gold #D8B437. On the navy canvas it sits at roughly 6.9:1,
+     so it is usable for text, not only for fills.
      --------------------------------------------------------------------------- */
-  --color-accent: #c8a44d;
-  --color-accent-hover: #d9b863;
-  --color-accent-press: #b08f3d;
-  --color-accent-quiet: #c8a44d1f; /* 12% — tinted fills, active nav, badges */
-  --color-on-accent: #0a0d14;
+  --color-accent: #d8b437;
+  --color-accent-hover: #e8c95a;
+  --color-accent-press: #a8862a;
+  --color-accent-quiet: #d8b4371f; /* 12% — tinted fills, active nav, badges */
+  --color-on-accent: #1a1a38;
 
   /* ---------------------------------------------------------------------------
      Market semantics — direction only. Muted well below the original neon so a
@@ -62,9 +62,9 @@
   --color-down-quiet: #d4584f1f;
 
   /* Status */
-  --color-warn: #d2a03f;
-  --color-info: #5b8fc7;
-  --color-focus: #7aa7d9;
+  --color-warn: #d8a03f;
+  --color-info: #7b8fe0;
+  --color-focus: #9aa6f0;
 
   /* ---------------------------------------------------------------------------
      Type
@@ -139,28 +139,28 @@
 
 @theme {
   /* Navy → the neutral surface ramp. */
-  --color-navy-950: #0a0d14;
-  --color-navy-900: #10141d;
-  --color-navy-850: #151a25;
-  --color-navy-800: #1c2331;
-  --color-navy-700: #222b3a;
-  --color-navy-600: #303c50;
+  --color-navy-950: #23234a;
+  --color-navy-900: #2a2a57;
+  --color-navy-850: #313164;
+  --color-navy-800: #3a3a74;
+  --color-navy-700: #3c3c7a;
+  --color-navy-600: #4e4e9b;
 
   /* Gold → the single accent. */
-  --color-gold-300: #d9b863;
-  --color-gold-400: #cfae57;
-  --color-gold-500: #c8a44d;
-  --color-gold-600: #b08f3d;
+  --color-gold-300: #f0da92;
+  --color-gold-400: #e8c95a;
+  --color-gold-500: #d8b437;
+  --color-gold-600: #a8862a;
 
   /* Amber/yellow were used interchangeably with gold — collapse them onto it so
      the two golds stop fighting each other across sections. */
-  --color-amber-200: #e6cb86;
-  --color-amber-300: #d9b863;
-  --color-amber-400: #cfae57;
-  --color-amber-500: #c8a44d;
-  --color-amber-600: #b08f3d;
-  --color-yellow-500: #c8a44d;
-  --color-yellow-600: #b08f3d;
+  --color-amber-200: #f0da92;
+  --color-amber-300: #e8c95a;
+  --color-amber-400: #d8b437;
+  --color-amber-500: #d8b437;
+  --color-amber-600: #a8862a;
+  --color-yellow-500: #d8b437;
+  --color-yellow-600: #a8862a;
 
   /* Cyan/sky carried the neon. Remapped to a muted steel blue: still reads as
      the secondary/technical colour, no longer glows. */
@@ -184,12 +184,12 @@
   --color-red-600: #b84840;
 
   /* Slate text ramp, warmed very slightly to sit with the gold. */
-  --color-slate-100: #e9edf4;
-  --color-slate-200: #d3dae6;
-  --color-slate-300: #b6c0d0;
-  --color-slate-400: #98a3b6;
-  --color-slate-500: #667184;
-  --color-slate-800: #1c2331;
-  --color-slate-900: #10141d;
-  --color-slate-950: #0a0d14;
+  --color-slate-100: #ececf6;
+  --color-slate-200: #d6d6ea;
+  --color-slate-300: #c2c2dc;
+  --color-slate-400: #a8a8c8;
+  --color-slate-500: #7a7aa3;
+  --color-slate-800: #3a3a74;
+  --color-slate-900: #2a2a57;
+  --color-slate-950: #23234a;
 }

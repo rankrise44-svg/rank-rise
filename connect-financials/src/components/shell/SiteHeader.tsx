@@ -89,7 +89,7 @@ export function SiteHeader() {
                         'transition-colors duration-[var(--duration-fast)]',
                         isActive
                           ? 'bg-accent-quiet text-accent'
-                          : 'text-text-muted hover:bg-surface-2 hover:text-text',
+                          : 'link-metal text-text-muted',
                       ].join(' ')
                     }
                   >
@@ -114,7 +114,7 @@ export function SiteHeader() {
                       'cursor-pointer',
                       groupActive || isOpen
                         ? 'bg-accent-quiet text-accent'
-                        : 'text-text-muted hover:bg-surface-2 hover:text-text',
+                        : 'link-metal text-text-muted',
                     ].join(' ')}
                   >
                     {group.label}
@@ -135,11 +135,11 @@ export function SiteHeader() {
                         <Link
                           key={`${item.to}-${item.label}`}
                           to={item.to}
-                          className="block rounded-[var(--radius-md)] px-3 py-2.5
+                          className="group block rounded-[var(--radius-md)] px-3 py-2.5
                                      transition-colors duration-[var(--duration-fast)]
                                      hover:bg-surface-2"
                         >
-                          <span className="flex items-center gap-2 text-[14px] font-semibold text-text">
+                          <span className="link-metal flex items-center gap-2 text-[14px] font-semibold text-text">
                             {item.label}
                             {item.tag && (
                               <span className="rounded-[var(--radius-sm)] border border-accent/30
