@@ -227,6 +227,11 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
   background:rgba(10,10,14,.72); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
   opacity:0; transform:translateY(18px); transition:opacity var(--t-media) var(--e-rise), transform var(--t-media) var(--e-rise); }
 .tour.live .tcard.on{ opacity:1; transform:none; pointer-events:auto; }
+.tph{ position:absolute; inset:0; overflow:hidden; visibility:hidden; opacity:0; background:var(--bg); }
+.tph-m{ position:absolute; left:0; top:0; max-width:none; transform-origin:0 0; will-change:transform; }
+.tph-bg{ display:none; position:absolute; inset:-6%; width:112%; height:112%; max-width:none; object-fit:cover; filter:blur(30px) brightness(.5) saturate(1.1); }
+.tph.contain .tph-bg{ display:block; }
+.tour.photo .tour-pin::after{ background:linear-gradient(to bottom, var(--bg) 0, rgba(5,5,8,.25) 12%, transparent 30%, transparent 55%, rgba(5,5,8,.88) 100%); }
 .tour-load{ position:absolute; inset:0; display:grid; place-items:center; color:var(--dim); font-size:13px; letter-spacing:.14em; text-transform:uppercase; }
 .tour-spot{ position:absolute; z-index:2; left:0; top:0; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%;
   background:var(--brand); box-shadow:0 0 0 0 var(--brand); opacity:0; transition:opacity var(--t-ui); pointer-events:none; }
@@ -466,7 +471,9 @@ footer{ padding:26px var(--pad); color:var(--faint); font-size:12.5px; text-alig
     const el=document.getElementById('tour');
     if(!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const gen=++tourGen;
-    import('./tour.js').then(m=>m.mount(el,c.tour)).then(api=>{
+    // photo stops walk through real photographs; camera stops need the 3D engine
+    const photo=c.tour.stops.some(s=>s.img||s.video);
+    import(photo?'./tour-photos.js':'./tour.js').then(m=>m.mount(el,c.tour)).then(api=>{
       if(gen!==tourGen){ api&&api.dispose(); return; }
       tourApi=api;
     }).catch(e=>console.warn('[tour]',e));

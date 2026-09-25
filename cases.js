@@ -283,73 +283,71 @@ window.RANKRISE_CASES = {
   },
 
 
-  /* ── Blue Mango — interior design, with a 3D walkthrough ───────
+  /* ── Blue Mango — interior design, with a photo walkthrough ───
      `draft: true` keeps it out of search until the client facts are
      confirmed; it is not in projects.js or the sitemap yet.
 
-     tour.room    'blue-mango' → rooms/blue-mango.js, a model of the
-                  café built by hand from the site photographs.
-                  (tour.model takes a .glb instead, if a CAD file of
-                  a future project exists.)
-     stops[]      cam / look / spot are [x, y, z] in metres, in the
-                  room's own space — read them off with #tune.
-                  compare3d: true gives the before/after slider,
-                  which strips out everything named after_*. */
+     The tour walks through the real site photographs (tour-photos.js).
+     Each stop: img + its w / h, optional focus / spot / push / pan —
+     see the header of tour-photos.js. A stop can take a video instead
+     (video: 'path.mp4', poster, scrub: true to drive it by scroll). */
   'blue-mango': {
     draft: true,
     title: 'Blue Mango',
     tagline: 'Step inside Blue Mango.',
     client: 'Blue Mango',
     sector: 'Frozen yogurt café · Interior design',
-    scope: ['Interior design', '3D walkthrough'],
+    scope: ['Interior design', 'Walkthrough'],
     accent: '#6f8fe0',
     hero: 'assets/brands/bluemango/3p5a9635.jpg',
     challenge: 'One open room had to hold a working counter, somewhere to sit and a glass shopfront onto the car park — and read as Blue Mango from the doorway.',
     approach: 'The brand’s blue went into the counter tiles; oak, terracotta and white plaster warm everything around it. The seating curves along a mural wall, the ceiling over the counter becomes a lit grid, and light is tucked under every edge.',
     tour: {
       title: 'Walk into Blue Mango.',
-      room: 'blue-mango',
       poster: 'assets/brands/bluemango/3p5a9635.jpg',
       stops: [
         { kicker: 'Outside', title: 'Glass from wall to wall.',
           text: 'The shopfront is dressed in the brand — the monkey, the menu, “life in full flavor” — under the blue sign box.',
-          cam: [0.6, 1.8, 11.5], look: [0.5, 2.0, 3.5] },
+          img: 'assets/brands/bluemango/dsc06055.jpg', w: 1126, h: 2000, focus: [0.5, 0.3], spot: [0.57, 0.19] },
         { kicker: 'The counter', title: 'A block of blue.',
           text: 'Blue tiles in shifting shades, the logo raised on the front, a white top — and a line of light underneath, so the counter floats over the oak floor.',
-          cam: [1.9, 1.45, 1.3], look: [2.4, 0.9, -2.0], spot: [2.45, 0.55, -1.2] },
+          img: 'assets/brands/bluemango/3p5a9635.jpg', w: 2000, h: 1334, focus: [0.5, 0.62], spot: [0.54, 0.69], pan: [-0.03, 0] },
         { kicker: 'The back wall', title: 'Everything in one oak wall.',
-          text: 'The menu screens, three soft-serve machines set into white niches and the staff door, all built into one panelled wall with light along its edge.',
-          cam: [2.2, 1.55, 0.4], look: [2.0, 1.55, -3.6], spot: [1.84, 1.98, -3.42] },
+          text: 'The menu screens, the soft-serve machines and the staff door, all built into one panelled wall with light along its edge.',
+          img: 'assets/brands/bluemango/dsc06166.jpg', w: 2000, h: 1126, spot: [0.425, 0.505], pan: [0.03, 0] },
         { kicker: 'The ceiling', title: 'Look up.',
           text: 'Over the counter the ceiling is a coffered grid, every cell washed with warm light, with spotlights hung on terracotta straps in a zigzag.',
-          cam: [2.3, 1.3, 1.3], look: [2.5, 3.2, -1.2], spot: [2.05, 2.25, -0.95] },
+          img: 'assets/brands/bluemango/dsc06160.jpg', w: 2000, h: 1126, focus: [0.5, 0.35], spot: [0.61, 0.7], pan: [0, -0.02] },
         { kicker: 'The curve', title: 'Sit in the bend.',
           text: 'The banquette follows an S-curve in terracotta upholstery, a planter growing out of its back, floating on a line of light over the terrazzo.',
-          cam: [-1.4, 1.35, 1.9], look: [-4.0, 0.5, -0.6], spot: [-3.3, 0.47, -0.55] },
+          img: 'assets/brands/bluemango/3p5a9644.jpg', w: 2000, h: 1334, focus: [0.4, 0.6], spot: [0.25, 0.67], pan: [-0.03, 0] },
         { kicker: 'The mural', title: 'A story on the wall.',
           text: 'Illustrated panels climb the wall above the planter, their edges traced in light. The only figures in the room.',
-          cam: [-2.2, 1.75, 0.9], look: [-5.0, 1.9, -0.6], spot: [-4.98, 2.2, -0.9] },
+          img: 'assets/brands/bluemango/dsc06088.jpg', w: 1126, h: 2000, focus: [0.5, 0.35] },
         { kicker: 'The grove', title: 'Where the wood takes over.',
           text: 'The back wall turns to oak, with a planter running along the top and the lit Blue Mango sign above it.',
-          cam: [-1.5, 1.45, 1.2], look: [-2.8, 2.2, -3.6], spot: [-3.4, 2.78, -3.5] },
-        { kicker: 'Before / after', title: 'Drag to take it all out.',
-          text: 'The slider strips the fit-out from the model — counter, wood, ceiling, seating, mural — and leaves the shell.',
-          cam: [0.2, 2.5, 3.2], look: [0, 0.9, -1.6], compare3d: true },
+          img: 'assets/brands/bluemango/dsc06157.jpg', w: 2000, h: 1126, focus: [0.4, 0.4], spot: [0.245, 0.373], pan: [0.03, 0] },
+        { kicker: 'The tables', title: 'Pull up a stool.',
+          text: 'Round wooden tables and square stools, set right up against the banquette on the terrazzo floor.',
+          img: 'assets/brands/bluemango/dsc06051.jpg', w: 1126, h: 2000, focus: [0.5, 0.55] },
+        { kicker: 'The terrace', title: 'Take it outside.',
+          text: 'Under the awning, grey mesh chairs and a fence lined with planting.',
+          img: 'assets/brands/bluemango/dsc06082.jpg', w: 1126, h: 2000, focus: [0.5, 0.55] },
       ]
     },
     execution: [
-      { img: 'assets/brands/bluemango/3p5a9635.jpg', cap: 'The counter and the oak wall', w: 1400, h: 934 },
-      { img: 'assets/brands/bluemango/3p5a9644.jpg', cap: 'The curved banquette', w: 1400, h: 934 },
-      { img: 'assets/brands/bluemango/dsc06088.jpg', cap: 'The mural', w: 788, h: 1400 },
-      { img: 'assets/brands/bluemango/dsc06166.jpg', cap: 'Menus, machines, the staff door', w: 1400, h: 788 },
-      { img: 'assets/brands/bluemango/dsc06054.jpg', cap: 'Blue tile, raised logo, light underneath', w: 788, h: 1400 },
-      { img: 'assets/brands/bluemango/dsc06160.jpg', cap: 'The coffered ceiling and strap spotlights', w: 1400, h: 788 },
-      { img: 'assets/brands/bluemango/dsc06051.jpg', cap: 'Round tables, square stools', w: 788, h: 1400 },
-      { img: 'assets/brands/bluemango/dsc06157.jpg', cap: 'The grove wall and sign', w: 1400, h: 788 },
-      { img: 'assets/brands/bluemango/dsc06109.jpg', cap: 'Machines set into the oak', w: 788, h: 1400 },
-      { img: 'assets/brands/bluemango/dsc06118.jpg', cap: 'The washroom', w: 788, h: 1400 },
-      { img: 'assets/brands/bluemango/dsc06055.jpg', cap: 'The shopfront', w: 788, h: 1400 },
-      { img: 'assets/brands/bluemango/dsc06082.jpg', cap: 'The terrace', w: 788, h: 1400 },
+      { img: 'assets/brands/bluemango/3p5a9635.jpg', cap: 'The counter and the oak wall', w: 2000, h: 1334 },
+      { img: 'assets/brands/bluemango/3p5a9644.jpg', cap: 'The curved banquette', w: 2000, h: 1334 },
+      { img: 'assets/brands/bluemango/dsc06088.jpg', cap: 'The mural', w: 1126, h: 2000 },
+      { img: 'assets/brands/bluemango/dsc06166.jpg', cap: 'Menus, machines, the staff door', w: 2000, h: 1126 },
+      { img: 'assets/brands/bluemango/dsc06054.jpg', cap: 'Blue tile, raised logo, light underneath', w: 1126, h: 2000 },
+      { img: 'assets/brands/bluemango/dsc06160.jpg', cap: 'The coffered ceiling and strap spotlights', w: 2000, h: 1126 },
+      { img: 'assets/brands/bluemango/dsc06051.jpg', cap: 'Round tables, square stools', w: 1126, h: 2000 },
+      { img: 'assets/brands/bluemango/dsc06157.jpg', cap: 'The grove wall and sign', w: 2000, h: 1126 },
+      { img: 'assets/brands/bluemango/dsc06109.jpg', cap: 'Machines set into the oak', w: 1126, h: 2000 },
+      { img: 'assets/brands/bluemango/dsc06118.jpg', cap: 'The washroom', w: 1126, h: 2000 },
+      { img: 'assets/brands/bluemango/dsc06055.jpg', cap: 'The shopfront', w: 1126, h: 2000 },
+      { img: 'assets/brands/bluemango/dsc06082.jpg', cap: 'The terrace', w: 1126, h: 2000 },
     ]
   },
 

@@ -40,18 +40,18 @@ depths, fbm nebula in brand purple, scroll-velocity warp), with a 2D
 canvas fallback. Open question: whether to push further — e.g. depth on
 the Ascent section itself.
 
-### Blue Mango — interior case with a 3D walkthrough (draft)
+### Blue Mango — interior case with a photo walkthrough (draft)
 `case.html?id=blue-mango` — draft, noindex, not yet in the grid.
-The café is modelled by hand in `rooms/blue-mango.js` from the site
-photographs (no CAD file exists); the mural, menus, posters and signs
-are textures cut from those photos (`assets/brands/bluemango/tex/`).
-`tour.js` pins the stage, scrolls the camera through eight stops and
-strips the fit-out stage by stage on the before/after slider.
-three.js r169 is self-hosted in `vendor/three/`. `#tune` in the URL
-frees the camera for authoring stops.
+The walkthrough uses the real site photographs (`tour-photos.js`): a
+full-screen photo per stop, pushed into as you scroll, cross-fading
+to the next. Stops can also take video: a looping clip, or one long
+walk-through video scrubbed by the scroll (`scrub: true`) — waiting
+on the client's footage. (A hand-built 3D model of the café was tried
+first and replaced by the real photos; it is in the git history.)
 Before it goes live: confirm the year, what RankRise's brief covered,
-the challenge/approach wording, and material names (tile, wood,
-upholstery) — the copy only states what the photos show.
+the challenge/approach wording, and material names — the copy only
+states what the photos show. Real "before" photos would bring back
+the before/after slider.
 
 ### Portfolio covers
 Six of seven covers in `assets/covers/` are still screenshots of the old
