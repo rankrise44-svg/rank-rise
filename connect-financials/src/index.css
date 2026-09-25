@@ -5,18 +5,11 @@
    Base
    ============================================================================= */
 
-/* The page colour lives on <html> only.
-   When both html and body carry a background, html's propagates to the document
-   canvas and body's paints as an ordinary element background — which sits on
-   top of any `z-index: -1` child and hid the market backdrop completely. */
-html {
-  background-color: var(--color-canvas);
-}
-
 html,
 body {
   margin: 0;
   padding: 0;
+  background-color: var(--color-canvas);
   color: var(--color-text);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -106,15 +99,13 @@ section {
     border-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
   }
 
-  /* Brushed metal. Four stops rather than two: a dark edge, a bright band just
-     off-centre where the highlight catches, then back down. A two-stop ramp
-     reads as flat yellow; the turn is what makes it look like metal. */
+  /* Gold text. The gradient is kept for the one or two display headlines that
+     earn it; `text-gold-bright` is the everyday accent text. */
   .text-gold-gradient {
     background: linear-gradient(
       135deg,
-      var(--color-accent-press) 0%,
-      var(--color-gold-light) 38%,
-      var(--color-accent) 62%,
+      #e8d49a 0%,
+      var(--color-accent) 55%,
       var(--color-accent-press) 100%
     );
     -webkit-background-clip: text;
@@ -129,43 +120,25 @@ section {
     background: linear-gradient(
       135deg,
       var(--color-accent-press) 0%,
-      var(--color-gold-light) 42%,
-      var(--color-accent) 58%,
-      #8f6d18 100%
+      var(--color-accent-hover) 52%,
+      var(--color-accent-press) 100%
     );
   }
   .bg-gold-metallic-hover:hover {
     background: linear-gradient(
       135deg,
       var(--color-accent) 0%,
-      #fdf0c8 42%,
-      var(--color-accent-hover) 58%,
-      var(--color-accent-press) 100%
-    );
-  }
-
-  /* Hairline of metal — for dividers and the underline beneath a heading. */
-  .rule-gold {
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      var(--color-accent) 35%,
-      var(--color-gold-light) 50%,
-      var(--color-accent) 65%,
-      transparent 100%
+      #e4c67a 52%,
+      var(--color-accent) 100%
     );
   }
 
   /* Elevation without colour. */
   .shadow-gold {
-    box-shadow:
-      var(--shadow-sm),
-      0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent);
+    box-shadow: var(--shadow-sm);
   }
   .shadow-gold-lg {
-    box-shadow:
-      var(--shadow-md),
-      0 0 0 1px color-mix(in srgb, var(--color-accent) 28%, transparent);
+    box-shadow: var(--shadow-md);
   }
 
   /* Panels. Flat fill instead of the old translucent gradient + 12px blur:
@@ -184,8 +157,8 @@ section {
 
   .fintech-grid-pattern {
     background-image:
-      linear-gradient(to right, rgb(77 163 255 / 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(77 163 255 / 0.05) 1px, transparent 1px);
+      linear-gradient(to right, rgb(255 255 255 / 0.018) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.018) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 

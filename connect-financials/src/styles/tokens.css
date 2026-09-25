@@ -3,12 +3,9 @@
    =============================================================================
    Single source of truth for colour, type, spacing, radii, elevation and motion.
 
-   PALETTE: deep blue + metallic gold, with white used sparingly as a highlight.
-
-   Blue carries the structure — every surface, border and neutral text tone has a
-   blue cast rather than being grey. Metallic gold carries value: the primary
-   action, key figures, rising prices and the brand mark. White is rationed to
-   headlines and the brightest data, so it still reads as emphasis when it lands.
+   Direction: institutional restraint. Calm neutral surfaces, ONE accent (gold)
+   spent sparingly on primary action and key figures, semantic colour reserved
+   for market direction. Glow is an accent, never a default.
 
    Two groups live here:
 
@@ -17,79 +14,57 @@
 
    2. LEGACY PALETTE REMAP (--color-navy-*, --color-amber-*, ...) — the existing
       components were written against raw Tailwind hues. Rather than rewrite all
-      twenty, we redefine those hues to the new values so the whole surface
-      moves together.
-
-   Canvas-drawn charts cannot read CSS variables, so their colours live in
-   src/config/chartPalette.ts and are kept in step with this file by hand.
+      twenty at once, we redefine those hues to the new restrained values so the
+      whole surface calms down consistently. New work should NOT reach for these.
    ============================================================================= */
 
 @theme {
   /* ---------------------------------------------------------------------------
-     Surfaces — a navy ramp. Lifted out of near-black so the blue is a colour
-     you can actually see rather than an implication; the steps stay close
-     together because panels separate with hairlines, not contrast jumps.
-     White text on `canvas` sits around 15:1, gold around 6.5:1.
+     Surfaces — a five-step neutral ramp with a faint blue cast.
+     Steps are close together on purpose: institutional UI separates with
+     hairlines, not with heavy contrast jumps between panels.
      --------------------------------------------------------------------------- */
-  --color-canvas: #071734;
-  --color-surface-1: #0b2044;
-  --color-surface-2: #0f2851;
-  --color-surface-3: #153264;
-  --color-surface-raised: #1b3c76;
+  --color-canvas: #0a0d14;
+  --color-surface-1: #10141d;
+  --color-surface-2: #151a25;
+  --color-surface-3: #1c2331;
+  --color-surface-raised: #212a3a;
 
-  /* Hairlines. `line` is the default; `line-strong` marks active/focused edges. */
-  --color-line: #1d3c6e;
-  --color-line-strong: #2a4f8a;
+  /* Hairlines. `line` is the default; `line-strong` is for active/focused edges. */
+  --color-line: #222b3a;
+  --color-line-strong: #303c50;
 
   /* ---------------------------------------------------------------------------
-     Text — blue-tinted throughout. `text-bright` is the rationed pure white,
-     for headlines and the single most important number on a screen.
+     Text — three weights of emphasis. If a fourth is ever needed, the layout is
+     doing too much work with colour and not enough with space.
      --------------------------------------------------------------------------- */
-  --color-text-bright: #ffffff;
-  --color-text: #e8eef9;
-  --color-text-muted: #9bb0ce;
-  --color-text-subtle: #6b82a6;
+  --color-text: #e9edf4;
+  --color-text-muted: #98a3b6;
+  --color-text-subtle: #667184;
 
   /* ---------------------------------------------------------------------------
-     Blue — the structural brand colour. Used for links, secondary emphasis,
-     selected states, chart lines and anything technical.
+     Accent — gold. Desaturated from the original #D4AF37 so it reads as metal
+     rather than neon, and passes contrast on dark surfaces at text sizes.
      --------------------------------------------------------------------------- */
-  --color-blue-bright: #4da3ff;
-  --color-blue: #2e7fe8;
-  --color-blue-deep: #1b5fc4;
-  --color-blue-quiet: #4da3ff24; /* ~14% — tinted fills and active nav */
+  --color-accent: #c8a44d;
+  --color-accent-hover: #d9b863;
+  --color-accent-press: #b08f3d;
+  --color-accent-quiet: #c8a44d1f; /* 12% — tinted fills, active nav, badges */
+  --color-on-accent: #0a0d14;
 
   /* ---------------------------------------------------------------------------
-     Metallic gold — the accent. `accent` is the flat base used for fills and
-     text; the metal gradient in index.css layers light and dark stops over it
-     so it reads as brushed metal rather than as flat yellow.
+     Market semantics — direction only. Muted well below the original neon so a
+     table of fifty rows does not vibrate. Both clear 4.5:1 on surface-1.
      --------------------------------------------------------------------------- */
-  --color-gold-light: #f5dfa3;
-  --color-accent: #d4af37;
-  --color-accent-hover: #e3c65c;
-  --color-accent-press: #a8821f;
-  --color-accent-quiet: #d4af3724; /* ~14% */
-  --color-on-accent: #071734;
+  --color-up: #35a97e;
+  --color-up-quiet: #35a97e1f;
+  --color-down: #d4584f;
+  --color-down-quiet: #d4584f1f;
 
-  /* ---------------------------------------------------------------------------
-     Market direction.
-
-     Rising is gold, falling is blue — the brand pair doing the work that
-     green/red usually does. Both were checked against surface-1: gold sits at
-     roughly 8.9:1, blue at 4.6:1.
-
-     If this ever needs to go back to the trading convention, these two lines and
-     the matching pair in chartPalette.ts are the only places to change.
-     --------------------------------------------------------------------------- */
-  --color-up: #d9b45a;
-  --color-up-quiet: #d9b45a24;
-  --color-down: #3e86d8;
-  --color-down-quiet: #3e86d824;
-
-  /* Status. Warn stays amber-leaning so a warning never reads as the accent. */
-  --color-warn: #e0952f;
-  --color-info: #4da3ff;
-  --color-focus: #6fb4ff;
+  /* Status */
+  --color-warn: #d2a03f;
+  --color-info: #5b8fc7;
+  --color-focus: #7aa7d9;
 
   /* ---------------------------------------------------------------------------
      Type
@@ -127,19 +102,19 @@
   --text-micro--letter-spacing: 0.06em;
 
   /* ---------------------------------------------------------------------------
-     Radii — two real sizes plus a pill.
+     Radii — two real sizes plus a pill. The original mixed lg/xl/2xl/3xl/full
+     within single components, which is most of why it read as unfinished.
      --------------------------------------------------------------------------- */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
 
   /* ---------------------------------------------------------------------------
-     Elevation — shadow carries depth. The one exception is `shadow-gold`, the
-     lift under a primary action, which carries the faintest warm cast.
+     Elevation — shadow carries depth, never colour. No gold glow shadows.
      --------------------------------------------------------------------------- */
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-  --shadow-md: 0 8px 24px -12px rgb(2 6 18 / 0.7);
-  --shadow-lg: 0 20px 48px -24px rgb(2 6 18 / 0.85);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.35);
+  --shadow-md: 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --shadow-lg: 0 20px 48px -24px rgb(0 0 0 / 0.75);
 
   /* ---------------------------------------------------------------------------
      Motion — one easing curve, three durations.
@@ -155,95 +130,66 @@
    =============================================================================
    The existing components reference raw Tailwind hues directly
    (bg-navy-900, text-amber-300, border-cyan-500/40, ...). Redefining those hues
-   here re-skins every one of them in a single place.
+   here re-skins every one of them to the restrained system in a single place,
+   without a twenty-file find-and-replace that would churn the diff and risk
+   breaking the canvas-drawn terminals.
 
    Do not use these names in new code — use the semantic tokens above.
    ============================================================================= */
 
 @theme {
-  /* Navy → the blue surface ramp. */
-  --color-navy-950: #071734;
-  --color-navy-900: #0b2044;
-  --color-navy-850: #0f2851;
-  --color-navy-800: #153264;
-  --color-navy-700: #1d3c6e;
-  --color-navy-600: #2a4f8a;
+  /* Navy → the neutral surface ramp. */
+  --color-navy-950: #0a0d14;
+  --color-navy-900: #10141d;
+  --color-navy-850: #151a25;
+  --color-navy-800: #1c2331;
+  --color-navy-700: #222b3a;
+  --color-navy-600: #303c50;
 
-  /* Gold. */
-  --color-gold-300: #f5dfa3;
-  --color-gold-400: #e3c65c;
-  --color-gold-500: #d4af37;
-  --color-gold-600: #a8821f;
+  /* Gold → the single accent. */
+  --color-gold-300: #d9b863;
+  --color-gold-400: #cfae57;
+  --color-gold-500: #c8a44d;
+  --color-gold-600: #b08f3d;
 
   /* Amber/yellow were used interchangeably with gold — collapse them onto it so
      the two golds stop fighting each other across sections. */
-  --color-amber-200: #f5dfa3;
-  --color-amber-300: #e3c65c;
-  --color-amber-400: #d4af37;
-  --color-amber-500: #d4af37;
-  --color-amber-600: #a8821f;
-  --color-amber-950: #2a2008;
-  --color-yellow-500: #d4af37;
-  --color-yellow-600: #a8821f;
+  --color-amber-200: #e6cb86;
+  --color-amber-300: #d9b863;
+  --color-amber-400: #cfae57;
+  --color-amber-500: #c8a44d;
+  --color-amber-600: #b08f3d;
+  --color-yellow-500: #c8a44d;
+  --color-yellow-600: #b08f3d;
 
-  /* Cyan/sky carried the neon. Now the brand blue. */
-  --color-cyan-300: #7cbaff;
-  --color-cyan-400: #4da3ff;
-  --color-cyan-500: #2e7fe8;
-  --color-cyan-600: #1b5fc4;
-  --color-cyan-950: #0d2450;
-  --color-sky-400: #4da3ff;
-  --color-sky-500: #2e7fe8;
-  --color-blue-400: #4da3ff;
-  --color-blue-500: #2e7fe8;
-  --color-blue-900: #12305e;
-  --color-blue-950: #0b2044;
+  /* Cyan/sky carried the neon. Remapped to a muted steel blue: still reads as
+     the secondary/technical colour, no longer glows. */
+  --color-cyan-300: #8fb6d9;
+  --color-cyan-400: #6f9ecb;
+  --color-cyan-500: #5b8fc7;
+  --color-cyan-600: #4a77a8;
+  --color-cyan-950: #131c27;
+  --color-sky-400: #6f9ecb;
+  --color-sky-500: #5b8fc7;
 
-  /* Market direction: emerald/green become gold, red/rose become blue. */
-  --color-emerald-300: #ecd18a;
-  --color-emerald-400: #e3c65c;
-  --color-emerald-500: #d9b45a;
-  --color-emerald-600: #b8923c;
-  --color-green-500: #d9b45a;
-  --color-red-300: #8fbdf0;
-  --color-red-400: #6aa4e6;
-  --color-red-500: #3e86d8;
-  --color-red-600: #2b6bb8;
-  --color-rose-300: #8fbdf0;
-  --color-rose-400: #6aa4e6;
-  --color-rose-500: #3e86d8;
+  /* Market direction. */
+  --color-emerald-300: #6fc6a3;
+  --color-emerald-400: #4fb992;
+  --color-emerald-500: #35a97e;
+  --color-emerald-600: #2c8d69;
+  --color-green-500: #35a97e;
+  --color-red-300: #e5918a;
+  --color-red-400: #de726a;
+  --color-red-500: #d4584f;
+  --color-red-600: #b84840;
 
-
-  /* The order-entry buttons and P&L text use the full emerald/rose ramps, so
-     every stop needs a value — a gap leaves Tailwind's default green or red
-     showing through on a gradient. Emerald walks the gold ramp, rose the blue. */
-  --color-emerald-200: #f2e3b4;
-  --color-emerald-700: #96751f;
-  --color-emerald-950: #2a2008;
-  --color-rose-200: #c3dbf7;
-  --color-rose-600: #2b6bb8;
-  --color-rose-700: #1f5091;
-  --color-rose-950: #0d2450;
-  --color-teal-400: #e3c65c;
-  --color-teal-500: #d9b45a;
-  --color-lime-400: #e3c65c;
-  --color-orange-400: #e0a93c;
-  --color-orange-500: #d4af37;
-
-  /* Purple/indigo appeared in indicator overlays — folded into the blue family
-     so the chart does not carry a third hue family. */
-  --color-purple-400: #7cbaff;
-  --color-purple-500: #5b8fc7;
-  --color-violet-400: #7cbaff;
-  --color-indigo-400: #6aa4e6;
-
-  /* Slate text ramp, given the same blue cast as the semantic text tokens. */
-  --color-slate-100: #e8eef9;
-  --color-slate-200: #d3dff2;
-  --color-slate-300: #b6c7e2;
-  --color-slate-400: #9bb0ce;
-  --color-slate-500: #6b82a6;
-  --color-slate-800: #153264;
-  --color-slate-900: #0b2044;
-  --color-slate-950: #071734;
+  /* Slate text ramp, warmed very slightly to sit with the gold. */
+  --color-slate-100: #e9edf4;
+  --color-slate-200: #d3dae6;
+  --color-slate-300: #b6c0d0;
+  --color-slate-400: #98a3b6;
+  --color-slate-500: #667184;
+  --color-slate-800: #1c2331;
+  --color-slate-900: #10141d;
+  --color-slate-950: #0a0d14;
 }

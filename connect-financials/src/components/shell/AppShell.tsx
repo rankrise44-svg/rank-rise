@@ -9,8 +9,6 @@ import { LiveSupportChat } from '../LiveSupportChat';
 import { OpenAccountModal } from '../OpenAccountModal';
 import { ConnectViewStudio } from '../ConnectViewStudio';
 import { ComplianceDraftNotice, RiskWarningStrip } from '../compliance/ComplianceNotices';
-import { ForexBackdrop } from '../visuals/ForexBackdrop';
-import { ScrollProgress } from './ScrollProgress';
 import { ROUTES } from '../../config/site';
 import { useTrading } from '../../state/TradingProvider';
 import { useUI } from '../../state/UIProvider';
@@ -57,10 +55,7 @@ export function AppShell() {
   }, [studioOpen, closeStudio]);
 
   return (
-    /* No background colour on this wrapper: the page background lives on <body>
-       (index.css) so the fixed backdrop below can sit between the two. Giving
-       this div `bg-canvas` would paint straight over the canvas. */
-    <div className="relative flex min-h-screen flex-col text-text">
+    <div className="relative flex min-h-screen flex-col bg-canvas text-text">
       <ScrollToTop />
       <IntroGate />
 
@@ -73,12 +68,10 @@ export function AppShell() {
         Skip to content
       </a>
 
-      {/* Market backdrop, under every route at low opacity. Replaces the old
-          spinning-planet canvas, which was off-topic and opaque enough to
-          compete with the copy in front of it. */}
-      <ForexBackdrop opacity={0.55} />
-      <ScrollProgress />
-
+      {/* MotionChartBackground was removed from the shell: a fixed, full-screen
+          canvas animation plus an 823 KB photographic backdrop ran behind every
+          route — including the client portal — competing with the copy it sat
+          under and holding a requestAnimationFrame loop open the whole session. */}
       <ComplianceDraftNotice />
 
       <LiveTickerBar
@@ -90,7 +83,7 @@ export function AppShell() {
 
       <SiteHeader />
 
-      <main id="main" className="relative z-10 flex-1">
+      <main id="main" className="flex-1">
         <Outlet />
       </main>
 

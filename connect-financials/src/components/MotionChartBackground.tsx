@@ -220,7 +220,7 @@ export const MotionChartBackground: React.FC<Props> = ({
         ctx.stroke();
 
         // Benchmark Price Label on right edge
-        ctx.fillStyle = 'rgba(77, 163, 255, 0.35)';
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
         ctx.font = '10px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
         ctx.textAlign = 'right';
         ctx.fillText(pLevel.toFixed(1), width - 16, gy - 4);
@@ -301,7 +301,7 @@ export const MotionChartBackground: React.FC<Props> = ({
         const goldWick = 'rgba(245, 158, 11, 0.85)';
 
         const blueFill = 'rgba(14, 165, 233, 0.42)';
-        const blueBorder = 'rgba(77, 163, 255, 0.9)';
+        const blueBorder = 'rgba(56, 189, 248, 0.9)';
         const blueWick = 'rgba(14, 165, 233, 0.85)';
 
         const bodyFill = isBull ? goldFill : blueFill;
@@ -365,7 +365,7 @@ export const MotionChartBackground: React.FC<Props> = ({
         const pulse = (Math.sin(now * 0.005) + 1) / 2;
         ctx.beginPath();
         ctx.arc(leadX, leadY, 4.5 + pulse * 3.5, 0, Math.PI * 2);
-        ctx.fillStyle = lead.isBullish ? '#d4af37' : '#4da3ff';
+        ctx.fillStyle = lead.isBullish ? '#fbbf24' : '#38bdf8';
         ctx.shadowColor = lead.isBullish ? 'rgba(245, 158, 11, 0.9)' : 'rgba(14, 165, 233, 0.9)';
         ctx.shadowBlur = 12;
         ctx.fill();
@@ -384,7 +384,7 @@ export const MotionChartBackground: React.FC<Props> = ({
         ctx.lineWidth = 1;
         ctx.strokeRect(badgeX, badgeY, badgeW, badgeH);
 
-        ctx.fillStyle = lead.isBullish ? '#f5dfa3' : '#9bb0ce';
+        ctx.fillStyle = lead.isBullish ? '#fef08a' : '#bae6fd';
         ctx.font = 'bold 11px ui-monospace, SFMono-Regular, monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -406,12 +406,12 @@ export const MotionChartBackground: React.FC<Props> = ({
     <div
       id="motion-chart-background"
       aria-hidden="true"
-      className={`fixed inset-0 pointer-events-none z-0 overflow-hidden select-none bg-[#050b1a] ${className}`}
+      className={`fixed inset-0 pointer-events-none z-0 overflow-hidden select-none bg-[#030712] ${className}`}
     >
       {/* ------------------------------------------------------------------- */}
       {/* 1. CINEMATIC DEEP NAVY / BLACK BACKGROUND WITH CONTROLLED LIGHTING */}
       {/* ------------------------------------------------------------------- */}
-      <div className="absolute inset-0 bg-[#050b1a]" />
+      <div className="absolute inset-0 bg-[#020617]" />
 
       {/* Ambient Blue & Gold Glow Spheres */}
       <div className="absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] lg:w-[1250px] h-[700px] lg:h-[950px] bg-radial from-cyan-950/40 via-blue-950/20 to-transparent blur-3xl pointer-events-none" />
@@ -438,10 +438,10 @@ export const MotionChartBackground: React.FC<Props> = ({
           />
 
           {/* Spherical Shadow Mask to produce deep 3D globe curve */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#050b1a]/90 via-[#050b1a]/35 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#020617]/90 via-[#020617]/35 to-transparent pointer-events-none" />
 
           {/* Cyan Atmospheric Edge Glow */}
-          <div className="absolute inset-0 rounded-full shadow-[inset_0_0_65px_rgba(77, 163, 255,0.55),inset_0_0_25px_rgba(245,158,11,0.25)] pointer-events-none" />
+          <div className="absolute inset-0 rounded-full shadow-[inset_0_0_65px_rgba(56,189,248,0.55),inset_0_0_25px_rgba(245,158,11,0.25)] pointer-events-none" />
         </div>
 
         {/* Financial Network Orbit Rings & Light Trails around Globe */}
@@ -467,8 +467,8 @@ export const MotionChartBackground: React.FC<Props> = ({
       {/* 4. READABILITY VIGNETTES & TEXT PROTECTION MASKS                    */}
       {/* ------------------------------------------------------------------- */}
       {/* Ensures hero headlines and UI text remain 100% legible without glare */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#050b1a]/85 via-transparent to-[#050b1a]/95 pointer-events-none z-20" />
-      <div className="absolute inset-0 bg-radial from-transparent via-[#050b1a]/40 to-[#050b1a]/90 pointer-events-none z-20" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/85 via-transparent to-[#020617]/95 pointer-events-none z-20" />
+      <div className="absolute inset-0 bg-radial from-transparent via-[#020617]/40 to-[#020617]/90 pointer-events-none z-20" />
     </div>
   );
 };
