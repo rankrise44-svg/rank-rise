@@ -66,11 +66,10 @@ const fragment = /* glsl */ `
     // gold rim on the side the light comes from, cool blue on the other
     float side = dot(n.xy, normalize(uLight));
     float edge = pow(1.0 - n.z, 1.4);
+    // The falcon keeps its exact colours from the video; only a faint moving
+    // sheen along the silhouette hints at the light wrapping round the body.
     vec3 col = c.rgb;
-    col *= 0.82 + 0.3 * smoothstep(-0.2, 0.9, dot(n, normalize(vec3(uLight * 0.6, 1.0))));   // soft shape shading
-    col += uGold * edge * smoothstep(0.0, 0.8, side) * 0.55 * uGlow;
-    col += uBlue * edge * smoothstep(0.0, 0.8, -side) * 0.35;
-    col += c.rgb * pow(max(dot(n, normalize(vec3(uLight, 1.4))), 0.0), 24.0) * 0.5;       // glint
+    col += c.rgb * edge * smoothstep(0.2, 0.9, side) * 0.18 * uGlow;
     gl_FragColor = vec4(col, c.a);
     #include <colorspace_fragment>
   }
