@@ -33,8 +33,11 @@ async function loadManifest(): Promise<FramesManifest | undefined> {
 async function resolveSource(quality: Quality): Promise<Resolved> {
   const override = new URLSearchParams(window.location.search).get('eagle') as EagleSourceKind | null;
   const want = override ?? EAGLE_CONFIG.source;
-  // The single-file preview build ships no model or frames: skip the probes.
-  if (import.meta.env.MODE === 'artifact') return { kind: 'procedural' };
+  // The single-file preview ships frames (if any) but never a model.
+  if (import.meta.env.MODE === 'artifact' && want !== 'procedural') {
+    const manifest = await loadManifest();
+    return manifest ? { kind: 'sequence', manifest } : { kind: 'procedural' };
+  }
 
   if (want === 'procedural') return { kind: 'procedural' };
   if (want === 'glb' || want === 'auto') {
@@ -47,7 +50,7 @@ async function resolveSource(quality: Quality): Promise<Resolved> {
       return { kind: 'glb' };
     }
   }
-  if (want === 'sequence' || (want === 'auto' && quality === 'low')) {
+  if (want === 'sequence' || want === 'auto') {
     const manifest = await loadManifest();
     if (manifest) return { kind: 'sequence', manifest };
   }

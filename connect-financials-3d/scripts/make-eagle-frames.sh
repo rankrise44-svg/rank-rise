@@ -12,8 +12,8 @@ IN=${1:?usage: make-eagle-frames.sh video.mp4 [frames]}
 N=${2:-150}
 FF=${FFMPEG:-ffmpeg}
 OUT=public/eagle-frames
-DESKTOP_W=2560
-MOBILE_W=960
+DESKTOP_W=${DESKTOP_W:-2560}
+MOBILE_W=${MOBILE_W:-960}
 
 rm -rf "$OUT"/*.webp "$OUT/mobile"
 mkdir -p "$OUT/mobile"
@@ -22,16 +22,16 @@ DUR=$( ("$FF" -i "$IN" 2>&1 || true) | sed -n 's/.*Duration: \([0-9:.]*\).*/\1/p
 FPS=$(awk -v n="$N" -v d="$DUR" 'BEGIN{printf "%.5f", n/d}')
 echo "video ${DUR}s → $N frames (${FPS} fps)"
 
-"$FF" -loglevel error -i "$IN" -vf "fps=$FPS,scale=${DESKTOP_W}:-2:flags=lanczos" -frames:v "$N" -c:v libwebp -quality 82 -compression_level 6 "$OUT/%04d.webp"
-"$FF" -loglevel error -i "$IN" -vf "fps=$FPS,scale=${MOBILE_W}:-2:flags=lanczos" -frames:v "$N" -c:v libwebp -quality 72 -compression_level 6 "$OUT/mobile/%04d.webp"
+"$FF" -loglevel error -i "$IN" -an -vf "fps=$FPS,scale=${DESKTOP_W}:-2:flags=lanczos" -frames:v "$N" -c:v libwebp -quality 82 -compression_level 6 "$OUT/%04d.webp"
+"$FF" -loglevel error -i "$IN" -an -vf "fps=$FPS,scale=${MOBILE_W}:-2:flags=lanczos" -frames:v "$N" -c:v libwebp -quality 72 -compression_level 6 "$OUT/mobile/%04d.webp"
 
 COUNT=$(ls "$OUT"/*.webp | wc -l)
 read -r W H < <( ("$FF" -i "$OUT/0001.webp" 2>&1 || true) | sed -n 's/.*, \([0-9]\+\)x\([0-9]\+\).*/\1 \2/p' | head -1)
 cat > "$OUT/manifest.json" <<JSON
 {
   "count": $COUNT,
-  "pattern": "/eagle-frames/{index}.webp",
-  "mobilePattern": "/eagle-frames/mobile/{index}.webp",
+  "pattern": "eagle-frames/{index}.webp",
+  "mobilePattern": "eagle-frames/mobile/{index}.webp",
   "pad": 4,
   "width": $W,
   "height": $H

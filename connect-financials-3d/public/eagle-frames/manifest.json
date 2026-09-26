@@ -1,0 +1,8 @@
+{
+  "count": 144,
+  "pattern": "eagle-frames/{index}.webp",
+  "mobilePattern": "eagle-frames/mobile/{index}.webp",
+  "pad": 4,
+  "width": 1280,
+  "height": 720
+}

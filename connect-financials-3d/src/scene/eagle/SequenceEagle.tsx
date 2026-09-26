@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { AdditiveBlending, CanvasTexture, Mesh, PlaneGeometry, SRGBColorSpace, MeshBasicMaterial } from 'three';
+import { AdditiveBlending, CanvasTexture, MathUtils, Mesh, PlaneGeometry, SRGBColorSpace, MeshBasicMaterial } from 'three';
 import type { FramesManifest } from '../../config/eagle';
 import { story, view } from '../../story/state';
 import { isNarrow } from '../../lib/device';
 
 /**
- * Image-sequence eagle: ~150 WebP frames of the artwork going from wings
- * closed to wings open (e.g. AI image-to-video, exported as frames). Scroll
- * picks the frame. Frames are drawn to a 2D canvas that feeds a texture in the
+ * Image-sequence eagle: WebP frames cut from a video of the falcon. The
+ * client's video turns the perched falcon a full 360° and then spreads its
+ * wings, so scroll plays it through view().open (the wings-opening beat). Frames are drawn to a 2D canvas that feeds a texture in the
  * 3D scene, so particles, background and bloom still wrap around it.
  *
  * Frames load coarse-to-fine (every 16th, then 8th, … then all) so scrubbing
@@ -30,13 +30,20 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
     const texture = new CanvasTexture(canvas);
     texture.colorSpace = SRGBColorSpace;
     const aspect = manifest.width / manifest.height;
-    const h = 5.2;
+    const h = 3.9;
     // Additive: the artwork's dark background falls away into the scene.
     const mat = new MeshBasicMaterial({ map: texture, transparent: true, blending: AdditiveBlending, depthWrite: false });
     const mesh = new Mesh(new PlaneGeometry(h * aspect, h), mat);
-    mesh.position.y = -0.2;
+    mesh.position.y = -0.12;
     return { mesh, ctx, texture };
   }, [manifest]);
+
+  useEffect(() => {
+    story.flat = true;
+    return () => {
+      story.flat = false;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -66,7 +73,9 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
   }, [manifest]);
 
   useFrame(() => {
-    const want = Math.round(view().open * (manifest.count - 1));
+    // The client's video turns the perched falcon 360°, then spreads its wings:
+    // it plays through as the wings-opening beat scrolls, so the menu lands on open wings.
+    const want = Math.round(MathUtils.clamp(view().open, 0, 1) * (manifest.count - 1));
     let img: HTMLImageElement | null = null;
     for (let d = 0; d < manifest.count && !img; d++) img = frames.current[want - d] ?? frames.current[want + d] ?? null;
     if (!img || last.current === want) return;
