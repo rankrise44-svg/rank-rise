@@ -40,8 +40,8 @@ export function CameraRig() {
       // Video falcon: the whole perched bird fills the height; once its wings
       // spread (last 20% of the clip) pull back so they fit (phones crop the tips).
       const spread = MathUtils.smoothstep(o, 0.8, 0.95);
-      const zPerched = (portrait ? 5.9 : 6.4) / 2 / tanV;
-      const zSpread = Math.max(zPerched, (portrait ? 7.4 : 10.8) / 2 / tanH);
+      const zPerched = (portrait ? 6.5 : 7.1) / 2 / tanV;
+      const zSpread = Math.max(zPerched, (portrait ? 8.6 : 13.0) / 2 / tanH);
       z = MathUtils.lerp(zPerched, zSpread, spread) / ZOOM;
     }
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { AdditiveBlending, CanvasTexture, Color, MathUtils, Mesh, PlaneGeometry, ShaderMaterial, SRGBColorSpace } from 'three';
+import { AdditiveBlending, Color, Texture, MathUtils, Mesh, PlaneGeometry, ShaderMaterial, SRGBColorSpace } from 'three';
 import type { FramesManifest } from '../../config/eagle';
 import { story, view } from '../../story/state';
 import { isNarrow } from '../../lib/device';
@@ -76,15 +76,14 @@ const fragment = /* glsl */ `
 `;
 
 export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
-  const frames = useRef<(HTMLImageElement | null)[]>(new Array(manifest.count).fill(null));
+  const frames = useRef<(ImageBitmap | null)[]>(new Array(manifest.count).fill(null));
   const last = useRef(-1);
 
-  const { mesh, ctx, texture, mat } = useMemo(() => {
-    const canvas = document.createElement('canvas');
-    canvas.width = manifest.width;
-    canvas.height = manifest.height;
-    const ctx = canvas.getContext('2d')!;
-    const texture = new CanvasTexture(canvas);
+  const { mesh, texture, mat } = useMemo(() => {
+    // Frames are decoded off the main thread (ImageBitmap) and handed straight
+    // to the GPU: no canvas copy, no decode hitch while scrolling.
+    const texture = new Texture();
+    texture.flipY = false;
     texture.colorSpace = SRGBColorSpace;
     texture.generateMipmaps = true;
     const aspect = manifest.width / manifest.height;
@@ -102,7 +101,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
       fragmentShader: fragment,
       transparent: true,
     });
-    const segs = isNarrow() ? [160, 90] : [320, 180];
+    const segs = isNarrow() ? [128, 72] : [192, 108];
     const mesh = new Mesh(new PlaneGeometry(h * aspect, h, segs[0], segs[1]), mat);
     // soft blue light pooled under the talons, so the bird stands in the scene
     const glowMat = new ShaderMaterial({
@@ -117,7 +116,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
     const glow = new Mesh(new PlaneGeometry(h * 1.1, h * 0.28), glowMat);
     glow.position.set(0, -h * 0.43, -0.2);
     mesh.add(glow);
-    return { mesh, ctx, texture, mat };
+    return { mesh, texture, mat };
   }, [manifest]);
 
   useEffect(() => {
@@ -129,6 +128,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
 
   useEffect(() => {
     let cancelled = false;
+    const loaded = frames.current;
     const pattern = isNarrow() && manifest.mobilePattern ? manifest.mobilePattern : manifest.pattern;
     const order: number[] = [];
     const seen = new Set<number>();
@@ -138,19 +138,21 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
     const loadNext = () => {
       if (cancelled || cursor >= order.length) return;
       const i = order[cursor++];
-      const img = new Image();
-      img.decoding = 'async';
-      img.onload = () => {
-        frames.current[i] = img;
-        last.current = -1; // force a redraw in case this is closer
-        loadNext();
-      };
-      img.onerror = loadNext;
-      img.src = frameUrl(pattern, i, manifest.pad);
+      fetch(frameUrl(pattern, i, manifest.pad))
+        .then((r) => r.blob())
+        .then((b) => createImageBitmap(b, { imageOrientation: 'flipY', premultiplyAlpha: 'none' }))
+        .then((bmp) => {
+          if (cancelled) return bmp.close();
+          frames.current[i] = bmp;
+          last.current = -1; // force a redraw in case this is closer
+        })
+        .catch(() => {})
+        .finally(loadNext);
     };
     for (let k = 0; k < 4; k++) loadNext(); // 4 parallel lanes
     return () => {
       cancelled = true;
+      loaded.forEach((b) => b?.close());
     };
   }, [manifest]);
 
@@ -167,12 +169,15 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
     // The client's video turns the perched falcon 360°, then spreads its wings:
     // it plays through as the wings-opening beat scrolls, so the menu lands on open wings.
     const want = Math.round(MathUtils.clamp(view().open, 0, 1) * (manifest.count - 1));
-    let img: HTMLImageElement | null = null;
-    for (let d = 0; d < manifest.count && !img; d++) img = frames.current[want - d] ?? frames.current[want + d] ?? null;
-    if (!img || last.current === want) return;
-    last.current = want;
-    ctx.clearRect(0, 0, manifest.width, manifest.height);
-    ctx.drawImage(img, 0, 0, manifest.width, manifest.height);
+    let img: ImageBitmap | null = null;
+    let at = -1;
+    for (let d = 0; d < manifest.count && !img; d++) {
+      if (frames.current[want - d]) (img = frames.current[want - d]), (at = want - d);
+      else if (frames.current[want + d]) (img = frames.current[want + d]), (at = want + d);
+    }
+    if (!img || last.current === at) return;
+    last.current = at;
+    texture.image = img;
     texture.needsUpdate = true;
   });
 
