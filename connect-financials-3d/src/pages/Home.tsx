@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { detectQuality, prefersReducedMotion } from '../lib/device';
 import { Stage } from '../scene/Stage';
 import { AboutCopy } from '../sections/About';
@@ -16,7 +16,7 @@ import { MarketsTerminal } from '../sections/markets/MarketsTerminal';
 import { CapitalRiskCalculator } from '../sections/tools/CapitalRiskCalculator';
 import { EconomicCalendar } from '../sections/tools/EconomicCalendar';
 import { ForexCalculators } from '../sections/tools/ForexCalculators';
-import { BEATS, STORY_LENGTH } from '../story/state';
+import { BEATS, STORY_LENGTH, story } from '../story/state';
 import { useStoryTimeline } from '../story/useStoryTimeline';
 import { LiveSupportChat } from '../ui/LiveSupportChat';
 import { OpenAccountModal } from '../ui/OpenAccountModal';
@@ -30,7 +30,25 @@ const H3 = ({ children }: { children: React.ReactNode }) => (
   </h3>
 );
 
+/**
+ * ?studio=<open 0–1>[&spin=<radians>] shows only the falcon, lit and posed,
+ * for design review of the eagle itself.
+ */
+function Studio({ open }: { open: number }) {
+  const quality = useMemo(detectQuality, []);
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    Object.assign(story, { open, reveal: 1, scan: 1, mix: 1, spin: Number(q.get('spin') ?? 0) });
+  }, [open]);
+  return <Stage quality={quality} still={false} />;
+}
+
 export default function Home() {
+  const studio = new URLSearchParams(window.location.search).get('studio');
+  return studio === null ? <Site /> : <Studio open={Number(studio) || 0} />;
+}
+
+function Site() {
   const quality = useMemo(detectQuality, []);
   const reduced = useMemo(prefersReducedMotion, []);
   useStoryTimeline(reduced);

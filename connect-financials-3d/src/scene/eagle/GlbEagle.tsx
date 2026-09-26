@@ -13,8 +13,8 @@ import { eagleMaterials, eagleUniforms, type EaglePart } from './eagleMaterial';
  * Asset contract for whoever delivers the model:
  *  - one animation clip named "WingsOpen" (or the first clip is used):
  *    frame 0 = wings folded, last frame = wings fully spread;
- *  - mesh names containing "eye", "beak", "talon"/"claw", "feather"/"wing"
- *    get the matching look; everything else is treated as body;
+ *  - mesh names containing "eye", "beak", "claw", "talon"/"toe"/"leg",
+ *    "head", "feather"/"wing" get the matching look; everything else is body;
  *  - optional empties named anchor_trade, anchor_accounts, anchor_platforms,
  *    anchor_tools, anchor_about, anchor_open-account parented to wing bones,
  *    so the menu follows the wings exactly.
@@ -22,7 +22,10 @@ import { eagleMaterials, eagleUniforms, type EaglePart } from './eagleMaterial';
 function partFor(name: string): EaglePart {
   const n = name.toLowerCase();
   if (n.includes('eye')) return 'EYE';
-  if (n.includes('beak') || n.includes('talon') || n.includes('claw')) return 'GOLD';
+  if (n.includes('beak')) return 'BEAK';
+  if (n.includes('claw')) return 'CLAW';
+  if (n.includes('talon') || n.includes('toe') || n.includes('leg')) return 'GOLD';
+  if (n.includes('head')) return 'HEAD';
   if (n.includes('feather') || n.includes('wing')) return 'FEATHER';
   return 'BODY';
 }

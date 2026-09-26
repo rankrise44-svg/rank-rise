@@ -33,6 +33,11 @@ export function Background() {
         uniform vec3 uAbyss, uNavy, uMid, uGold, uGoldHi;
         varying vec2 vUv;
         float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+        float vnoise(vec2 p) {
+          vec2 i = floor(p), f = fract(p);
+          f = f * f * (3.0 - 2.0 * f);
+          return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y);
+        }
         void main() {
           vec2 p = vUv - 0.5;
           p.x *= uAspect;
@@ -54,6 +59,13 @@ export function Background() {
             float line = 1.0 - min(min(gl.x, gl.y), 1.0);
             col = mix(col, col + uGold * line * 0.16, uGrid * smoothstep(0.7, 0.15, vUv.y));
           }
+
+          // Smoky blue haze drifting behind the eagle, as in the reference.
+          vec2 q = p * 2.2 + vec2(uTime * 0.015, -uTime * 0.01);
+          float smoke = 0.0, amp = 0.5;
+          for (int i = 0; i < 5; i++) { smoke += amp * vnoise(q); q = q * 2.03 + 1.7; amp *= 0.5; }
+          col += uMid * pow(smoke, 2.2) * 0.9 * smoothstep(1.1, 0.1, length(p));
+          col += vec3(0.02, 0.05, 0.16) * pow(smoke, 3.0) * 0.8 * smoothstep(0.9, 0.0, length(p - vec2(0.0, 0.05)));
 
           float vig = smoothstep(1.25, 0.35, length(p * vec2(0.85, 1.0)));
           col *= mix(0.55, 1.0, vig);

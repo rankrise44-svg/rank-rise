@@ -78,7 +78,7 @@ export function Particles({ count, candles }: { count: number; candles: number }
 
   const candleMesh = useMemo(() => {
     const geo = new BoxGeometry(1, 1, 1);
-    const mat = new MeshBasicMaterial({ color: new Color('#D4AF37').multiplyScalar(1.4), transparent: true, opacity: 0.55, depthWrite: false });
+    const mat = new MeshBasicMaterial({ color: new Color('#D4AF37').multiplyScalar(1.1), transparent: true, opacity: 0.32, depthWrite: false });
     const bodies = new InstancedMesh(geo, mat, candles);
     const wicks = new InstancedMesh(geo, mat, candles);
     const data = Array.from({ length: candles }, () => ({
@@ -117,7 +117,7 @@ export function Particles({ count, candles }: { count: number; candles: number }
       const x = c.x + ptr[0] * (0.2 + depth) * 0.35;
       tmp.position.set(x, y, c.z);
       tmp.rotation.set(0, t * c.spin + c.phase, Math.sin(t * 0.4 + c.phase) * 0.15);
-      tmp.scale.set(0.07, c.h, 0.07);
+      tmp.scale.set(0.05, c.h * 0.8, 0.05);
       tmp.updateMatrix();
       bodies.setMatrixAt(i, tmp.matrix);
       tmp.scale.set(0.012, c.h * 1.8, 0.012);

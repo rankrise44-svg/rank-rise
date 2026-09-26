@@ -24,12 +24,12 @@ export function Stage({ quality, still }: { quality: Quality; still: boolean }) 
         gl={{ antialias: high, powerPreference: 'high-performance', alpha: false, stencil: false }}
       >
         <Background />
-        <Particles count={high ? 1600 : 450} candles={high ? 44 : 16} />
+        <Particles count={high ? 1800 : 450} candles={high ? 26 : 10} />
         <EagleRoot quality={quality} />
         <CameraRig />
         <AnchorProjector />
         {high && (
-          <EffectComposer multisampling={0}>
+          <EffectComposer multisampling={4}>
             <Bloom mipmapBlur intensity={0.85} luminanceThreshold={0.55} luminanceSmoothing={0.25} radius={0.7} />
             <Vignette offset={0.25} darkness={0.55} />
           </EffectComposer>

@@ -3,15 +3,19 @@ import { useFrame } from '@react-three/fiber';
 import {
   BufferGeometry,
   CatmullRomCurve3,
-  CylinderGeometry,
+  Euler,
   Float32BufferAttribute,
   Group,
+  InstancedBufferAttribute,
+  InstancedMesh,
   LatheGeometry,
   MathUtils,
   Matrix4,
   Mesh,
   Object3D,
+  Quaternion,
   SphereGeometry,
+  TorusGeometry,
   TubeGeometry,
   Vector2,
   Vector3,
@@ -22,36 +26,44 @@ import { anchorObjects, clearAnchors, type MenuId } from './anchors';
 import { eagleMaterials, eagleUniforms } from './eagleMaterial';
 
 /**
- * PLACEHOLDER eagle, built from primitives so the scroll story can be
- * reviewed before the real rigged eagle.glb exists. It follows the same
- * contract as the other sources: reads `view().open` (0 closed → 1 spread)
- * and registers the six wing anchors.
+ * The procedural falcon, modelled on the client's reference sheet: an
+ * obsidian-glass peregrine with pointed, layered feathers, a heavy-browed
+ * head, gold-ringed eyes, a gold-to-black hooked beak and gold talons with
+ * black claws. It follows the eagle-source contract: reads `view().open`
+ * (0 folded → 1 spread) and registers the six wing anchors.
+ *
+ * Wing feathers are drawn as instanced meshes (one draw call per wing
+ * section) from a single unit feather, scaled per instance.
  */
 
 const lite = () => new URLSearchParams(window.location.search).get('quality') === 'low';
 
 // ---------- geometry helpers ----------
 
-/** A single feather: tapered, cupped vane hanging down -Y from its base. uv.y runs base → tip. */
-function featherGeometry(len: number, width: number, seed: number, curl = 0.1) {
-  const segL = 14;
-  const segW = 4;
+/**
+ * A pointed feather: narrow quill, widest a third of the way out, tapering to a
+ * point, cupped across the vane, curling back along its length and slightly
+ * twisted. Hangs down -Y from its base; uv.y runs base → tip.
+ */
+function featherGeometry(len: number, width: number, seed: number, curl = 0.1, twist = 0.22, segL = 18, segW = 6) {
   const pos: number[] = [];
   const uv: number[] = [];
-  const seeds: number[] = [];
   const idx: number[] = [];
+  const dir = seed % 2 ? 1 : -1;
   for (let j = 0; j <= segL; j++) {
     const v = j / segL;
-    const base = v < 0.12 ? MathUtils.lerp(0.3, 1, v / 0.12) : 1;
-    const tip = 1 - Math.pow(Math.max(v - 0.55, 0) / 0.45, 2.2) * 0.86;
-    const w = width * base * tip;
+    const rise = Math.pow(Math.sin(Math.min(v / 0.32, 1) * Math.PI * 0.5), 0.7);
+    const fall = 1 - Math.pow(Math.max(v - 0.4, 0) / 0.6, 2.1);
+    const w = width * Math.max(rise * fall, 0.18 * (1 - v));
+    const a = twist * v * dir;
+    const ca = Math.cos(a);
+    const sa = Math.sin(a);
     for (let i = 0; i <= segW; i++) {
       const u = i / segW;
-      const x = (u - 0.5) * w;
-      const z = curl * len * v * v - (u - 0.5) ** 2 * w * 0.4;
-      pos.push(x, -v * len, z);
+      const x0 = (u - 0.5) * w;
+      const z0 = -((u - 0.5) ** 2) * w * 0.55;
+      pos.push(x0 * ca - z0 * sa, -v * len, x0 * sa + z0 * ca + curl * len * v * v);
       uv.push(u, v);
-      seeds.push(seed);
     }
   }
   for (let j = 0; j < segL; j++)
@@ -63,14 +75,14 @@ function featherGeometry(len: number, width: number, seed: number, curl = 0.1) {
   const g = new BufferGeometry();
   g.setAttribute('position', new Float32BufferAttribute(pos, 3));
   g.setAttribute('uv', new Float32BufferAttribute(uv, 2));
-  g.setAttribute('aSeed', new Float32BufferAttribute(seeds, 1));
   g.setIndex(idx);
   g.computeVertexNormals();
-  return g;
+  g.setAttribute('aSize', new Float32BufferAttribute(new Array(pos.length / 3).fill(len), 1));
+  return withSeed(g, seed);
 }
 
-/** Tube that tapers from r0 to r1 along a curve (beak, claws). */
-function taperTube(points: Vector3[], r0: number, r1: number, tub = 28, rad = 12) {
+/** Tube tapering from r0 to r1 along a curve; uv.x runs along its length. */
+function taperTube(points: Vector3[], r0: number, r1: number, tub = 28, rad = 14) {
   const curve = new CatmullRomCurve3(points);
   const g = new TubeGeometry(curve, tub, 1, rad, false);
   const p = g.attributes.position;
@@ -79,49 +91,102 @@ function taperTube(points: Vector3[], r0: number, r1: number, tub = 28, rad = 12
   for (let i = 0; i < p.count; i++) {
     const t = Math.floor(i / (rad + 1)) / tub;
     curve.getPointAt(Math.min(t, 1), c);
-    v.fromBufferAttribute(p, i).sub(c).multiplyScalar(MathUtils.lerp(r0, r1, Math.pow(t, 0.8)));
+    v.fromBufferAttribute(p, i).sub(c).multiplyScalar(MathUtils.lerp(r0, r1, Math.pow(t, 0.85)));
     p.setXYZ(i, c.x + v.x, c.y + v.y, c.z + v.z);
   }
   g.computeVertexNormals();
-  g.setAttribute('aSeed', new Float32BufferAttribute(new Array(p.count).fill(0), 1));
-  return g;
+  return withSeed(g);
 }
 
+/** Every eagle geometry carries aSeed (per-feather randomness) and aSize (feather length). */
 function withSeed(g: BufferGeometry, seed = 0) {
-  g.setAttribute('aSeed', new Float32BufferAttribute(new Array(g.attributes.position.count).fill(seed), 1));
+  const n = g.attributes.position.count;
+  g.setAttribute('aSeed', new Float32BufferAttribute(new Array(n).fill(seed), 1));
+  if (!g.attributes.aSize) g.setAttribute('aSize', new Float32BufferAttribute(new Array(n).fill(0), 1));
   return g;
 }
 
-/** Orient an object so its local +Z is `normal` and local +Y is as close to world up as possible. */
-function orient(o: Object3D, normal: Vector3) {
+/** Orient an object so its local +Z is `normal` and local +Y is as close to `up` as possible. */
+function orient(o: Object3D, normal: Vector3, up = new Vector3(0, 1, 0)) {
   const z = normal.clone().normalize();
-  const y = new Vector3(0, 1, 0).sub(z.clone().multiplyScalar(z.y)).normalize();
+  const y = up.clone().sub(z.clone().multiplyScalar(up.dot(z))).normalize();
   const x = new Vector3().crossVectors(y, z);
   o.quaternion.setFromRotationMatrix(new Matrix4().makeBasis(x, y, z));
 }
 
-// ---------- wing ----------
+// ---------- instanced feather sets ----------
 
-interface Feather {
-  mesh: Mesh;
-  closed: number;
+interface FeatherSpec {
+  x: number;
+  y: number;
+  z: number;
+  len: number;
+  width: number;
   open: number;
+  closed: number;
   /** 0 → opens first, 1 → opens last (tips lag the shoulder) */
   lag: number;
 }
+
+/** Width the unit feather is modelled at; instances scale x by width / UNIT_W. */
+const UNIT_W = 0.2;
+
+/** All the feathers on one wing bone, drawn in one call. */
+class FeatherSet {
+  mesh: InstancedMesh;
+  specs: FeatherSpec[] = [];
+  private m = new Matrix4();
+  private q = new Quaternion();
+  private e = new Euler();
+  private p = new Vector3();
+  private s = new Vector3();
+
+  constructor(parent: Group, specs: FeatherSpec[], seedBase: number) {
+    this.specs = specs;
+    const geo = featherGeometry(1, UNIT_W, 0, 0.09);
+    geo.deleteAttribute('aSeed');
+    geo.deleteAttribute('aSize');
+    geo.setAttribute('aSeed', new InstancedBufferAttribute(new Float32Array(specs.map((_, i) => seedBase + i)), 1));
+    geo.setAttribute('aSize', new InstancedBufferAttribute(new Float32Array(specs.map((f) => f.len)), 1));
+    this.mesh = new InstancedMesh(geo, eagleMaterials().FEATHER, specs.length);
+    this.mesh.frustumCulled = false;
+    parent.add(this.mesh);
+  }
+
+  update(o: number, twist: number) {
+    this.specs.forEach((f, i) => {
+      const fo = ease(MathUtils.clamp((o - f.lag * 0.4) / 0.6, 0, 1));
+      this.e.set(-0.1, MathUtils.lerp(twist, 0, fo), MathUtils.lerp(f.closed, f.open, fo));
+      this.q.setFromEuler(this.e);
+      this.m.compose(this.p.set(f.x, f.y, f.z), this.q, this.s.set(f.width / UNIT_W, f.len, f.len));
+      this.mesh.setMatrixAt(i, this.m);
+    });
+    this.mesh.instanceMatrix.needsUpdate = true;
+  }
+}
+
+// ---------- wing ----------
 
 interface Wing {
   side: Group;
   arm: Group;
   fore: Group;
   hand: Group;
-  feathers: Feather[];
+  sets: FeatherSet[];
   anchors: Object3D[];
 }
 
 const ARM = 0.9;
 const FORE = 1.15;
 const HAND = 1.0;
+
+// Poses (for the right wing; the left is mirrored by its parent)
+const OPEN = { armX: 0, armY: -0.18, armZ: 0.5, foreZ: -0.12, foreY: -0.05, handZ: -0.2, handY: -0.12 };
+// Folded like a perched bird: arm down, forearm back up, hand down again.
+const CLOSED = { armX: 0.08, armY: 0.55, armZ: -1.4, foreZ: 2.97, foreY: 0.05, handZ: -2.97, handY: 0.05 };
+// Feather angle that makes a vane hang straight down from each folded bone.
+const HANG = { arm: 1.4, fore: -1.57, hand: 1.4 };
+const FOLD_TWIST = -1.0;
 
 function buildWing(sign: 1 | -1, seedBase: number, reduced: boolean): Wing {
   const mats = eagleMaterials();
@@ -138,69 +203,47 @@ function buildWing(sign: 1 | -1, seedBase: number, reduced: boolean): Wing {
   fore.add(hand);
   hand.position.x = FORE;
 
-  // Leading-edge "bones" give the wing some body.
+  // Leading-edge bones give the wing some body.
   const bone = (len: number, r0: number, r1: number, parent: Group) => {
-    const g = withSeed(new CylinderGeometry(r1, r0, len, 12, 1));
-    g.rotateZ(-Math.PI / 2);
-    g.translate(len / 2, 0, 0);
-    parent.add(new Mesh(g, mats.BODY));
+    parent.add(new Mesh(taperTube([new Vector3(0, 0, 0), new Vector3(len * 0.5, 0.02, 0.01), new Vector3(len, 0, 0)], r0, r1, 12, 12), mats.BODY));
   };
-  bone(ARM, 0.13, 0.09, arm);
-  bone(FORE, 0.09, 0.065, fore);
-  bone(HAND, 0.065, 0.03, hand);
+  bone(ARM + 0.05, 0.14, 0.09, arm);
+  bone(FORE + 0.04, 0.09, 0.06, fore);
+  bone(HAND, 0.06, 0.025, hand);
 
-  const feathers: Feather[] = [];
-  let seed = seedBase;
-  const add = (
-    parent: Group,
-    x: number,
-    len: number,
-    width: number,
-    open: number,
-    closed: number,
-    lag: number,
-    z: number,
-    y = 0,
-  ) => {
-    const mesh = new Mesh(featherGeometry(len, width, seed++, 0.08), mats.FEATHER);
-    mesh.position.set(x, y, z);
-    mesh.rotation.x = -0.1;
-    parent.add(mesh);
-    feathers.push({ mesh, open, closed, lag });
-    return mesh;
+  const K = reduced ? 0.6 : 1; // fewer feathers on phones
+  const n = (x: number) => Math.max(3, Math.round(x * K));
+  const armF: FeatherSpec[] = [];
+  const foreF: FeatherSpec[] = [];
+  const handF: FeatherSpec[] = [];
+  const row = (list: FeatherSpec[], count: number, from: number, to: number, f: (t: number, k: number) => Omit<FeatherSpec, 'x'>) => {
+    for (let k = 0; k < count; k++) {
+      const t = count === 1 ? 0 : k / (count - 1);
+      list.push({ x: MathUtils.lerp(from, to, t), ...f(t, k) });
+    }
   };
 
-  // Primaries — the long fingers at the tip
-  const P = reduced ? 7 : 10;
-  const primaries: Mesh[] = [];
-  for (let k = 0; k < P; k++) {
-    const t = k / (P - 1);
-    primaries.push(add(hand, 0.08 + t * 0.9, 1.25 + 0.5 * Math.sin(t * Math.PI * 0.8), 0.2, 0.18 + t * 1.2, HANG.hand + 0.02 * k, 0.45 + t * 0.55, -0.004 * k));
-  }
-  // Secondaries along the forearm
-  const S = reduced ? 8 : 12;
-  for (let k = 0; k < S; k++) {
-    const t = k / (S - 1);
-    add(fore, 0.04 + t * 1.08, 1.02 + 0.1 * t, 0.23, 0.02 + t * 0.12, HANG.fore, 0.25 + t * 0.25, -0.03);
-  }
-  // Tertials near the body
-  for (let k = 0; k < 4; k++) add(arm, 0.4 + k * 0.15, 0.85, 0.22, -0.12 + k * 0.03, HANG.arm, 0.1, -0.05);
+  // Primaries: the long pointed fingers at the tip, fanning wide when open.
+  row(handF, n(11), 0.05, 0.98, (t, k) => ({ y: 0, z: -0.004 * k, len: 1.45 + 0.6 * Math.sin(t * Math.PI * 0.8), width: 0.27, open: 0.15 + t * 1.3, closed: HANG.hand + 0.02 * k, lag: 0.45 + t * 0.55 }));
+  // Secondaries along the forearm.
+  row(foreF, n(16), 0.03, 1.12, (t) => ({ y: 0, z: -0.03, len: 1.05 + 0.12 * t, width: 0.29, open: 0.02 + t * 0.12, closed: HANG.fore, lag: 0.25 + t * 0.25 }));
+  // Tertials close to the body.
+  row(armF, n(5), 0.35, 0.95, (t) => ({ y: 0, z: -0.05, len: 0.9, width: 0.3, open: -0.12 + t * 0.12, closed: HANG.arm, lag: 0.1 }));
+  // Greater coverts over the base of the flight feathers.
+  row(foreF, n(14), 0.04, 1.1, (t) => ({ y: 0.02, z: 0.035, len: 0.6, width: 0.24, open: 0.05 + t * 0.14, closed: HANG.fore, lag: 0.3 }));
+  row(handF, n(9), 0.04, 0.72, (t) => ({ y: 0.02, z: 0.035, len: 0.56, width: 0.22, open: 0.22 + t * 0.7, closed: HANG.hand, lag: 0.55 }));
+  // Median coverts.
+  row(armF, n(8), 0.15, 0.95, () => ({ y: 0.04, z: 0.07, len: 0.38, width: 0.19, open: 0.06, closed: HANG.arm, lag: 0.25 }));
+  row(foreF, n(14), 0.03, 1.12, () => ({ y: 0.04, z: 0.07, len: 0.38, width: 0.19, open: 0.08, closed: HANG.fore, lag: 0.25 }));
+  // Lesser coverts and marginals: small scales along the leading edge.
+  row(armF, n(8), 0.08, 0.98, () => ({ y: 0.07, z: 0.1, len: 0.23, width: 0.12, open: 0.05, closed: HANG.arm, lag: 0.2 }));
+  row(foreF, n(12), 0.02, 1.14, () => ({ y: 0.07, z: 0.1, len: 0.23, width: 0.12, open: 0.05, closed: HANG.fore, lag: 0.2 }));
+  row(armF, n(8), 0.05, 1.0, () => ({ y: 0.1, z: 0.125, len: 0.15, width: 0.1, open: 0.03, closed: HANG.arm, lag: 0.2 }));
+  row(foreF, n(10), 0.0, 1.14, () => ({ y: 0.1, z: 0.125, len: 0.15, width: 0.1, open: 0.03, closed: HANG.fore, lag: 0.2 }));
+  // Alula: the thumb feathers at the wrist.
+  row(handF, 3, 0.0, 0.12, (t) => ({ y: 0.06, z: 0.09, len: 0.38 - t * 0.08, width: 0.12, open: 0.9 + t * 0.15, closed: HANG.hand, lag: 0.4 }));
 
-  if (!reduced) {
-    // Greater coverts over the base of the flight feathers
-    for (let k = 0; k < 11; k++) add(fore, 0.05 + (k / 10) * 1.05, 0.56, 0.18, 0.06 + k * 0.012, HANG.fore, 0.3, 0.035, 0.02);
-    for (let k = 0; k < 7; k++) add(hand, 0.05 + (k / 6) * 0.6, 0.52, 0.16, 0.25 + k * 0.08, HANG.hand, 0.55, 0.035, 0.02);
-    // Median coverts
-    for (let k = 0; k < 16; k++) {
-      const onArm = k < 6;
-      add(onArm ? arm : fore, onArm ? 0.2 + k * 0.12 : 0.05 + ((k - 6) / 9) * 1.05, 0.34, 0.15, 0.08, onArm ? HANG.arm : HANG.fore, 0.25, 0.07, 0.04);
-    }
-    // Lesser coverts / marginals on the leading edge
-    for (let k = 0; k < 14; k++) {
-      const onArm = k < 6;
-      add(onArm ? arm : fore, onArm ? 0.12 + k * 0.13 : 0.03 + ((k - 6) / 7) * 1.1, 0.2, 0.12, 0.05, onArm ? HANG.arm : HANG.fore, 0.2, 0.1, 0.07);
-    }
-  }
+  const sets = [new FeatherSet(arm, armF, seedBase), new FeatherSet(fore, foreF, seedBase + 100), new FeatherSet(hand, handF, seedBase + 200)];
 
   // Anchors for the menu: elbow, wrist and wingtip, lifted above the leading edge.
   const anchors = [arm, fore, hand].map((parent, i) => {
@@ -210,31 +253,123 @@ function buildWing(sign: 1 | -1, seedBase: number, reduced: boolean): Wing {
     return o;
   });
 
-  void primaries;
-  return { side, arm, fore, hand, feathers, anchors };
+  return { side, arm, fore, hand, sets, anchors };
 }
 
-// Poses (for the right wing; the left is mirrored by its parent)
-const OPEN = { armX: 0, armY: -0.18, armZ: 0.5, foreZ: -0.12, foreY: -0.05, handZ: -0.2, handY: -0.12 };
-// Folded like a perched bird: arm down, forearm back up, hand down again.
-const CLOSED = { armX: 0.08, armY: 0.55, armZ: -1.4, foreZ: 2.97, foreY: 0.05, handZ: -2.97, handY: 0.05 };
-// Feather angle that makes a vane hang straight down from each folded bone.
-const HANG = { arm: 1.4, fore: -1.57, hand: 1.4 };
+// ---------- body, head, talons, tail ----------
 
-const FOLD_TWIST = -1.0;
+function buildHead() {
+  const mats = eagleMaterials();
+  const head = new Group();
+  head.position.set(0, 0.98, 0.04);
 
-// ---------- body ----------
+  // Skull, sculpted from a sphere: heavy brow shelf, wedge toward the beak, full cheeks.
+  const skull = new SphereGeometry(0.34, 72, 54);
+  const p = skull.attributes.position;
+  const d = new Vector3();
+  for (let i = 0; i < p.count; i++) {
+    d.fromBufferAttribute(p, i).normalize();
+    let r = 0.34;
+    const front = Math.max(d.z, 0);
+    r += 0.055 * Math.exp(-((d.y - 0.38) ** 2) / 0.012 - ((Math.abs(d.x) - 0.42) ** 2) / 0.04) * front; // brow
+    r -= 0.03 * Math.exp(-((d.y - 0.18) ** 2) / 0.01 - ((Math.abs(d.x) - 0.52) ** 2) / 0.02) * front; // eye socket
+    r += 0.025 * Math.exp(-((d.y + 0.25) ** 2) / 0.03 - ((Math.abs(d.x) - 0.55) ** 2) / 0.05); // cheeks
+    const x = d.x * r * 1.1 * (1 - 0.28 * MathUtils.smoothstep(d.z, 0.55, 1));
+    const y = d.y * r * (d.y > 0 ? 0.86 : 0.95);
+    const z = d.z * r * 1.18;
+    p.setXYZ(i, x, y + 0.2, z + 0.04);
+  }
+  skull.computeVertexNormals();
+  head.add(new Mesh(withSeed(skull), mats.HEAD));
+
+  // Head feathers: small flakes over the whole head and nape, flowing back and down,
+  // leaving the eyes and beak clear.
+  const eyeDirs = [-1, 1].map((sx) => new Vector3(sx * 0.52, 0.26, 0.81).normalize());
+  const flakes: BufferGeometry[] = [];
+  const tmp = new Object3D();
+  const flow = new Vector3(0, 1, 1.3).normalize();
+  let s = 700;
+  for (let phi = 0.12; phi < 2.5; phi += 0.13) {
+    const count = Math.max(6, Math.round(Math.sin(phi) * 42));
+    for (let k = 0; k < count; k++) {
+      const th = (k / count) * Math.PI * 2 + phi * 1.7;
+      const dir = new Vector3(Math.sin(phi) * Math.sin(th), Math.cos(phi), Math.sin(phi) * Math.cos(th));
+      if (eyeDirs.some((e) => e.angleTo(dir) < 0.3)) continue;
+      if (dir.z > 0.8 && dir.y < 0.35 && Math.abs(dir.x) < 0.35) continue; // beak root
+      // on the sculpted skull's surface (radii ≈ 0.374 × 0.29/0.32 × 0.40), just proud of it
+      tmp.position.set(dir.x * 0.39, dir.y * (dir.y > 0 ? 0.31 : 0.34) + 0.2, dir.z * 0.42 + 0.04);
+      orient(tmp, dir, flow);
+      tmp.updateMatrix();
+      const len = dir.y > 0.4 ? 0.13 : 0.11;
+      const fg = featherGeometry(len, 0.075, s++, -0.35, 0.1, 6, 3);
+      fg.applyMatrix4(tmp.matrix);
+      flakes.push(fg);
+    }
+  }
+  head.add(new Mesh(mergeGeometries(flakes), mats.FEATHER));
+
+  // Eyes: gold orbital ring, iris, wet highlight; brows overhang them.
+  for (const sx of [-1, 1]) {
+    const dir = new Vector3(sx * 0.52, 0.26, 0.81).normalize();
+    const pos = new Vector3(dir.x * 0.34 * 1.02, dir.y * 0.3 + 0.2, dir.z * 0.36 + 0.04);
+    const eye = new Mesh(withSeed(new SphereGeometry(0.066, 32, 24)), mats.EYE);
+    eye.position.copy(pos);
+    orient(eye, dir);
+    head.add(eye);
+    const ring = new Mesh(withSeed(new TorusGeometry(0.07, 0.013, 12, 40)), mats.GOLD);
+    ring.position.copy(pos).addScaledVector(dir, 0.012);
+    orient(ring, dir);
+    head.add(ring);
+  }
+
+  // Beak: gold cere at the base, upper mandible hooking down to a black tip, small lower mandible.
+  head.add(new Mesh(taperTube([new Vector3(0, 0.08, 0.29), new Vector3(0, 0.078, 0.37), new Vector3(0, 0.07, 0.42)], 0.15, 0.13, 8, 24), mats.GOLD));
+  head.add(
+    new Mesh(
+      taperTube([new Vector3(0, 0.08, 0.33), new Vector3(0, 0.07, 0.5), new Vector3(0, 0.01, 0.64), new Vector3(0, -0.11, 0.69), new Vector3(0, -0.23, 0.62)], 0.14, 0.006, 48, 24),
+      mats.BEAK,
+    ),
+  );
+  head.add(new Mesh(taperTube([new Vector3(0, -0.02, 0.33), new Vector3(0, -0.07, 0.47), new Vector3(0, -0.1, 0.55)], 0.085, 0.008, 16, 16), mats.BEAK));
+
+  return head;
+}
+
+function buildTalons(g: Group) {
+  const mats = eagleMaterials();
+  for (const sx of [-1, 1]) {
+    const foot = new Group();
+    foot.position.set(sx * 0.21, -1.12, 0.36);
+    g.add(foot);
+    // Scaled gold leg
+    foot.add(new Mesh(taperTube([new Vector3(0, 0.34, -0.06), new Vector3(0, 0.15, -0.02), new Vector3(0, 0, 0)], 0.07, 0.06, 16, 16), mats.GOLD));
+    // Three toes forward, one back: gold toes, black claws.
+    const toe = (yaw: number, back = false) => {
+      const t = new Group();
+      t.rotation.y = yaw;
+      const zf = back ? -1 : 1;
+      const toePts = [new Vector3(0, 0, 0), new Vector3(0, -0.04, 0.1 * zf), new Vector3(0, -0.08, 0.2 * zf)];
+      t.add(new Mesh(taperTube(toePts, 0.045, 0.032, 16, 12), mats.GOLD));
+      const clawPts = [new Vector3(0, -0.08, 0.2 * zf), new Vector3(0, -0.1, 0.27 * zf), new Vector3(0, -0.17, 0.3 * zf), new Vector3(0, -0.25, 0.27 * zf)];
+      t.add(new Mesh(taperTube(clawPts, 0.03, 0.003, 20, 12), mats.CLAW));
+      foot.add(t);
+    };
+    toe(-0.45);
+    toe(0);
+    toe(0.45);
+    toe(sx * 0.2, true);
+  }
+}
 
 function buildBody(reduced: boolean) {
   const mats = eagleMaterials();
   const g = new Group();
 
-  // Torso
   const profile = [
     [0.0, -1.35], [0.22, -1.22], [0.42, -0.9], [0.54, -0.4], [0.55, 0.05],
     [0.5, 0.45], [0.38, 0.8], [0.27, 1.02], [0.24, 1.12], [0.0, 1.2],
   ].map(([r, y]) => new Vector2(r, y));
-  const torsoGeo = withSeed(new LatheGeometry(profile, 48));
+  const torsoGeo = withSeed(new LatheGeometry(profile, 64));
   torsoGeo.scale(1.2, 0.92, 0.82);
   g.add(new Mesh(torsoGeo, mats.BODY));
 
@@ -248,34 +383,50 @@ function buildBody(reduced: boolean) {
     return 0.2;
   };
 
-  // Contour feathers over chest, neck and legs, merged into one draw call.
+  // Contour feathers all round the body (chest chevrons, back, flanks), merged into one draw call.
   const parts: BufferGeometry[] = [];
   const tmp = new Object3D();
-  const rows = reduced ? 6 : 10;
+  const rows = reduced ? 8 : 12;
   let s = 500;
   for (let r = 0; r < rows; r++) {
-    const y = 0.94 - r * (1.62 / rows);
-    const rad = radiusAt(y) + 0.015;
-    const n = r < 2 ? 14 : 9;
-    const span = r < 2 ? Math.PI * 0.95 : 1.35;
-    for (let k = 0; k < n; k++) {
-      const th = -span + (k + (r % 2) * 0.5) * ((2 * span) / n);
-      const nrm = new Vector3(Math.sin(th), 0.25, Math.cos(th) * 0.82);
-      tmp.position.set(rad * Math.sin(th), y + 0.08, (rad / 1.2) * Math.cos(th) * 0.82);
+    const y = 0.96 - r * (1.95 / rows);
+    const rad = radiusAt(y) + 0.035;
+    const count = reduced ? 11 : 17;
+    for (let k = 0; k < count; k++) {
+      const th = ((k + (r % 2) * 0.5) / count) * Math.PI * 2;
+      // vanes lie almost flat on the body and curl their tips back in, so the plumage reads as layered, not spiky
+      const nrm = new Vector3(Math.sin(th), 0.1, Math.cos(th) * 0.82);
+      tmp.position.set(rad * Math.sin(th), y + 0.06, (rad / 1.2) * Math.cos(th) * 0.82);
       orient(tmp, nrm);
       tmp.updateMatrix();
-      const fg = featherGeometry(0.3, 0.17 + (r < 2 ? 0 : 0.03), s++, -0.25);
+      const len = 0.42 + 0.06 * Math.sin(r * 0.7);
+      const fg = featherGeometry(len, 0.22, s++, -0.35, 0.1, 10, 4);
       fg.applyMatrix4(tmp.matrix);
       parts.push(fg);
     }
   }
-  // Leg "trousers"
-  for (const sx of [-1, 1])
-    for (let k = 0; k < 4; k++) {
-      tmp.position.set(sx * (0.16 + k * 0.05), -0.75, 0.3);
-      orient(tmp, new Vector3(sx * 0.3, 0, 1));
+  // Neck ruff: two rings of longer feathers where the head meets the chest.
+  for (let ring = 0; ring < 2; ring++) {
+    const count = reduced ? 14 : 22;
+    for (let k = 0; k < count; k++) {
+      const th = ((k + ring * 0.5) / count) * Math.PI * 2;
+      const y = 1.1 - ring * 0.1;
+      const rad = 0.3 + ring * 0.05;
+      tmp.position.set(rad * Math.sin(th), y, rad * Math.cos(th) * 0.9 + 0.03);
+      orient(tmp, new Vector3(Math.sin(th), 0.15, Math.cos(th) * 0.9));
       tmp.updateMatrix();
-      const fg = featherGeometry(0.5, 0.18, s++, -0.15);
+      const fg = featherGeometry(0.34, 0.16, s++, -0.3, 0.1, 10, 4);
+      fg.applyMatrix4(tmp.matrix);
+      parts.push(fg);
+    }
+  }
+  // Leg "trousers": long pointed feathers over the thighs.
+  for (const sx of [-1, 1])
+    for (let k = 0; k < 6; k++) {
+      tmp.position.set(sx * (0.12 + k * 0.045), -0.72 - (k % 2) * 0.05, 0.3);
+      orient(tmp, new Vector3(sx * 0.35, 0, 1));
+      tmp.updateMatrix();
+      const fg = featherGeometry(0.55, 0.16, s++, -0.15);
       fg.applyMatrix4(tmp.matrix);
       parts.push(fg);
     }
@@ -287,60 +438,16 @@ function buildBody(reduced: boolean) {
   tail.rotation.x = -0.35;
   g.add(tail);
   const tailFeathers: { mesh: Mesh; k: number }[] = [];
-  for (let k = -4; k <= 4; k++) {
-    const m = new Mesh(featherGeometry(1.05 - Math.abs(k) * 0.03, 0.22, 900 + k, 0.05), mats.FEATHER);
-    m.position.z = -Math.abs(k) * 0.01;
+  for (let k = -5.5; k <= 5.5; k++) {
+    const m = new Mesh(featherGeometry(1.3 - Math.abs(k) * 0.035, 0.21, Math.round(900 + k * 2), 0.06, 0.1), mats.FEATHER);
+    m.position.z = -Math.abs(k) * 0.008;
     tail.add(m);
     tailFeathers.push({ mesh: m, k });
   }
 
-  // Talons
-  for (const sx of [-1, 1]) {
-    const foot = new Group();
-    foot.position.set(sx * 0.2, -1.18, 0.34);
-    g.add(foot);
-    foot.add(new Mesh(withSeed(new CylinderGeometry(0.06, 0.07, 0.3, 10)), mats.GOLD).translateY(0.12));
-    for (const a of [-0.45, 0, 0.45]) {
-      const claw = new Mesh(
-        taperTube([new Vector3(0, 0, 0), new Vector3(0, -0.04, 0.14), new Vector3(0, -0.13, 0.22), new Vector3(0, -0.22, 0.2)], 0.045, 0.004, 20, 8),
-        mats.GOLD,
-      );
-      claw.rotation.y = a;
-      foot.add(claw);
-    }
-    const back = new Mesh(
-      taperTube([new Vector3(0, 0, 0), new Vector3(0, -0.04, -0.12), new Vector3(0, -0.14, -0.16)], 0.04, 0.004, 16, 8),
-      mats.GOLD,
-    );
-    foot.add(back);
-  }
-
-  // Head
-  const head = new Group();
-  head.position.set(0, 0.98, 0.04);
+  buildTalons(g);
+  const head = buildHead();
   g.add(head);
-  const skull = withSeed(new SphereGeometry(0.33, 40, 28));
-  skull.scale(1.12, 0.9, 1.15);
-  skull.translate(0, 0.2, 0.04);
-  head.add(new Mesh(skull, mats.BODY));
-  // Beak: hooked, polished gold
-  head.add(
-    new Mesh(
-      taperTube([new Vector3(0, 0.19, 0.2), new Vector3(0, 0.18, 0.46), new Vector3(0, 0.1, 0.63), new Vector3(0, -0.05, 0.64), new Vector3(0, -0.1, 0.58)], 0.16, 0.008),
-      mats.GOLD,
-    ),
-  );
-  // Eyes and heavy brows
-  for (const sx of [-1, 1]) {
-    const eye = new Mesh(withSeed(new SphereGeometry(0.05, 16, 12)), mats.EYE);
-    eye.position.set(sx * 0.17, 0.27, 0.33);
-    head.add(eye);
-    const brow = new Mesh(withSeed(new SphereGeometry(1, 16, 10)), mats.GOLD);
-    brow.scale.set(0.16, 0.045, 0.11);
-    brow.position.set(sx * 0.15, 0.33, 0.31);
-    brow.rotation.z = sx * -0.38;
-    head.add(brow);
-  }
 
   return { group: g, head, tailFeathers };
 }
@@ -356,7 +463,7 @@ export function ProceduralEagle() {
     const body = buildBody(reduced);
     root.add(body.group);
     const right = buildWing(1, 100, reduced);
-    const left = buildWing(-1, 300, reduced);
+    const left = buildWing(-1, 400, reduced);
     root.add(right.side, left.side);
     return { root, body, wings: [left, right] as const };
   }, [reduced]);
@@ -373,7 +480,7 @@ export function ProceduralEagle() {
       ['open-account', right.anchors[2]],
     ];
     for (const [id, o] of ids) anchorObjects[id] = o;
-    eagleUniforms.uSpan.value = 3.8;
+    eagleUniforms.uSpan.value = 3.9;
     return clearAnchors;
   }, [rig]);
 
@@ -387,15 +494,10 @@ export function ProceduralEagle() {
       w.arm.rotation.set(lerp(CLOSED.armX, OPEN.armX), lerp(CLOSED.armY, OPEN.armY), lerp(CLOSED.armZ, OPEN.armZ) + Math.sin(t * 1.3) * 0.025 * o);
       w.fore.rotation.set(0, lerp(CLOSED.foreY, OPEN.foreY), lerp(CLOSED.foreZ, OPEN.foreZ));
       w.hand.rotation.set(0, lerp(CLOSED.handY, OPEN.handY), lerp(CLOSED.handZ, OPEN.handZ) + Math.sin(t * 1.3 - 0.6) * 0.04 * o);
-      for (const f of w.feathers) {
-        // Feathers fan out a beat after the bones: tips last.
-        const fo = ease(MathUtils.clamp((o - f.lag * 0.4) / 0.6, 0, 1));
-        f.mesh.rotation.z = MathUtils.lerp(f.closed, f.open, fo);
-        // Folded, the vanes turn to face forward so the wing reads as a cloak, not a blade.
-        f.mesh.rotation.y = MathUtils.lerp(FOLD_TWIST, 0, fo);
-      }
+      // Folded, the vanes turn to face forward so the wing reads as a cloak, not a blade.
+      for (const set of w.sets) set.update(o, FOLD_TWIST);
     }
-    for (const { mesh, k } of rig.body.tailFeathers) mesh.rotation.z = k * MathUtils.lerp(0.035, 0.11, eo);
+    for (const { mesh, k } of rig.body.tailFeathers) mesh.rotation.z = k * MathUtils.lerp(0.03, 0.09, eo);
 
     // Idle life + follow the pointer a little.
     rig.root.position.y = Math.sin(t * 0.9) * 0.04;
