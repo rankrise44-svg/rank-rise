@@ -6,14 +6,11 @@
 export const story = {
   /** 0 → 1 wings closed → fully open (scrubs the GLB clip / frame index) */
   open: 0,
-  /** 0 → 1 candlesticks on the feathers light up, body outward */
+  /** 0 → 1 gold feather fringes catch the light, body outward (wing opening) */
   reveal: 0,
-  /**
-   * 0 = solid gold sculpture, 1 = obsidian candlestick glass (the client's
-   * artwork, and the default look). Beat 5 can play the dissolve between them.
-   */
+  /** Gold fringe and eye-glow strength: dimmed while the falcon turns, restored by the beat-5 light sweep */
   mix: 1,
-  /** 0 → 1 beat-5 scan line, top to bottom; behind it: living candlestick glass */
+  /** 0 → 1 beat-5 light sweep, top to bottom: gold fringes and the blue eyes come back up behind it */
   scan: 0,
   /** Eagle yaw (beat 4 rotation), roll (banking) and extra scale */
   spin: 0,
@@ -51,7 +48,7 @@ export const BEATS = [
   { id: 'opening', title: 'Opening', at: 0.6 },
   { id: 'wings-open', title: 'Wings fully open', at: 3.0 },
   { id: 'flight', title: 'Rotation and flight', at: 4.3 },
-  { id: 'transform', title: 'Transformation', at: 6.9 },
+  { id: 'transform', title: 'Awakening', at: 6.9 },
 ] as const;
 
 /** Story track length in viewport heights. */

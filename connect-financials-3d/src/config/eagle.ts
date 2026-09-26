@@ -4,7 +4,7 @@
  *
  *  - 'glb'        public/models/eagle.glb — rigged, with a wings open/close clip
  *  - 'sequence'   public/eagle-frames/manifest.json + ~150 WebP frames
- *  - 'procedural' the built-in placeholder sculpture (always available)
+ *  - 'procedural' the built-in procedural peregrine falcon (always available)
  *  - 'auto'       glb if present → frames on phones if present → procedural
  *
  * Override from the URL for review: ?eagle=glb | sequence | procedural

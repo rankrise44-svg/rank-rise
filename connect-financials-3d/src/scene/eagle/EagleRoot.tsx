@@ -5,6 +5,7 @@ import { GlbEagle } from './GlbEagle';
 import { ProceduralEagle } from './ProceduralEagle';
 import { SequenceEagle } from './SequenceEagle';
 import { EagleStage } from './EagleStage';
+import { useStudioEnvironment } from './StudioLighting';
 
 type Resolved = { kind: EagleSourceKind; manifest?: FramesManifest };
 
@@ -64,9 +65,10 @@ class Fallback extends Component<{ children: ReactNode }, { failed: boolean }> {
   }
 }
 
-export function EagleRoot({ quality }: { quality: Quality }) {
+export function EagleRoot({ quality, shadows }: { quality: Quality; shadows: boolean }) {
+  useStudioEnvironment();
   return (
-    <EagleStage>
+    <EagleStage shadows={shadows}>
       <EagleSource quality={quality} />
     </EagleStage>
   );

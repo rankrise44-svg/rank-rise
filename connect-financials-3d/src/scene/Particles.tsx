@@ -2,24 +2,20 @@ import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import {
   AdditiveBlending,
-  BoxGeometry,
   BufferGeometry,
   Color,
   Float32BufferAttribute,
-  InstancedMesh,
-  MeshBasicMaterial,
-  Object3D,
   Points,
   ShaderMaterial,
 } from 'three';
 import { story } from '../story/state';
 
 /**
- * Gold sparks and floating candlesticks around the eagle. Both drift upward,
- * move against the scroll at a speed set by their depth (parallax), rush a
- * little with scroll velocity, and lean away from the pointer.
+ * Fine gold dust in the air around the falcon. It drifts upward, moves
+ * against the scroll at a speed set by its depth (parallax), rushes a little
+ * with scroll velocity, and leans away from the pointer.
  */
-export function Particles({ count, candles }: { count: number; candles: number }) {
+export function Particles({ count }: { count: number }) {
   const sparks = useMemo(() => {
     const pos: number[] = [];
     const seed: number[] = [];
@@ -55,7 +51,7 @@ export function Particles({ count, candles }: { count: number; candles: number }
           p.xy += uPointer * (0.2 + depth) * 0.35;
           vec4 mv = modelViewMatrix * vec4(p, 1.0);
           gl_Position = projectionMatrix * mv;
-          float size = mix(1.5, 5.0, pow(aSeed, 3.0)) * (1.0 + uBoost * 0.6);
+          float size = mix(1.0, 3.2, pow(aSeed, 4.0)) * (1.0 + uBoost * 0.5);
           gl_PointSize = size * uPixelRatio * (8.0 / -mv.z);
           vAlpha = (0.35 + 0.65 * sin(uTime * (1.0 + aSeed * 2.0) + aSeed * 50.0) * 0.5 + 0.5) * smoothstep(0.0, 0.3, depth);
         }
@@ -68,7 +64,7 @@ export function Particles({ count, candles }: { count: number; candles: number }
           float d = length(c);
           float a = smoothstep(0.5, 0.0, d);
           a = a * a;
-          gl_FragColor = vec4(uGold * (1.0 + a * 1.5), a * vAlpha);
+          gl_FragColor = vec4(uGold * (0.8 + a * 1.2), a * vAlpha * 0.6);
           #include <colorspace_fragment>
         }
       `,
@@ -76,24 +72,6 @@ export function Particles({ count, candles }: { count: number; candles: number }
     return new Points(g, mat);
   }, [count]);
 
-  const candleMesh = useMemo(() => {
-    const geo = new BoxGeometry(1, 1, 1);
-    const mat = new MeshBasicMaterial({ color: new Color('#D4AF37').multiplyScalar(1.1), transparent: true, opacity: 0.32, depthWrite: false });
-    const bodies = new InstancedMesh(geo, mat, candles);
-    const wicks = new InstancedMesh(geo, mat, candles);
-    const data = Array.from({ length: candles }, () => ({
-      x: (Math.random() - 0.5) * 18,
-      y: (Math.random() - 0.5) * 12,
-      z: -7 + Math.random() * 6,
-      h: 0.15 + Math.random() * 0.45,
-      spin: (Math.random() - 0.5) * 0.4,
-      speed: 0.05 + Math.random() * 0.12,
-      phase: Math.random() * 10,
-    }));
-    return { bodies, wicks, data };
-  }, [candles]);
-
-  const tmp = useMemo(() => new Object3D(), []);
   const scrollRef = useRef(0);
 
   useFrame((state, dt) => {
@@ -109,30 +87,7 @@ export function Particles({ count, candles }: { count: number; candles: number }
     ptr[0] += (story.pointerX - ptr[0]) * 0.04;
     ptr[1] += (story.pointerY - ptr[1]) * 0.04;
 
-    const t = state.clock.elapsedTime;
-    const { bodies, wicks, data } = candleMesh;
-    data.forEach((c, i) => {
-      const depth = (c.z + 7) / 6;
-      const y = ((c.y + t * c.speed + scroll * (0.3 + depth) + 6) % 12 + 12) % 12 - 6;
-      const x = c.x + ptr[0] * (0.2 + depth) * 0.35;
-      tmp.position.set(x, y, c.z);
-      tmp.rotation.set(0, t * c.spin + c.phase, Math.sin(t * 0.4 + c.phase) * 0.15);
-      tmp.scale.set(0.05, c.h * 0.8, 0.05);
-      tmp.updateMatrix();
-      bodies.setMatrixAt(i, tmp.matrix);
-      tmp.scale.set(0.012, c.h * 1.8, 0.012);
-      tmp.updateMatrix();
-      wicks.setMatrixAt(i, tmp.matrix);
-    });
-    bodies.instanceMatrix.needsUpdate = true;
-    wicks.instanceMatrix.needsUpdate = true;
   });
 
-  return (
-    <>
-      <primitive object={sparks} />
-      <primitive object={candleMesh.bodies} />
-      <primitive object={candleMesh.wicks} />
-    </>
-  );
+  return <primitive object={sparks} />;
 }

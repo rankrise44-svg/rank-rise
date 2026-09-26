@@ -40,9 +40,9 @@ export function FlightWords() {
 export function TransformWords() {
   return (
     <div data-transform-words className="invisible absolute bottom-[8vh] left-4 right-4 max-w-sm opacity-0 md:bottom-auto md:left-[6vw] md:right-auto md:top-[30vh]">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-gold">From gold to live markets</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-gold">Vision</p>
       <p className="mt-3 font-display text-[clamp(1.6rem,3vw,2.8rem)] font-semibold uppercase leading-none text-ink">
-        Every feather <span className="text-gold-hi">a live chart</span>
+        Eyes on <span className="text-gold-hi">every market</span>
       </p>
       <p className="mt-4 text-sm leading-relaxed text-muted">
         Forex, metals, indices, energies and crypto CFDs, priced from multi-bank liquidity and streamed to one account.

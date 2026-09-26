@@ -47,10 +47,10 @@ export function Background() {
           float y = 1.0 - vUv.y;
           float width = 0.1 + y * 0.42;
           float cone = smoothstep(width, 0.0, abs(p.x)) * smoothstep(1.05, 0.15, y);
-          col += uGold * cone * 0.085 * uGlow;
+          col += mix(vec3(0.16, 0.26, 0.55), uGold, 0.3) * cone * 0.07 * uGlow;   // soft cool light from above
           // Halo behind the eagle
           float halo = exp(-dot(p - vec2(0.0, 0.05), p - vec2(0.0, 0.05)) * 7.0);
-          col += mix(uMid, uGold * 0.35, 0.35) * halo * 0.35 * uGlow;
+          col += mix(uMid, uGold * 0.3, 0.18) * halo * 0.32 * uGlow;
 
           // Beat 4: navy grid with gold lines, receding in perspective.
           if (uGrid > 0.001) {

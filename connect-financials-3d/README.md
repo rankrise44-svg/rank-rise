@@ -11,7 +11,7 @@ npm run build      # typecheck + production build (chunked, for real hosting)
 npm run build:preview   # one self-contained HTML file for sharing a preview
 ```
 
-Review switches (URL params): `?eagle=procedural|glb|sequence` · `?quality=low|high`
+Review switches (URL params): `?eagle=procedural|glb|sequence` · `?quality=low|high` · `?studio=<0–1>` (falcon only, wings 0 folded → 1 open) with `&spin=<rad>&zoom=<x>&focus=<y>` · `?shadows=0` `?ao=0` `?grain=0`
 
 ## Stack
 
@@ -28,15 +28,16 @@ src/
   story/smoothScroll.ts    Lenis ↔ ScrollTrigger, scrollToId()
   scene/Stage.tsx          fixed WebGL layer (bloom on desktop only)
   scene/Background.tsx     navy backdrop, gold light cone, beat-4 grid
-  scene/Particles.tsx      gold sparks + floating candlesticks (scroll + pointer)
+  scene/Particles.tsx      fine gold dust (scroll + pointer)
   scene/CameraRig.tsx      frames the eagle for any aspect, syncs shader uniforms
   scene/AnchorProjector    pins the HTML wing menu to points on the wings
   scene/eagle/
     EagleRoot.tsx          picks the source: glb → frames (phones) → placeholder
     GlbEagle.tsx           real eagle.glb, clip scrubbed by scroll via AnimationMixer
     SequenceEagle.tsx      ~150 WebP frames scrubbed by scroll
-    ProceduralEagle.tsx    PLACEHOLDER sculpture so the story can be reviewed now
-    eagleMaterial.ts       one shader: obsidian glass with white candlestick feathers (the client artwork, default) ↔ solid gold
+    ProceduralEagle.tsx    procedural peregrine falcon, real proportions, folds and spreads its wings
+    StudioLighting.tsx     studio: cool blue key, gold rims, face light, generated reflection map
+    eagleMaterial.ts       physically based feather materials: plumage, barring, gold fringes, blue eyes
   sections/                HTML layers per beat + sections
   feed/                    simulated price feed (same contract as the original) + store
   data/market.ts           instruments, account tiers, calendar, sample portal data (from the repo)
@@ -57,10 +58,10 @@ timelines never fight over one property.
 | # | Beat | What happens |
 |---|---|---|
 | 1 | hero | Folded eagle, split title, ticker; title blurs away |
-| 2 | opening | Wings open, candles light body→tips, live price cards drift in |
+| 2 | opening | Wings open, gold fringes catch the light body→tips, legs swing forward, live price cards drift in |
 | 3 | wings-open | Six options pinned to the wings (grid on phones) |
-| 4 | flight | Eagle banks and turns 360°, camera orbits, navy/gold grid, cards fly past, eagle gilds to a statue |
-| 5 | transform | Scan line dissolves the statue into living candlestick glass |
+| 4 | flight | Falcon banks and turns 360°, camera orbits, navy/gold grid, cards fly past, light drops |
+| 5 | awakening | A warm light sweeps down the falcon; gold fringes and blue eyes come back up |
 | 6 | markets | Eagle docks beside the terminal; Market Watch, chart, order book tilt in; currencies |
 | 7 | card | Eagle folds into the portrait frame; About types in |
 | 8 | words | SPEED ═ PRECISION / TRUST ═ GROWTH, layered cards |

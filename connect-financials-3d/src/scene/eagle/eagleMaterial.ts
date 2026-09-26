@@ -1,302 +1,443 @@
-import { Color, DoubleSide, ShaderMaterial, Vector3 } from 'three';
+import { Color, DoubleSide, MeshPhysicalMaterial, type Texture } from 'three';
 
 /**
- * One shader for every part of the eagle, styled on the client's reference
- * sheet: an obsidian-glass falcon whose feathers carry gold and electric-blue
- * candlestick charts, gold edge light, gold beak and talons.
+ * The falcon's materials. Physically based (three's MeshPhysicalMaterial:
+ * image-based lighting, Fresnel, sheen for the feather fibres, clear coat only
+ * on the wet eye and keratin), with feather detail added per pixel through
+ * onBeforeCompile. Nothing decorative is drawn on the bird: the colour is a
+ * peregrine's plumage pattern re-coloured midnight blue, with gold kept to a
+ * thin metallic fringe on selected feathers.
  *
- * Parts (set by define):
- *   FEATHER  pointed glass vanes: serrated edges, split tips, barbs, candles
- *   BODY     torso and wing bones under the feathers
- *   HEAD     skull: dark hood, lighter speckled cheeks and throat
- *   BEAK     gold at the base fading to a dark hooked tip (along uv.x)
- *   GOLD     toes, eye rings: polished gold with scale bands
- *   CLAW     glossy black talons
- *   EYE      iris, pupil and a wet highlight
+ *   FEATHER  flight feathers and coverts: asymmetric vanes, barbs, rachis,
+ *            peregrine barring, ragged edges, emarginated outer primaries,
+ *            back-light translucency, gold fringe on some
+ *   TORSO    body: procedural overlapping contour feathers, pale upper
+ *            breast, barred lower breast and flanks, dark back
+ *   HEAD     head: feathers radiating from the beak, dark hood, malar
+ *            ("moustache") stripe, pale cheek and throat
+ *   BODY     uv-mapped plumage (wing lining, leading edges, thighs, any .glb body)
+ *   BEAK     blue-grey keratin darkening to a black hooked tip (along uv.x)
+ *   GOLD     gold-yellow bare skin: cere, eye ring, legs and toes (scaled)
+ *   CLAW     dark navy-black talons
+ *   EYE      electric-blue iris, large pupil, wet cornea
  *
- * Lighting is a hand-built studio: a gold softbox overhead, two blue strip
- * lights at the sides, a warm rim behind. Reflections come from that
- * environment, so the glass reads as glass without an HDR download.
+ * Lighting is tone-mapped (ACES) inside the shader; the few glows (gold
+ * fringe glint, the iris, the beat-5 light sweep) are added after, still HDR,
+ * so the bloom pass catches them.
  *
  * Story uniforms:
- *   uReveal  candles light up one by one, body → wingtips
- *   uMix     0 = solid gold sculpture, 1 = obsidian candlestick glass
- *   uScan    beat 5: a scan line sweeps down; behind it the glass comes alive
- *
- * Skinning chunks are included so the same material restyles a rigged .glb.
+ *   uReveal  0 → 1 during the wing opening: gold fringes catch light, body → tips
+ *   uMix     gold fringe and eye-glow strength (dimmed while the falcon turns)
+ *   uScan    beat 5: a warm light sweeps down the bird and brings them back
  */
 export const eagleUniforms = {
   uTime: { value: 0 },
   uReveal: { value: 0 },
+  /** wing spread 0 → 1 (back-light through the vanes only reads on a spread wing) */
+  uOpen: { value: 1 },
   uMix: { value: 1 },
   uScan: { value: 0 },
   uGlow: { value: 1 },
   /** Half the wingspan in world units at full open; normalises the reveal sweep */
-  uSpan: { value: 4 },
-  uLightDir: { value: new Vector3(0.15, 1, 0.6).normalize() },
+  uSpan: { value: 4.5 },
+  uExposure: { value: 1.35 },
   uGold: { value: new Color('#D4AF37') },
   uGoldHi: { value: new Color('#F5D27A') },
-  uGoldDark: { value: new Color('#9C7A1E') },
-  uBlue: { value: new Color('#3B7BFF') },
-  uRim: { value: new Color('#2F5BC8') },
-  uObsidian: { value: new Color('#070D1C') },
+  uBlue: { value: new Color('#2F7BFF') },
+  uIris: { value: new Color('#3D9BFF') },
+  /** darkest plumage: hood, back, bars */
+  uNavy: { value: new Color('#060B1A') },
+  /** mid plumage: underwing, flight feathers */
+  uMid: { value: new Color('#1A2748') },
+  /** palest plumage: breast, cheek, throat */
+  uPale: { value: new Color('#6F7C97') },
 };
 
-const vertex = /* glsl */ `
-  #include <common>
-  #include <skinning_pars_vertex>
+const VERT_PARS = /* glsl */ `
   attribute float aSeed;
   attribute float aSize;
-  varying float vSize;
-  varying vec2 vUv;
-  varying vec3 vN;
-  varying vec3 vWorld;
-  varying vec3 vObj;
-  varying vec3 vObjN;
-  varying float vSeed;
-
-  void main() {
-    #include <skinbase_vertex>
-    #include <beginnormal_vertex>
-    #include <skinnormal_vertex>
-    #include <begin_vertex>
-    #include <skinning_vertex>
-    #ifdef USE_INSTANCING
-      transformed = (instanceMatrix * vec4(transformed, 1.0)).xyz;
-      objectNormal = normalize(mat3(instanceMatrix) * objectNormal);
-    #endif
-    vUv = uv;
-    vSeed = aSeed;
-    vSize = aSize;
-    vObj = position;
-    vObjN = normal;
-    vec4 wp = modelMatrix * vec4(transformed, 1.0);
-    vWorld = wp.xyz;
-    vN = normalize(mat3(modelMatrix) * objectNormal);
-    gl_Position = projectionMatrix * viewMatrix * wp;
-  }
+  varying vec2 vFUv;
+  varying vec3 vFWorld;
+  varying vec3 vFObj;
+  varying vec3 vFObjN;
+  varying float vFSeed;
+  varying float vFSize;
 `;
 
-const fragment = /* glsl */ `
-  uniform float uTime, uReveal, uMix, uGlow, uSpan, uScan;
-  uniform vec3 uLightDir, uGold, uGoldHi, uGoldDark, uBlue, uRim, uObsidian;
-  varying vec2 vUv;
-  varying vec3 vN;
-  varying vec3 vWorld;
-  varying vec3 vObj;
-  varying vec3 vObjN;
-  varying float vSeed;
-  varying float vSize;
+const VERT_MAIN = /* glsl */ `
+  vFUv = uv;
+  vFSeed = aSeed;
+  vFSize = aSize;
+  vFObj = transformed;
+  vFObjN = objectNormal;
+  vec4 eW = vec4(transformed, 1.0);
+  #ifdef USE_INSTANCING
+    eW = instanceMatrix * eW;
+  #endif
+  vFWorld = (modelMatrix * eW).xyz;
+`;
 
-  float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-  float noise(vec2 p) {
+const FRAG_PARS = /* glsl */ `
+  uniform float uTime, uReveal, uMix, uGlow, uSpan, uScan, uExposure, uOpen;
+  uniform vec3 uGold, uGoldHi, uBlue, uIris, uNavy, uMid, uPale;
+  varying vec2 vFUv;
+  varying vec3 vFWorld;
+  varying vec3 vFObj;
+  varying vec3 vFObjN;
+  varying float vFSeed;
+  varying float vFSize;
+
+  float eHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+  float eNoise(vec2 p) {
     vec2 i = floor(p), f = fract(p);
     f = f * f * (3.0 - 2.0 * f);
-    return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y);
+    return mix(mix(eHash(i), eHash(i + vec2(1, 0)), f.x), mix(eHash(i + vec2(0, 1)), eHash(i + vec2(1, 1)), f.x), f.y);
   }
 
-  float box(vec2 p, vec2 h) {
-    vec2 d = abs(p) - h;
-    float dist = max(d.x, d.y);
-    float w = fwidth(dist) * 0.9 + 1e-4;
-    return 1.0 - smoothstep(-w, w, dist);
+  // Overlapping contour feathers on a 2D surface parametrisation.
+  // p: x across the flow, y along it (toward the tips), in cells; L: feather length in rows.
+  // Higher rows lie on top (their tips cover the bases below), so the first row
+  // containing p wins, and rows above it shade it. Returns the slope of the
+  // feather's surface (g) analytically, so the lighting stays smooth.
+  struct Plume { vec2 g; float ao; float edge; float t; float id; float qx; };
+  float eHw(float t, float W) {
+    return W * sqrt(clamp(t * 2.6, 0.0, 1.0)) * pow(max(1.0 - pow(max(t, 0.0), 2.0), 0.0), 0.6);
+  }
+  Plume ePlumage(vec2 p, float L, float lod) {
+    Plume res = Plume(vec2(0.0), 1.0, 0.0, 0.0, 0.0, 0.0);
+    float shadowD = 9.0;
+    float r0 = floor(p.y);
+    vec2 wq = vec2(0.0);
+    float wLen = 1.0, wW = 1.0;
+    for (int i = -3; i <= 0; i++) {
+      float r = r0 + float(i);
+      float off = fract(r * 0.5) + eHash(vec2(r, 7.0)) * 0.3;
+      float cBase = floor(p.x - off + 0.5) + off;
+      float rowShadow = 9.0;
+      bool rowHit = false;
+      for (int j = -1; j <= 1; j++) {
+        float cx = cBase + float(j);
+        float id = eHash(vec2(cx, r));
+        float len = L * (0.8 + 0.4 * id);
+        float W = 0.66 * (0.85 + 0.3 * fract(id * 7.13));
+        vec2 q = p - vec2(cx + (id - 0.5) * 0.35, r);
+        q.x += q.y * (fract(id * 3.7) - 0.5) * 0.25;           // each feather leans a little
+        float t = q.y / len;
+        float fray = (eNoise(vec2(q.y * 9.0, id * 50.0)) - 0.5) * 0.1 * t * (1.0 - lod);
+        float inside = eHw(t, W) + fray - abs(q.x);
+        if (t > 0.0 && t < 1.0 && inside > 0.0) {
+          rowHit = true;
+          if (inside / W > res.edge) {
+            res.edge = inside / W;
+            res.t = t;
+            res.id = id;
+            res.qx = q.x / W;
+            wq = q; wLen = len; wW = W;
+          }
+        } else if (t > 0.0) {
+          rowShadow = min(rowShadow, t >= 1.0 ? length(vec2(q.x, (t - 1.0) * len)) : -inside);
+        }
+      }
+      if (rowHit) break;
+      shadowD = min(shadowD, rowShadow);
+    }
+    // surface: a soft dome over each feather, thickest toward its free tip
+    float e = clamp(res.edge, 0.0, 1.0);
+    float se = sqrt(e + 0.04);
+    float f = 0.5 + 0.5 * res.t;
+    float dhw = (eHw(res.t + 0.02, wW) - eHw(res.t - 0.02, wW)) / (0.04 * wLen);
+    vec2 de = vec2(-sign(wq.x) / wW, dhw / wW);
+    res.g = (0.5 / se * f * de + vec2(0.0, se * 0.5 / wLen)) * step(0.0001, res.edge) * (1.0 - lod);
+    res.ao = mix(mix(0.5, 1.0, smoothstep(0.0, 0.5, shadowD)), 0.85, lod);
+    return res;
   }
 
-  // Candlesticks laid along the vane. Returns body mask; wick, colour pick and rnd out.
-  float candles(vec2 uv, vec2 grid, float seed, float anim, out float rnd, out float up, out float wickOut, out float blue) {
-    vec2 g = uv * grid;
-    vec2 id = floor(g);
-    vec2 f = fract(g) - 0.5;
-    rnd = hash(id + seed * 13.17);
-    float r2 = hash(id.yx + seed * 7.31 + 3.0);
-    up = step(0.42, r2);
-    blue = step(0.62, hash(id * 2.3 + seed));
-    float bodyH = mix(0.12, 0.34, mix(rnd, 0.5 + 0.5 * sin(uTime * (1.2 + r2 * 2.5) + rnd * 40.0), anim));
-    float cy = (r2 - 0.5) * 0.18;
-    float body = box(f - vec2(0.0, cy), vec2(0.19, bodyH));
-    float inner = box(f - vec2(0.0, cy), vec2(0.11, max(bodyH - 0.07, 0.0)));
-    float wick = box(f - vec2(0.0, cy), vec2(0.03, min(bodyH + 0.14, 0.47)));
-    float c = clamp(mix(body - inner, body, up), 0.0, 1.0);
-    float present = step(0.55, hash(id * 1.7 + seed * 3.1 + 11.0));
-    wickOut = clamp(wick - body, 0.0, 1.0) * present;
-    return c * present;
-  }
-
-  // The studio the glass reflects.
-  vec3 studio(vec3 R) {
-    vec3 c = mix(vec3(0.004, 0.007, 0.02), vec3(0.012, 0.024, 0.07), smoothstep(-0.6, 0.4, R.y));
-    // gold softbox overhead
-    float top = smoothstep(0.72, 0.9, R.y) * smoothstep(0.75, 0.35, abs(R.x));
-    c += uGoldHi * top * 2.2 * uGlow;
-    // blue strip lights left and right
-    float strips = exp(-pow((abs(R.x) - 0.88) * 7.0, 2.0)) * smoothstep(-0.5, 0.2, R.y);
-    c += uBlue * strips * 0.7;
-    // warm rim from behind
-    c += uGold * smoothstep(-0.55, -0.9, R.z) * 0.9 * uGlow;
-    return c;
-  }
-
-  void main() {
-    vec3 N = normalize(vN);
-    if (!gl_FrontFacing) N = -N;
-    vec3 V = normalize(cameraPosition - vWorld);
-
-    // ---------------- feather cut-outs: serrated edges and split tips
-    #ifdef FEATHER
-      float edgeDist = 0.5 - abs(vUv.x - 0.5);
-      float saw = fract(vUv.y * 46.0 + vSeed * 3.7 + (vUv.x > 0.5 ? 0.5 : 0.0));
-      float serr = 0.03 * saw * smoothstep(0.2, 0.55, vUv.y) + 0.015 * noise(vec2(vUv.y * 90.0, vSeed));
-      if (edgeDist < serr) discard;
-      // tips break into a few loose barbs
-      float slit = step(0.82, vUv.y) * step(fract(vUv.x * 5.0 + vSeed * 0.37), 0.1);
-      if (slit > 0.5) discard;
-      // barbs: fine diagonal ridges running out from the spine
-      float barb = sin((abs(vUv.x - 0.5) * 3.0 - vUv.y) * 260.0 + vSeed * 9.0) * 0.5 + 0.5;
-      N = normalize(N + (barb - 0.5) * 0.18 * normalize(cross(N, vec3(0.0, 1.0, 0.0)) + 1e-4));
-    #endif
-
-    vec3 L = normalize(uLightDir);
-    float ndl = max(dot(N, L), 0.0);
-    vec3 H = normalize(L + V);
-    float ndv = max(dot(N, V), 0.0);
-    vec3 R = reflect(-V, N);
-    vec3 env = studio(R);
-    float fres = 0.06 + 0.94 * pow(1.0 - ndv, 5.0);   // Schlick, glass F0 ≈ 0.06
-    float rim = pow(1.0 - ndv, 2.5);
-    float specK = pow(max(dot(N, H), 0.0), 90.0);
-    // back rim lights: blue from the left, gold from the right
-    float rimBlue = pow(max(dot(N, normalize(vec3(-0.8, 0.2, -0.6))), 0.0), 3.0);
-    float rimGold = pow(max(dot(N, normalize(vec3(0.8, 0.35, -0.5))), 0.0), 3.0);
-
-    // Beat 5: behind the scan line the eagle is living candlestick glass.
-    float lineY = uScan >= 0.999 ? -1e3 : mix(3.4, -3.6, uScan);
-    float grain = hash(floor(vWorld.xy * 24.0)) - 0.5;
-    float passed = smoothstep(lineY - 0.04, lineY + 0.04, vWorld.y + grain * 0.22);
-    float m = mix(uMix, 1.0, passed);
-    float live = passed;
-    float band = exp(-abs(vWorld.y + grain * 0.22 - lineY) * 14.0) * step(uScan, 0.999) * step(0.001, uScan);
-
-    // Solid gold sculpture (beat 4) and obsidian glass (everything else)
-    vec3 gold = uGold * (0.03 + 0.4 * ndl * uGlow) + env * uGold * 0.9 + uGoldHi * specK * 1.4 * uGlow;
-    vec3 glassBase = uObsidian * (0.35 + 0.65 * ndl);
-    vec3 glass = glassBase + env * fres * 1.05 + vec3(0.85, 0.9, 1.0) * specK * 0.7;
-    glass += uBlue * rimBlue * 0.35 + uGold * rimGold * 0.3;
-
-    vec3 col;
-
-    #if defined(GOLD)
-      // scale bands along the toe
-      float bands = smoothstep(0.35, 0.5, abs(fract(vUv.x * 14.0) - 0.5));
-      col = gold * (0.75 + 0.25 * bands) + uGoldHi * specK * 0.8 + env * uGold * 0.4;
-    #elif defined(CLAW)
-      col = vec3(0.01, 0.012, 0.02) + env * fres * 1.8 + vec3(1.0) * specK * 1.4;
-    #elif defined(BEAK)
-      float tip = smoothstep(0.42, 0.62, vUv.x);
-      vec3 goldBeak = gold + uGoldHi * specK;
-      vec3 darkTip = vec3(0.015, 0.018, 0.03) + env * fres * 1.7 + vec3(1.0) * specK * 1.2;
-      col = mix(goldBeak, darkTip, tip);
-    #elif defined(EYE)
-      // object-space facing: +z is the front of the eye
-      vec3 en = normalize(vObjN);
-      float r = length(en.xy);
-      float pupil = 1.0 - smoothstep(0.26, 0.3, r);
-      float iris = smoothstep(0.7, 0.62, r);
-      float fibres = 0.75 + 0.25 * noise(vec2(atan(en.y, en.x) * 12.0, r * 20.0));
-      vec3 irisCol = mix(uGold * 1.1, uBlue * 1.2, smoothstep(0.34, 0.6, r)) * fibres;
-      col = mix(vec3(0.02, 0.025, 0.05), irisCol, iris);
-      col = mix(col, vec3(0.0), pupil * step(0.0, en.z));
-      col += vec3(1.0) * pow(max(dot(N, normalize(vec3(0.3, 0.7, 0.6) + V)), 0.0), 160.0) * 1.2;  // wet highlight
-    #else
-      col = mix(gold, glass, m);
-      col += uRim * rim * (0.25 + 0.2 * m);
-    #endif
-
-    #ifdef HEAD
-      // dark hood over crown and nape, lighter speckled cheek and throat
-      float cheek = smoothstep(0.24, 0.06, vObj.y - 0.08 * vObj.z) * smoothstep(-0.05, 0.25, vObj.z);
-      float speck = step(0.78, hash(floor(vObj.xy * 90.0 + vObj.z * 40.0)));
-      col = mix(col, col * 1.8 + vec3(0.05, 0.06, 0.09) * m, cheek * 0.8);
-      col += (uGoldHi * 0.6 + vec3(0.25)) * speck * cheek * 0.35 * m;
-      // fine feather flecks all over the skull
-      float fleck = step(0.93, hash(floor(vec2(atan(vObj.z, vObj.x) * 40.0, vObj.y * 60.0))));
-      col += mix(uBlue, uGoldHi, step(0.5, hash(floor(vObj.xy * 60.0)))) * fleck * 0.25 * m;
-    #endif
-
-    #if defined(FEATHER) || defined(BODY)
-      float rnd, up, wick, isBlue;
-      #ifdef FEATHER
-        float c = candles(vec2(vUv.x, vUv.y * 0.9), vec2(2.0, 11.0), vSeed, live, rnd, up, wick, isBlue);
-        float spine = box(vec2(vUv.x - 0.5, 0.0), vec2(0.014, 1.0)) * smoothstep(1.0, 0.55, vUv.y);
-        // Big flight feathers carry the light; small coverts and body feathers stay mostly dark glass.
-        float big = smoothstep(0.28, 1.0, vSize);
-        float strength = mix(0.35, 1.0, big);
-      #else
-        float c = candles(vUv, vec2(30.0, 18.0), 0.0, live, rnd, up, wick, isBlue);
-        float spine = 0.0;
-        float strength = mix(0.55, 0.28, m);
-      #endif
-
-      float sweep = abs(vWorld.x) / uSpan;
-      float t = uReveal * 1.45 - sweep - rnd * 0.35;
-      float lit = smoothstep(0.0, 0.06, t);
-      float flicker = 0.85 + 0.15 * sin(uTime * 3.0 + rnd * 40.0);
-
-      float cw = max(c, wick);
-      col *= 1.0 - cw * (1.0 - lit) * 0.5 * (1.0 - m);
-      col += uGoldDark * cw * (1.0 - lit) * 0.18 * m;
-      vec3 goldCandle = mix(uGoldHi, uGold, 1.0 - up);
-      vec3 glassCandle = mix(mix(uGoldHi * 1.2, vec3(1.0, 0.96, 0.88), up * 0.4), uBlue * 1.5, isBlue);
-      vec3 candleCol = mix(goldCandle, glassCandle, m);
-      col += candleCol * c * lit * flicker * strength * (1.1 + 1.0 * m);
-      col += mix(uGoldHi, uBlue * 1.3, isBlue * m) * wick * lit * strength * (1.0 + 0.6 * m);
-      col += uGoldHi * spine * (0.25 + 0.6 * lit) * strength * (1.0 - 0.4 * m);
-
-      #ifdef FEATHER
-        // Edge light: each vane is outlined in gold, some in electric blue.
-        float edgeGlow = smoothstep(0.12, 0.0, edgeDist - serr) * smoothstep(0.05, 0.3, vUv.y);
-        float blueEdge = step(0.7, fract(vSeed * 0.618));
-        vec3 edgeCol = mix(uGoldHi, uBlue * 1.4, blueEdge);
-        col += edgeCol * edgeGlow * (0.55 + 0.9 * lit) * m * mix(0.3, 1.0, big);
-        col += uGold * edgeGlow * 0.4 * (1.0 - m);
-        // translucent depth: faint blue light inside the glass along the spine
-        col += uBlue * pow(1.0 - abs(vUv.x - 0.5) * 2.0, 3.0) * 0.08 * m * (0.5 + 0.5 * lit);
-        // barbs catch the light
-        col += vec3(0.5, 0.6, 0.85) * barb * specK * 0.6 * m;
-      #endif
-    #endif
-
-    col += (uGoldHi * 2.2 + vec3(0.6)) * band * (0.6 + 0.4 * hash(floor(vWorld.xy * 60.0) + floor(uTime * 12.0)));
-
-    gl_FragColor = vec4(col, 1.0);
-    #include <colorspace_fragment>
+  vec3 eACES(vec3 c) {
+    const mat3 i = mat3(0.59719, 0.07600, 0.02840, 0.35458, 0.90834, 0.13383, 0.04823, 0.01566, 0.83777);
+    const mat3 o = mat3(1.60475, -0.10208, -0.00327, -0.53108, 1.10813, -0.07276, -0.07367, -0.00605, 1.07602);
+    c = i * c;
+    vec3 a = c * (c + 0.0245786) - 0.000090537;
+    vec3 b = c * (0.983729 * c + 0.4329510) + 0.238081;
+    return clamp(o * (a / b), 0.0, 1.0);
   }
 `;
 
-export type EaglePart = 'FEATHER' | 'BODY' | 'HEAD' | 'BEAK' | 'GOLD' | 'CLAW' | 'EYE';
+// Runs right after clipping: cut-outs, story state, plumage, colour.
+const FRAG_SETUP = /* glsl */ `
+  float eM = uMix;
+  float eBand = 0.0;
+  vec2 eGrad = vec2(0.0);  // surface slope in the eP parametrisation (analytic, no aliasing)
+  vec2 eP = vFUv;          // parametrisation the slope is expressed in
+  float ePeriod = 0.0;     // eP.x wraps with this period (0 = no wrap)
+  float eBump = 0.0;
+  float eAO = 1.0;         // occlusion from overlapping feathers
+  float eThin = 0.0;       // how much back light passes through
+  vec3 eGlow = vec3(0.0);  // added after tone mapping (HDR, feeds bloom)
+  float eRough = 0.55;
+  float eMetal = 0.0;
+  vec3 eBase = uNavy;
+  {
+    float lineY = uScan >= 0.999 ? -1e3 : mix(3.2, -3.4, uScan);
+    float wave = (eNoise(vFWorld.xz * 3.0) - 0.5) * 0.12;   // a soft, slightly uneven edge
+    float passed = smoothstep(lineY - 0.12, lineY + 0.12, vFWorld.y + wave);
+    eM = mix(uMix, 1.0, passed);
+    eBand = exp(-abs(vFWorld.y + wave - lineY) * 7.0) * step(uScan, 0.999) * step(0.001, uScan);
+  }
+
+  #ifdef FEATHER
+    float big = smoothstep(0.45, 1.4, vFSize);          // coverts ≈ 0.15–0.7, flight 1.1–2.6
+    float side = vFUv.x - 0.5;
+    float edgeDist = 0.5 - abs(side);
+    float rag = 0.02 * eNoise(vec2(vFUv.y * 140.0, vFSeed * 7.0)) * smoothstep(0.25, 0.75, vFUv.y);
+    // falcons: only the outermost primaries are emarginated
+    float emarg = step(2.25, vFSize) * smoothstep(0.56, 0.7, vFUv.y);
+    float lim = 0.5 * emarg * (side > 0.0 ? 0.42 : 0.2);
+    if (edgeDist < rag + lim) discard;
+    // a few barbs part near the tip
+    if (vFUv.y > 0.8 && fract(vFUv.x * 7.0 + vFSeed * 0.37) < 0.05 * big) discard;
+    edgeDist -= lim + rag;
+
+    float barbAA = 1.0 - smoothstep(0.2, 0.6, fwidth(vFUv.y * 360.0) / 6.28);
+    float phase = (abs(side) * 2.4 - vFUv.y) * 360.0 + vFSeed * 9.0;
+    float barbs = 0.5 + 0.5 * sin(phase) * barbAA;
+    float rachis = exp(-pow(side / 0.014, 2.0)) * smoothstep(1.02, 0.25, vFUv.y);
+    // slope of: cup across the vane + raised shaft + fine barb ridges
+    eGrad = vec2(-8.0 * side * 0.35 - 2.0 * side / (0.014 * 0.014) * rachis * 0.3 * 0.02, 0.0);
+    eGrad += 0.5 * cos(phase) * barbAA * vec2(sign(side) * 2.4, -1.0) * 360.0 * 0.0012;
+    eBump = 0.05 * (0.5 + big);
+    // bases are tucked under the coverts
+    eAO = mix(mix(0.62, 0.28, big), 1.0, smoothstep(0.0, mix(0.35, 0.6, big), vFUv.y));
+
+    float vr = eHash(vec2(vFSeed, 3.1));
+    // peregrine flight feathers are barred; coverts carry smaller bars
+    float barPhase = fract(vFUv.y * mix(7.0, 10.0, vr) * mix(2.2, 1.0, big) + vr + side * 0.6);
+    float bar = smoothstep(0.3, 0.45, barPhase) * smoothstep(0.8, 0.62, barPhase);
+    vec3 plume = mix(uMid, uPale, mix(0.15, 0.4, vr) * (1.0 - big * 0.5));
+    eBase = mix(plume, uNavy, bar * mix(0.55, 0.75, big));
+    eBase = mix(eBase, uNavy, smoothstep(0.72, 1.0, vFUv.y) * big * 0.55);       // dark tips
+    eBase *= 0.88 + 0.2 * barbs;                                                 // fibre streaks
+    eBase = mix(eBase * 1.25, eBase, smoothstep(0.0, 0.02, abs(side)));         // pale shaft
+    eRough = mix(0.46, 0.62, barbs);
+    eThin = mix(0.4, 1.0, big) * mix(0.15, 1.0, uOpen);
+
+    // gold fringe on selected feathers, revealed from the body out to the tips
+    float goldSel = step(0.62, fract(vFSeed * 0.6180339 + 0.13)) * smoothstep(0.5, 0.9, big);
+    float fringe = smoothstep(0.05, 0.005, edgeDist) * smoothstep(0.3, 0.75, vFUv.y) * goldSel;
+    float sweep = abs(vFWorld.x) / uSpan;
+    float lit = smoothstep(0.0, 0.1, uReveal * 1.4 - sweep - vr * 0.3) * eM;
+    float gm = fringe * lit;
+    eBase = mix(eBase, uGold, gm);
+    eMetal = gm;
+    eRough = mix(eRough, 0.3, gm);
+    eGlow += uGoldHi * gm * 0.1 * uGlow;
+  #endif
+
+  #ifdef TORSO
+    float th = atan(vFObj.x, vFObj.z) / 6.28318 * 40.0;
+    vec2 pp = vec2(th, (1.3 - vFObj.y) / 0.05);
+    float lod = smoothstep(0.25, 0.7, fwidth(pp.y));
+    Plume pl = ePlumage(pp, 2.2, lod);
+    eGrad = pl.g; eP = pp; ePeriod = 40.0; eBump = 0.06; eAO = mix(pl.ao, 1.0, 0.35);
+    float front = smoothstep(0.0, 0.55, vFObjN.z);
+    float breast = front * smoothstep(-1.0, -0.5, vFObj.y);
+    float upper = smoothstep(0.1, 0.45, vFObj.y);
+    float nape = smoothstep(1.02, 1.16, vFObj.y) * (1.0 - front);   // dark nape continues the hood                     // plain upper breast
+    vec3 plume = mix(uNavy, uPale * 0.95, breast * (1.0 - nape));
+    // barring: a dark crescent near each lower-breast and flank feather's tip lines up into bars
+    float bar = smoothstep(0.66, 0.74, pl.t) * smoothstep(0.92, 0.84, pl.t) * smoothstep(0.75, 0.25, abs(pl.qx));
+    plume = mix(plume, uNavy * 1.3, bar * (1.0 - upper) * max(breast, 0.35) * 0.55);
+    float fib = eNoise(vec2(pl.qx * 14.0, pl.t * 30.0 + pl.id * 9.0));
+    eBase = plume * mix(0.86 + 0.26 * fib, 1.0, lod) * mix(0.8, 1.0, pl.edge > 0.0 ? 1.0 : 0.0);
+    eRough = 0.55 + 0.1 * fib;
+    eThin = 0.15;
+    eGlow += uGoldHi * smoothstep(0.06, 0.0, pl.edge) * step(0.0001, pl.edge) * step(0.93, pl.id) * (1.0 - front) * 0.2 * eM;
+  #endif
+
+  #ifdef HEAD
+    vec3 hd = normalize(vFObj);
+    float phi = acos(clamp(hd.z, -1.0, 1.0));
+    float hth = atan(hd.y, hd.x) / 6.28318 * 34.0;
+    vec2 pp = vec2(hth, phi / 0.07);
+    float lod = smoothstep(0.25, 0.7, fwidth(pp.y));
+    Plume pl = ePlumage(pp, 2.6, lod);
+    eGrad = pl.g; eP = pp; ePeriod = 34.0; eBump = 0.07; eAO = mix(pl.ao, 1.0, 0.3);
+    float ax = abs(hd.x);
+    // Peregrine face: dark hood over crown, nape and forehead; a heavy malar
+    // ("moustache") stripe from under the eye down the side of the face; pale
+    // chin, throat and cheek patch behind the moustache.
+    float below = smoothstep(0.04, -0.12, hd.y);
+    // moustache: a wedge from under the eye running down the side of the face
+    float mx = mix(0.56, 0.47, smoothstep(0.05, -0.7, hd.y));
+    float malar = smoothstep(0.1, 0.03, abs(ax - mx)) * smoothstep(0.1, -0.05, hd.y) * smoothstep(-0.2, 0.2, hd.z);
+    float throat = below * smoothstep(0.46, 0.36, ax) * smoothstep(-0.25, 0.2, hd.z);
+    float cheek = below * smoothstep(0.62, 0.7, ax) * smoothstep(-0.55, -0.2, hd.z);
+    float pale = clamp(max(throat, cheek) - malar * 2.0, 0.0, 1.0);
+    float fib = eNoise(vec2(pl.qx * 12.0, pl.t * 26.0 + pl.id * 9.0));
+    eBase = mix(uNavy * 0.85, uPale, pale) * mix(0.86 + 0.26 * fib, 1.0, lod);
+    // fine dark streaks on the pale throat
+    eBase *= 1.0 - pale * smoothstep(0.12, 0.0, abs(pl.qx)) * 0.35;
+    eRough = 0.66;
+  #endif
+
+  #ifdef BODY
+    float lod = smoothstep(0.25, 0.7, fwidth(vFUv.y));
+    Plume pl = ePlumage(vFUv, 3.0, lod);
+    eGrad = pl.g; eBump = 0.06; eAO = mix(pl.ao, 1.0, 0.25);
+    float bar = smoothstep(0.62, 0.72, pl.t) * smoothstep(0.9, 0.8, pl.t);
+    float fib = eNoise(vec2(pl.qx * 12.0, pl.t * 26.0 + pl.id * 9.0));
+    eBase = mix(mix(uMid, uPale, 0.35), uNavy, bar * 0.7 * (1.0 - lod * 0.5)) * mix(0.86 + 0.26 * fib, 1.0, lod);
+    eRough = 0.55;
+    eThin = 0.2;
+  #endif
+
+  #ifdef GOLD
+    float scales = smoothstep(0.25, 0.5, abs(fract(vFUv.x * 22.0) - 0.5)) * 0.6 + eNoise(vFUv * vec2(40.0, 14.0)) * 0.4;
+    eBase = mix(uGold, uNavy, 0.12) * mix(0.62, 0.8, scales);
+    eMetal = 0.45;
+    eRough = mix(0.42, 0.58, scales);
+  #endif
+
+  #ifdef CLAW
+    eBase = mix(vec3(0.004, 0.006, 0.014), uNavy * 0.6, smoothstep(0.0, 0.4, 1.0 - vFUv.x));
+    eRough = 0.26;
+  #endif
+
+  #ifdef BEAK
+    float tip = smoothstep(0.35, 0.8, vFUv.x);
+    eBase = mix(vec3(0.16, 0.2, 0.28), vec3(0.008, 0.009, 0.014), tip);
+    eRough = mix(0.38, 0.22, tip);
+  #endif
+
+  #ifdef EYE
+    vec3 en = normalize(vFObjN);
+    float er = length(en.xy);
+    float front = smoothstep(-0.05, 0.1, en.z);
+    float pupil = (1.0 - smoothstep(0.4, 0.43, er)) * front;
+    float iris = smoothstep(0.9, 0.84, er) * front;
+    float ang = atan(en.y, en.x);
+    float fibres = 0.55 + 0.45 * eNoise(vec2(ang * 18.0, er * 34.0)) * (0.6 + 0.4 * eNoise(vec2(ang * 6.0 + 3.0, er * 10.0)));
+    vec3 irisCol = mix(uIris * 1.1, uBlue * 0.8, smoothstep(0.45, 0.8, er)) * fibres;
+    irisCol *= 1.0 - 0.8 * smoothstep(0.72, 0.88, er);     // dark limbal ring
+    irisCol *= 1.0 - 0.45 * smoothstep(0.5, 0.42, er);      // shadow at the pupil edge
+    irisCol *= 1.0 - 0.55 * smoothstep(0.1, 0.55, en.y);    // the brow shades the top of the eye
+    eBase = mix(vec3(0.003, 0.004, 0.008), irisCol * 0.3, iris) * (1.0 - pupil);
+    eGlow += irisCol * iris * (1.0 - pupil) * (0.4 + 0.5 * eM);
+    eRough = 0.06;
+  #endif
+`;
+
+const FRAG_COLOR = /* glsl */ `
+  diffuseColor.rgb = eBase;
+`;
+
+const FRAG_ROUGH = /* glsl */ `
+  roughnessFactor = eRough;
+  metalnessFactor = eMetal;
+`;
+
+const FRAG_NORMAL = /* glsl */ `
+  if (eBump > 0.0) {
+    vec3 q0 = dFdx(-vViewPosition);
+    vec3 q1 = dFdy(-vViewPosition);
+    vec2 st0 = dFdx(eP);
+    vec2 st1 = dFdy(eP);
+    if (ePeriod > 0.0) {
+      st0.x -= ePeriod * floor(st0.x / ePeriod + 0.5);
+      st1.x -= ePeriod * floor(st1.x / ePeriod + 0.5);
+    }
+    vec3 q1perp = cross(q1, normal);
+    vec3 q0perp = cross(normal, q0);
+    vec3 T = q1perp * st0.x + q0perp * st1.x;
+    vec3 B = q1perp * st0.y + q0perp * st1.y;
+    float det = max(dot(T, T), dot(B, B));
+    float sc = det == 0.0 ? 0.0 : inversesqrt(det);
+    normal = normalize(normal - eBump * (eGrad.x * T + eGrad.y * B) * sc);
+  }
+`;
+
+// After lighting: occlusion between feathers, back-light through thin vanes, light sweep.
+const FRAG_AFTER_LIGHTS = /* glsl */ `
+  reflectedLight.indirectDiffuse *= eAO;
+  reflectedLight.indirectSpecular *= eAO;
+  reflectedLight.directDiffuse *= mix(1.0, eAO, 0.7);
+  reflectedLight.directSpecular *= mix(1.0, eAO, 0.5);
+  #ifdef USE_CLEARCOAT
+    clearcoatSpecularIndirect *= eAO;
+  #endif
+  #if NUM_DIR_LIGHTS > 0
+  if (eThin > 0.0) {
+    vec3 Vv = normalize(vViewPosition);
+    vec3 trans = vec3(0.0);
+    for (int i = 0; i < NUM_DIR_LIGHTS; i++) {
+      float b = saturate(dot(Vv, -directionalLights[i].direction));
+      trans += directionalLights[i].color * pow(b, 4.0);
+    }
+    #ifdef FEATHER
+      float thinEdge = smoothstep(0.14, 0.0, edgeDist);
+      reflectedLight.directDiffuse += trans * eThin * (eBase * 0.18 + uGoldHi * 0.012 * thinEdge) * eAO;
+    #else
+      reflectedLight.directDiffuse += trans * eThin * eBase * 0.25;
+    #endif
+  }
+  #endif
+  // the sweep is light, not a glow: it brightens the surface it passes
+  eGlow += uGoldHi * eBand * 0.08;
+  reflectedLight.directDiffuse += uGoldHi * eBand * 0.35 * eBase;
+`;
+
+const FRAG_TONEMAP = /* glsl */ `
+  gl_FragColor.rgb = eACES(gl_FragColor.rgb * uExposure) + eGlow;
+`;
+
+export type EaglePart = 'FEATHER' | 'TORSO' | 'HEAD' | 'BODY' | 'BEAK' | 'GOLD' | 'CLAW' | 'EYE';
+
+const FIBRE = { sheen: 0.35, sheenColor: new Color('#35508F'), sheenRoughness: 0.5, specularIntensity: 0.5 };
+const SURFACE: Record<EaglePart, Partial<ConstructorParameters<typeof MeshPhysicalMaterial>[0]>> = {
+  FEATHER: FIBRE,
+  TORSO: FIBRE,
+  HEAD: FIBRE,
+  BODY: FIBRE,
+  BEAK: { clearcoat: 0.5, clearcoatRoughness: 0.2 },
+  GOLD: { clearcoat: 0.25, clearcoatRoughness: 0.3 },
+  CLAW: { clearcoat: 0.7, clearcoatRoughness: 0.12 },
+  EYE: { clearcoat: 1, clearcoatRoughness: 0.0, ior: 1.38 },
+};
 
 export function createEagleMaterial(part: EaglePart) {
-  return new ShaderMaterial({
-    uniforms: eagleUniforms,
-    vertexShader: vertex,
-    fragmentShader: fragment,
-    defines: { [part]: '' },
-    side: DoubleSide,
-  });
+  const mat = new MeshPhysicalMaterial({ side: DoubleSide, roughness: 0.5, metalness: 0, envMapIntensity: 1, ...SURFACE[part] });
+  mat.onBeforeCompile = (shader) => {
+    Object.assign(shader.uniforms, eagleUniforms);
+    shader.defines = { ...shader.defines, [part]: '' };
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', `#include <common>\n${VERT_PARS}`)
+      .replace('#include <project_vertex>', `#include <project_vertex>\n${VERT_MAIN}`);
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', `#include <common>\n${FRAG_PARS}`)
+      .replace('#include <clipping_planes_fragment>', `#include <clipping_planes_fragment>\n${FRAG_SETUP}`)
+      .replace('#include <color_fragment>', `#include <color_fragment>\n${FRAG_COLOR}`)
+      .replace('#include <metalnessmap_fragment>', `#include <metalnessmap_fragment>\n${FRAG_ROUGH}`)
+      .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>\n${FRAG_NORMAL}`)
+      .replace('#include <lights_fragment_end>', `#include <lights_fragment_end>\n${FRAG_AFTER_LIGHTS}`)
+      .replace('#include <tonemapping_fragment>', FRAG_TONEMAP);
+  };
+  mat.customProgramCacheKey = () => `eagle-${part}`;
+  return mat;
 }
 
-let cache: Record<EaglePart, ShaderMaterial> | null = null;
+let cache: Record<EaglePart, MeshPhysicalMaterial> | null = null;
 /** Materials are shared by every eagle source so uniforms stay in one place. */
 export function eagleMaterials() {
   if (!cache) {
-    cache = {
-      FEATHER: createEagleMaterial('FEATHER'),
-      BODY: createEagleMaterial('BODY'),
-      HEAD: createEagleMaterial('HEAD'),
-      BEAK: createEagleMaterial('BEAK'),
-      GOLD: createEagleMaterial('GOLD'),
-      CLAW: createEagleMaterial('CLAW'),
-      EYE: createEagleMaterial('EYE'),
-    };
+    const parts: EaglePart[] = ['FEATHER', 'TORSO', 'HEAD', 'BODY', 'BEAK', 'GOLD', 'CLAW', 'EYE'];
+    cache = Object.fromEntries(parts.map((p) => [p, createEagleMaterial(p)])) as Record<EaglePart, MeshPhysicalMaterial>;
   }
   return cache;
+}
+
+/** Point every eagle material at the studio environment map. */
+export function setEagleEnvironment(env: Texture | null) {
+  for (const m of Object.values(eagleMaterials())) {
+    m.envMap = env;
+    m.needsUpdate = true;
+  }
 }

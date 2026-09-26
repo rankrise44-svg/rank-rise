@@ -2,6 +2,7 @@ import { useMemo, useRef, type ReactNode } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Group, MathUtils, Plane, Raycaster, Vector2, Vector3 } from 'three';
 import { story, view } from '../../story/state';
+import { StudioLights } from './StudioLighting';
 
 /**
  * Places whichever eagle source is active: yaw/roll for the flight beat,
@@ -14,7 +15,7 @@ const ndc = new Vector2();
 const hitA = new Vector3();
 const hitB = new Vector3();
 
-export function EagleStage({ children }: { children: ReactNode }) {
+export function EagleStage({ children, shadows }: { children: ReactNode; shadows: boolean }) {
   const g = useRef<Group>(null);
   const target = useMemo(() => ({ pos: new Vector3(), scale: 1 }), []);
   const els = useRef<Record<string, HTMLElement | null>>({});
@@ -52,8 +53,8 @@ export function EagleStage({ children }: { children: ReactNode }) {
       target.pos.addScaledVector(hitA.clone().add(new Vector3(0, 0.25 * s, 0)), w);
       scale += (s - 1) * w;
     }
-    scale *= story.scale * MathUtils.lerp(1, 0.62, v.lift);
-    target.pos.y += hide * 9 + v.lift * 1.35;
+    scale *= story.scale * MathUtils.lerp(1, 0.6, v.lift);
+    target.pos.y += hide * 9 + v.lift * 0.8;
 
     group.position.copy(target.pos);
     group.scale.setScalar(Math.max(scale, 0.001));
@@ -61,5 +62,10 @@ export function EagleStage({ children }: { children: ReactNode }) {
     group.visible = hide < 0.98;
   });
 
-  return <group ref={g}>{children}</group>;
+  return (
+    <>
+      <group ref={g}>{children}</group>
+      <StudioLights follow={g} shadows={shadows} />
+    </>
+  );
 }
