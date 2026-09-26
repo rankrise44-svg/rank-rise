@@ -35,7 +35,15 @@ export function CameraRig() {
     const zOpen = Math.max(zClosed * 1.15, span / 2 / tanH);
     const o = view().open;
     const e = o * o * (3 - 2 * o);
-    const z = MathUtils.lerp(zClosed, zOpen, e) / ZOOM;
+    let z = MathUtils.lerp(zClosed, zOpen, e) / ZOOM;
+    if (story.flat) {
+      // Video falcon: the whole perched bird fills the height; once its wings
+      // spread (last 20% of the clip) pull back so they fit (phones crop the tips).
+      const spread = MathUtils.smoothstep(o, 0.8, 0.95);
+      const zPerched = (portrait ? 6.4 : 6.9) / 2 / tanV;
+      const zSpread = Math.max(zPerched, (portrait ? 8.4 : 12.4) / 2 / tanH);
+      z = MathUtils.lerp(zPerched, zSpread, spread) / ZOOM;
+    }
 
     // Orbit (beat 4) swings the camera around the eagle on a circle of radius z.
     const k = Math.min(dt * 3, 1);
@@ -45,7 +53,7 @@ export function CameraRig() {
     camera.position.y += (target.y + 0.4 + story.pointerY * 0.2 - camera.position.y) * k;
     camera.position.z += (oz - camera.position.z) * k;
     // aim higher on the perched bird (its face), lower once the wings are open
-    target.y = FOCUS ?? MathUtils.lerp(portrait ? 0.15 : 0.3, portrait ? PORTRAIT_Y : -0.25, e);
+    target.y = FOCUS ?? (story.flat ? -0.1 : MathUtils.lerp(portrait ? 0.15 : 0.3, portrait ? PORTRAIT_Y : -0.25, e));
     camera.lookAt(target);
 
     eagleUniforms.uTime.value = state.clock.elapsedTime;
