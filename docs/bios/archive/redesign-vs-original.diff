@@ -1,0 +1,1086 @@
+diff --git a/docs/bios/redesign/css/command.css b/docs/bios/redesign/css/command.css
+new file mode 100644
+index 0000000..36217c1
+--- /dev/null
++++ b/docs/bios/redesign/css/command.css
+@@ -0,0 +1,630 @@
++@charset "UTF-8";
++/* =====================================================================
++   BIOS Command Center — visual layer (loaded last).
++   Step 1: ground, type, shell (sidebar, top bar, sample bar), buttons,
++   theme toggle and the shared motion primitives. Only styling here.
++   ===================================================================== */
++
++/* ---------- ground: deep indigo with a slow aurora ---------- */
++html{background:var(--bg)}
++body{background:var(--bg);font-family:var(--sans);font-feature-settings:"ss01";letter-spacing:.005em}
++body::before{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;
++  background:
++    radial-gradient(40% 35% at 18% 12%, var(--aurora-1), transparent 70%),
++    radial-gradient(35% 30% at 85% 20%, var(--aurora-2), transparent 70%),
++    radial-gradient(45% 40% at 70% 95%, var(--aurora-3), transparent 70%),
++    linear-gradient(180deg, var(--bg-2), var(--bg) 60%);
++  animation:aurora 38s ease-in-out infinite alternate}
++@keyframes aurora{50%{transform:translate3d(2%,-3%,0) rotate(2deg)}100%{transform:translate3d(-2%,2%,0) rotate(-1deg)}}
++#root{position:relative;z-index:1}
++
++/* ---------- type ---------- */
++h1,h2,h3,h4{font-family:var(--head);letter-spacing:.01em}
++.pagehead h1{font-size:var(--t-2xl);font-weight:600;line-height:1.1}
++.label,.eyebrow,.crumb,.sectitle h2,.panel > header h3{font-family:var(--head);letter-spacing:.14em}
++.eyebrow{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
++
++/* ---------- sidebar ---------- */
++.side{background:linear-gradient(180deg,color-mix(in srgb,var(--solid) 78%,transparent),color-mix(in srgb,var(--bg) 70%,transparent));
++  backdrop-filter:blur(var(--blur)) saturate(140%);-webkit-backdrop-filter:blur(var(--blur)) saturate(140%);
++  border-right:1px solid var(--glass-border);box-shadow:inset -1px 0 0 var(--glass-hi)}
++.side .brand{align-items:center;gap:10px;padding:18px 16px 14px}
++.side .brand::before{content:"";width:30px;height:30px;border-radius:9px;flex:none;background:var(--grad-brand);
++  box-shadow:var(--glow-brand), inset 0 1px 0 rgba(255,255,255,.35);
++  -webkit-mask:radial-gradient(circle at 50% 50%, transparent 5px, #000 5.5px);mask:radial-gradient(circle at 50% 50%, transparent 5px, #000 5.5px)}
++.side .brand b{font-size:22px;background:linear-gradient(90deg,var(--ink),color-mix(in srgb,var(--ink) 60%,var(--accent)));-webkit-background-clip:text;background-clip:text;color:transparent}
++.side .brand span{font-family:var(--head);letter-spacing:.2em}
++
++.wsbtn{background:var(--raised);border:1px solid var(--glass-border);border-radius:var(--r);box-shadow:var(--shadow);
++  transition:transform var(--d-mid) var(--ease-spring),box-shadow var(--d-mid),border-color var(--d-mid)}
++.wsbtn:hover{transform:translateY(-1px) scale(var(--zoom-card));border-color:var(--accent-line);box-shadow:var(--glow-brand)}
++.wsdot{background:var(--grad-brand);box-shadow:var(--glow-brand);border-radius:9px;color:#fff}
++
++.navsec > button.sechead{font-family:var(--head);font-size:10.5px;letter-spacing:.2em;padding:10px 10px 6px}
++.navitem{position:relative;overflow:hidden;border-radius:10px;padding:7px 10px;font-weight:500;
++  transition:transform var(--d-mid) var(--ease-spring),background var(--d-mid),color var(--d-mid),box-shadow var(--d-mid);
++  transform-origin:left center}
++.navitem:hover{background:color-mix(in srgb,var(--ink) 5%,transparent);color:var(--ink);transform:scale(var(--zoom-text))}
++.navitem:active{transform:scale(var(--press))}
++.navitem[aria-current="page"]{color:var(--ink);font-weight:600;
++  background:linear-gradient(90deg,color-mix(in srgb,#7B5CFF 30%,transparent),color-mix(in srgb,#3D7BFF 8%,transparent));
++  box-shadow:inset 0 0 0 1px var(--accent-line)}
++.navitem[aria-current="page"]::before{content:"";position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:0 3px 3px 0;background:var(--grad-brand);box-shadow:0 0 12px #7B5CFF}
++.navitem.top .gl{width:24px;height:24px;border-radius:8px;color:#fff;font-size:12px;background:var(--grad-brand);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
++.navsec:first-child .navitem:nth-child(2) .gl{background:var(--grad-info)}
++.navsec:first-child .navitem:nth-child(3) .gl{background:var(--grad-live)}
++.navsec:first-child .navitem:nth-child(4) .gl{background:var(--grad-warn)}
++.navsec:last-child .navitem .gl{background:var(--grad-unknown)}
++.navitem[aria-current="page"] .gl{color:#fff;box-shadow:0 0 14px color-mix(in srgb,#7B5CFF 70%,transparent)}
++.navitem .badge{font-family:var(--head);font-weight:600;font-size:10.5px}
++.badge.hot{background:var(--grad-hot);color:#fff;box-shadow:var(--glow-hot);animation:hot-pulse 2.4s ease-in-out infinite}
++.badge.acc{background:var(--grad-brand);color:#fff}
++@keyframes hot-pulse{50%{box-shadow:0 0 0 3px color-mix(in srgb,#FF3B3B 18%,transparent),0 6px 20px -4px #FF3B3B}}
++
++.brainmeter{margin:8px 10px 12px;border:1px solid var(--glass-border);border-radius:var(--r);background:var(--raised);box-shadow:var(--shadow)}
++.brainmeter .num{font-family:var(--sans);font-weight:800;font-size:14px;font-variant-numeric:tabular-nums}
++.brainmeter .meter{height:7px;background:var(--sunken)}
++.brainmeter .meter i{background:var(--grad-brand);box-shadow:0 0 12px -2px #7B5CFF}
++.brainmeter .meter i.ok{background:var(--grad-live)} .brainmeter .meter i.warn{background:var(--grad-warn)} .brainmeter .meter i.bad{background:var(--grad-hot)}
++
++/* ---------- top bar ---------- */
++.topbar{background:color-mix(in srgb,var(--bg) 62%,transparent);backdrop-filter:blur(var(--blur)) saturate(140%);-webkit-backdrop-filter:blur(var(--blur)) saturate(140%);
++  border-bottom:1px solid var(--glass-border)}
++.cmd{background:var(--surface);border:1px solid var(--glass-border);border-radius:14px;box-shadow:var(--shadow);
++  transition:box-shadow var(--d-mid),border-color var(--d-mid),transform var(--d-mid) var(--ease-spring)}
++.cmd:focus-within{border-color:var(--accent-line);box-shadow:var(--glow-brand);transform:translateY(-1px)}
++.cmd .ctx{background:linear-gradient(135deg,color-mix(in srgb,#7B5CFF 22%,transparent),color-mix(in srgb,#3D7BFF 14%,transparent));border-color:var(--accent-line);color:var(--ink)}
++.cmd .kbd{border-color:var(--glass-border);background:var(--sunken)}
++.cmd input::placeholder{color:var(--muted)}
++/* the "Live engine ready" chip becomes a pulsing LIVE badge; the off state stays quiet */
++.topbar .right .chip.ok{background:var(--grad-live);color:#062A22;border:0;font-weight:600;box-shadow:var(--glow-live);animation:live-glow 2.2s ease-in-out infinite}
++.topbar .right .chip.ok::before{background:#062A22;animation:pulse 1.2s ease-in-out infinite}
++@keyframes live-glow{50%{box-shadow:0 0 0 4px color-mix(in srgb,#2EE6A8 16%,transparent),0 8px 28px -4px #19D3C5}}
++.topbar .right .chip.dim{background:var(--sunken);border-color:var(--glass-border)}
++.seg{background:var(--sunken);border-color:var(--glass-border)}
++.seg button{position:relative;overflow:hidden;transition:transform var(--d-mid) var(--ease-spring),color var(--d-mid),background var(--d-mid)}
++.seg button:hover{transform:scale(var(--zoom-text));color:var(--ink)}
++.seg button[aria-selected="true"],.seg button[aria-pressed="true"]{background:var(--grad-brand);color:#fff;box-shadow:var(--glow-brand)}
++.iconbtn{position:relative;overflow:hidden;border-radius:12px;transition:transform var(--d-slow) var(--ease-spring),background var(--d-mid),color var(--d-mid)}
++.topbar .iconbtn[data-act="theme"]{width:36px;height:36px;border:1px solid var(--glass-border);background:var(--surface);box-shadow:var(--shadow);font-size:16px}
++.topbar .iconbtn[data-act="theme"]:hover{transform:rotate(180deg) scale(1.08);color:var(--ink);box-shadow:var(--glow-brand)}
++
++/* ---------- sample bar ---------- */
++.samplebar{background:linear-gradient(90deg,color-mix(in srgb,#FFB547 15%,transparent),color-mix(in srgb,#FF7A3D 6%,transparent) 70%,transparent);
++  border-bottom:1px solid color-mix(in srgb,var(--warn) 26%,transparent);backdrop-filter:blur(8px)}
++.samplebar b{background:var(--grad-warn);-webkit-background-clip:text;background-clip:text;color:transparent;font-family:var(--head);letter-spacing:.04em;font-size:13px}
++.samplebar .linkbtn{transition:transform var(--d-mid) var(--ease-spring)}
++.samplebar .linkbtn:hover{transform:scale(var(--zoom-text));text-decoration:none}
++
++/* ---------- buttons (shared) ---------- */
++.btn{position:relative;overflow:hidden;background:var(--grad-brand);border:0;border-radius:12px;font-weight:600;
++  box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 6px 18px -8px #5B6CFF;
++  transition:transform var(--d-mid) var(--ease-spring),box-shadow var(--d-mid),filter var(--d-mid)}
++.btn:hover{filter:none;transform:translateY(-1px) scale(var(--zoom-text));box-shadow:0 1px 0 rgba(255,255,255,.25) inset,var(--glow-brand)}
++.btn:active{transform:scale(var(--press))}
++.btn.ghost{background:var(--surface);border:1px solid var(--glass-border);color:var(--ink);box-shadow:var(--shadow)}
++.btn.ghost:hover{border-color:var(--accent-line);color:var(--ink);box-shadow:var(--glow-brand)}
++.btn.quiet{background:transparent;box-shadow:none}
++.btn.quiet:hover{background:color-mix(in srgb,var(--ink) 6%,transparent);box-shadow:none}
++.btn.danger{background:transparent;border:1px solid color-mix(in srgb,var(--bad) 45%,transparent);box-shadow:none}
++.btn.danger:hover{box-shadow:var(--glow-hot)}
++.btn:disabled,.btn[aria-disabled="true"]{transform:none;box-shadow:none}
++.linkbtn{transition:color var(--d-mid)}
++.choice{position:relative;overflow:hidden}
++
++/* ---------- overlays stay opaque enough to read (full polish in step 7) ---------- */
++.drawer,.modal{background:var(--solid)}
++@media (max-width:980px){ .side{background:var(--solid)} }
++
++/* ---------- motion primitives ---------- */
++.m-ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.22;transform:scale(0);animation:ripple .6s var(--ease-out) forwards}
++@keyframes ripple{to{transform:scale(1);opacity:0}}
++.m-enter > *{animation:m-in .62s var(--ease-out) both;animation-delay:calc(var(--i,0) * 45ms)}
++@keyframes m-in{from{opacity:0;transform:translate3d(0,14px,0)}}
++::view-transition-old(root),::view-transition-new(root){animation-duration:.5s;animation-timing-function:var(--ease-out)}
++.theme-fading,.theme-fading *{transition:background-color .45s,color .45s,border-color .45s,fill .45s,stroke .45s !important}
++
++@media (prefers-reduced-motion:reduce){
++  body::before{animation:none}
++  .m-enter > *{animation:none}
++  .navitem:hover,.btn:hover,.seg button:hover,.wsbtn:hover,.topbar .iconbtn[data-act="theme"]:hover{transform:none}
++}
++/* light mode: gradient text is too pale on a bright ground, use the solid warning ink */
++:root[data-theme="light"] .samplebar b{background:none;color:var(--warn)}
++
++/* =====================================================================
++   Step 2 — shared components + Overview
++   ===================================================================== */
++
++/* ---------- numbers: Manrope bold, tabular ---------- */
++.num,.tile .v,.cibrainstats .n,.ringstat .v,.okv .v,table.t td.n,.decision .num,.goal .top .push{font-family:var(--sans);font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
++.tile .v{font-weight:800;font-size:28px;letter-spacing:-.02em}
++.ringstat .v{font-weight:800}
++
++/* ---------- glass cards ---------- */
++.panel,.tile,.decision,.insight,.alert,.card,.well,.empty{position:relative}
++.panel{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--r-lg);box-shadow:var(--shadow);
++  backdrop-filter:blur(14px) saturate(130%);-webkit-backdrop-filter:blur(14px) saturate(130%)}
++.panel > header{border-bottom-color:var(--line)}
++.panel > header h3{color:var(--ink-2);font-size:11.5px;font-weight:600}
++.panel.accent{border-color:var(--accent-line)}
++.panel.lift{box-shadow:var(--shadow-lift)}
++.panel.accent.lift{box-shadow:var(--glow-brand),var(--shadow-lift)}
++.well{background:var(--raised);border-color:var(--glass-border);border-radius:var(--r)}
++
++/* ---------- 3D tilt + cursor spotlight (motion.js sets --rx --ry --mx --my) ---------- */
++.m-tilt{transform:perspective(1000px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translate3d(0,var(--lift,0px),0);
++  transition:transform .6s var(--ease-spring),box-shadow .3s,border-color .3s}
++.m-tilt.m-hot{--lift:-3px;transition:transform .14s ease-out,box-shadow .3s,border-color .3s;border-color:var(--accent-line);box-shadow:var(--shadow-lift),0 0 0 1px color-mix(in srgb,var(--accent) 22%,transparent)}
++.m-tilt::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
++  background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--ink) 9%,transparent),transparent 62%)}
++.m-tilt.m-hot::after{opacity:1}
++
++/* ---------- stat tiles: glow blob by what the number means ---------- */
++.tile{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden;padding:15px 16px;
++  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
++.tile::before{content:"";position:absolute;width:140px;height:140px;right:-46px;top:-56px;border-radius:50%;pointer-events:none;
++  background:var(--grad-brand);filter:blur(34px);opacity:.34;transition:opacity .3s,transform .6s var(--ease-out)}
++.tile:has(.d.up)::before{background:var(--grad-live)}
++.tile:has(.d.down)::before{background:var(--grad-hot)}
++.tile.na::before{background:var(--grad-unknown);opacity:.2}
++.tile.m-hot::before{opacity:.55;transform:scale(1.15)}
++.tile .l{font-family:var(--head);letter-spacing:.12em;font-size:11px;color:var(--ink-2)}
++.tile .v{transform-origin:left center;transition:transform var(--d-mid) var(--ease-spring)}
++.tile:hover .v{transform:scale(1.06)}
++.tile .d{font-family:var(--sans);font-weight:600;font-size:12px}
++.tile .spark{filter:drop-shadow(0 3px 8px color-mix(in srgb,var(--accent) 35%,transparent))}
++.tile .spark path:last-of-type{stroke-width:2}
++
++/* ---------- card titles zoom on hover ---------- */
++.panel > header h3,.insight .h,.decision .q,.goal .top .h,.list .li .main > b,.alert .t{display:inline-block;transform-origin:left center;transition:transform var(--d-mid) var(--ease-spring)}
++.panel:hover > header h3,.insight:hover .h,.decision:hover .q,.goal:hover .top .h,.list .li:hover .main > b,.alert:hover .t{transform:scale(var(--zoom-text))}
++
++/* ---------- chips, badges, status pills: soft gradient fills ---------- */
++.chip{border-radius:8px;border-color:var(--glass-border);background:var(--sunken);font-weight:500}
++.chip.ok{background:linear-gradient(135deg,color-mix(in srgb,#19D3C5 22%,transparent),color-mix(in srgb,#3BE08A 10%,transparent));border-color:color-mix(in srgb,var(--ok) 38%,transparent)}
++.chip.warn{background:linear-gradient(135deg,color-mix(in srgb,#FFB547 22%,transparent),color-mix(in srgb,#FF7A3D 10%,transparent));border-color:color-mix(in srgb,var(--warn) 38%,transparent)}
++.chip.bad{background:linear-gradient(135deg,color-mix(in srgb,#FF4D8D 22%,transparent),color-mix(in srgb,#FF3B3B 10%,transparent));border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
++.chip.acc{background:linear-gradient(135deg,color-mix(in srgb,#7B5CFF 24%,transparent),color-mix(in srgb,#3D7BFF 12%,transparent));border-color:var(--accent-line)}
++.chip.info{background:linear-gradient(135deg,color-mix(in srgb,#35C8FF 22%,transparent),color-mix(in srgb,#4F6BFF 10%,transparent));border-color:color-mix(in srgb,var(--info) 38%,transparent)}
++.chip.dim{background:var(--sunken)}
++.st.pill{border-radius:8px}
++.badge{border-radius:10px}
++.conf i.on{background:var(--grad-brand)} .sev i.on{background:var(--grad-hot)}
++
++/* ---------- meters: gradient fills with a soft glow ---------- */
++.meter{background:var(--sunken);height:7px}
++.meter i{background:var(--grad-brand);box-shadow:0 0 10px -2px #7B5CFF}
++.meter i.ok{background:var(--grad-live);box-shadow:0 0 10px -2px #19D3C5}
++.meter i.warn{background:var(--grad-warn);box-shadow:0 0 10px -2px #FF7A3D}
++.meter i.bad{background:var(--grad-hot);box-shadow:0 0 10px -2px #FF3B3B}
++
++/* ---------- alerts: glass with a glowing gradient edge ---------- */
++.alert{background:var(--surface);border:1px solid var(--glass-border);border-left:0;border-radius:var(--r);box-shadow:var(--shadow);padding-left:18px;
++  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
++.alert::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--grad-unknown)}
++.alert.bad::before{background:var(--grad-hot);box-shadow:0 0 12px #FF3B3B}
++.alert.warn::before,.alert.data::before{background:var(--grad-warn);box-shadow:0 0 12px #FF7A3D}
++.alert.ok::before{background:var(--grad-live);box-shadow:0 0 12px #19D3C5}
++.alert.acc::before{background:var(--grad-brand);box-shadow:0 0 12px #7B5CFF}
++.alert.data{background:var(--surface)}
++.alert .tag{font-weight:600;border-radius:6px}
++.alert.bad .tag{background:var(--grad-hot);color:#fff}
++.alert.warn .tag,.alert.data .tag{background:var(--grad-warn);color:#2A1500}
++.alert.ok .tag{background:var(--grad-live);color:#062A22}
++.alert.acc .tag{background:var(--grad-brand);color:#fff}
++
++/* ---------- insight cards ---------- */
++.insight{background:var(--raised);border:1px solid var(--glass-border);border-left:0;border-radius:var(--r);padding-left:18px;box-shadow:var(--shadow)}
++.insight::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--grad-unknown)}
++.insight.problem::before,.insight.threat::before{background:var(--grad-hot);box-shadow:0 0 12px #FF3B3B}
++.insight.opportunity::before{background:var(--grad-live);box-shadow:0 0 12px #19D3C5}
++.insight.insight-k::before{background:var(--grad-brand);box-shadow:0 0 12px #7B5CFF}
++.insight.unknown{background:var(--sunken);border-style:dashed}
++.insight .kind{font-family:var(--head);letter-spacing:.14em}
++.insight .acts button{border-radius:8px;transition:transform var(--d-mid) var(--ease-spring),background var(--d-mid),color var(--d-mid)}
++.insight .acts button:hover{transform:scale(1.06)}
++.insight .note{background:color-mix(in srgb,#7B5CFF 14%,transparent);border:1px solid var(--accent-line)}
++
++/* ---------- decisions ---------- */
++.decision{background:var(--surface);border:1px solid var(--accent-line);border-radius:var(--r);box-shadow:var(--shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
++.decision .num{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:var(--grad-brand);color:#fff;font-weight:800;font-size:12px;box-shadow:var(--glow-brand)}
++
++/* ---------- goals, lists, tables, tabs ---------- */
++.goal{border-bottom-color:var(--line)}
++.goal .top .push{font-weight:700;color:var(--ink)}
++.list > .li{border-bottom-color:var(--line);transition:background var(--d-mid)}
++.list > button.li:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
++table.t th{background:transparent;font-family:var(--head);letter-spacing:.12em;font-size:11px;color:var(--ink-2);border-bottom-color:var(--line)}
++table.t td{border-bottom-color:var(--line)}
++table.t td.n{font-weight:700;color:var(--ink)}
++table.t tbody tr{transition:background var(--d-mid)}
++table.t tbody tr:hover td{background:color-mix(in srgb,var(--ink) 4%,transparent)}
++.tabs{border-bottom-color:var(--line)}
++.tabs button{position:relative;border-bottom:0;transition:color var(--d-mid),transform var(--d-mid) var(--ease-spring)}
++.tabs button:hover{transform:scale(var(--zoom-text))}
++.tabs button::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:2px;border-radius:2px;background:var(--grad-brand);transform:scaleX(0);transition:transform var(--d-slow) var(--ease-spring);box-shadow:0 0 10px #7B5CFF}
++.tabs button[aria-selected="true"]::after{transform:scaleX(1)}
++
++/* ---------- section titles, empty and locked states ---------- */
++.sectitle h2{display:flex;align-items:center;gap:8px;color:var(--ink-2);font-weight:600;font-size:11.5px}
++.sectitle h2::before{content:"";width:6px;height:6px;border-radius:2px;background:var(--grad-brand);box-shadow:0 0 8px #7B5CFF}
++.empty{background:var(--sunken);border-color:var(--line-strong);border-radius:var(--r-lg)}
++.locked{background:linear-gradient(135deg,color-mix(in srgb,#FFB547 12%,transparent),color-mix(in srgb,#FF7A3D 5%,transparent));border-color:color-mix(in srgb,var(--warn) 45%,transparent);border-radius:var(--r)}
++.purpose{border-color:var(--glass-border);background:var(--line);border-radius:var(--r)}
++.purpose > div{background:var(--raised)}
++
++/* ---------- Overview specifics ---------- */
++.decisions{gap:10px}
++.opps{gap:var(--s4)}
++
++@media (prefers-reduced-motion:reduce){
++  .m-tilt,.m-tilt.m-hot{transform:none}
++  .tile:hover .v,.panel:hover > header h3,.insight:hover .h,.decision:hover .q,.goal:hover .top .h,.alert:hover .t,.tabs button:hover{transform:none}
++}
++
++/* =====================================================================
++   Step 3 — Company Brain, Maps, AI Workforce (+ Ask orchestration)
++   ===================================================================== */
++
++/* ---------- radial views: glass nodes, gradient arcs, glowing core ---------- */
++.radial .orbit{stroke:var(--line-strong);stroke-dasharray:1 6;stroke-linecap:round}
++.radial .spoke{stroke:var(--map-edge);stroke-width:1}
++.radial .spoke.hot{stroke:var(--accent);stroke-width:2;filter:drop-shadow(0 0 4px var(--accent))}
++.radial .spoke.flow{stroke:var(--ok);stroke-width:1.6;filter:drop-shadow(0 0 3px var(--ok))}
++.rnode .bg{fill:color-mix(in srgb,var(--solid) 88%,transparent);stroke:var(--glass-border);stroke-width:1.2;transition:stroke .25s,filter .3s,fill .25s}
++.rnode .track{stroke:var(--sunken);stroke-width:5}
++.rnode .arc{stroke:url(#m-grad-brand);stroke-width:5;filter:drop-shadow(0 0 4px rgba(123,92,255,.55))}
++.rnode .arc.low{stroke:url(#m-grad-warn);filter:drop-shadow(0 0 4px rgba(255,122,61,.5))}
++.rnode .lbl{font-family:var(--head);font-size:13.5px;font-weight:600;letter-spacing:.02em;transform-box:fill-box;transform-origin:center;transition:transform .25s var(--ease-spring)}
++.rnode .sub{font-family:var(--sans);font-weight:700;font-size:10.5px}
++.rnode:hover .bg,.rnode:focus-visible .bg{stroke:var(--accent);filter:drop-shadow(0 0 14px rgba(123,92,255,.55))}
++.rnode:hover .lbl{transform:scale(1.08)}
++.rnode.sel .bg{fill:color-mix(in srgb,#7B5CFF 22%,var(--solid));stroke:var(--accent);stroke-width:2;filter:drop-shadow(0 0 18px rgba(123,92,255,.7))}
++.rnode.dim{opacity:.35;transition:opacity .3s}
++.rnode .alarm{fill:url(#m-grad-hot);filter:drop-shadow(0 0 6px #FF3B3B);animation:alarm 1.8s ease-in-out infinite}
++@keyframes alarm{50%{opacity:.45}}
++/* the centre: a lit gradient orb with white text in both themes (fixes the dark-mode inversion) */
++.rcore .bg{fill:url(#m-grad-core);stroke:rgba(255,255,255,.18);stroke-width:1;filter:drop-shadow(0 0 28px rgba(123,92,255,.55))}
++.rcore:hover .bg{stroke:rgba(255,255,255,.35);filter:drop-shadow(0 0 36px rgba(123,92,255,.75))}
++.rcore .lbl{fill:#FFFFFF;font-family:var(--display);font-size:18px;letter-spacing:.1em}
++.rcore .sub{fill:rgba(255,255,255,.78);font-family:var(--sans);font-weight:700;font-size:11px}
++.rcore .ring{stroke:url(#m-grad-brand);stroke-width:2;opacity:.6;stroke-dasharray:3 7;stroke-linecap:round}
++.rcore .ring.build{animation:core-spin 26s linear infinite,breathe 3.2s ease-in-out infinite}
++@keyframes core-spin{to{transform:rotate(360deg)}}
++/* entrance: nodes fade and grow into place (inner shapes only, the node position is untouched) */
++.m-enter .rnode > *:not(.arc):not(.track){animation:node-in .7s var(--ease-spring) both;transform-box:fill-box;transform-origin:center}
++@keyframes node-in{from{opacity:0;transform:scale(.6)}}
++/* workforce: state rings */
++.rnode.agent .state{filter:drop-shadow(0 0 5px currentColor)}
++.rnode.agent.working .bg,.rnode.agent.analyzing .bg,.rnode.agent.researching .bg,.rnode.agent.executing .bg{stroke:var(--accent);animation:agent-glow 2s ease-in-out infinite}
++.rnode.agent.verifying .bg{stroke:var(--info);filter:drop-shadow(0 0 10px rgba(69,184,255,.5))}
++.rnode.agent.waiting .bg{stroke:var(--warn);filter:drop-shadow(0 0 8px rgba(255,181,71,.45))}
++.rnode.agent.completed .bg{stroke:var(--ok);filter:drop-shadow(0 0 8px rgba(46,230,168,.4))}
++.rnode.agent.planned .bg{stroke:var(--line-strong);fill:color-mix(in srgb,var(--solid) 55%,transparent)}
++@keyframes agent-glow{50%{filter:drop-shadow(0 0 14px rgba(123,92,255,.75))}}
++.radialwrap{filter:drop-shadow(0 20px 40px rgba(2,3,15,.25))}
++
++/* ---------- small rings reuse the gradients ---------- */
++.ringstat svg circle:nth-of-type(2){stroke:url(#m-grad-brand);filter:drop-shadow(0 0 5px rgba(123,92,255,.5))}
++.ringstat svg circle:nth-of-type(2)[stroke="var(--warn)"]{stroke:url(#m-grad-warn);filter:drop-shadow(0 0 5px rgba(255,122,61,.45))}
++
++/* ---------- flow maps ---------- */
++.mapwrap{background-color:var(--sunken);border:1px solid var(--glass-border);border-radius:var(--r-lg);
++  background-image:radial-gradient(color-mix(in srgb,var(--ink) 10%,transparent) 1px,transparent 1px);background-size:20px 20px;box-shadow:inset 0 1px 0 var(--glass-hi)}
++.map .coltitle{font-family:var(--head);letter-spacing:.18em;color:var(--ink-2);font-weight:600}
++.map svg.edges path{stroke:var(--map-edge);stroke-width:1.3}
++.map svg.edges path.hot{stroke:var(--accent);stroke-width:2;filter:drop-shadow(0 0 4px var(--accent))}
++.map svg.edges path.flow{stroke:var(--ok);filter:drop-shadow(0 0 3px var(--ok))}
++.map svg.edges path.broken{stroke:var(--bad);filter:drop-shadow(0 0 3px var(--bad))}
++.mnode{background:color-mix(in srgb,var(--solid) 90%,transparent);border:1px solid var(--glass-border);border-radius:12px;box-shadow:var(--shadow);
++  transition:transform .3s var(--ease-spring),border-color .25s,box-shadow .3s,opacity .3s,background .25s}
++.mnode:hover{transform:translateY(-2px) scale(1.04);border-color:var(--accent-line);box-shadow:var(--glow-brand);z-index:2}
++.mnode .h{font-weight:600}
++.mnode.sel{background:linear-gradient(135deg,color-mix(in srgb,#7B5CFF 30%,var(--solid)),color-mix(in srgb,#3D7BFF 16%,var(--solid)));border-color:var(--accent);box-shadow:var(--glow-brand);z-index:2}
++.mnode.core{background:var(--grad-brand);border-color:transparent;box-shadow:var(--glow-brand)}
++.mnode.core .h{color:#fff} .mnode.core .s{color:rgba(255,255,255,.78)}
++.mnode.gap{background:transparent;border-style:dashed;border-color:var(--line-strong);box-shadow:none}
++.mnode.bad{border-color:color-mix(in srgb,var(--bad) 60%,transparent);box-shadow:var(--glow-hot)}
++.m-enter .mnode{animation:m-pop .55s var(--ease-spring) both;animation-delay:calc(var(--mi,0) * 18ms + 150ms)}
++@keyframes m-pop{from{opacity:0;transform:scale(.85)}}
++
++/* ---------- agent states & agent cards ---------- */
++.agentstate{padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--c) 12%,transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent)}
++.agentstate::before{box-shadow:0 0 8px var(--c)}
++.agentcard .inp{border-bottom-color:var(--line)}
++
++/* ---------- Company Brain page ---------- */
++.conflict{background:linear-gradient(135deg,color-mix(in srgb,#FF4D8D 14%,transparent),color-mix(in srgb,#FF3B3B 5%,transparent));border:1px solid color-mix(in srgb,var(--bad) 45%,transparent);border-radius:var(--r-lg);box-shadow:var(--glow-hot);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
++.conflict h4{font-family:var(--head);letter-spacing:.12em}
++.stackbar{height:9px;border-radius:5px;gap:2px;background:var(--sunken)}
++.stackbar i{border-radius:3px}
++.dom{background:var(--surface);border-color:var(--glass-border);border-radius:var(--r);transition:transform .3s var(--ease-spring),border-color .25s,box-shadow .3s}
++.dom:hover{transform:translateY(-2px);border-color:var(--accent-line);box-shadow:var(--glow-brand)}
++.dom .hbar i{background:var(--grad-brand)} .dom .hbar i.low{background:var(--grad-warn)}
++
++/* ---------- memory timeline (shared, used by the Brain) ---------- */
++.timeline::before{background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 10%,transparent));width:2px;opacity:.6}
++.tl::before{background:var(--solid);border-color:var(--line-strong);transition:transform .25s var(--ease-spring)}
++.tl:hover::before{transform:scale(1.3)}
++.tl.tl-correction::before{background:var(--accent);border-color:var(--accent);box-shadow:0 0 10px var(--accent)}
++.tl.tl-result::before{background:var(--ok);border-color:var(--ok);box-shadow:0 0 10px var(--ok)}
++.tl.tl-change::before{border-color:var(--warn);box-shadow:0 0 8px color-mix(in srgb,var(--warn) 60%,transparent)}
++.tl.tl-fact::before{border-color:var(--info)}
++.tl .when{font-family:var(--sans);font-weight:600;font-size:11px}
++
++/* ---------- Ask: the orchestration console ---------- */
++.askbox{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--r-lg);box-shadow:var(--shadow);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:box-shadow .3s,border-color .3s}
++.askbox:focus-within{border-color:var(--accent-line);box-shadow:var(--glow-brand)}
++.suggest button{background:var(--surface);border-color:var(--glass-border);transition:transform var(--d-mid) var(--ease-spring),border-color .2s,color .2s,box-shadow .2s}
++.suggest button:hover{transform:translateY(-1px) scale(var(--zoom-text));border-color:var(--accent-line);box-shadow:var(--glow-brand)}
++.suggest button[aria-pressed="true"]{background:linear-gradient(135deg,color-mix(in srgb,#7B5CFF 28%,transparent),color-mix(in srgb,#3D7BFF 14%,transparent));color:var(--ink)}
++.pstage{border-bottom-color:var(--line)}
++.pstage .ic{width:22px;height:22px;background:var(--sunken)}
++.pstage.done .ic{background:var(--grad-live);border-color:transparent;color:#062A22;box-shadow:var(--glow-live)}
++.pstage.run .ic{border-color:#7B5CFF;border-right-color:transparent;box-shadow:0 0 12px rgba(123,92,255,.6)}
++.pstage.stop .ic{background:var(--grad-hot);border-color:transparent;color:#fff;box-shadow:var(--glow-hot)}
++.pstage .n .stg{font-family:var(--head);font-size:11px;letter-spacing:.16em}
++.planrow{border-bottom-color:var(--line)}
++.planrow .k{font-family:var(--head);letter-spacing:.14em}
++.ev{border-bottom-color:var(--line)}
++.ev .id{font-weight:600}
++
++@media (prefers-reduced-motion:reduce){
++  .rcore .ring.build,.rnode .alarm,.rnode.agent.working .bg,.rnode.agent.analyzing .bg,.rnode.agent.researching .bg,.rnode.agent.executing .bg{animation:none}
++  .m-enter .rnode > *,.m-enter .mnode{animation:none}
++  .mnode:hover,.dom:hover,.suggest button:hover{transform:none}
++}
++/* narrow side panels (Brain node panel, etc.): stack key / value / source instead of squeezing three columns */
++.g2 > aside .kv .r,.g2.wide > aside .kv .r{grid-template-columns:minmax(0,1fr);gap:4px}
++.g2 > aside .kv .m,.g2.wide > aside .kv .m{justify-content:flex-start}
++.rnode.dim{opacity:.5}
++/* fact-row source labels share the .src name with data-source rows; keep them inline */
++.kv .m .src{display:inline;padding:0;border:0;font-size:11px}
++
++/* =====================================================================
++   STEP 4 — Company Information (profile overview, sections, vault,
++   follow-ups, validate & classify, agent context)
++   ===================================================================== */
++
++/* ---------- section stepper: glass chips, the current one glows ---------- */
++.cisteps{padding:4px 4px 12px;margin-left:-4px;margin-right:-4px}
++.cistep{border-radius:12px;border-color:var(--glass-border);background:var(--surface);box-shadow:var(--shadow);
++  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-family:var(--head);font-size:12.5px;letter-spacing:.01em;
++  transition:transform var(--d-mid) var(--ease-spring),border-color var(--d-mid),box-shadow var(--d-mid),color var(--d-mid)}
++.cistep:hover{transform:translateY(-2px);border-color:var(--accent-line);color:var(--ink);box-shadow:var(--shadow-lift)}
++.cistep:active{transform:scale(var(--press))}
++.cistep[aria-current="step"]{border-color:transparent;color:var(--ink);font-weight:600;
++  background:linear-gradient(var(--solid),var(--solid)) padding-box,var(--grad-brand) border-box;border:1px solid transparent;box-shadow:var(--glow-brand)}
++.cistep .pct{font-family:var(--sans);font-weight:700;font-variant-numeric:tabular-nums;font-size:10.5px}
++.cistep .meter{height:5px}
++.m-enter .cistep{animation:ci-chip .5s var(--ease-spring) both;animation-delay:calc(var(--si,0) * 28ms + 120ms)}
++@keyframes ci-chip{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
++
++/* ---------- collect / why / how strip ---------- */
++.ciintro{background:var(--glass-border);border-color:var(--glass-border);border-radius:var(--r-lg);box-shadow:var(--shadow)}
++.ciintro > div{background:var(--surface);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:13px 15px;transition:background var(--d-mid)}
++.ciintro > div:hover{background:color-mix(in srgb,var(--accent) 7%,var(--surface))}
++.ciintro .label{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
++
++/* ---------- question rows ---------- */
++.cif{position:relative;transition:background var(--d-mid)}
++.cif::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--grad-brand);
++  opacity:0;transform:scaleY(.4);transition:opacity var(--d-mid),transform var(--d-mid) var(--ease-spring)}
++.cif:hover{background:color-mix(in srgb,var(--ink) 3%,transparent)}
++.cif:focus-within{background:color-mix(in srgb,var(--accent) 6%,transparent)}
++.cif:focus-within::before{opacity:1;transform:none}
++.cif.pending{background:color-mix(in srgb,var(--info) 8%,transparent)}
++.cif.pending::before{opacity:1;transform:none;background:var(--grad-info);animation:ci-pulse 2.4s ease-in-out infinite}
++@keyframes ci-pulse{50%{opacity:.45}}
++.cif .q{font-family:var(--head);font-size:14.5px;font-weight:600;letter-spacing:.005em}
++.cif .q .opt{font-family:var(--sans);letter-spacing:0}
++.cif .meta .acts button{border-radius:999px;transition:background var(--d-mid),color var(--d-mid),transform var(--d-mid) var(--ease-spring)}
++.cif .meta .acts button:hover{background:var(--accent-soft);transform:translateY(-1px)}
++.cif .found{background:linear-gradient(var(--solid),var(--solid)) padding-box,var(--grad-info) border-box;border:1px solid transparent;
++  border-radius:12px;box-shadow:0 8px 24px -14px var(--info)}
++.cif .found b{background:var(--grad-info);-webkit-background-clip:text;background-clip:text;color:transparent}
++
++/* ---------- inputs: glass fields with a glowing focus ring ---------- */
++.input,.select,.textarea{background:color-mix(in srgb,var(--sunken) 70%,transparent);border-color:var(--glass-border);border-radius:10px;
++  transition:border-color var(--d-mid),box-shadow var(--d-mid),background var(--d-mid)}
++.input:hover,.select:hover,.textarea:hover{border-color:var(--line-strong)}
++.input:focus,.select:focus,.textarea:focus{outline:0;border-color:var(--accent);background:var(--sunken);
++  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent),0 8px 24px -12px var(--accent)}
++.input::file-selector-button{margin-right:10px;padding:5px 12px;border:1px solid var(--glass-border);border-radius:8px;
++  background:var(--grad-brand);color:#fff;font:600 12.5px var(--sans);cursor:pointer;transition:filter var(--d-mid)}
++.input::file-selector-button:hover{filter:brightness(1.12)}
++
++/* ---------- "who are you?" choice cards ---------- */
++.cichoose button{position:relative;border-color:var(--glass-border);background:var(--surface);border-radius:var(--r-xl);
++  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
++.cichoose button:hover{border-color:var(--accent-line)}
++.cichoose button[aria-pressed="true"]{background:linear-gradient(color-mix(in srgb,var(--accent) 10%,var(--solid)),var(--solid)) padding-box,var(--grad-brand) border-box;
++  border:1px solid transparent;box-shadow:var(--glow-brand),var(--shadow-lift)}
++.cichoose button[aria-pressed="true"]::before{content:"";position:absolute;top:16px;right:16px;width:10px;height:10px;border-radius:50%;
++  background:var(--grad-live);box-shadow:var(--glow-live);animation:ci-pulse 2.4s ease-in-out infinite}
++.cichoose .t{font-family:var(--head);font-size:19px}
++.cihero{font-family:var(--head);font-weight:600;letter-spacing:0;
++  background:linear-gradient(90deg,var(--ink),color-mix(in srgb,var(--ink) 55%,var(--accent)));-webkit-background-clip:text;background-clip:text;color:transparent}
++
++/* ---------- profile overview: brain stats, flow chips ---------- */
++.cibrainstats .n{font-family:var(--sans);font-weight:800;font-size:26px;letter-spacing:-.01em}
++.cibrainstats > div + div{position:relative}
++.ciflow span.step{border-color:var(--glass-border);background:var(--surface);transition:border-color var(--d-mid),transform var(--d-mid) var(--ease-spring)}
++.ciflow span.step:hover{transform:translateY(-1px);border-color:var(--accent-line)}
++.ciflow span.step.hot{background:var(--grad-brand);border-color:transparent;color:#fff;box-shadow:var(--glow-brand)}
++
++/* ---------- follow-up conversation ---------- */
++.bubble{transition:transform var(--d-mid) var(--ease-spring)}
++.bubble.ai{background:var(--surface);border-color:var(--glass-border);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--shadow)}
++.bubble.me{background:var(--grad-brand);color:#fff;box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 10px 26px -12px #5B6CFF}
++.bubble:hover{transform:translateY(-1px)}
++.m-enter .bubble{animation:ci-bub .5s var(--ease-spring) both;animation-delay:calc(var(--bi,0) * 60ms + 150ms)}
++.m-enter .bubble.me{animation-name:ci-bub-me}
++@keyframes ci-bub{from{opacity:0;transform:translateX(-10px) scale(.97)}to{opacity:1;transform:none}}
++@keyframes ci-bub-me{from{opacity:0;transform:translateX(10px) scale(.97)}to{opacity:1;transform:none}}
++.fuq{background:linear-gradient(var(--solid),var(--solid)) padding-box,var(--grad-brand) border-box;border:1px solid transparent;
++  border-radius:var(--r-xl);box-shadow:var(--glow-brand),var(--shadow-lift)}
++.fuq h2{font-family:var(--head);font-size:20px}
++
++/* ---------- agent context cards ---------- */
++.agentcard .inp{border-bottom-color:var(--line);border-radius:6px;transition:background var(--d-mid)}
++.agentcard .inp:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
++
++@media (prefers-reduced-motion:reduce){
++  .cif.pending::before,.cichoose button[aria-pressed="true"]::before{animation:none}
++}
++
++/* =====================================================================
++   STEP 5 — Understand, Plan, Execute
++   ===================================================================== */
++
++/* ---------- fact tables: the source/actions column may not starve the value.
++   It is capped and wraps, so the value keeps a readable width (layout fix only) ---------- */
++.kv .r{grid-template-columns:minmax(120px,190px) minmax(180px,1fr) fit-content(46%)}
++.kv .r .m{row-gap:4px}
++.kv .r{transition:background var(--d-mid)}
++.kv .r:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
++.kv .k{font-family:var(--head);font-size:13px;letter-spacing:.01em}
++
++/* ---------- domain header: health ring + status legend as a lit glass hero ---------- */
++.domhead{position:relative}
++.panel:has(> .domhead){background:linear-gradient(120deg,color-mix(in srgb,var(--accent) 12%,var(--surface)),var(--surface) 55%);overflow:hidden}
++.panel:has(> .domhead)::before{content:"";position:absolute;width:260px;height:260px;left:-80px;top:-120px;border-radius:50%;pointer-events:none;
++  background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 30%,transparent),transparent);filter:blur(10px);opacity:.7}
++.statusbar-legend .num{font-family:var(--sans);font-weight:700;color:var(--ink-2)}
++
++/* ---------- budget / mix bars: taller glowing segments ---------- */
++.stackbar{box-shadow:inset 0 1px 2px rgba(0,0,0,.25)}
++.stackbar i{position:relative;box-shadow:0 0 12px -2px currentColor;transition:filter var(--d-mid)}
++.stackbar i:hover{filter:brightness(1.2) saturate(1.1)}
++
++/* ---------- Execute: task board ---------- */
++.board{gap:var(--s4);padding-bottom:6px}
++.lane{position:relative;background:color-mix(in srgb,var(--sunken) 55%,transparent);border:1px solid var(--glass-border);
++  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:12px}
++.lane::before{content:"";position:absolute;left:14px;right:14px;top:0;height:2px;border-radius:0 0 2px 2px;background:var(--lane-grad,var(--grad-brand));
++  box-shadow:0 0 14px var(--lane-glow,#7B5CFF)}
++.board > .lane:nth-child(1){--lane-grad:var(--grad-info);--lane-glow:#3D9BFF}
++.board > .lane:nth-child(2){--lane-grad:var(--grad-brand);--lane-glow:#7B5CFF}
++.board > .lane:nth-child(3){--lane-grad:var(--grad-warn);--lane-glow:#FF9A3D}
++.board > .lane:nth-child(4){--lane-grad:var(--grad-live);--lane-glow:#2EE6A8}
++.lane > h3{font-family:var(--head);font-size:11.5px;font-weight:600;color:var(--ink-2)}
++.card{background:var(--surface);border-color:var(--glass-border);border-radius:14px;box-shadow:var(--shadow);padding:12px 13px;gap:8px}
++.card .h{font-family:var(--head);font-size:14.5px;font-weight:600;letter-spacing:.005em;line-height:1.3}
++.card.gate{border-color:transparent;background:linear-gradient(var(--solid),var(--solid)) padding-box,var(--grad-warn) border-box;border:1px solid transparent;
++  box-shadow:var(--glow-warn);animation:gate-breathe 3.2s ease-in-out infinite}
++@keyframes gate-breathe{50%{box-shadow:0 0 0 1px rgba(255,181,71,.2),0 6px 18px -8px rgba(255,122,61,.35)}}
++.card.gate.m-hot{animation:none}
++.m-enter .lane .card{animation:card-in .5s var(--ease-spring) both;animation-delay:calc(var(--ki,0) * 45ms + 180ms)}
++@keyframes card-in{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
++
++/* ---------- small headings inside content / creative panels ---------- */
++.cols .panel h3{font-family:var(--head);letter-spacing:.005em}
++
++@media (max-width:640px){
++  .kv .r{grid-template-columns:minmax(0,1fr)}
++  .kv .r .m{justify-content:flex-start}
++}
++@media (prefers-reduced-motion:reduce){ .card.gate{animation:none} }
++
++/* =====================================================================
++   STEP 6 — Learn & improve, Experiments, Evaluation
++   ===================================================================== */
++
++/* ---------- labelled statements (Fact / Observation / AI inference / Hypothesis) ---------- */
++.evstmt{border-radius:8px;padding:2px 6px;margin:0 -6px;transition:background var(--d-mid)}
++.evstmt:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
++.evq{font-family:var(--head);font-weight:600;background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
++.evrow{transition:background var(--d-mid)}
++
++/* ---------- evidence → cause → impact chain: glass cells; labels keep their own width
++   (they were stretched into full-width bars by the grid cell — layout fix only) ---------- */
++.evchain{background:var(--glass-border);border-color:var(--glass-border);border-radius:12px}
++.evchain > div{background:var(--surface);justify-items:start;transition:background var(--d-mid)}
++.evchain > div:hover{background:color-mix(in srgb,var(--accent) 7%,var(--surface))}
++.evchain .label{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
++.evask{background:color-mix(in srgb,var(--warn) 10%,var(--surface));border-radius:12px;box-shadow:0 8px 22px -16px var(--warn)}
++
++/* ---------- the headline tile of an evaluation ---------- */
++.tile.evmain{border-color:transparent;background:linear-gradient(color-mix(in srgb,var(--accent) 12%,var(--solid)),var(--solid)) padding-box,var(--grad-brand) border-box;
++  border:1px solid transparent;box-shadow:var(--glow-brand),var(--shadow-lift)}
++
++/* ---------- retention chart: glowing lines that draw in (motion.js) ---------- */
++svg[aria-label^="Viewer retention"] path{filter:drop-shadow(0 0 5px color-mix(in srgb,var(--accent) 70%,transparent));stroke-linecap:round;stroke-linejoin:round}
++svg[aria-label^="Viewer retention"] circle{filter:drop-shadow(0 0 4px var(--accent))}
++
++/* ---------- recommendations: the tag reads as a gradient badge ---------- */
++.alert.acc > .tag{background:var(--grad-brand);color:#fff;border-color:transparent;box-shadow:0 4px 14px -6px #7B5CFF}
++.alert.bad > .tag{background:var(--grad-hot);color:#fff;border-color:transparent;box-shadow:0 4px 14px -6px #FF3B3B}
++
++/* ---------- "what else changed in this window" ---------- */
++.locked .t{font-family:var(--head);font-weight:600;letter-spacing:.01em}
++
++/* =====================================================================
++   STEP 7 — overlays (drawer, modal, toast, scrim), onboarding, Website view
++   ===================================================================== */
++
++/* ---------- overlays ---------- */
++.scrim{backdrop-filter:blur(6px) saturate(120%);-webkit-backdrop-filter:blur(6px) saturate(120%);transition:opacity .28s ease}
++.drawer{border-left:1px solid var(--glass-border);box-shadow:-30px 0 80px -20px rgba(2,3,15,.7),var(--shadow-lift);
++  transition:transform .46s var(--ease-spring)}
++.drawer::before{content:"";position:absolute;left:-1px;top:0;bottom:0;width:2px;background:var(--grad-brand);box-shadow:0 0 18px #7B5CFF;opacity:.85}
++.drawer > header{position:relative;border-bottom-color:var(--line)}
++.drawer > header::after{content:"";position:absolute;left:18px;right:18px;bottom:-1px;height:1px;background:linear-gradient(90deg,var(--accent),transparent)}
++.drawer > header h2,.modal > header h2{font-family:var(--head);font-weight:600;letter-spacing:.01em}
++.drawer.on .body > *{animation:ov-in .45s var(--ease-spring) both}
++.drawer.on .body > :nth-child(2){animation-delay:.05s} .drawer.on .body > :nth-child(3){animation-delay:.1s}
++.drawer.on .body > :nth-child(4){animation-delay:.15s} .drawer.on .body > :nth-child(n+5){animation-delay:.2s}
++@keyframes ov-in{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
++.modal{background:linear-gradient(var(--solid),var(--solid)) padding-box,linear-gradient(135deg,color-mix(in srgb,var(--accent) 70%,transparent),var(--glass-border) 45%,var(--glass-border)) border-box;
++  border:1px solid transparent;border-radius:var(--r-xl);box-shadow:var(--glow-brand),var(--shadow-lift);
++  transform:translate(-50%,-46%) scale(.96);transition:opacity .22s ease,transform .38s var(--ease-spring)}
++.modal.on{transform:translate(-50%,-50%) scale(1)}
++.toast{background:var(--solid);color:var(--ink);border:1px solid var(--glass-border);border-radius:14px;padding:11px 16px 11px 20px;
++  box-shadow:var(--glow-brand),var(--shadow-lift);transition:opacity .25s ease,transform .4s var(--ease-spring);overflow:hidden}
++.toast::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--grad-brand);box-shadow:0 0 10px #7B5CFF}
++
++/* ---------- onboarding ---------- */
++.onb{background:transparent}
++.onbtop{background:color-mix(in srgb,var(--surface) 80%,transparent);border-bottom-color:var(--glass-border);
++  backdrop-filter:blur(var(--blur)) saturate(140%);-webkit-backdrop-filter:blur(var(--blur)) saturate(140%)}
++.onbtop .brand b{background:linear-gradient(90deg,var(--ink),color-mix(in srgb,var(--ink) 60%,var(--accent)));-webkit-background-clip:text;background-clip:text;color:transparent}
++.phase{font-family:var(--head);font-weight:600;transition:color var(--d-mid)}
++.phase i{font-family:var(--sans);font-weight:700;transition:background var(--d-mid),box-shadow var(--d-mid)}
++.phase.on i{background:var(--grad-brand);border-color:transparent;color:#fff;box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 20%,transparent),0 0 16px #7B5CFF;animation:ci-pulse 2.4s ease-in-out infinite}
++.phase.done i{background:var(--grad-live);border-color:transparent;color:#04121A;box-shadow:0 0 12px #19D3C5}
++.phase-sep{border-radius:1px}
++.phase.done + .phase-sep{background:var(--grad-live)}
++.onbmain h1{font-family:var(--head);font-weight:600;letter-spacing:.005em}
++.onbq h2{font-family:var(--head);font-size:21px}
++.onbq .qn{font-family:var(--sans);font-weight:700;letter-spacing:.04em;background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
++.onbside{background:color-mix(in srgb,var(--surface) 85%,transparent);border-left-color:var(--glass-border);
++  backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur))}
++
++/* ---------- Website view ---------- */
++.hero h1 em{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent;
++  filter:drop-shadow(0 0 22px color-mix(in srgb,var(--accent) 45%,transparent))}
++.flownode,.answer,.layer,.agent,.tier{border-color:var(--glass-border);background:var(--surface);box-shadow:var(--shadow);
++  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
++.flownode h4,.answer h4,.layer h3,.tier h4,.agent h4{font-family:var(--head);font-weight:600}
++.flownode.brainnode,.answer.bios,.tier.feat{border-color:transparent;border:1px solid transparent;
++  background:linear-gradient(color-mix(in srgb,var(--accent) 12%,var(--solid)),var(--solid)) padding-box,var(--grad-brand) border-box;
++  box-shadow:var(--glow-brand),var(--shadow-lift)}
++.flownode.brainnode{animation:gate-breathe-brand 3.6s ease-in-out infinite}
++@keyframes gate-breathe-brand{50%{box-shadow:0 0 0 1px rgba(139,108,255,.2),0 6px 20px -8px rgba(123,92,255,.35)}}
++.flownode.brainnode.m-hot{animation:none}
++.flownode.brainnode h4{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
++.answer.generic{background:color-mix(in srgb,var(--sunken) 70%,transparent)}
++.layer::before{background:var(--grad-brand);color:#fff;border-color:transparent;font-family:var(--sans);font-weight:700;box-shadow:0 0 14px -2px #7B5CFF}
++.agent .role{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:600}
++.tier li::before{color:var(--accent)}
++/* sections below the fold rise in as they scroll into view (motion.js adds/removes these classes) */
++.m-reveal{opacity:0;transform:translateY(22px)}
++.m-reveal.m-in{opacity:1;transform:none;transition:opacity .7s var(--ease-out),transform .8s var(--ease-spring);transition-delay:calc(var(--ri,0) * 70ms)}
++
++@media (prefers-reduced-motion:reduce){
++  .phase.on i,.flownode.brainnode{animation:none}
++  .drawer.on .body > *{animation:none}
++  .m-reveal{opacity:1;transform:none}
++}
+diff --git a/docs/bios/archive/prototype-pre-redesign/css/system.css b/docs/bios/redesign/css/system.css
+index 175ad19..e4433fb 100644
+--- a/docs/bios/archive/prototype-pre-redesign/css/system.css
++++ b/docs/bios/redesign/css/system.css
+@@ -5,67 +5,85 @@
+    Every screen is built from these classes; screens add layout only.
+    ===================================================================== */
+ 
+-/* ---------- 1. Tokens (light is the base palette) ---------- */
++/* ---------- 1. Tokens — ONE place for the whole look ----------
++   Dark "live command center" is the default. Light applies only when a
++   theme is chosen explicitly (data-theme="light" on the root).        */
+ :root{
+-  --bg:#F3F2F7; --surface:#FFFFFF; --raised:#F9F8FC; --sunken:#ECEAF2;
+-  --line:#E2DFEA; --line-strong:#CBC6D9;
+-  --ink:#171922; --ink-2:#4A4E5E; --muted:#737989;
+-  --accent:#5B3FC4; --accent-2:#7F64D0; --accent-soft:#EDE8FB; --accent-line:#C9BCF0;
+-  --ok:#1C7668; --ok-soft:#E1F1EE;
+-  --info:#2A62A6; --info-soft:#E3EDF8;
+-  --warn:#8E6210; --warn-soft:#F8EEDB;
+-  --bad:#AC4534; --bad-soft:#F9E7E3;
+-  --unknown:#6E7689; --unknown-soft:#ECEDF1;
++  color-scheme:dark;
++  /* ground & glass */
++  --bg:#0A0C1D; --bg-2:#0E1130;
++  --surface:rgba(24,28,62,.62); --raised:rgba(34,39,84,.52); --sunken:rgba(6,8,24,.5);
++  --solid:#13163A;                                   /* opaque glass for drawers, modals, menus */
++  --glass-border:rgba(255,255,255,.08); --glass-hi:rgba(255,255,255,.06); --blur:18px;
++  --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.16);
++  /* text */
++  --ink:#EEF0FF; --ink-2:#A9AFD6; --muted:#6E75A3;
++  /* semantic hues (names unchanged, so every component keeps working) */
++  --accent:#8B6CFF; --accent-2:#5B8CFF; --accent-soft:rgba(139,108,255,.14); --accent-line:rgba(139,108,255,.42);
++  --ok:#2EE6A8;     --ok-soft:rgba(46,230,168,.12);
++  --info:#45B8FF;   --info-soft:rgba(69,184,255,.12);
++  --warn:#FFB547;   --warn-soft:rgba(255,181,71,.12);
++  --bad:#FF5C7A;    --bad-soft:rgba(255,92,122,.13);
++  --unknown:#7C84B8; --unknown-soft:rgba(124,132,184,.12);
+   --btn-fg:#FFFFFF;
+-  --map-edge:#CBC6D9; --map-edge-hot:#5B3FC4;
+-  --shadow:0 1px 2px rgba(20,18,40,.05), 0 8px 24px -12px rgba(20,18,40,.14);
+-  --shadow-lift:0 2px 4px rgba(20,18,40,.06), 0 18px 40px -18px rgba(20,18,40,.28);
+-  --scrim:rgba(20,18,40,.32);
+-
+-  --r-sm:6px; --r:10px; --r-lg:14px;
++  /* gradient pairs, one per meaning */
++  --grad-live:linear-gradient(135deg,#19D3C5 0%,#3BE08A 100%);
++  --grad-warn:linear-gradient(135deg,#FFB547 0%,#FF7A3D 100%);
++  --grad-brand:linear-gradient(135deg,#7B5CFF 0%,#3D7BFF 100%);
++  --grad-hot:linear-gradient(135deg,#FF4D8D 0%,#FF3B3B 100%);
++  --grad-info:linear-gradient(135deg,#35C8FF 0%,#4F6BFF 100%);
++  --grad-unknown:linear-gradient(135deg,#5B6390 0%,#3B4170 100%);
++  --aurora-1:rgba(123,92,255,.30); --aurora-2:rgba(25,211,197,.16); --aurora-3:rgba(255,77,141,.12);
++  --map-edge:rgba(255,255,255,.16); --map-edge-hot:#8B6CFF;
++  /* depth */
++  --shadow:0 1px 0 var(--glass-hi) inset, 0 10px 30px -12px rgba(2,3,15,.65);
++  --shadow-lift:0 1px 0 var(--glass-hi) inset, 0 24px 60px -20px rgba(2,3,15,.85);
++  --glow-brand:0 0 0 1px rgba(139,108,255,.35), 0 8px 32px -6px rgba(123,92,255,.55);
++  --glow-live:0 0 0 1px rgba(46,230,168,.35), 0 8px 28px -6px rgba(25,211,197,.5);
++  --glow-hot:0 0 0 1px rgba(255,92,122,.4), 0 8px 28px -6px rgba(255,59,59,.5);
++  --glow-warn:0 0 0 1px rgba(255,181,71,.35), 0 8px 28px -6px rgba(255,122,61,.45);
++  --scrim:rgba(3,4,16,.6);
++  /* shape */
++  --r-sm:8px; --r:12px; --r-lg:18px; --r-xl:26px;
+   --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:24px; --s8:32px; --s10:40px;
+-
++  /* type */
+   --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+-  --sans:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
++  --sans:'Manrope','Manrope Fallback',system-ui,-apple-system,'Segoe UI',sans-serif;
++  --head:'Saira Semi Condensed','Saira Fallback','Arial Narrow',system-ui,sans-serif;
+   --display:'Anton',Impact,'Arial Narrow',var(--sans);
+-
+-  /* type scale — 1.2 minor third, anchored at 14px UI text */
+-  --t-xs:11px; --t-sm:12.5px; --t-base:14px; --t-md:15.5px; --t-lg:18px; --t-xl:22px; --t-2xl:28px;
++  --t-xs:11px; --t-sm:12.5px; --t-base:14px; --t-md:15.5px; --t-lg:18px; --t-xl:24px; --t-2xl:30px;
++  /* motion */
++  --ease-spring:cubic-bezier(.34,1.56,.64,1); --ease-out:cubic-bezier(.22,1,.36,1);
++  --d-fast:120ms; --d-mid:220ms; --d-slow:420ms;
++  --zoom-text:1.04; --zoom-card:1.02; --press:.97; --tilt-max:6deg;
+ }
+-@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+-  color-scheme:dark;
+-  --bg:#0A0C12; --surface:#12151E; --raised:#181C27; --sunken:#0D1017;
+-  --line:#232836; --line-strong:#374053;
+-  --ink:#E8E9F0; --ink-2:#AEB4C5; --muted:#838A9D;
+-  --accent:#A38FE3; --accent-2:#C9BCF0; --accent-soft:#221C39; --accent-line:#463A6E;
+-  --ok:#52BCA9; --ok-soft:#10241F;
+-  --info:#6FA6E4; --info-soft:#0F1D2E;
+-  --warn:#D6A74F; --warn-soft:#241C0D;
+-  --bad:#E08068; --bad-soft:#2A1512;
+-  --unknown:#8B92A6; --unknown-soft:#181C25;
+-  --btn-fg:#0A0C12;
+-  --map-edge:#2E3546; --map-edge-hot:#A38FE3;
+-  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+-  --shadow-lift:0 2px 6px rgba(0,0,0,.45), 0 24px 50px -20px rgba(0,0,0,.8);
+-  --scrim:rgba(0,0,0,.55);
+-}}
+-:root[data-theme="dark"]{
+-  color-scheme:dark;
+-  --bg:#0A0C12; --surface:#12151E; --raised:#181C27; --sunken:#0D1017;
+-  --line:#232836; --line-strong:#374053;
+-  --ink:#E8E9F0; --ink-2:#AEB4C5; --muted:#838A9D;
+-  --accent:#A38FE3; --accent-2:#C9BCF0; --accent-soft:#221C39; --accent-line:#463A6E;
+-  --ok:#52BCA9; --ok-soft:#10241F;
+-  --info:#6FA6E4; --info-soft:#0F1D2E;
+-  --warn:#D6A74F; --warn-soft:#241C0D;
+-  --bad:#E08068; --bad-soft:#2A1512;
+-  --unknown:#8B92A6; --unknown-soft:#181C25;
+-  --btn-fg:#0A0C12;
+-  --map-edge:#2E3546; --map-edge-hot:#A38FE3;
+-  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+-  --shadow-lift:0 2px 6px rgba(0,0,0,.45), 0 24px 50px -20px rgba(0,0,0,.8);
+-  --scrim:rgba(0,0,0,.55);
++:root[data-theme="light"]{
++  color-scheme:light;
++  --bg:#EEF0FA; --bg-2:#E6E9F8;
++  --surface:rgba(255,255,255,.74); --raised:rgba(255,255,255,.58); --sunken:rgba(226,229,247,.72);
++  --solid:#FFFFFF;
++  --glass-border:rgba(40,46,120,.10); --glass-hi:rgba(255,255,255,.9);
++  --line:rgba(40,46,120,.10); --line-strong:rgba(40,46,120,.2);
++  --ink:#151936; --ink-2:#4A5080; --muted:#737AA3;
++  --accent:#5B3FE0; --accent-2:#2F63E0; --accent-soft:rgba(91,63,224,.10); --accent-line:rgba(91,63,224,.34);
++  --ok:#0B9C74;     --ok-soft:rgba(11,156,116,.10);
++  --info:#1C6FD1;   --info-soft:rgba(28,111,209,.10);
++  --warn:#B06A00;   --warn-soft:rgba(255,160,40,.14);
++  --bad:#D3264A;    --bad-soft:rgba(211,38,74,.10);
++  --unknown:#6A7197; --unknown-soft:rgba(106,113,151,.10);
++  --aurora-1:rgba(123,92,255,.16); --aurora-2:rgba(25,211,197,.12); --aurora-3:rgba(255,77,141,.08);
++  --map-edge:rgba(40,46,120,.2); --map-edge-hot:#5B3FE0;
++  --shadow:0 1px 0 var(--glass-hi) inset, 0 10px 30px -14px rgba(40,46,120,.22);
++  --shadow-lift:0 1px 0 var(--glass-hi) inset, 0 24px 50px -20px rgba(40,46,120,.32);
++  --glow-brand:0 0 0 1px rgba(91,63,224,.25), 0 10px 28px -8px rgba(91,63,224,.35);
++  --glow-live:0 0 0 1px rgba(11,156,116,.25), 0 10px 26px -8px rgba(11,156,116,.3);
++  --glow-hot:0 0 0 1px rgba(211,38,74,.25), 0 10px 26px -8px rgba(211,38,74,.3);
++  --glow-warn:0 0 0 1px rgba(176,106,0,.25), 0 10px 26px -8px rgba(255,122,61,.3);
++  --scrim:rgba(30,34,80,.28);
+ }
++/* Size-matched fallbacks so the swap to the web fonts does not shift layout. */
++@font-face{font-family:'Manrope Fallback';src:local('Arial');size-adjust:103%;ascent-override:104%;descent-override:29%}
++@font-face{font-family:'Saira Fallback';src:local('Arial Narrow'),local('Arial');size-adjust:92%;ascent-override:100%;descent-override:26%}
+ 
+ /* ---------- 2. Base & type ---------- */
+ *{box-sizing:border-box}
+diff --git a/docs/bios/archive/prototype-pre-redesign/index.html b/docs/bios/redesign/index.html
+index a2194ee..b533b4d 100644
+--- a/docs/bios/archive/prototype-pre-redesign/index.html
++++ b/docs/bios/redesign/index.html
+@@ -1,16 +1,17 @@
+ <meta charset="utf-8">
+-<title>BIOS Platform Prototype</title>
++<title>BIOS Command Center</title>
+ <meta name="description" content="BIOS by RankRise: an AI business intelligence operating system. Company Brain, AI workforce and business command center.">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
++<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;700;800&family=Saira+Semi+Condensed:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+ <link rel="stylesheet" href="css/system.css">
+ <link rel="stylesheet" href="css/app.css">
+ <link rel="stylesheet" href="css/site.css">
+ <link rel="stylesheet" href="css/company-info.css">
+ <link rel="stylesheet" href="css/evaluation.css">
++<link rel="stylesheet" href="css/command.css">
+ 
+-<div id="root" aria-live="off"><p style="padding:24px;font-family:system-ui,sans-serif;color:#767C8C">Loading BIOS…</p></div>
++<div id="root" aria-live="off"><p style="padding:24px;font-family:system-ui,sans-serif;color:#6E75A3;background:#0A0C1D;min-height:100vh;margin:0">Loading BIOS…</p></div>
+ <noscript><p style="padding:24px">BIOS needs JavaScript to run.</p></noscript>
+ 
+ <script charset="utf-8" src="js/data.js"></script>
+@@ -34,4 +35,5 @@
+ <script charset="utf-8" src="js/screens/company-info.js"></script>
+ <script charset="utf-8" src="js/evaluation.js"></script>
+ <script charset="utf-8" src="js/screens/evaluation.js"></script>
++<script charset="utf-8" src="js/motion.js"></script>
+ <script>window.BIOS.boot();</script>
+diff --git a/docs/bios/archive/prototype-pre-redesign/js/app.js b/docs/bios/redesign/js/app.js
+index b68f8bd..42659cf 100644
+--- a/docs/bios/archive/prototype-pre-redesign/js/app.js
++++ b/docs/bios/redesign/js/app.js
+@@ -28,7 +28,11 @@ B.state = {route:'overview', view:'app', navOpen:{}, sideOn:false};
+ try{ B.state.navOpen = JSON.parse(localStorage.getItem('bios.nav')||'{}'); }catch(err){}
+ try{ const h = (location.hash||'').slice(1); if(ROUTES.includes(h)) B.state.route = h; }catch(err){}
+ try{ const v = localStorage.getItem('bios.view'); if(v==='site') B.state.view = 'site'; }catch(err){}
+-try{ const t = localStorage.getItem('bios.theme'); if(t==='dark'||t==='light') document.documentElement.setAttribute('data-theme',t); }catch(err){}
++/* Theme preference: none (first visit) = dark default · 'light' / 'dark' = explicit · 'system' = follow the OS live */
++B.themePref = () => { try{ return localStorage.getItem('bios.theme') || 'default'; }catch(err){ return 'default'; } };
++B.applySystemTheme = () => { let dark = true; try{ dark = matchMedia('(prefers-color-scheme: dark)').matches; }catch(err){} document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light'); };
++try{ const t = B.themePref(); if(t==='dark'||t==='light') document.documentElement.setAttribute('data-theme',t); else if(t==='system') B.applySystemTheme(); }catch(err){}
++try{ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if(B.themePref()==='system') (B.Motion ? B.Motion.fadeTheme(B.applySystemTheme) : B.applySystemTheme()); }); }catch(err){}
+ 
+ B.go = (route, opt={}) => {
+   if(!ROUTES.includes(route)) route = 'overview';
+@@ -94,8 +98,11 @@ B.render = (opt={}) => {
+   const root = document.getElementById('root');
+   const y = opt.keepScroll ? window.scrollY : 0;
+   const ws = B.ws();
+-  if(B.state.view==='site'){ root.innerHTML = B.screens.site(); window.scrollTo(0,0); return; }
+-  if(B.state.route==='onboarding'){ root.innerHTML = B.screens.onboarding(ws); (B.after.onboarding||(()=>{}))(); window.scrollTo(0,0); return; }
++  /* motion hook: a new view/route is a navigation; anything else is a re-render */
++  const key = B.state.view+':'+B.state.route+':'+ws.id, nav = key!==B._lastKey; B._lastKey = key;
++  const done = () => { if(B.Motion) B.Motion.after(root, nav); };
++  if(B.state.view==='site'){ root.innerHTML = B.screens.site(); window.scrollTo(0,0); done(); return; }
++  if(B.state.route==='onboarding'){ root.innerHTML = B.screens.onboarding(ws); (B.after.onboarding||(()=>{}))(); window.scrollTo(0,0); done(); return; }
+   const route = B.state.route;
+   let body;
+   try{ body = (B.screens[route] || (()=>UI.empty({title:'Page not found'})))(ws); }
+@@ -105,6 +112,7 @@ B.render = (opt={}) => {
+     ${B.state.sideOn?'<div class="scrim on" data-act="side"></div>':''}`;
+   (B.after[route]||(()=>{}))(ws);
+   window.scrollTo(0, y);
++  done();
+ };
+ B.refresh = () => B.render({keepScroll:true});
+ 
+@@ -137,9 +145,10 @@ Object.assign(B.act, {
+   purpose: () => { B.ui.purposeOpen = !B.ui.purposeOpen; B.refresh(); },
+   theme: () => {
+     const root = document.documentElement, cur = root.getAttribute('data-theme');
+-    const dark = cur ? cur==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
++    const dark = cur ? cur!=='light' : true;          /* dark is the default */
+     const next = dark ? 'light' : 'dark';
+-    root.setAttribute('data-theme', next); try{ localStorage.setItem('bios.theme', next); }catch(err){}
++    const apply = () => { root.setAttribute('data-theme', next); try{ localStorage.setItem('bios.theme', next); }catch(err){} };
++    B.Motion ? B.Motion.fadeTheme(apply) : apply();
+   },
+   view: el => { B.state.view = el.dataset.id; try{ localStorage.setItem('bios.view', B.state.view); }catch(err){} B.render(); },
+   'cancel-edit': () => { B.ui.editing = null; B.refresh(); },
+diff --git a/docs/bios/redesign/js/motion.js b/docs/bios/redesign/js/motion.js
+new file mode 100644
+index 0000000..7cce3be
+--- /dev/null
++++ b/docs/bios/redesign/js/motion.js
+@@ -0,0 +1,195 @@
++/* =====================================================================
++   BIOS motion layer. Visual only: it never changes data or state.
++   - after(root, nav): runs after every render. On navigation it plays
++     entrances; on any render it animates numbers and fills whose value
++     actually changed since the last time they were on screen.
++   - fadeTheme(fn): cross-fades a theme change.
++   - press ripple on buttons.
++   Everything is skipped under prefers-reduced-motion.
++   ===================================================================== */
++(function(){
++const B = window.BIOS;
++const M = B.Motion = {};
++const reduced = () => { try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } };
++
++/* What counts up and what fills. Later steps extend these lists. */
++M.countSel = ['.brainmeter .num', '.tile .v', '.ringstat .v', '.cibrainstats .n'];
++M.fillSel  = ['.brainmeter .meter i', '.meter i', '.stackbar i'];
++/* Cards that tilt toward the cursor, with their maximum angle in degrees. */
++M.tilt = [['.cichoose button',4],['.flownode',6],['.layer',4],['.agent',4],['.tier',4],['.answer',2],['.tile',6],['.card',5],['.decision',2.5],['.insight',2.5],['.alert',2],['.well',3],['.panel',1.4]];
++M.enterSel = ['#content', '.site', '.onbmain'];
++
++const prevNum = new Map(), prevFill = new Map();
++const NUM = /^([^0-9−\-]*)([−\-]?[0-9][0-9,]*\.?[0-9]*)(.*)$/s;
++
++function countUp(el, from, to, decimals, prefix, suffix, comma){
++  const t0 = performance.now(), dur = 720;
++  const fmt = v => { let s = Math.abs(v).toFixed(decimals); if(comma) s = s.replace(/\B(?=(\d{3})+(?!\d))/g, ','); return prefix + (v<0?'−':'') + s + suffix; };
++  const step = t => { const k = Math.min(1,(t-t0)/dur), e = 1-Math.pow(1-k,3); el.textContent = fmt(from + (to-from)*e); if(k<1) requestAnimationFrame(step); };
++  el.textContent = fmt(from); requestAnimationFrame(step);
++}
++
++M.after = (root, nav) => {
++  if(!root) return;
++  const route = (B.state && (B.state.view+':'+B.state.route)) || '';
++  const still = reduced();
++
++  /* entrances: only when the view or route changed */
++  if(nav && !still){
++    M.enterSel.forEach(sel => root.querySelectorAll(sel).forEach(box => {
++      [...box.children].slice(0,14).forEach((c,i) => c.style.setProperty('--i', i));
++      box.classList.remove('m-enter'); void box.offsetWidth; box.classList.add('m-enter');
++      setTimeout(() => box.classList.remove('m-enter'), 1200);
++    }));
++  }
++
++  /* numbers: count from the last value seen (or zero on first sight) */
++  M.countSel.forEach(sel => root.querySelectorAll(sel).forEach((el, i) => {
++    const key = route+'|'+sel+'|'+i, txt = el.textContent.trim(), m = txt.match(NUM);
++    if(!m) return;
++    const raw = m[2].replace(/,/g,'').replace('−','-'), to = parseFloat(raw);
++    if(!isFinite(to)) return;
++    const decimals = (raw.split('.')[1]||'').length, comma = /,/.test(m[2]);
++    /* on navigation count from zero; on a re-render count from the previous value, only if it changed */
++    const had = prevNum.has(key), from = nav ? 0 : (had ? prevNum.get(key) : to);
++    prevNum.set(key, to);
++    if(still || from===to) return;
++    countUp(el, from, to, decimals, m[1], m[3], comma);
++  }));
++
++  /* fills: grow from the last width seen (or zero on first sight) */
++  M.fillSel.forEach(sel => root.querySelectorAll(sel).forEach((el, i) => {
++    const key = route+'|'+sel+'|'+i, target = el.style.width;
++    if(!target) return;
++    const had = prevFill.has(key), from = nav ? '0%' : (had ? prevFill.get(key) : target);
++    prevFill.set(key, target);
++    if(still || from===target) return;
++    el.style.transition = 'none'; el.style.width = from; void el.offsetWidth;
++    el.style.transition = 'width .8s var(--ease-out)'; el.style.width = target;
++  }));
++
++  if(!nav || still) return;
++  /* Website view: sections and cards below the fold rise in as they scroll into view */
++  if(window.IntersectionObserver) root.querySelectorAll('.site section:not(.hero)').forEach(sec => {
++    const items = [sec].concat([...sec.querySelectorAll('.answer,.layer,.agent,.tier')]);
++    if(sec.getBoundingClientRect().top < innerHeight) return;
++    items.forEach((el, i) => { el.classList.add('m-reveal'); if(i) el.style.setProperty('--ri', Math.min(i, 8)); });
++    const io = new IntersectionObserver(ents => ents.forEach(en => { if(en.isIntersecting){ items.forEach(el => el.classList.add('m-in')); io.disconnect(); setTimeout(() => items.forEach(el => el.classList.remove('m-reveal','m-in')), 1700); } }), {rootMargin:'0px 0px -10% 0px'});
++    io.observe(sec);
++  });
++  /* Company Information: stepper chips and conversation bubbles arrive in order */
++  root.querySelectorAll('.cisteps').forEach(st => st.querySelectorAll('.cistep').forEach((c, i) => c.style.setProperty('--si', Math.min(i, 20))));
++  root.querySelectorAll('.lane').forEach(l => l.querySelectorAll('.card').forEach((c, i) => c.style.setProperty('--ki', Math.min(i, 8))));
++  root.querySelectorAll('.thread').forEach(th => th.querySelectorAll('.bubble').forEach((c, i) => c.style.setProperty('--bi', Math.min(i, 8))));
++  /* radial arcs (Company Brain, workforce): sweep in with a stagger */
++  root.querySelectorAll('.rnode .arc').forEach((c, i) => {
++    const target = c.getAttribute('stroke-dasharray'); if(!target) return;
++    const total = target.split(' ')[1];
++    c.style.transition = 'none'; c.setAttribute('stroke-dasharray', '0 '+total); void c.getBoundingClientRect();
++    c.style.transition = `stroke-dasharray 1.1s var(--ease-out) ${200 + i*55}ms`;
++    requestAnimationFrame(() => c.setAttribute('stroke-dasharray', target));
++  });
++  /* flow maps: nodes pop in by order, plain edges draw themselves */
++  root.querySelectorAll('.map').forEach(map => {
++    map.querySelectorAll('.mnode').forEach((n, i) => n.style.setProperty('--mi', Math.min(i, 30)));
++    map.querySelectorAll('svg.edges path').forEach(pth => {
++      if(/flow|broken|off/.test(pth.getAttribute('class')||'')) return;
++      pth.setAttribute('pathLength','1'); pth.style.strokeDasharray = '1'; pth.style.strokeDashoffset = '1'; pth.style.transition = 'none';
++      void pth.getBoundingClientRect();
++      pth.style.transition = 'stroke-dashoffset 1s var(--ease-out) .35s'; pth.style.strokeDashoffset = '0';
++    });
++  });
++  /* evaluation retention chart: lines draw left to right, points follow */
++  root.querySelectorAll('svg[aria-label^="Viewer retention"]').forEach(svg => {
++    svg.querySelectorAll('path').forEach((pth, i) => {
++      const dash = pth.getAttribute('stroke-dasharray'); if(dash) return;  /* the dashed comparison line keeps its dashes */
++      pth.setAttribute('pathLength','1'); pth.style.strokeDasharray = '1'; pth.style.strokeDashoffset = '1'; pth.style.transition = 'none';
++      void pth.getBoundingClientRect();
++      pth.style.transition = `stroke-dashoffset 1.2s var(--ease-out) ${250 + i*150}ms`; pth.style.strokeDashoffset = '0';
++    });
++    svg.querySelectorAll('circle').forEach((c, i) => { c.style.opacity = '0'; c.style.transition = 'none'; void c.getBoundingClientRect(); c.style.transition = `opacity .35s ease ${500 + i*60}ms`; c.style.opacity = ''; });
++  });
++  /* rings: sweep the arc in */
++  root.querySelectorAll('.ringstat svg circle:nth-of-type(2)').forEach(c => {
++    const target = c.getAttribute('stroke-dasharray'); if(!target) return;
++    const total = target.split(' ')[1];
++    c.style.transition = 'none'; c.setAttribute('stroke-dasharray', '0 '+total); void c.getBoundingClientRect();
++    c.style.transition = 'stroke-dasharray 1s var(--ease-out)'; requestAnimationFrame(() => c.setAttribute('stroke-dasharray', target));
++  });
++  /* sparklines: draw the line, fade the area */
++  root.querySelectorAll('svg.spark').forEach((svg, i) => {
++    const paths = svg.querySelectorAll('path'), line = paths[paths.length-1], area = paths.length>1 ? paths[0] : null, dot = svg.querySelector('circle');
++    if(!line) return;
++    line.setAttribute('pathLength','1');
++    line.style.strokeDasharray = '1'; line.style.strokeDashoffset = '1'; line.style.transition = 'none';
++    if(area){ area.style.opacity = '0'; area.style.transition = 'none'; }
++    if(dot){ dot.style.opacity = '0'; dot.style.transition = 'none'; }
++    void svg.getBoundingClientRect();
++    const delay = 150 + i*70;
++    line.style.transition = `stroke-dashoffset 1.1s var(--ease-out) ${delay}ms`; line.style.strokeDashoffset = '0';
++    if(area){ area.style.transition = `opacity .8s ease ${delay+400}ms`; area.style.opacity = ''; }
++    if(dot){ dot.style.transition = `opacity .3s ease ${delay+1000}ms`; dot.style.opacity = ''; }
++  });
++};
++
++/* ---------- shared SVG gradients (rings, radial arcs, the brain core) ---------- */
++(function defs(){
++  if(document.getElementById('m-defs')) return;
++  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
++  svg.setAttribute('id','m-defs'); svg.setAttribute('aria-hidden','true'); svg.setAttribute('width','0'); svg.setAttribute('height','0');
++  svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
++  svg.innerHTML = `<defs>
++    <linearGradient id="m-grad-brand" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9B7BFF"/><stop offset="1" stop-color="#3D7BFF"/></linearGradient>
++    <linearGradient id="m-grad-live" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#19D3C5"/><stop offset="1" stop-color="#3BE08A"/></linearGradient>
++    <linearGradient id="m-grad-warn" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB547"/><stop offset="1" stop-color="#FF7A3D"/></linearGradient>
++    <linearGradient id="m-grad-hot" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF4D8D"/><stop offset="1" stop-color="#FF3B3B"/></linearGradient>
++    <radialGradient id="m-grad-core" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#8F72FF"/><stop offset=".55" stop-color="#4B39C9"/><stop offset="1" stop-color="#1B1760"/></radialGradient>
++  </defs>`;
++  const add = () => document.body && !document.getElementById('m-defs') && document.body.appendChild(svg);
++  document.body ? add() : document.addEventListener('DOMContentLoaded', add);
++})();
++
++/* ---------- 3D tilt toward the cursor, plus a moving spotlight ---------- */
++const tiltAll = () => M.tilt.map(t=>t[0]).join(',');
++let hot = null, raf = 0, lastEv = null;
++const maxFor = el => { for(const [sel,deg] of M.tilt){ if(el.matches(sel)) return (sel==='.panel' && el.querySelector('input,textarea,select')) ? 0 : deg; } return 0; };
++const release = el => { el.classList.remove('m-hot'); el.style.setProperty('--rx','0deg'); el.style.setProperty('--ry','0deg'); };
++function tick(){
++  raf = 0; const ev = lastEv; if(!ev) return;
++  const el = ev.target && ev.target.closest ? ev.target.closest(tiltAll()) : null;
++  if(el !== hot){ if(hot) release(hot); hot = el; if(el){ el.classList.add('m-tilt','m-hot'); } }
++  if(!el) return;
++  const r = el.getBoundingClientRect(), px = (ev.clientX - r.left)/r.width, py = (ev.clientY - r.top)/r.height, max = maxFor(el);
++  el.style.setProperty('--ry', ((px-.5)*2*max).toFixed(2)+'deg');
++  el.style.setProperty('--rx', ((.5-py)*2*max).toFixed(2)+'deg');
++  el.style.setProperty('--mx', (px*100).toFixed(1)+'%');
++  el.style.setProperty('--my', (py*100).toFixed(1)+'%');
++}
++document.addEventListener('pointermove', ev => {
++  if(ev.pointerType !== 'mouse' || reduced()) return;
++  lastEv = ev; if(!raf) raf = requestAnimationFrame(tick);
++}, {passive:true});
++document.addEventListener('mouseout', ev => { if(!ev.relatedTarget && hot){ release(hot); hot = null; } });
++window.addEventListener('blur', () => { if(hot){ release(hot); hot = null; } });
++
++/* theme cross-fade */
++M.fadeTheme = apply => {
++  if(reduced()){ apply(); return; }
++  if(document.startViewTransition){ try{ document.startViewTransition(apply); return; }catch(e){} }
++  const html = document.documentElement;
++  html.classList.add('theme-fading'); apply();
++  setTimeout(() => html.classList.remove('theme-fading'), 500);
++};
++
++/* press ripple on buttons (purely decorative span, removed after it fades) */
++document.addEventListener('pointerdown', ev => {
++  if(reduced()) return;
++  const b = ev.target.closest && ev.target.closest('.btn, .navitem, .choice, .seg button, .iconbtn');
++  if(!b || b.disabled) return;
++  const r = b.getBoundingClientRect(), d = Math.max(r.width, r.height)*2;
++  const s = document.createElement('span');
++  s.className = 'm-ripple'; s.setAttribute('aria-hidden','true');
++  s.style.cssText = `width:${d}px;height:${d}px;left:${ev.clientX-r.left-d/2}px;top:${ev.clientY-r.top-d/2}px`;
++  b.appendChild(s); setTimeout(() => s.remove(), 650);
++}, {passive:true});
++})();
+diff --git a/docs/bios/archive/prototype-pre-redesign/js/screens/misc.js b/docs/bios/redesign/js/screens/misc.js
+index 912cad8..1b08a95 100644
+--- a/docs/bios/archive/prototype-pre-redesign/js/screens/misc.js
++++ b/docs/bios/redesign/js/screens/misc.js
+@@ -44,7 +44,7 @@ Object.assign(B.act, {
+ 
+ /* ---------- Settings ---------- */
+ B.screens.settings = ws => {
+-  const theme = document.documentElement.getAttribute('data-theme') || 'system';
++  const pref = B.themePref ? B.themePref() : 'default', theme = pref==='default' ? 'dark' : pref;
+   return `${UI.pageHead({title:'Settings', sub:'Workspace, appearance, the analysis engine and your local changes.'})}
+   <div class="g2 even">
+     <div class="stack">
+@@ -66,7 +66,7 @@ B.screens.settings = ws => {
+   </div>`;
+ };
+ Object.assign(B.act, {
+-  'set-theme': el => { const t = el.dataset.id; if(t==='system'){ document.documentElement.removeAttribute('data-theme'); try{ localStorage.removeItem('bios.theme'); }catch(err){} } else { document.documentElement.setAttribute('data-theme',t); try{ localStorage.setItem('bios.theme',t); }catch(err){} } B.refresh(); },
++  'set-theme': el => { const t = el.dataset.id; const apply = () => { if(t==='system'){ try{ localStorage.setItem('bios.theme','system'); }catch(err){} B.applySystemTheme(); } else { document.documentElement.setAttribute('data-theme',t); try{ localStorage.setItem('bios.theme',t); }catch(err){} } B.refresh(); }; B.Motion ? B.Motion.fadeTheme(apply) : apply(); },
+   'reset-ask': () => UI.modal('Reset the sample?', `<p class="prose">This removes your ${B.opsCount(B.ws().id)} changes to Meridian Supply in this browser. It cannot be undone.</p>`, `<button class="btn ghost" data-act="close">Cancel</button><button class="btn danger" data-act="reset-do">Reset</button>`),
+   'reset-do': () => { B.resetLocal(B.ws().id); B.liveAgents = {}; UI.close(); UI.toast('Sample reset.'); B.go('overview'); },
+   'delete-ask': () => UI.modal('Delete this workspace?', `<p class="prose">“${e(B.ws().name)}” and everything in it will be removed from this browser. It cannot be undone.</p>`, `<button class="btn ghost" data-act="close">Cancel</button><button class="btn danger" data-act="delete-do">Delete</button>`),
