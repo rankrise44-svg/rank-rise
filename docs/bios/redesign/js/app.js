@@ -19,7 +19,8 @@ B.NAV = [
   {sec:'Experiments', items:[['ex-active','Active Experiments'],['ex-completed','Completed Experiments'],['ex-history','Experiment History']]},
   {sec:'Evaluation', items:[['ev-overview','Overview'],['ev-worked','What Worked'],['ev-weak','Weak Points'],['ev-why','Why This Result?'],['ev-roi','ROI'],['ev-ppc','PPC'],['ev-ppv','Pay Per View'],['ev-hook','Hook Analysis'],['ev-creative','Creative Analysis'],['ev-audience','Audience Analysis'],['ev-compare','Historical Comparison'],['ev-improve','Improvement Plan'],['ev-missing','Missing Data'],['ev-next','Next Experiments'],['ev-ask','Ask AI']]},
   {sec:'AI workforce', items:[['w-orchestrator','Orchestrator'],['w-agents','Agents'],['w-activity','Agent Activity'],['w-builder','Agent Builder']]},
-  {items:[['reports','Reports','▤'],['settings','Settings','⚙']]}
+  {items:[['reports','Reports','▤'],['settings','Settings','⚙']]},
+  {sec:'Hermus', items:[['h-settings','Hermus Settings'],['h-memory','Hermus Memory']]}
 ];
 const ROUTES = B.NAV.flatMap(s=>s.items.map(i=>i[0])).concat(['onboarding']);
 const secOf = r => (B.NAV.find(s=>s.items.some(i=>i[0]===r))||{}).sec;
@@ -81,6 +82,7 @@ function topbar(ws){
       ${ctx?`<span class="ctx chip acc" title="The AI already has this context"><span class="lab">Context:&nbsp;</span>${e(ctx.label)}</span>`:''}
       <input id="cmd-q" name="q" autocomplete="off" aria-label="Ask BIOS about your business" placeholder="${ctx?'Ask about '+e(ctx.label.toLowerCase())+'…':'Ask about your business…'}">
       <span class="kbd">/</span><button class="btn sm" type="submit">Ask</button></form>
+    <button class="hermus-btn" type="button" data-act="hermus" aria-label="Call Hermus, the voice assistant (prototype)" title="Hermus · live assistant (prototype)"><span class="hm-orb sm" aria-hidden="true"></span><span class="hm-lab">Hermus</span></button>
     <div class="right"><span class="hide-sm">${live}</span>
       <div class="seg hide-sm" role="tablist" aria-label="Prototype view"><button role="tab" data-act="view" data-id="app" aria-selected="true">Product</button><button role="tab" data-act="view" data-id="site" aria-selected="false">Website</button></div>
       <button class="iconbtn" data-act="theme" aria-label="Switch light or dark theme" title="Theme">◐</button></div>`;
