@@ -28,7 +28,11 @@ B.state = {route:'overview', view:'app', navOpen:{}, sideOn:false};
 try{ B.state.navOpen = JSON.parse(localStorage.getItem('bios.nav')||'{}'); }catch(err){}
 try{ const h = (location.hash||'').slice(1); if(ROUTES.includes(h)) B.state.route = h; }catch(err){}
 try{ const v = localStorage.getItem('bios.view'); if(v==='site') B.state.view = 'site'; }catch(err){}
-try{ const t = localStorage.getItem('bios.theme'); if(t==='dark'||t==='light') document.documentElement.setAttribute('data-theme',t); }catch(err){}
+/* Theme preference: none (first visit) = dark default · 'light' / 'dark' = explicit · 'system' = follow the OS live */
+B.themePref = () => { try{ return localStorage.getItem('bios.theme') || 'default'; }catch(err){ return 'default'; } };
+B.applySystemTheme = () => { let dark = true; try{ dark = matchMedia('(prefers-color-scheme: dark)').matches; }catch(err){} document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light'); };
+try{ const t = B.themePref(); if(t==='dark'||t==='light') document.documentElement.setAttribute('data-theme',t); else if(t==='system') B.applySystemTheme(); }catch(err){}
+try{ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if(B.themePref()==='system') (B.Motion ? B.Motion.fadeTheme(B.applySystemTheme) : B.applySystemTheme()); }); }catch(err){}
 
 B.go = (route, opt={}) => {
   if(!ROUTES.includes(route)) route = 'overview';

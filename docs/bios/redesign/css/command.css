@@ -131,3 +131,134 @@ h1,h2,h3,h4{font-family:var(--head);letter-spacing:.01em}
 }
 /* light mode: gradient text is too pale on a bright ground, use the solid warning ink */
 :root[data-theme="light"] .samplebar b{background:none;color:var(--warn)}
+
+/* =====================================================================
+   Step 2 — shared components + Overview
+   ===================================================================== */
+
+/* ---------- numbers: Manrope bold, tabular ---------- */
+.num,.tile .v,.cibrainstats .n,.ringstat .v,.okv .v,table.t td.n,.decision .num,.goal .top .push{font-family:var(--sans);font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.tile .v{font-weight:800;font-size:28px;letter-spacing:-.02em}
+.ringstat .v{font-weight:800}
+
+/* ---------- glass cards ---------- */
+.panel,.tile,.decision,.insight,.alert,.card,.well,.empty{position:relative}
+.panel{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--r-lg);box-shadow:var(--shadow);
+  backdrop-filter:blur(14px) saturate(130%);-webkit-backdrop-filter:blur(14px) saturate(130%)}
+.panel > header{border-bottom-color:var(--line)}
+.panel > header h3{color:var(--ink-2);font-size:11.5px;font-weight:600}
+.panel.accent{border-color:var(--accent-line)}
+.panel.lift{box-shadow:var(--shadow-lift)}
+.panel.accent.lift{box-shadow:var(--glow-brand),var(--shadow-lift)}
+.well{background:var(--raised);border-color:var(--glass-border);border-radius:var(--r)}
+
+/* ---------- 3D tilt + cursor spotlight (motion.js sets --rx --ry --mx --my) ---------- */
+.m-tilt{transform:perspective(1000px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translate3d(0,var(--lift,0px),0);
+  transition:transform .6s var(--ease-spring),box-shadow .3s,border-color .3s}
+.m-tilt.m-hot{--lift:-3px;transition:transform .14s ease-out,box-shadow .3s,border-color .3s;border-color:var(--accent-line);box-shadow:var(--shadow-lift),0 0 0 1px color-mix(in srgb,var(--accent) 22%,transparent)}
+.m-tilt::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--ink) 9%,transparent),transparent 62%)}
+.m-tilt.m-hot::after{opacity:1}
+
+/* ---------- stat tiles: glow blob by what the number means ---------- */
+.tile{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden;padding:15px 16px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.tile::before{content:"";position:absolute;width:140px;height:140px;right:-46px;top:-56px;border-radius:50%;pointer-events:none;
+  background:var(--grad-brand);filter:blur(34px);opacity:.34;transition:opacity .3s,transform .6s var(--ease-out)}
+.tile:has(.d.up)::before{background:var(--grad-live)}
+.tile:has(.d.down)::before{background:var(--grad-hot)}
+.tile.na::before{background:var(--grad-unknown);opacity:.2}
+.tile.m-hot::before{opacity:.55;transform:scale(1.15)}
+.tile .l{font-family:var(--head);letter-spacing:.12em;font-size:11px;color:var(--ink-2)}
+.tile .v{transform-origin:left center;transition:transform var(--d-mid) var(--ease-spring)}
+.tile:hover .v{transform:scale(1.06)}
+.tile .d{font-family:var(--sans);font-weight:600;font-size:12px}
+.tile .spark{filter:drop-shadow(0 3px 8px color-mix(in srgb,var(--accent) 35%,transparent))}
+.tile .spark path:last-of-type{stroke-width:2}
+
+/* ---------- card titles zoom on hover ---------- */
+.panel > header h3,.insight .h,.decision .q,.goal .top .h,.list .li .main > b,.alert .t{display:inline-block;transform-origin:left center;transition:transform var(--d-mid) var(--ease-spring)}
+.panel:hover > header h3,.insight:hover .h,.decision:hover .q,.goal:hover .top .h,.list .li:hover .main > b,.alert:hover .t{transform:scale(var(--zoom-text))}
+
+/* ---------- chips, badges, status pills: soft gradient fills ---------- */
+.chip{border-radius:8px;border-color:var(--glass-border);background:var(--sunken);font-weight:500}
+.chip.ok{background:linear-gradient(135deg,color-mix(in srgb,#19D3C5 22%,transparent),color-mix(in srgb,#3BE08A 10%,transparent));border-color:color-mix(in srgb,var(--ok) 38%,transparent)}
+.chip.warn{background:linear-gradient(135deg,color-mix(in srgb,#FFB547 22%,transparent),color-mix(in srgb,#FF7A3D 10%,transparent));border-color:color-mix(in srgb,var(--warn) 38%,transparent)}
+.chip.bad{background:linear-gradient(135deg,color-mix(in srgb,#FF4D8D 22%,transparent),color-mix(in srgb,#FF3B3B 10%,transparent));border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+.chip.acc{background:linear-gradient(135deg,color-mix(in srgb,#7B5CFF 24%,transparent),color-mix(in srgb,#3D7BFF 12%,transparent));border-color:var(--accent-line)}
+.chip.info{background:linear-gradient(135deg,color-mix(in srgb,#35C8FF 22%,transparent),color-mix(in srgb,#4F6BFF 10%,transparent));border-color:color-mix(in srgb,var(--info) 38%,transparent)}
+.chip.dim{background:var(--sunken)}
+.st.pill{border-radius:8px}
+.badge{border-radius:10px}
+.conf i.on{background:var(--grad-brand)} .sev i.on{background:var(--grad-hot)}
+
+/* ---------- meters: gradient fills with a soft glow ---------- */
+.meter{background:var(--sunken);height:7px}
+.meter i{background:var(--grad-brand);box-shadow:0 0 10px -2px #7B5CFF}
+.meter i.ok{background:var(--grad-live);box-shadow:0 0 10px -2px #19D3C5}
+.meter i.warn{background:var(--grad-warn);box-shadow:0 0 10px -2px #FF7A3D}
+.meter i.bad{background:var(--grad-hot);box-shadow:0 0 10px -2px #FF3B3B}
+
+/* ---------- alerts: glass with a glowing gradient edge ---------- */
+.alert{background:var(--surface);border:1px solid var(--glass-border);border-left:0;border-radius:var(--r);box-shadow:var(--shadow);padding-left:18px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.alert::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--grad-unknown)}
+.alert.bad::before{background:var(--grad-hot);box-shadow:0 0 12px #FF3B3B}
+.alert.warn::before,.alert.data::before{background:var(--grad-warn);box-shadow:0 0 12px #FF7A3D}
+.alert.ok::before{background:var(--grad-live);box-shadow:0 0 12px #19D3C5}
+.alert.acc::before{background:var(--grad-brand);box-shadow:0 0 12px #7B5CFF}
+.alert.data{background:var(--surface)}
+.alert .tag{font-weight:600;border-radius:6px}
+.alert.bad .tag{background:var(--grad-hot);color:#fff}
+.alert.warn .tag,.alert.data .tag{background:var(--grad-warn);color:#2A1500}
+.alert.ok .tag{background:var(--grad-live);color:#062A22}
+.alert.acc .tag{background:var(--grad-brand);color:#fff}
+
+/* ---------- insight cards ---------- */
+.insight{background:var(--raised);border:1px solid var(--glass-border);border-left:0;border-radius:var(--r);padding-left:18px;box-shadow:var(--shadow)}
+.insight::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--grad-unknown)}
+.insight.problem::before,.insight.threat::before{background:var(--grad-hot);box-shadow:0 0 12px #FF3B3B}
+.insight.opportunity::before{background:var(--grad-live);box-shadow:0 0 12px #19D3C5}
+.insight.insight-k::before{background:var(--grad-brand);box-shadow:0 0 12px #7B5CFF}
+.insight.unknown{background:var(--sunken);border-style:dashed}
+.insight .kind{font-family:var(--head);letter-spacing:.14em}
+.insight .acts button{border-radius:8px;transition:transform var(--d-mid) var(--ease-spring),background var(--d-mid),color var(--d-mid)}
+.insight .acts button:hover{transform:scale(1.06)}
+.insight .note{background:color-mix(in srgb,#7B5CFF 14%,transparent);border:1px solid var(--accent-line)}
+
+/* ---------- decisions ---------- */
+.decision{background:var(--surface);border:1px solid var(--accent-line);border-radius:var(--r);box-shadow:var(--shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.decision .num{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:var(--grad-brand);color:#fff;font-weight:800;font-size:12px;box-shadow:var(--glow-brand)}
+
+/* ---------- goals, lists, tables, tabs ---------- */
+.goal{border-bottom-color:var(--line)}
+.goal .top .push{font-weight:700;color:var(--ink)}
+.list > .li{border-bottom-color:var(--line);transition:background var(--d-mid)}
+.list > button.li:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
+table.t th{background:transparent;font-family:var(--head);letter-spacing:.12em;font-size:11px;color:var(--ink-2);border-bottom-color:var(--line)}
+table.t td{border-bottom-color:var(--line)}
+table.t td.n{font-weight:700;color:var(--ink)}
+table.t tbody tr{transition:background var(--d-mid)}
+table.t tbody tr:hover td{background:color-mix(in srgb,var(--ink) 4%,transparent)}
+.tabs{border-bottom-color:var(--line)}
+.tabs button{position:relative;border-bottom:0;transition:color var(--d-mid),transform var(--d-mid) var(--ease-spring)}
+.tabs button:hover{transform:scale(var(--zoom-text))}
+.tabs button::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:2px;border-radius:2px;background:var(--grad-brand);transform:scaleX(0);transition:transform var(--d-slow) var(--ease-spring);box-shadow:0 0 10px #7B5CFF}
+.tabs button[aria-selected="true"]::after{transform:scaleX(1)}
+
+/* ---------- section titles, empty and locked states ---------- */
+.sectitle h2{display:flex;align-items:center;gap:8px;color:var(--ink-2);font-weight:600;font-size:11.5px}
+.sectitle h2::before{content:"";width:6px;height:6px;border-radius:2px;background:var(--grad-brand);box-shadow:0 0 8px #7B5CFF}
+.empty{background:var(--sunken);border-color:var(--line-strong);border-radius:var(--r-lg)}
+.locked{background:linear-gradient(135deg,color-mix(in srgb,#FFB547 12%,transparent),color-mix(in srgb,#FF7A3D 5%,transparent));border-color:color-mix(in srgb,var(--warn) 45%,transparent);border-radius:var(--r)}
+.purpose{border-color:var(--glass-border);background:var(--line);border-radius:var(--r)}
+.purpose > div{background:var(--raised)}
+
+/* ---------- Overview specifics ---------- */
+.decisions{gap:10px}
+.opps{gap:var(--s4)}
+
+@media (prefers-reduced-motion:reduce){
+  .m-tilt,.m-tilt.m-hot{transform:none}
+  .tile:hover .v,.panel:hover > header h3,.insight:hover .h,.decision:hover .q,.goal:hover .top .h,.alert:hover .t,.tabs button:hover{transform:none}
+}

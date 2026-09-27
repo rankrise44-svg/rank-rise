@@ -44,7 +44,7 @@ Object.assign(B.act, {
 
 /* ---------- Settings ---------- */
 B.screens.settings = ws => {
-  const theme = document.documentElement.getAttribute('data-theme') || 'system';
+  const pref = B.themePref ? B.themePref() : 'default', theme = pref==='default' ? 'dark' : pref;
   return `${UI.pageHead({title:'Settings', sub:'Workspace, appearance, the analysis engine and your local changes.'})}
   <div class="g2 even">
     <div class="stack">
@@ -66,7 +66,7 @@ B.screens.settings = ws => {
   </div>`;
 };
 Object.assign(B.act, {
-  'set-theme': el => { const t = el.dataset.id; const apply = () => { if(t==='system'){ document.documentElement.removeAttribute('data-theme'); try{ localStorage.removeItem('bios.theme'); }catch(err){} } else { document.documentElement.setAttribute('data-theme',t); try{ localStorage.setItem('bios.theme',t); }catch(err){} } B.refresh(); }; B.Motion ? B.Motion.fadeTheme(apply) : apply(); },
+  'set-theme': el => { const t = el.dataset.id; const apply = () => { if(t==='system'){ try{ localStorage.setItem('bios.theme','system'); }catch(err){} B.applySystemTheme(); } else { document.documentElement.setAttribute('data-theme',t); try{ localStorage.setItem('bios.theme',t); }catch(err){} } B.refresh(); }; B.Motion ? B.Motion.fadeTheme(apply) : apply(); },
   'reset-ask': () => UI.modal('Reset the sample?', `<p class="prose">This removes your ${B.opsCount(B.ws().id)} changes to Meridian Supply in this browser. It cannot be undone.</p>`, `<button class="btn ghost" data-act="close">Cancel</button><button class="btn danger" data-act="reset-do">Reset</button>`),
   'reset-do': () => { B.resetLocal(B.ws().id); B.liveAgents = {}; UI.close(); UI.toast('Sample reset.'); B.go('overview'); },
   'delete-ask': () => UI.modal('Delete this workspace?', `<p class="prose">“${e(B.ws().name)}” and everything in it will be removed from this browser. It cannot be undone.</p>`, `<button class="btn ghost" data-act="close">Cancel</button><button class="btn danger" data-act="delete-do">Delete</button>`),
