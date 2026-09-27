@@ -262,3 +262,122 @@ table.t tbody tr:hover td{background:color-mix(in srgb,var(--ink) 4%,transparent
   .m-tilt,.m-tilt.m-hot{transform:none}
   .tile:hover .v,.panel:hover > header h3,.insight:hover .h,.decision:hover .q,.goal:hover .top .h,.alert:hover .t,.tabs button:hover{transform:none}
 }
+
+/* =====================================================================
+   Step 3 — Company Brain, Maps, AI Workforce (+ Ask orchestration)
+   ===================================================================== */
+
+/* ---------- radial views: glass nodes, gradient arcs, glowing core ---------- */
+.radial .orbit{stroke:var(--line-strong);stroke-dasharray:1 6;stroke-linecap:round}
+.radial .spoke{stroke:var(--map-edge);stroke-width:1}
+.radial .spoke.hot{stroke:var(--accent);stroke-width:2;filter:drop-shadow(0 0 4px var(--accent))}
+.radial .spoke.flow{stroke:var(--ok);stroke-width:1.6;filter:drop-shadow(0 0 3px var(--ok))}
+.rnode .bg{fill:color-mix(in srgb,var(--solid) 88%,transparent);stroke:var(--glass-border);stroke-width:1.2;transition:stroke .25s,filter .3s,fill .25s}
+.rnode .track{stroke:var(--sunken);stroke-width:5}
+.rnode .arc{stroke:url(#m-grad-brand);stroke-width:5;filter:drop-shadow(0 0 4px rgba(123,92,255,.55))}
+.rnode .arc.low{stroke:url(#m-grad-warn);filter:drop-shadow(0 0 4px rgba(255,122,61,.5))}
+.rnode .lbl{font-family:var(--head);font-size:13.5px;font-weight:600;letter-spacing:.02em;transform-box:fill-box;transform-origin:center;transition:transform .25s var(--ease-spring)}
+.rnode .sub{font-family:var(--sans);font-weight:700;font-size:10.5px}
+.rnode:hover .bg,.rnode:focus-visible .bg{stroke:var(--accent);filter:drop-shadow(0 0 14px rgba(123,92,255,.55))}
+.rnode:hover .lbl{transform:scale(1.08)}
+.rnode.sel .bg{fill:color-mix(in srgb,#7B5CFF 22%,var(--solid));stroke:var(--accent);stroke-width:2;filter:drop-shadow(0 0 18px rgba(123,92,255,.7))}
+.rnode.dim{opacity:.35;transition:opacity .3s}
+.rnode .alarm{fill:url(#m-grad-hot);filter:drop-shadow(0 0 6px #FF3B3B);animation:alarm 1.8s ease-in-out infinite}
+@keyframes alarm{50%{opacity:.45}}
+/* the centre: a lit gradient orb with white text in both themes (fixes the dark-mode inversion) */
+.rcore .bg{fill:url(#m-grad-core);stroke:rgba(255,255,255,.18);stroke-width:1;filter:drop-shadow(0 0 28px rgba(123,92,255,.55))}
+.rcore:hover .bg{stroke:rgba(255,255,255,.35);filter:drop-shadow(0 0 36px rgba(123,92,255,.75))}
+.rcore .lbl{fill:#FFFFFF;font-family:var(--display);font-size:18px;letter-spacing:.1em}
+.rcore .sub{fill:rgba(255,255,255,.78);font-family:var(--sans);font-weight:700;font-size:11px}
+.rcore .ring{stroke:url(#m-grad-brand);stroke-width:2;opacity:.6;stroke-dasharray:3 7;stroke-linecap:round}
+.rcore .ring.build{animation:core-spin 26s linear infinite,breathe 3.2s ease-in-out infinite}
+@keyframes core-spin{to{transform:rotate(360deg)}}
+/* entrance: nodes fade and grow into place (inner shapes only, the node position is untouched) */
+.m-enter .rnode > *:not(.arc):not(.track){animation:node-in .7s var(--ease-spring) both;transform-box:fill-box;transform-origin:center}
+@keyframes node-in{from{opacity:0;transform:scale(.6)}}
+/* workforce: state rings */
+.rnode.agent .state{filter:drop-shadow(0 0 5px currentColor)}
+.rnode.agent.working .bg,.rnode.agent.analyzing .bg,.rnode.agent.researching .bg,.rnode.agent.executing .bg{stroke:var(--accent);animation:agent-glow 2s ease-in-out infinite}
+.rnode.agent.verifying .bg{stroke:var(--info);filter:drop-shadow(0 0 10px rgba(69,184,255,.5))}
+.rnode.agent.waiting .bg{stroke:var(--warn);filter:drop-shadow(0 0 8px rgba(255,181,71,.45))}
+.rnode.agent.completed .bg{stroke:var(--ok);filter:drop-shadow(0 0 8px rgba(46,230,168,.4))}
+.rnode.agent.planned .bg{stroke:var(--line-strong);fill:color-mix(in srgb,var(--solid) 55%,transparent)}
+@keyframes agent-glow{50%{filter:drop-shadow(0 0 14px rgba(123,92,255,.75))}}
+.radialwrap{filter:drop-shadow(0 20px 40px rgba(2,3,15,.25))}
+
+/* ---------- small rings reuse the gradients ---------- */
+.ringstat svg circle:nth-of-type(2){stroke:url(#m-grad-brand);filter:drop-shadow(0 0 5px rgba(123,92,255,.5))}
+.ringstat svg circle:nth-of-type(2)[stroke="var(--warn)"]{stroke:url(#m-grad-warn);filter:drop-shadow(0 0 5px rgba(255,122,61,.45))}
+
+/* ---------- flow maps ---------- */
+.mapwrap{background-color:var(--sunken);border:1px solid var(--glass-border);border-radius:var(--r-lg);
+  background-image:radial-gradient(color-mix(in srgb,var(--ink) 10%,transparent) 1px,transparent 1px);background-size:20px 20px;box-shadow:inset 0 1px 0 var(--glass-hi)}
+.map .coltitle{font-family:var(--head);letter-spacing:.18em;color:var(--ink-2);font-weight:600}
+.map svg.edges path{stroke:var(--map-edge);stroke-width:1.3}
+.map svg.edges path.hot{stroke:var(--accent);stroke-width:2;filter:drop-shadow(0 0 4px var(--accent))}
+.map svg.edges path.flow{stroke:var(--ok);filter:drop-shadow(0 0 3px var(--ok))}
+.map svg.edges path.broken{stroke:var(--bad);filter:drop-shadow(0 0 3px var(--bad))}
+.mnode{background:color-mix(in srgb,var(--solid) 90%,transparent);border:1px solid var(--glass-border);border-radius:12px;box-shadow:var(--shadow);
+  transition:transform .3s var(--ease-spring),border-color .25s,box-shadow .3s,opacity .3s,background .25s}
+.mnode:hover{transform:translateY(-2px) scale(1.04);border-color:var(--accent-line);box-shadow:var(--glow-brand);z-index:2}
+.mnode .h{font-weight:600}
+.mnode.sel{background:linear-gradient(135deg,color-mix(in srgb,#7B5CFF 30%,var(--solid)),color-mix(in srgb,#3D7BFF 16%,var(--solid)));border-color:var(--accent);box-shadow:var(--glow-brand);z-index:2}
+.mnode.core{background:var(--grad-brand);border-color:transparent;box-shadow:var(--glow-brand)}
+.mnode.core .h{color:#fff} .mnode.core .s{color:rgba(255,255,255,.78)}
+.mnode.gap{background:transparent;border-style:dashed;border-color:var(--line-strong);box-shadow:none}
+.mnode.bad{border-color:color-mix(in srgb,var(--bad) 60%,transparent);box-shadow:var(--glow-hot)}
+.m-enter .mnode{animation:m-pop .55s var(--ease-spring) both;animation-delay:calc(var(--mi,0) * 18ms + 150ms)}
+@keyframes m-pop{from{opacity:0;transform:scale(.85)}}
+
+/* ---------- agent states & agent cards ---------- */
+.agentstate{padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--c) 12%,transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent)}
+.agentstate::before{box-shadow:0 0 8px var(--c)}
+.agentcard .inp{border-bottom-color:var(--line)}
+
+/* ---------- Company Brain page ---------- */
+.conflict{background:linear-gradient(135deg,color-mix(in srgb,#FF4D8D 14%,transparent),color-mix(in srgb,#FF3B3B 5%,transparent));border:1px solid color-mix(in srgb,var(--bad) 45%,transparent);border-radius:var(--r-lg);box-shadow:var(--glow-hot);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.conflict h4{font-family:var(--head);letter-spacing:.12em}
+.stackbar{height:9px;border-radius:5px;gap:2px;background:var(--sunken)}
+.stackbar i{border-radius:3px}
+.dom{background:var(--surface);border-color:var(--glass-border);border-radius:var(--r);transition:transform .3s var(--ease-spring),border-color .25s,box-shadow .3s}
+.dom:hover{transform:translateY(-2px);border-color:var(--accent-line);box-shadow:var(--glow-brand)}
+.dom .hbar i{background:var(--grad-brand)} .dom .hbar i.low{background:var(--grad-warn)}
+
+/* ---------- memory timeline (shared, used by the Brain) ---------- */
+.timeline::before{background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 10%,transparent));width:2px;opacity:.6}
+.tl::before{background:var(--solid);border-color:var(--line-strong);transition:transform .25s var(--ease-spring)}
+.tl:hover::before{transform:scale(1.3)}
+.tl.tl-correction::before{background:var(--accent);border-color:var(--accent);box-shadow:0 0 10px var(--accent)}
+.tl.tl-result::before{background:var(--ok);border-color:var(--ok);box-shadow:0 0 10px var(--ok)}
+.tl.tl-change::before{border-color:var(--warn);box-shadow:0 0 8px color-mix(in srgb,var(--warn) 60%,transparent)}
+.tl.tl-fact::before{border-color:var(--info)}
+.tl .when{font-family:var(--sans);font-weight:600;font-size:11px}
+
+/* ---------- Ask: the orchestration console ---------- */
+.askbox{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--r-lg);box-shadow:var(--shadow);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:box-shadow .3s,border-color .3s}
+.askbox:focus-within{border-color:var(--accent-line);box-shadow:var(--glow-brand)}
+.suggest button{background:var(--surface);border-color:var(--glass-border);transition:transform var(--d-mid) var(--ease-spring),border-color .2s,color .2s,box-shadow .2s}
+.suggest button:hover{transform:translateY(-1px) scale(var(--zoom-text));border-color:var(--accent-line);box-shadow:var(--glow-brand)}
+.suggest button[aria-pressed="true"]{background:linear-gradient(135deg,color-mix(in srgb,#7B5CFF 28%,transparent),color-mix(in srgb,#3D7BFF 14%,transparent));color:var(--ink)}
+.pstage{border-bottom-color:var(--line)}
+.pstage .ic{width:22px;height:22px;background:var(--sunken)}
+.pstage.done .ic{background:var(--grad-live);border-color:transparent;color:#062A22;box-shadow:var(--glow-live)}
+.pstage.run .ic{border-color:#7B5CFF;border-right-color:transparent;box-shadow:0 0 12px rgba(123,92,255,.6)}
+.pstage.stop .ic{background:var(--grad-hot);border-color:transparent;color:#fff;box-shadow:var(--glow-hot)}
+.pstage .n .stg{font-family:var(--head);font-size:11px;letter-spacing:.16em}
+.planrow{border-bottom-color:var(--line)}
+.planrow .k{font-family:var(--head);letter-spacing:.14em}
+.ev{border-bottom-color:var(--line)}
+.ev .id{font-weight:600}
+
+@media (prefers-reduced-motion:reduce){
+  .rcore .ring.build,.rnode .alarm,.rnode.agent.working .bg,.rnode.agent.analyzing .bg,.rnode.agent.researching .bg,.rnode.agent.executing .bg{animation:none}
+  .m-enter .rnode > *,.m-enter .mnode{animation:none}
+  .mnode:hover,.dom:hover,.suggest button:hover{transform:none}
+}
+/* narrow side panels (Brain node panel, etc.): stack key / value / source instead of squeezing three columns */
+.g2 > aside .kv .r,.g2.wide > aside .kv .r{grid-template-columns:minmax(0,1fr);gap:4px}
+.g2 > aside .kv .m,.g2.wide > aside .kv .m{justify-content:flex-start}
+.rnode.dim{opacity:.5}
+/* fact-row source labels share the .src name with data-source rows; keep them inline */
+.kv .m .src{display:inline;padding:0;border:0;font-size:11px}

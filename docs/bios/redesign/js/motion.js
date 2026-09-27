@@ -69,6 +69,24 @@ M.after = (root, nav) => {
   }));
 
   if(!nav || still) return;
+  /* radial arcs (Company Brain, workforce): sweep in with a stagger */
+  root.querySelectorAll('.rnode .arc').forEach((c, i) => {
+    const target = c.getAttribute('stroke-dasharray'); if(!target) return;
+    const total = target.split(' ')[1];
+    c.style.transition = 'none'; c.setAttribute('stroke-dasharray', '0 '+total); void c.getBoundingClientRect();
+    c.style.transition = `stroke-dasharray 1.1s var(--ease-out) ${200 + i*55}ms`;
+    requestAnimationFrame(() => c.setAttribute('stroke-dasharray', target));
+  });
+  /* flow maps: nodes pop in by order, plain edges draw themselves */
+  root.querySelectorAll('.map').forEach(map => {
+    map.querySelectorAll('.mnode').forEach((n, i) => n.style.setProperty('--mi', Math.min(i, 30)));
+    map.querySelectorAll('svg.edges path').forEach(pth => {
+      if(/flow|broken|off/.test(pth.getAttribute('class')||'')) return;
+      pth.setAttribute('pathLength','1'); pth.style.strokeDasharray = '1'; pth.style.strokeDashoffset = '1'; pth.style.transition = 'none';
+      void pth.getBoundingClientRect();
+      pth.style.transition = 'stroke-dashoffset 1s var(--ease-out) .35s'; pth.style.strokeDashoffset = '0';
+    });
+  });
   /* rings: sweep the arc in */
   root.querySelectorAll('.ringstat svg circle:nth-of-type(2)').forEach(c => {
     const target = c.getAttribute('stroke-dasharray'); if(!target) return;
@@ -91,6 +109,23 @@ M.after = (root, nav) => {
     if(dot){ dot.style.transition = `opacity .3s ease ${delay+1000}ms`; dot.style.opacity = ''; }
   });
 };
+
+/* ---------- shared SVG gradients (rings, radial arcs, the brain core) ---------- */
+(function defs(){
+  if(document.getElementById('m-defs')) return;
+  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('id','m-defs'); svg.setAttribute('aria-hidden','true'); svg.setAttribute('width','0'); svg.setAttribute('height','0');
+  svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
+  svg.innerHTML = `<defs>
+    <linearGradient id="m-grad-brand" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9B7BFF"/><stop offset="1" stop-color="#3D7BFF"/></linearGradient>
+    <linearGradient id="m-grad-live" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#19D3C5"/><stop offset="1" stop-color="#3BE08A"/></linearGradient>
+    <linearGradient id="m-grad-warn" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB547"/><stop offset="1" stop-color="#FF7A3D"/></linearGradient>
+    <linearGradient id="m-grad-hot" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF4D8D"/><stop offset="1" stop-color="#FF3B3B"/></linearGradient>
+    <radialGradient id="m-grad-core" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#8F72FF"/><stop offset=".55" stop-color="#4B39C9"/><stop offset="1" stop-color="#1B1760"/></radialGradient>
+  </defs>`;
+  const add = () => document.body && !document.getElementById('m-defs') && document.body.appendChild(svg);
+  document.body ? add() : document.addEventListener('DOMContentLoaded', add);
+})();
 
 /* ---------- 3D tilt toward the cursor, plus a moving spotlight ---------- */
 const tiltAll = () => M.tilt.map(t=>t[0]).join(',');
