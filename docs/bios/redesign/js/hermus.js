@@ -28,7 +28,32 @@ const addr = () => { const s = H.settings(); return s.address==='name' ? (s.name
 const fill = t => { const a = addr(); return t.replace(/,? ?\{sir\}/g, m => a ? (m.startsWith(',')?', ':m.startsWith(' ')?' ':'')+a : ''); };
 
 /* ---------- scripted walkthroughs ---------- */
+/* A-to-Z tour: one stop per sidebar section, in order. At each stop Hermus
+   explains the section while opening every one of its pages in turn. */
+const routesOf = sec => (B.NAV.find(x=>x.sec===sec)||{items:[]}).items.map(i=>i[0]);
+const TOUR_TEXT = [
+  {routes:['overview'], spot:'#content .decisions', say:'First, the Overview. Today at a glance: the decisions waiting for you, business health numbers, alerts, and the threats and opportunities, all on one screen.'},
+  {routes:['ask'], spot:'#content .askbox', say:'Ask BIOS. You ask any business question; the Orchestrator picks the data, agents and model it needs, and every claim comes back with its source.'},
+  {routes:['brain'], spot:'#content .radialwrap', say:'The Company Brain. Everything BIOS believes about the business, how sure it is, and where each belief came from. Right now it is 65% built.'},
+  {routes:['maps'], spot:'#content .mapwrap', say:'Maps. The business drawn as connected systems: the company, its data, the AI agents, strategy, customers, the funnel and the automations.'},
+  {sec:'Company Information', say:'Company Information is where the raw truth is collected: who you are, identity and story, mission, products, customers, finance, sales, marketing, brand, competitors, operations, history, goals and problems. Then the Data Vault for files, AI follow-up questions, validation, and exactly what each agent reads.'},
+  {sec:'Understand', say:'Understand turns that raw data into facts, area by area: company, customers, market, competitors, brand, marketing, sales, finance, team, research, data sources and documents. Every fact shows its status, its source and how confident we are.'},
+  {sec:'Plan', say:'Plan. Strategies with the mechanism behind them and how they will be judged, goals, marketing and content plans, campaigns, projects, and experiment designs.'},
+  {sec:'Execute', say:'Execute. The task board, content drafts, creative, ads, automations and integrations. Anything that spends money or publishes always waits for a person.'},
+  {sec:'Learn & improve', say:'Learn and improve. Performance against goals, results, insights, experiments, learnings, recommendations, and the full company history. Nothing is ever overwritten.'},
+  {sec:'Experiments', say:'Experiments. The tests running now, completed tests with their results, and the full history of what this company has tested.'},
+  {sec:'Evaluation', say:'Evaluation takes the latest experiment apart: what worked, the weak points, why the result happened, ROI, pay per click, pay per view, hooks, creative, audience, a comparison with the past, an improvement plan, missing data, the next experiments, and you can ask about it.'},
+  {sec:'AI workforce', say:'The AI workforce. The Orchestrator, nineteen specialist agents, their live activity, and the agent builder that is coming in version three.'},
+  {routes:['reports','settings'], say:'Reports are compiled from the brain, so every line traces back to a fact. Settings hold the workspace, the appearance and the analysis engine.'},
+  {sec:'Hermus', say:'And my own corner: Hermus Settings, where you decide how I talk and what I may do, and Hermus Memory, where you give me files and notes to remember.'}
+];
+const tourSteps = () => [{say:'With pleasure, {sir}. I will take you through BIOS from A to Z: fourteen stops, and I will open every page as we go. Ask me anything at any time to stop the tour.'}]
+  .concat(TOUR_TEXT.map((t, i) => ({tour:i+1, of:TOUR_TEXT.length, flip: t.routes || routesOf(t.sec), spot:t.spot, say:t.say})))
+  .concat([{say:'There is also the public website, {sir}.', site:true}, {spot:'.site .hero', say:'This is what visitors see first.'},
+    {say:'That is BIOS from A to Z, {sir}. Where would you like to go deeper?', go:'overview'}]);
+
 const SCRIPTS = [
+  {id:'tour', match:/describe|platform|a ?to ?z|a-z|tour|everything|all (the )?options|show me around/i, q:'Describe the platform from A to Z.', steps:null},
   {id:'health', match:/revenue|business|doing|health|overview|numbers|kpi/i, q:'How is the business doing?', steps:[
     {say:'Right away, {sir}. Opening the overview.', go:'overview'},
     {spot:'#content .tiles', say:'As we can see, October revenue is €141.5k, down 4.4% on September, though October is still a partial month. Leads fell to 412, a drop of 32.6%.'},
@@ -70,12 +95,20 @@ const SCRIPTS = [
     {say:'Back to the product, {sir}.', go:'overview'}
   ]}
 ];
-const CHIPS = ['health','leads','tasks','brain','eval','site'];
+const CHIPS = ['tour','health','leads','tasks','brain','eval','site'];
 
 /* Website guide: when Hermus is called from the Website page his power is
    limited to the website. He can scroll and explain it; he cannot open
    workspace pages, type, click, switch views or leave BIOS. */
 const SITE_SCRIPTS = [
+  {id:'w-tour', match:/describe|platform|a ?to ?z|a-z|tour|everything|all (the )?options|show me around/i, q:'Describe BIOS from A to Z.', steps:[
+    {spot:'.site .hero', say:'Gladly, {sir}. BIOS is an AI business intelligence operating system. It learns what your company actually is, finds what matters, plans what is next and remembers what happened.'},
+    {spot:'.site #difference', say:'Ask a general assistant a business question and it guesses. BIOS answers from your own data, with every number sourced and dated.'},
+    {spot:'.site .layers', say:'It works in four layers, one loop: understand, plan, execute and learn, and the results flow back into the Company Brain.'},
+    {spot:'.site .agents', say:'Nineteen specialist agents do the work under one Orchestrator, and a critic checks every answer before you see it.'},
+    {spot:'.site .tierlist', say:'Every client workspace is sealed from every other, and there are four plans from Starter to Enterprise.'},
+    {spot:'.site .hero-cta', say:'Inside the product there is much more: the brain, maps, company information, planning, execution, experiments and evaluation. Press Open the product and call me there, and I will show you all of it.'}
+  ]},
   {id:'w-what', match:/what is|what's|about|bios|explain|intro/i, q:'What is BIOS?', steps:[
     {spot:'.site .hero', say:'BIOS is an AI business intelligence operating system, {sir}. It learns what your company actually is from your website, documents, ad accounts and CRM, then finds what matters, plans what is next and remembers what happened.'}
   ]},
@@ -95,7 +128,7 @@ const SITE_SCRIPTS = [
     {spot:'.site .hero-cta', say:'Press Open the product, or Product at the top of the page, {sir}. Call me again inside and I can walk you through your workspace.'}
   ]}
 ];
-const SITE_CHIPS = ['w-what','w-diff','w-how','w-team','w-plans','w-try'];
+const SITE_CHIPS = ['w-tour','w-what','w-diff','w-how','w-team','w-plans','w-try'];
 const PRODUCT_WORDS = /revenue|lead|task|approv|brain|campaign|insight|evidence|evaluat|customer|sales|budget|finance|data|kpi|number|report|workspace|dashboard|overview/i;
 H.mode = 'app';
 const chipsHTML = () => (H.mode==='site' ? SITE_CHIPS.map(id=>SITE_SCRIPTS.find(x=>x.id===id)) : CHIPS.map(id=>SCRIPTS.find(x=>x.id===id)))
@@ -192,8 +225,8 @@ function line(who, text){
   /* type the reply out while it is spoken */
   return new Promise(res => { let i = 0; const step = () => { i += 2; t.textContent = text.slice(0,i); log.scrollTop = log.scrollHeight; if(i<text.length) setTimeout(step, 18); else res(); }; step(); });
 }
-async function reply(text){
-  status('Speaking', 'speak');
+async function reply(text, label){
+  status(label || 'Speaking', 'speak');
   await Promise.all([line('hm', text), speak(text)]);
 }
 
@@ -240,6 +273,30 @@ async function play(sc, id){
     if(H.mode==='site' && (st.go || st.type || st.click || st.site)) continue;
     const s = H.settings();
     if(st.wait){ status('Working…', 'work'); await sleep(st.wait); if(!alive(id)) break; }
+    if(st.flip){
+      const label = r => (B.NAV.flatMap(x=>x.items).find(i=>i[0]===r)||[,r])[1];
+      const tag = `Tour ${st.tour} of ${st.of} · `;
+      if(!s.nav){ status(tag+'Describing', 'speak'); await reply(fill(st.say)); continue; }
+      if(!(await go(st.flip[0], id))) break;
+      const flipping = (async()=>{
+        await sleep(900);
+        for(const r of st.flip.slice(1)){
+          if(!alive(id)) return;
+          const nav = document.querySelector(`#side [data-act="go"][data-id="${r}"]`);
+          if(nav && nav.offsetParent){
+            nav.scrollIntoView({block:'nearest'});
+            const b = nav.getBoundingClientRect(); cursor.hidden = false; cursor.style.transform = `translate(${b.left+40}px,${b.top+b.height/2}px)`;
+            cursor.classList.remove('tap'); void cursor.offsetWidth; cursor.classList.add('tap');
+          }
+          await sleep(350); if(!alive(id)) return;
+          B.go(r); status(tag+label(r), 'speak'); await sleep(800);
+        }
+      })();
+      if(st.spot && st.flip.length===1){ await spot(st.spot); if(!alive(id)) break; }
+      await Promise.all([reply(fill(st.say), tag+label(st.flip[0])), flipping]);
+      unspot();
+      continue;
+    }
     if(st.site){
       if(!s.site){ await reply(fill('Showing the website is switched off in Hermus Settings, {sir}.')); break; }
       status('Opening the website…', 'work');
@@ -280,16 +337,16 @@ function ask(q){
   line('me', q);
   if(H.mode==='site'){ siteAsk(q, id); return; }
   const sc = SCRIPTS.find(s=>s.q.toLowerCase()===q.toLowerCase()) || SCRIPTS.find(s=>s.match.test(q));
-  if(sc){ play(sc, id); return; }
+  if(sc){ play(sc.id==='tour' ? Object.assign({}, sc, {steps:tourSteps()}) : sc, id); return; }
   const m = H.memory();
   (async()=>{ busy = true; status('Thinking…','work'); await sleep(700); if(!alive(id)) return;
-    await reply(fill(`I am a prototype, {sir}, so I only know a few walkthroughs for now: the business overview, why leads dropped, what needs your approval, the Company Brain, the last campaign, and the website. I also have ${m.files.length} file${m.files.length===1?'':'s'} and ${m.notes.length} note${m.notes.length===1?'':'s'} in my memory.`));
+    await reply(fill(`I am a prototype, {sir}, so I only know a few walkthroughs for now: a full A to Z tour of the platform, the business overview, why leads dropped, what needs your approval, the Company Brain, the last campaign, and the website. I also have ${m.files.length} file${m.files.length===1?'':'s'} and ${m.notes.length} note${m.notes.length===1?'':'s'} in my memory.`));
     busy = false; if(alive(id)) status('Listening','listen'); })();
 }
 function siteAsk(q, id){
   const say = t => (async()=>{ busy = true; status('Thinking…','work'); await sleep(600); if(!alive(id)) return; await reply(fill(t)); busy = false; if(alive(id)) status('Listening','listen'); })();
   if(B.state.view!=='site') return say('I am your website guide on this call, {sir}. End the call and press Hermus inside the product, and I can show you your workspace.');
-  const sc = SITE_SCRIPTS.find(s=>s.q.toLowerCase()===q.toLowerCase()) || (!PRODUCT_WORDS.test(q) || /price|plan|cost|how.*work/i.test(q) ? SITE_SCRIPTS.slice(1).concat(SITE_SCRIPTS[0]).find(s=>s.match.test(q)) : null);
+  const sc = SITE_SCRIPTS.find(s=>s.q.toLowerCase()===q.toLowerCase()) || (!PRODUCT_WORDS.test(q) || /price|plan|cost|how.*work/i.test(q) ? [SITE_SCRIPTS[0]].concat(SITE_SCRIPTS.slice(2), SITE_SCRIPTS[1]).find(s=>s.match.test(q)) : null);
   if(sc){ play(sc, id); return; }
   if(PRODUCT_WORDS.test(q)) return say('On the website I can only talk about the website, {sir}. Your business data stays inside the product: open the product and call me there.');
   return say('On the website I can tell you what BIOS is, how it is different, how it works, who does the work, what the plans are, and how to try it.');
@@ -298,7 +355,7 @@ let micStep = 0;
 function mic(){
   if(busy) return;
   const b = panel.querySelector('.hm-mic'); b.classList.add('on'); status('Listening… (simulated)', 'hear');
-  const q = H.mode==='site' ? SITE_SCRIPTS.find(s=>s.id===SITE_CHIPS[micStep++ % SITE_CHIPS.length]).q : SCRIPTS.find(s=>s.id===CHIPS[micStep++ % CHIPS.length]).q;
+  const q = H.mode==='site' ? SITE_SCRIPTS.find(s=>s.id===SITE_CHIPS[micStep++ % SITE_CHIPS.length]).q : SCRIPTS.find(s=>s.id===CHIPS.slice(1)[micStep++ % (CHIPS.length-1)]).q;
   setTimeout(()=>{ b.classList.remove('on'); if(panel && !panel.hidden) ask(q); }, 1600);
 }
 

@@ -72,3 +72,13 @@ microphone, nothing is recorded, and Hermus never changes workspace data.
 
 The original navigation and all 79 original pages are unchanged; Hermus
 adds only its buttons and its two pages.
+
+### Hermus A-to-Z platform tour (version 7)
+
+Ask Hermus "Can you describe the platform?" (or press the first suggestion)
+and he tours BIOS from A to Z: fourteen stops, one per sidebar section in
+order. At each stop he explains the section while opening every one of its
+pages in turn, so all 81 pages are visited; then a look at the website, and
+back to the Overview. About two minutes; any new question stops the tour.
+On the Website page the same question gives a website-only A-to-Z. Change:
+`js/hermus.js` only.
