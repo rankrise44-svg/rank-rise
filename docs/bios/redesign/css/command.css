@@ -381,3 +381,96 @@ table.t tbody tr:hover td{background:color-mix(in srgb,var(--ink) 4%,transparent
 .rnode.dim{opacity:.5}
 /* fact-row source labels share the .src name with data-source rows; keep them inline */
 .kv .m .src{display:inline;padding:0;border:0;font-size:11px}
+
+/* =====================================================================
+   STEP 4 — Company Information (profile overview, sections, vault,
+   follow-ups, validate & classify, agent context)
+   ===================================================================== */
+
+/* ---------- section stepper: glass chips, the current one glows ---------- */
+.cisteps{padding:4px 4px 12px;margin-left:-4px;margin-right:-4px}
+.cistep{border-radius:12px;border-color:var(--glass-border);background:var(--surface);box-shadow:var(--shadow);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-family:var(--head);font-size:12.5px;letter-spacing:.01em;
+  transition:transform var(--d-mid) var(--ease-spring),border-color var(--d-mid),box-shadow var(--d-mid),color var(--d-mid)}
+.cistep:hover{transform:translateY(-2px);border-color:var(--accent-line);color:var(--ink);box-shadow:var(--shadow-lift)}
+.cistep:active{transform:scale(var(--press))}
+.cistep[aria-current="step"]{border-color:transparent;color:var(--ink);font-weight:600;
+  background:linear-gradient(var(--solid),var(--solid)) padding-box,var(--grad-brand) border-box;border:1px solid transparent;box-shadow:var(--glow-brand)}
+.cistep .pct{font-family:var(--sans);font-weight:700;font-variant-numeric:tabular-nums;font-size:10.5px}
+.cistep .meter{height:5px}
+.m-enter .cistep{animation:ci-chip .5s var(--ease-spring) both;animation-delay:calc(var(--si,0) * 28ms + 120ms)}
+@keyframes ci-chip{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
+
+/* ---------- collect / why / how strip ---------- */
+.ciintro{background:var(--glass-border);border-color:var(--glass-border);border-radius:var(--r-lg);box-shadow:var(--shadow)}
+.ciintro > div{background:var(--surface);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:13px 15px;transition:background var(--d-mid)}
+.ciintro > div:hover{background:color-mix(in srgb,var(--accent) 7%,var(--surface))}
+.ciintro .label{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ---------- question rows ---------- */
+.cif{position:relative;transition:background var(--d-mid)}
+.cif::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--grad-brand);
+  opacity:0;transform:scaleY(.4);transition:opacity var(--d-mid),transform var(--d-mid) var(--ease-spring)}
+.cif:hover{background:color-mix(in srgb,var(--ink) 3%,transparent)}
+.cif:focus-within{background:color-mix(in srgb,var(--accent) 6%,transparent)}
+.cif:focus-within::before{opacity:1;transform:none}
+.cif.pending{background:color-mix(in srgb,var(--info) 8%,transparent)}
+.cif.pending::before{opacity:1;transform:none;background:var(--grad-info);animation:ci-pulse 2.4s ease-in-out infinite}
+@keyframes ci-pulse{50%{opacity:.45}}
+.cif .q{font-family:var(--head);font-size:14.5px;font-weight:600;letter-spacing:.005em}
+.cif .q .opt{font-family:var(--sans);letter-spacing:0}
+.cif .meta .acts button{border-radius:999px;transition:background var(--d-mid),color var(--d-mid),transform var(--d-mid) var(--ease-spring)}
+.cif .meta .acts button:hover{background:var(--accent-soft);transform:translateY(-1px)}
+.cif .found{background:linear-gradient(var(--solid),var(--solid)) padding-box,var(--grad-info) border-box;border:1px solid transparent;
+  border-radius:12px;box-shadow:0 8px 24px -14px var(--info)}
+.cif .found b{background:var(--grad-info);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ---------- inputs: glass fields with a glowing focus ring ---------- */
+.input,.select,.textarea{background:color-mix(in srgb,var(--sunken) 70%,transparent);border-color:var(--glass-border);border-radius:10px;
+  transition:border-color var(--d-mid),box-shadow var(--d-mid),background var(--d-mid)}
+.input:hover,.select:hover,.textarea:hover{border-color:var(--line-strong)}
+.input:focus,.select:focus,.textarea:focus{outline:0;border-color:var(--accent);background:var(--sunken);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent),0 8px 24px -12px var(--accent)}
+.input::file-selector-button{margin-right:10px;padding:5px 12px;border:1px solid var(--glass-border);border-radius:8px;
+  background:var(--grad-brand);color:#fff;font:600 12.5px var(--sans);cursor:pointer;transition:filter var(--d-mid)}
+.input::file-selector-button:hover{filter:brightness(1.12)}
+
+/* ---------- "who are you?" choice cards ---------- */
+.cichoose button{position:relative;border-color:var(--glass-border);background:var(--surface);border-radius:var(--r-xl);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.cichoose button:hover{border-color:var(--accent-line)}
+.cichoose button[aria-pressed="true"]{background:linear-gradient(color-mix(in srgb,var(--accent) 10%,var(--solid)),var(--solid)) padding-box,var(--grad-brand) border-box;
+  border:1px solid transparent;box-shadow:var(--glow-brand),var(--shadow-lift)}
+.cichoose button[aria-pressed="true"]::before{content:"";position:absolute;top:16px;right:16px;width:10px;height:10px;border-radius:50%;
+  background:var(--grad-live);box-shadow:var(--glow-live);animation:ci-pulse 2.4s ease-in-out infinite}
+.cichoose .t{font-family:var(--head);font-size:19px}
+.cihero{font-family:var(--head);font-weight:600;letter-spacing:0;
+  background:linear-gradient(90deg,var(--ink),color-mix(in srgb,var(--ink) 55%,var(--accent)));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ---------- profile overview: brain stats, flow chips ---------- */
+.cibrainstats .n{font-family:var(--sans);font-weight:800;font-size:26px;letter-spacing:-.01em}
+.cibrainstats > div + div{position:relative}
+.ciflow span.step{border-color:var(--glass-border);background:var(--surface);transition:border-color var(--d-mid),transform var(--d-mid) var(--ease-spring)}
+.ciflow span.step:hover{transform:translateY(-1px);border-color:var(--accent-line)}
+.ciflow span.step.hot{background:var(--grad-brand);border-color:transparent;color:#fff;box-shadow:var(--glow-brand)}
+
+/* ---------- follow-up conversation ---------- */
+.bubble{transition:transform var(--d-mid) var(--ease-spring)}
+.bubble.ai{background:var(--surface);border-color:var(--glass-border);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--shadow)}
+.bubble.me{background:var(--grad-brand);color:#fff;box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 10px 26px -12px #5B6CFF}
+.bubble:hover{transform:translateY(-1px)}
+.m-enter .bubble{animation:ci-bub .5s var(--ease-spring) both;animation-delay:calc(var(--bi,0) * 60ms + 150ms)}
+.m-enter .bubble.me{animation-name:ci-bub-me}
+@keyframes ci-bub{from{opacity:0;transform:translateX(-10px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes ci-bub-me{from{opacity:0;transform:translateX(10px) scale(.97)}to{opacity:1;transform:none}}
+.fuq{background:linear-gradient(var(--solid),var(--solid)) padding-box,var(--grad-brand) border-box;border:1px solid transparent;
+  border-radius:var(--r-xl);box-shadow:var(--glow-brand),var(--shadow-lift)}
+.fuq h2{font-family:var(--head);font-size:20px}
+
+/* ---------- agent context cards ---------- */
+.agentcard .inp{border-bottom-color:var(--line);border-radius:6px;transition:background var(--d-mid)}
+.agentcard .inp:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
+
+@media (prefers-reduced-motion:reduce){
+  .cif.pending::before,.cichoose button[aria-pressed="true"]::before{animation:none}
+}
