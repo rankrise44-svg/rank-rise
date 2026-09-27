@@ -42,3 +42,33 @@ These bugs were inherited from the original:
 1. Company Brain side panel: source lines ("Sara · onboarding · 11 Aug") broke into fragments; they are now inline.
 2. Understand fact tables: the value column was squeezed to one word per line; the source/actions column is now capped and wraps.
 3. Evaluation → Weak Points: evidence labels were stretched into full-width bars; they now keep their own width.
+
+## Later additions
+
+### Hermus prototype assistant (version 6, `1790531341-bf7a`)
+
+A scripted demo of a voice assistant. There is no AI model and no real
+microphone, nothing is recorded, and Hermus never changes workspace data.
+
+- The **Hermus** button next to Ask (product) and in the Website top bar
+  opens a docked "live call" panel. Nothing opens until the button is pressed.
+- **In the product:** walkthroughs that open real pages, point at things,
+  read the sample numbers aloud (browser voice), type the recorded sample
+  question into Ask, open the read-only Evidence drawer and show the website.
+- **On the Website page:** a website guide only. He scrolls and explains the
+  website, declines workspace questions, never navigates, types, clicks or
+  switches views, and never leaves BIOS.
+- New sidebar section at the bottom: **Hermus Settings** (voice, form of
+  address, permissions) and **Hermus Memory** (files and notes; names and
+  sizes kept in the viewer's browser only, contents not read).
+
+| File | Change |
+|---|---|
+| `js/hermus.js` | New: Hermus, both modes, Settings and Memory pages |
+| `css/hermus.css` | New: Hermus styles; small-phone spacing for the website top bar |
+| `js/app.js` | Hermus button next to Ask; Hermus section at the bottom of the sidebar |
+| `js/screens/site.js` | Hermus button in the website top bar |
+| `index.html` | Loads the two new files |
+
+The original navigation and all 79 original pages are unchanged; Hermus
+adds only its buttons and its two pages.
