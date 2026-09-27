@@ -30,4 +30,6 @@ export interface FramesManifest {
   pad: number;
   width: number;
   height: number;
+  /** Frames keep the video's own black background (no alpha): shown as-is, no halo or floor glow */
+  opaque?: boolean;
 }

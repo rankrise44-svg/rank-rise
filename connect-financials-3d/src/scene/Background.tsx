@@ -18,8 +18,9 @@ export function Background() {
         uGlow: { value: 1 },
         uGrid: { value: 0 },
         uAspect: { value: 1 },
-        uAbyss: { value: new Color('#050B1A') },
-        uNavy: { value: new Color('#0A1633') },
+        // pure black, like the falcon video's own background
+        uAbyss: { value: new Color('#000000') },
+        uNavy: { value: new Color('#000000') },
         uMid: { value: new Color('#12244D') },
         uGold: { value: new Color('#D4AF37') },
         uGoldHi: { value: new Color('#F5D27A') },
@@ -47,10 +48,10 @@ export function Background() {
           float y = 1.0 - vUv.y;
           float width = 0.1 + y * 0.42;
           float cone = smoothstep(width, 0.0, abs(p.x)) * smoothstep(1.05, 0.15, y);
-          col += mix(vec3(0.16, 0.26, 0.55), uGold, 0.3) * cone * 0.07 * uGlow;   // soft cool light from above
+          col += mix(vec3(0.16, 0.26, 0.55), uGold, 0.3) * cone * 0.0 * uGlow;   // soft cool light from above
           // Halo behind the eagle
           float halo = exp(-dot(p - vec2(0.0, 0.05), p - vec2(0.0, 0.05)) * 7.0);
-          col += mix(uMid, uGold * 0.3, 0.18) * halo * 0.32 * uGlow;
+          col += mix(uMid, uGold * 0.3, 0.18) * halo * 0.0 * uGlow;
 
           // Beat 4: navy grid with gold lines, receding in perspective.
           if (uGrid > 0.001) {
@@ -64,8 +65,8 @@ export function Background() {
           vec2 q = p * 2.2 + vec2(uTime * 0.015, -uTime * 0.01);
           float smoke = 0.0, amp = 0.5;
           for (int i = 0; i < 5; i++) { smoke += amp * vnoise(q); q = q * 2.03 + 1.7; amp *= 0.5; }
-          col += uMid * pow(smoke, 2.2) * 0.9 * smoothstep(1.1, 0.1, length(p));
-          col += vec3(0.02, 0.05, 0.16) * pow(smoke, 3.0) * 0.8 * smoothstep(0.9, 0.0, length(p - vec2(0.0, 0.05)));
+          col += uMid * pow(smoke, 2.2) * 0.0 * smoothstep(1.1, 0.1, length(p));
+          col += vec3(0.02, 0.05, 0.16) * pow(smoke, 3.0) * 0.0 * smoothstep(0.9, 0.0, length(p - vec2(0.0, 0.05)));
 
           float vig = smoothstep(1.25, 0.35, length(p * vec2(0.85, 1.0)));
           col *= mix(0.55, 1.0, vig);

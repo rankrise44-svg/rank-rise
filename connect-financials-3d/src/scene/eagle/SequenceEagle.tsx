@@ -122,7 +122,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
         uDA: { value: blank },
         uDB: { value: blank },
         uMix: { value: 0 },
-        uDepth: { value: 0.55 },
+        uDepth: { value: manifest.opaque ? 0 : 0.55 },
         uLight: { value: [0.6, 0.5] },
         uGlow: { value: 1 },
       },
@@ -144,7 +144,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
     });
     const glow = new Mesh(new PlaneGeometry(h * 1.1, h * 0.28), glowMat);
     glow.position.set(0, -h * 0.43, -0.2);
-    mesh.add(glow);
+    if (!manifest.opaque) mesh.add(glow);
     // Backlight: a soft halo of the bird's own silhouette just behind it, blue
     // at the core and gold at the rim, so the edges sit in light.
     const halo = new Mesh(
@@ -166,7 +166,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
     );
     halo.position.z = -0.05;
     halo.renderOrder = -1;
-    mesh.add(halo);
+    if (!manifest.opaque) mesh.add(halo);
     return { mesh, mat, blank };
   }, [manifest]);
 

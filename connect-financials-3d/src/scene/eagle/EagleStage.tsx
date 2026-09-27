@@ -48,7 +48,7 @@ export function EagleStage({ children, shadows }: { children: ReactNode; shadows
       const wWorld = h * (r.width / r.height);
       // Rough eagle bounds for the current wing spread
       // rough bounds of the bird for the current wing spread (the video falcon is taller)
-      const ew = story.flat ? MathUtils.lerp(3.0, 10.2, Math.max(0, (v.open - 0.8) / 0.2)) : MathUtils.lerp(3.4, 9.8, v.open);
+      const ew = story.flat ? MathUtils.lerp(4.6, 10.2, Math.max(0, (v.open - 0.8) / 0.2)) : MathUtils.lerp(3.4, 9.8, v.open);
       const eh = story.flat ? 5.6 : MathUtils.lerp(4.6, 4.2, v.open);
       const s = Math.min(wWorld / ew, h / eh) * 0.95;
       target.pos.addScaledVector(hitA.clone().add(new Vector3(0, 0.25 * s, 0)), w);

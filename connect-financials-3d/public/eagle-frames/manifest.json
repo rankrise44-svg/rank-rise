@@ -4,5 +4,6 @@
   "mobilePattern": "eagle-frames/mobile/{index}.webp",
   "pad": 4,
   "width": 2560,
-  "height": 1440
+  "height": 1440,
+  "opaque": true
 }
