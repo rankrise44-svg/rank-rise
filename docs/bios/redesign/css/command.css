@@ -560,3 +560,71 @@ svg[aria-label^="Viewer retention"] circle{filter:drop-shadow(0 0 4px var(--acce
 
 /* ---------- "what else changed in this window" ---------- */
 .locked .t{font-family:var(--head);font-weight:600;letter-spacing:.01em}
+
+/* =====================================================================
+   STEP 7 — overlays (drawer, modal, toast, scrim), onboarding, Website view
+   ===================================================================== */
+
+/* ---------- overlays ---------- */
+.scrim{backdrop-filter:blur(6px) saturate(120%);-webkit-backdrop-filter:blur(6px) saturate(120%);transition:opacity .28s ease}
+.drawer{border-left:1px solid var(--glass-border);box-shadow:-30px 0 80px -20px rgba(2,3,15,.7),var(--shadow-lift);
+  transition:transform .46s var(--ease-spring)}
+.drawer::before{content:"";position:absolute;left:-1px;top:0;bottom:0;width:2px;background:var(--grad-brand);box-shadow:0 0 18px #7B5CFF;opacity:.85}
+.drawer > header{position:relative;border-bottom-color:var(--line)}
+.drawer > header::after{content:"";position:absolute;left:18px;right:18px;bottom:-1px;height:1px;background:linear-gradient(90deg,var(--accent),transparent)}
+.drawer > header h2,.modal > header h2{font-family:var(--head);font-weight:600;letter-spacing:.01em}
+.drawer.on .body > *{animation:ov-in .45s var(--ease-spring) both}
+.drawer.on .body > :nth-child(2){animation-delay:.05s} .drawer.on .body > :nth-child(3){animation-delay:.1s}
+.drawer.on .body > :nth-child(4){animation-delay:.15s} .drawer.on .body > :nth-child(n+5){animation-delay:.2s}
+@keyframes ov-in{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+.modal{background:linear-gradient(var(--solid),var(--solid)) padding-box,linear-gradient(135deg,color-mix(in srgb,var(--accent) 70%,transparent),var(--glass-border) 45%,var(--glass-border)) border-box;
+  border:1px solid transparent;border-radius:var(--r-xl);box-shadow:var(--glow-brand),var(--shadow-lift);
+  transform:translate(-50%,-46%) scale(.96);transition:opacity .22s ease,transform .38s var(--ease-spring)}
+.modal.on{transform:translate(-50%,-50%) scale(1)}
+.toast{background:var(--solid);color:var(--ink);border:1px solid var(--glass-border);border-radius:14px;padding:11px 16px 11px 20px;
+  box-shadow:var(--glow-brand),var(--shadow-lift);transition:opacity .25s ease,transform .4s var(--ease-spring);overflow:hidden}
+.toast::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--grad-brand);box-shadow:0 0 10px #7B5CFF}
+
+/* ---------- onboarding ---------- */
+.onb{background:transparent}
+.onbtop{background:color-mix(in srgb,var(--surface) 80%,transparent);border-bottom-color:var(--glass-border);
+  backdrop-filter:blur(var(--blur)) saturate(140%);-webkit-backdrop-filter:blur(var(--blur)) saturate(140%)}
+.onbtop .brand b{background:linear-gradient(90deg,var(--ink),color-mix(in srgb,var(--ink) 60%,var(--accent)));-webkit-background-clip:text;background-clip:text;color:transparent}
+.phase{font-family:var(--head);font-weight:600;transition:color var(--d-mid)}
+.phase i{font-family:var(--sans);font-weight:700;transition:background var(--d-mid),box-shadow var(--d-mid)}
+.phase.on i{background:var(--grad-brand);border-color:transparent;color:#fff;box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 20%,transparent),0 0 16px #7B5CFF;animation:ci-pulse 2.4s ease-in-out infinite}
+.phase.done i{background:var(--grad-live);border-color:transparent;color:#04121A;box-shadow:0 0 12px #19D3C5}
+.phase-sep{border-radius:1px}
+.phase.done + .phase-sep{background:var(--grad-live)}
+.onbmain h1{font-family:var(--head);font-weight:600;letter-spacing:.005em}
+.onbq h2{font-family:var(--head);font-size:21px}
+.onbq .qn{font-family:var(--sans);font-weight:700;letter-spacing:.04em;background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+.onbside{background:color-mix(in srgb,var(--surface) 85%,transparent);border-left-color:var(--glass-border);
+  backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur))}
+
+/* ---------- Website view ---------- */
+.hero h1 em{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 22px color-mix(in srgb,var(--accent) 45%,transparent))}
+.flownode,.answer,.layer,.agent,.tier{border-color:var(--glass-border);background:var(--surface);box-shadow:var(--shadow);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.flownode h4,.answer h4,.layer h3,.tier h4,.agent h4{font-family:var(--head);font-weight:600}
+.flownode.brainnode,.answer.bios,.tier.feat{border-color:transparent;border:1px solid transparent;
+  background:linear-gradient(color-mix(in srgb,var(--accent) 12%,var(--solid)),var(--solid)) padding-box,var(--grad-brand) border-box;
+  box-shadow:var(--glow-brand),var(--shadow-lift)}
+.flownode.brainnode{animation:gate-breathe-brand 3.6s ease-in-out infinite}
+@keyframes gate-breathe-brand{50%{box-shadow:0 0 0 1px rgba(139,108,255,.2),0 6px 20px -8px rgba(123,92,255,.35)}}
+.flownode.brainnode.m-hot{animation:none}
+.flownode.brainnode h4{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+.answer.generic{background:color-mix(in srgb,var(--sunken) 70%,transparent)}
+.layer::before{background:var(--grad-brand);color:#fff;border-color:transparent;font-family:var(--sans);font-weight:700;box-shadow:0 0 14px -2px #7B5CFF}
+.agent .role{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:600}
+.tier li::before{color:var(--accent)}
+/* sections below the fold rise in as they scroll into view (motion.js adds/removes these classes) */
+.m-reveal{opacity:0;transform:translateY(22px)}
+.m-reveal.m-in{opacity:1;transform:none;transition:opacity .7s var(--ease-out),transform .8s var(--ease-spring);transition-delay:calc(var(--ri,0) * 70ms)}
+
+@media (prefers-reduced-motion:reduce){
+  .phase.on i,.flownode.brainnode{animation:none}
+  .drawer.on .body > *{animation:none}
+  .m-reveal{opacity:1;transform:none}
+}
