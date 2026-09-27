@@ -3,7 +3,7 @@ import { MENU } from '../scene/eagle/anchors';
 import { scrollToId } from '../story/smoothScroll';
 import { openAccount } from './openAccount';
 import { RiskNote } from './RiskNote';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.svg';
 
 /** Logo, Open Account and a full-screen menu so every option is always one tap away. */
 export function TopNav() {
@@ -35,7 +35,7 @@ export function TopNav() {
     <>
       <header className="fixed inset-x-0 top-8 z-40 flex h-16 items-center justify-between px-4 sm:px-8">
         <a href="#top" onClick={go('top')} className="flex items-center gap-2.5" aria-label="Connect Financials — back to top">
-          <img src={logo} alt="" width={28} height={28} className="h-7 w-7" />
+          <img src={logo} alt="" width={48} height={30} className="h-8 w-auto" />
           <span className="font-display text-[13px] font-semibold uppercase tracking-[0.28em] text-ink">
             Connect <span className="text-gold">Financials</span>
           </span>
