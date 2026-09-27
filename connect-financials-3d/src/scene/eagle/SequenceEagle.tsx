@@ -101,7 +101,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
       fragmentShader: fragment,
       transparent: true,
     });
-    const segs = isNarrow() ? [128, 72] : [192, 108];
+    const segs = isNarrow() ? [128, 72] : [224, 126];
     const mesh = new Mesh(new PlaneGeometry(h * aspect, h, segs[0], segs[1]), mat);
     // soft blue light pooled under the talons, so the bird stands in the scene
     const glowMat = new ShaderMaterial({
@@ -116,6 +116,31 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
     const glow = new Mesh(new PlaneGeometry(h * 1.1, h * 0.28), glowMat);
     glow.position.set(0, -h * 0.43, -0.2);
     mesh.add(glow);
+    // Backlight: a soft halo of the bird's own silhouette just behind it, blue
+    // at the core and gold at the rim, so the edges sit in light instead of
+    // looking cut out against the page.
+    const halo = new Mesh(
+      new PlaneGeometry(h * aspect, h),
+      new ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        blending: AdditiveBlending,
+        uniforms: { uMap: { value: texture }, uBlue: { value: new Color('#2A5BFF') }, uGold: { value: new Color('#D4AF37') } },
+        vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+        fragmentShader: `uniform sampler2D uMap; uniform vec3 uBlue; uniform vec3 uGold; varying vec2 vUv;
+          void main(){
+            float wide = textureLod(uMap, vUv, 6.0).a;
+            float near = textureLod(uMap, vUv, 3.5).a;
+            float self = texture2D(uMap, vUv).a;
+            float rim = clamp(near - self, 0.0, 1.0);
+            vec3 c = uBlue * wide * 0.22 + uGold * rim * 0.28;
+            gl_FragColor = vec4(c, 1.0);
+          }`,
+      }),
+    );
+    halo.position.z = -0.05;
+    halo.renderOrder = -1;
+    mesh.add(halo);
     return { mesh, texture, mat };
   }, [manifest]);
 
