@@ -14,7 +14,7 @@ const reduced = () => { try{ return matchMedia('(prefers-reduced-motion: reduce)
 
 /* What counts up and what fills. Later steps extend these lists. */
 M.countSel = ['.brainmeter .num', '.tile .v', '.ringstat .v', '.cibrainstats .n'];
-M.fillSel  = ['.brainmeter .meter i', '.meter i'];
+M.fillSel  = ['.brainmeter .meter i', '.meter i', '.stackbar i'];
 /* Cards that tilt toward the cursor, with their maximum angle in degrees. */
 M.tilt = [['.cichoose button',4],['.tile',6],['.card',5],['.decision',2.5],['.insight',2.5],['.alert',2],['.well',3],['.panel',1.4]];
 M.enterSel = ['#content', '.site', '.onbmain'];
@@ -71,6 +71,7 @@ M.after = (root, nav) => {
   if(!nav || still) return;
   /* Company Information: stepper chips and conversation bubbles arrive in order */
   root.querySelectorAll('.cisteps').forEach(st => st.querySelectorAll('.cistep').forEach((c, i) => c.style.setProperty('--si', Math.min(i, 20))));
+  root.querySelectorAll('.lane').forEach(l => l.querySelectorAll('.card').forEach((c, i) => c.style.setProperty('--ki', Math.min(i, 8))));
   root.querySelectorAll('.thread').forEach(th => th.querySelectorAll('.bubble').forEach((c, i) => c.style.setProperty('--bi', Math.min(i, 8))));
   /* radial arcs (Company Brain, workforce): sweep in with a stagger */
   root.querySelectorAll('.rnode .arc').forEach((c, i) => {
