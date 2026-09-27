@@ -1,0 +1,133 @@
+@charset "UTF-8";
+/* =====================================================================
+   BIOS Command Center — visual layer (loaded last).
+   Step 1: ground, type, shell (sidebar, top bar, sample bar), buttons,
+   theme toggle and the shared motion primitives. Only styling here.
+   ===================================================================== */
+
+/* ---------- ground: deep indigo with a slow aurora ---------- */
+html{background:var(--bg)}
+body{background:var(--bg);font-family:var(--sans);font-feature-settings:"ss01";letter-spacing:.005em}
+body::before{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(40% 35% at 18% 12%, var(--aurora-1), transparent 70%),
+    radial-gradient(35% 30% at 85% 20%, var(--aurora-2), transparent 70%),
+    radial-gradient(45% 40% at 70% 95%, var(--aurora-3), transparent 70%),
+    linear-gradient(180deg, var(--bg-2), var(--bg) 60%);
+  animation:aurora 38s ease-in-out infinite alternate}
+@keyframes aurora{50%{transform:translate3d(2%,-3%,0) rotate(2deg)}100%{transform:translate3d(-2%,2%,0) rotate(-1deg)}}
+#root{position:relative;z-index:1}
+
+/* ---------- type ---------- */
+h1,h2,h3,h4{font-family:var(--head);letter-spacing:.01em}
+.pagehead h1{font-size:var(--t-2xl);font-weight:600;line-height:1.1}
+.label,.eyebrow,.crumb,.sectitle h2,.panel > header h3{font-family:var(--head);letter-spacing:.14em}
+.eyebrow{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ---------- sidebar ---------- */
+.side{background:linear-gradient(180deg,color-mix(in srgb,var(--solid) 78%,transparent),color-mix(in srgb,var(--bg) 70%,transparent));
+  backdrop-filter:blur(var(--blur)) saturate(140%);-webkit-backdrop-filter:blur(var(--blur)) saturate(140%);
+  border-right:1px solid var(--glass-border);box-shadow:inset -1px 0 0 var(--glass-hi)}
+.side .brand{align-items:center;gap:10px;padding:18px 16px 14px}
+.side .brand::before{content:"";width:30px;height:30px;border-radius:9px;flex:none;background:var(--grad-brand);
+  box-shadow:var(--glow-brand), inset 0 1px 0 rgba(255,255,255,.35);
+  -webkit-mask:radial-gradient(circle at 50% 50%, transparent 5px, #000 5.5px);mask:radial-gradient(circle at 50% 50%, transparent 5px, #000 5.5px)}
+.side .brand b{font-size:22px;background:linear-gradient(90deg,var(--ink),color-mix(in srgb,var(--ink) 60%,var(--accent)));-webkit-background-clip:text;background-clip:text;color:transparent}
+.side .brand span{font-family:var(--head);letter-spacing:.2em}
+
+.wsbtn{background:var(--raised);border:1px solid var(--glass-border);border-radius:var(--r);box-shadow:var(--shadow);
+  transition:transform var(--d-mid) var(--ease-spring),box-shadow var(--d-mid),border-color var(--d-mid)}
+.wsbtn:hover{transform:translateY(-1px) scale(var(--zoom-card));border-color:var(--accent-line);box-shadow:var(--glow-brand)}
+.wsdot{background:var(--grad-brand);box-shadow:var(--glow-brand);border-radius:9px;color:#fff}
+
+.navsec > button.sechead{font-family:var(--head);font-size:10.5px;letter-spacing:.2em;padding:10px 10px 6px}
+.navitem{position:relative;overflow:hidden;border-radius:10px;padding:7px 10px;font-weight:500;
+  transition:transform var(--d-mid) var(--ease-spring),background var(--d-mid),color var(--d-mid),box-shadow var(--d-mid);
+  transform-origin:left center}
+.navitem:hover{background:color-mix(in srgb,var(--ink) 5%,transparent);color:var(--ink);transform:scale(var(--zoom-text))}
+.navitem:active{transform:scale(var(--press))}
+.navitem[aria-current="page"]{color:var(--ink);font-weight:600;
+  background:linear-gradient(90deg,color-mix(in srgb,#7B5CFF 30%,transparent),color-mix(in srgb,#3D7BFF 8%,transparent));
+  box-shadow:inset 0 0 0 1px var(--accent-line)}
+.navitem[aria-current="page"]::before{content:"";position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:0 3px 3px 0;background:var(--grad-brand);box-shadow:0 0 12px #7B5CFF}
+.navitem.top .gl{width:24px;height:24px;border-radius:8px;color:#fff;font-size:12px;background:var(--grad-brand);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.navsec:first-child .navitem:nth-child(2) .gl{background:var(--grad-info)}
+.navsec:first-child .navitem:nth-child(3) .gl{background:var(--grad-live)}
+.navsec:first-child .navitem:nth-child(4) .gl{background:var(--grad-warn)}
+.navsec:last-child .navitem .gl{background:var(--grad-unknown)}
+.navitem[aria-current="page"] .gl{color:#fff;box-shadow:0 0 14px color-mix(in srgb,#7B5CFF 70%,transparent)}
+.navitem .badge{font-family:var(--head);font-weight:600;font-size:10.5px}
+.badge.hot{background:var(--grad-hot);color:#fff;box-shadow:var(--glow-hot);animation:hot-pulse 2.4s ease-in-out infinite}
+.badge.acc{background:var(--grad-brand);color:#fff}
+@keyframes hot-pulse{50%{box-shadow:0 0 0 3px color-mix(in srgb,#FF3B3B 18%,transparent),0 6px 20px -4px #FF3B3B}}
+
+.brainmeter{margin:8px 10px 12px;border:1px solid var(--glass-border);border-radius:var(--r);background:var(--raised);box-shadow:var(--shadow)}
+.brainmeter .num{font-family:var(--sans);font-weight:800;font-size:14px;font-variant-numeric:tabular-nums}
+.brainmeter .meter{height:7px;background:var(--sunken)}
+.brainmeter .meter i{background:var(--grad-brand);box-shadow:0 0 12px -2px #7B5CFF}
+.brainmeter .meter i.ok{background:var(--grad-live)} .brainmeter .meter i.warn{background:var(--grad-warn)} .brainmeter .meter i.bad{background:var(--grad-hot)}
+
+/* ---------- top bar ---------- */
+.topbar{background:color-mix(in srgb,var(--bg) 62%,transparent);backdrop-filter:blur(var(--blur)) saturate(140%);-webkit-backdrop-filter:blur(var(--blur)) saturate(140%);
+  border-bottom:1px solid var(--glass-border)}
+.cmd{background:var(--surface);border:1px solid var(--glass-border);border-radius:14px;box-shadow:var(--shadow);
+  transition:box-shadow var(--d-mid),border-color var(--d-mid),transform var(--d-mid) var(--ease-spring)}
+.cmd:focus-within{border-color:var(--accent-line);box-shadow:var(--glow-brand);transform:translateY(-1px)}
+.cmd .ctx{background:linear-gradient(135deg,color-mix(in srgb,#7B5CFF 22%,transparent),color-mix(in srgb,#3D7BFF 14%,transparent));border-color:var(--accent-line);color:var(--ink)}
+.cmd .kbd{border-color:var(--glass-border);background:var(--sunken)}
+.cmd input::placeholder{color:var(--muted)}
+/* the "Live engine ready" chip becomes a pulsing LIVE badge; the off state stays quiet */
+.topbar .right .chip.ok{background:var(--grad-live);color:#062A22;border:0;font-weight:600;box-shadow:var(--glow-live);animation:live-glow 2.2s ease-in-out infinite}
+.topbar .right .chip.ok::before{background:#062A22;animation:pulse 1.2s ease-in-out infinite}
+@keyframes live-glow{50%{box-shadow:0 0 0 4px color-mix(in srgb,#2EE6A8 16%,transparent),0 8px 28px -4px #19D3C5}}
+.topbar .right .chip.dim{background:var(--sunken);border-color:var(--glass-border)}
+.seg{background:var(--sunken);border-color:var(--glass-border)}
+.seg button{position:relative;overflow:hidden;transition:transform var(--d-mid) var(--ease-spring),color var(--d-mid),background var(--d-mid)}
+.seg button:hover{transform:scale(var(--zoom-text));color:var(--ink)}
+.seg button[aria-selected="true"],.seg button[aria-pressed="true"]{background:var(--grad-brand);color:#fff;box-shadow:var(--glow-brand)}
+.iconbtn{position:relative;overflow:hidden;border-radius:12px;transition:transform var(--d-slow) var(--ease-spring),background var(--d-mid),color var(--d-mid)}
+.topbar .iconbtn[data-act="theme"]{width:36px;height:36px;border:1px solid var(--glass-border);background:var(--surface);box-shadow:var(--shadow);font-size:16px}
+.topbar .iconbtn[data-act="theme"]:hover{transform:rotate(180deg) scale(1.08);color:var(--ink);box-shadow:var(--glow-brand)}
+
+/* ---------- sample bar ---------- */
+.samplebar{background:linear-gradient(90deg,color-mix(in srgb,#FFB547 15%,transparent),color-mix(in srgb,#FF7A3D 6%,transparent) 70%,transparent);
+  border-bottom:1px solid color-mix(in srgb,var(--warn) 26%,transparent);backdrop-filter:blur(8px)}
+.samplebar b{background:var(--grad-warn);-webkit-background-clip:text;background-clip:text;color:transparent;font-family:var(--head);letter-spacing:.04em;font-size:13px}
+.samplebar .linkbtn{transition:transform var(--d-mid) var(--ease-spring)}
+.samplebar .linkbtn:hover{transform:scale(var(--zoom-text));text-decoration:none}
+
+/* ---------- buttons (shared) ---------- */
+.btn{position:relative;overflow:hidden;background:var(--grad-brand);border:0;border-radius:12px;font-weight:600;
+  box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 6px 18px -8px #5B6CFF;
+  transition:transform var(--d-mid) var(--ease-spring),box-shadow var(--d-mid),filter var(--d-mid)}
+.btn:hover{filter:none;transform:translateY(-1px) scale(var(--zoom-text));box-shadow:0 1px 0 rgba(255,255,255,.25) inset,var(--glow-brand)}
+.btn:active{transform:scale(var(--press))}
+.btn.ghost{background:var(--surface);border:1px solid var(--glass-border);color:var(--ink);box-shadow:var(--shadow)}
+.btn.ghost:hover{border-color:var(--accent-line);color:var(--ink);box-shadow:var(--glow-brand)}
+.btn.quiet{background:transparent;box-shadow:none}
+.btn.quiet:hover{background:color-mix(in srgb,var(--ink) 6%,transparent);box-shadow:none}
+.btn.danger{background:transparent;border:1px solid color-mix(in srgb,var(--bad) 45%,transparent);box-shadow:none}
+.btn.danger:hover{box-shadow:var(--glow-hot)}
+.btn:disabled,.btn[aria-disabled="true"]{transform:none;box-shadow:none}
+.linkbtn{transition:color var(--d-mid)}
+.choice{position:relative;overflow:hidden}
+
+/* ---------- overlays stay opaque enough to read (full polish in step 7) ---------- */
+.drawer,.modal{background:var(--solid)}
+@media (max-width:980px){ .side{background:var(--solid)} }
+
+/* ---------- motion primitives ---------- */
+.m-ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.22;transform:scale(0);animation:ripple .6s var(--ease-out) forwards}
+@keyframes ripple{to{transform:scale(1);opacity:0}}
+.m-enter > *{animation:m-in .62s var(--ease-out) both;animation-delay:calc(var(--i,0) * 45ms)}
+@keyframes m-in{from{opacity:0;transform:translate3d(0,14px,0)}}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.5s;animation-timing-function:var(--ease-out)}
+.theme-fading,.theme-fading *{transition:background-color .45s,color .45s,border-color .45s,fill .45s,stroke .45s !important}
+
+@media (prefers-reduced-motion:reduce){
+  body::before{animation:none}
+  .m-enter > *{animation:none}
+  .navitem:hover,.btn:hover,.seg button:hover,.wsbtn:hover,.topbar .iconbtn[data-act="theme"]:hover{transform:none}
+}
+/* light mode: gradient text is too pale on a bright ground, use the solid warning ink */
+:root[data-theme="light"] .samplebar b{background:none;color:var(--warn)}
