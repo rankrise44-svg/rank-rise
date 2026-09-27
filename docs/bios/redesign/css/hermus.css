@@ -100,6 +100,10 @@
 @media (min-width:1000px){ body:has(.drawer.on) .hm-panel,body:has(.drawer.on) .hm-pill{right:calc(min(480px,100%) + 20px)} }
 .hm-panel,.hm-pill{transition:opacity .25s ease,transform .45s var(--ease-spring),right .45s var(--ease-spring)}
 
+/* website-guide badge in the call header */
+.hm-mode{margin-left:6px;padding:1px 7px;border-radius:999px;font:600 9.5px var(--sans);letter-spacing:.08em;vertical-align:2px;
+  color:#6FE3FF;border:1px solid rgba(63,214,255,.4);background:rgba(63,214,255,.08)}
+
 /* ---------- Hermus Settings: hint under each label ---------- */
 .hm-hint{display:block;margin-top:3px;font:400 11.5px/1.45 var(--sans);letter-spacing:0;color:var(--muted)}
 
@@ -108,10 +112,18 @@
 
 /* ---------- phones: the panel becomes a bottom sheet, the button keeps its orb ---------- */
 @media (max-width:640px){
-  .hermus-btn{padding:0 10px;height:34px}
+  .hermus-btn{padding:0 8px;height:34px;gap:0}
   .hermus-btn .hm-lab{display:none}
   .hm-panel{right:8px;left:8px;bottom:8px;width:auto;max-height:calc(100vh - 80px)}
   .hm-pill{right:12px;bottom:12px}
+}
+/* the website's top bar on small phones: tighter spacing so Hermus fits (nothing hidden) */
+@media (max-width:400px){
+  .topbar:has(+ .site){padding-inline:12px!important;gap:6px}
+  .topbar:has(+ .site) .right{gap:4px}
+  .topbar:has(+ .site) .seg button{padding-inline:6px}
+  .topbar:has(+ .site) .iconbtn{width:30px;height:30px}
+  .topbar:has(+ .site) .hermus-btn{padding:0 7px;height:30px}
 }
 @media (prefers-reduced-motion:reduce){
   .hm-orb::after,.hm-ring,.hm-live i,.hm-wave i,.hm-orb.lg,.hm-mic.on{animation:none!important}

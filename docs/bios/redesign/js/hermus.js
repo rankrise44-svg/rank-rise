@@ -72,6 +72,35 @@ const SCRIPTS = [
 ];
 const CHIPS = ['health','leads','tasks','brain','eval','site'];
 
+/* Website guide: when Hermus is called from the Website page his power is
+   limited to the website. He can scroll and explain it; he cannot open
+   workspace pages, type, click, switch views or leave BIOS. */
+const SITE_SCRIPTS = [
+  {id:'w-what', match:/what is|what's|about|bios|explain|intro/i, q:'What is BIOS?', steps:[
+    {spot:'.site .hero', say:'BIOS is an AI business intelligence operating system, {sir}. It learns what your company actually is from your website, documents, ad accounts and CRM, then finds what matters, plans what is next and remembers what happened.'}
+  ]},
+  {id:'w-diff', match:/differ|chatgpt|assistant|compare|why bios|better/i, q:'How is it different from a general AI assistant?', steps:[
+    {spot:'.site #difference', say:'Here is the difference. Ask a general assistant why leads dropped and it guesses. BIOS answers from your own data, and every number carries its source and date.'}
+  ]},
+  {id:'w-how', match:/how.*work|layer|loop|process|step/i, q:'How does it work?', steps:[
+    {spot:'.site .layers', say:'Four layers, one loop: understand the business, plan with evidence, execute with approval gates, and learn from what happened. The results go back into the brain.'}
+  ]},
+  {id:'w-team', match:/agent|team|specialist|who does|workforce/i, q:'Who does the work?', steps:[
+    {spot:'.site .agents', say:'Nineteen AI specialists do the work, each with its own data scope and tools, and one Orchestrator manages them. A critic checks every answer before you see it.'}
+  ]},
+  {id:'w-plans', match:/price|pricing|plan|cost|tier|pay|agenc/i, q:'What are the plans?', steps:[
+    {spot:'.site .tierlist', say:'There are four plans: Starter, Growth, Agency and Enterprise. Usage is metered in credits, and refusals and failed runs are never charged.'}
+  ]},
+  {id:'w-try', match:/try|start|sign|demo|product|open|use it/i, q:'How do I try it?', steps:[
+    {spot:'.site .hero-cta', say:'Press Open the product, or Product at the top of the page, {sir}. Call me again inside and I can walk you through your workspace.'}
+  ]}
+];
+const SITE_CHIPS = ['w-what','w-diff','w-how','w-team','w-plans','w-try'];
+const PRODUCT_WORDS = /revenue|lead|task|approv|brain|campaign|insight|evidence|evaluat|customer|sales|budget|finance|data|kpi|number|report|workspace|dashboard|overview/i;
+H.mode = 'app';
+const chipsHTML = () => (H.mode==='site' ? SITE_CHIPS.map(id=>SITE_SCRIPTS.find(x=>x.id===id)) : CHIPS.map(id=>SCRIPTS.find(x=>x.id===id)))
+  .map(sc=>`<button type="button" data-hm="ask" data-id="${sc.id}">${e(sc.q)}</button>`).join('');
+
 /* ---------- state ---------- */
 let panel, cursor, run = 0, timerT = null, t0 = 0, muted = false, busy = false, spotEl = null, minimized = false;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -105,7 +134,7 @@ function build(){
   panel.innerHTML = `
     <header class="hm-head">
       <span class="hm-orb sm" aria-hidden="true"></span>
-      <div class="hm-title"><b>Hermus</b><span class="hm-live"><i></i>Live · <span class="hm-time">00:00</span></span></div>
+      <div class="hm-title"><b>Hermus <span class="hm-mode" hidden>Website guide</span></b><span class="hm-live"><i></i>Live · <span class="hm-time">00:00</span></span></div>
       <div class="hm-tools">
         <button class="hm-ic" type="button" data-hm="mute" aria-pressed="false" title="Mute voice" aria-label="Mute voice">🔊</button>
         <button class="hm-ic" type="button" data-hm="min" title="Minimise" aria-label="Minimise">–</button>
@@ -118,7 +147,7 @@ function build(){
       <div class="hm-status" aria-live="polite">Connecting…</div>
     </div>
     <div class="hm-log" aria-live="polite"></div>
-    <div class="hm-chips">${CHIPS.map(id=>{ const s = SCRIPTS.find(x=>x.id===id); return `<button type="button" data-hm="ask" data-id="${id}">${e(s.q)}</button>`; }).join('')}</div>
+    <div class="hm-chips"></div>
     <form class="hm-input" autocomplete="off">
       <button class="hm-mic" type="button" data-hm="mic" aria-label="Talk to Hermus (simulated)" title="Talk (simulated)">🎙</button>
       <input name="q" aria-label="Ask Hermus" placeholder="Ask Hermus anything…">
@@ -138,7 +167,7 @@ function build(){
     else if(a==='min') setMin(true);
     else if(a==='restore') setMin(false);
     else if(a==='mute'){ muted = !muted; b.setAttribute('aria-pressed', muted); b.textContent = muted ? '🔇' : '🔊'; if(muted) hush(); }
-    else if(a==='ask') ask(SCRIPTS.find(s=>s.id===b.dataset.id).q);
+    else if(a==='ask') ask(SCRIPTS.concat(SITE_SCRIPTS).find(s=>s.id===b.dataset.id).q);
     else if(a==='mic') mic();
   });
   panel.querySelector('.hm-input').addEventListener('submit', ev => {
@@ -208,6 +237,7 @@ async function play(sc, id){
   busy = true;
   for(const st of sc.steps){
     if(!alive(id)) break;
+    if(H.mode==='site' && (st.go || st.type || st.click || st.site)) continue;
     const s = H.settings();
     if(st.wait){ status('Working…', 'work'); await sleep(st.wait); if(!alive(id)) break; }
     if(st.site){
@@ -248,6 +278,7 @@ function ask(q){
   if(minimized) setMin(false);
   const id = ++run; hush(); unspot();
   line('me', q);
+  if(H.mode==='site'){ siteAsk(q, id); return; }
   const sc = SCRIPTS.find(s=>s.q.toLowerCase()===q.toLowerCase()) || SCRIPTS.find(s=>s.match.test(q));
   if(sc){ play(sc, id); return; }
   const m = H.memory();
@@ -255,11 +286,19 @@ function ask(q){
     await reply(fill(`I am a prototype, {sir}, so I only know a few walkthroughs for now: the business overview, why leads dropped, what needs your approval, the Company Brain, the last campaign, and the website. I also have ${m.files.length} file${m.files.length===1?'':'s'} and ${m.notes.length} note${m.notes.length===1?'':'s'} in my memory.`));
     busy = false; if(alive(id)) status('Listening','listen'); })();
 }
+function siteAsk(q, id){
+  const say = t => (async()=>{ busy = true; status('Thinking…','work'); await sleep(600); if(!alive(id)) return; await reply(fill(t)); busy = false; if(alive(id)) status('Listening','listen'); })();
+  if(B.state.view!=='site') return say('I am your website guide on this call, {sir}. End the call and press Hermus inside the product, and I can show you your workspace.');
+  const sc = SITE_SCRIPTS.find(s=>s.q.toLowerCase()===q.toLowerCase()) || (!PRODUCT_WORDS.test(q) || /price|plan|cost|how.*work/i.test(q) ? SITE_SCRIPTS.slice(1).concat(SITE_SCRIPTS[0]).find(s=>s.match.test(q)) : null);
+  if(sc){ play(sc, id); return; }
+  if(PRODUCT_WORDS.test(q)) return say('On the website I can only talk about the website, {sir}. Your business data stays inside the product: open the product and call me there.');
+  return say('On the website I can tell you what BIOS is, how it is different, how it works, who does the work, what the plans are, and how to try it.');
+}
 let micStep = 0;
 function mic(){
   if(busy) return;
   const b = panel.querySelector('.hm-mic'); b.classList.add('on'); status('Listening… (simulated)', 'hear');
-  const q = SCRIPTS.find(s=>s.id===CHIPS[micStep++ % CHIPS.length]).q;
+  const q = H.mode==='site' ? SITE_SCRIPTS.find(s=>s.id===SITE_CHIPS[micStep++ % SITE_CHIPS.length]).q : SCRIPTS.find(s=>s.id===CHIPS[micStep++ % CHIPS.length]).q;
   setTimeout(()=>{ b.classList.remove('on'); if(panel && !panel.hidden) ask(q); }, 1600);
 }
 
@@ -269,6 +308,9 @@ H.open = () => {
   if(!panel.hidden){ panel.querySelector('.hm-input input').focus(); return; }
   if(minimized){ setMin(false); return; }
   panel.hidden = false; H.pill.hidden = true; minimized = false;
+  H.mode = B.state.view==='site' ? 'site' : 'app';
+  panel.querySelector('.hm-chips').innerHTML = chipsHTML();
+  panel.querySelector('.hm-mode').hidden = H.mode!=='site';
   panel.querySelector('.hm-log').innerHTML = '';
   requestAnimationFrame(()=>panel.classList.add('on'));
   t0 = Date.now(); clearInterval(timerT);
@@ -276,7 +318,8 @@ H.open = () => {
   const id = ++run;
   status('Connecting…', 'work');
   const h = new Date().getHours(), part = h<12 ? 'morning' : h<18 ? 'afternoon' : 'evening';
-  setTimeout(async()=>{ if(!alive(id)) return; await reply(fill(`Good ${part}, {sir}. Hermus online. What would you like to see?`)); if(alive(id)) status('Listening','listen'); }, 700);
+  const hello = H.mode==='site' ? `Welcome to BIOS, {sir}. I am Hermus, your website guide. Ask me what BIOS does, how it works or what the plans are.` : `Good ${part}, {sir}. Hermus online. What would you like to see?`;
+  setTimeout(async()=>{ if(!alive(id)) return; await reply(fill(hello)); if(alive(id)) status('Listening','listen'); }, 700);
 };
 H.end = () => {
   run++; hush(); unspot(); clearInterval(timerT); busy = false;
@@ -307,11 +350,12 @@ B.screens['h-settings'] = ws => {
           ${row('Type for me', 'Enter questions into Ask BIOS and fill search fields.', opt('forms',true,'Allowed',s.forms)+opt('forms',false,'Off',s.forms))}
           ${row('Show the website', 'Switch to the public website and walk through it.', opt('site',true,'Allowed',s.site)+opt('site',false,'Off',s.site))}
           ${row('Approve spend or publish', 'Always needs a person. This cannot be switched on.', `<span class="chip dim">Always asks you</span>`)}
+          ${row('On the website', 'Called from the Website page, Hermus is a website guide only: he scrolls and explains the website, never opens workspace data, and never leaves BIOS.', `<span class="chip dim">Website guide only</span>`)}
         </div>`})}
       </div>
       <aside class="stack">
         ${UI.panel({title:'Try it', body:`<p class="small ink2">Press <b>Hermus</b> next to the Ask button in the top bar to start a live call. Ask about revenue, leads, tasks, the Company Brain, the last campaign or the website, and Hermus opens the pages and shows you.</p><div style="margin-top:10px"><button class="btn" data-act="hermus">Call Hermus</button></div>`})}
-        ${UI.panel({title:'About this prototype', body:`<ul class="bullets small ink2"><li>Scripted answers from the sample workspace, no AI model.</li><li>The microphone button is simulated; nothing is recorded.</li><li>Hermus never changes your data: he only opens, scrolls and points.</li></ul>`})}
+        ${UI.panel({title:'About this prototype', body:`<ul class="bullets small ink2"><li>Scripted answers from the sample workspace, no AI model.</li><li>The microphone button is simulated; nothing is recorded.</li><li>Hermus never changes your data: he only opens, scrolls and points.</li><li>On the website he is a guide only, and he never leaves BIOS.</li></ul>`})}
       </aside>
     </div>`;
 };

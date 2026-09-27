@@ -2,7 +2,7 @@
 (function(){
 const B = window.BIOS;
 B.screens.site = () => `<div class="topbar" style="padding-inline:20px"><span style="font-family:var(--display);font-size:20px;letter-spacing:.07em">BIOS</span><span class="small muted" style="letter-spacing:.14em;text-transform:uppercase">by RankRise</span>
-  <div class="right"><div class="seg" role="tablist" aria-label="Prototype view"><button role="tab" data-act="view" data-id="app" aria-selected="false">Product</button><button role="tab" data-act="view" data-id="site" aria-selected="true">Website</button></div>
+  <div class="right"><button class="hermus-btn" type="button" data-act="hermus" aria-label="Ask Hermus, the website guide (prototype)" title="Hermus · website guide (prototype)"><span class="hm-orb sm" aria-hidden="true"></span><span class="hm-lab">Hermus</span></button><div class="seg" role="tablist" aria-label="Prototype view"><button role="tab" data-act="view" data-id="app" aria-selected="false">Product</button><button role="tab" data-act="view" data-id="site" aria-selected="true">Website</button></div>
   <button class="iconbtn" data-act="theme" aria-label="Switch light or dark theme">◐</button></div></div>
 <main class="site">
   <div class="wrap">
