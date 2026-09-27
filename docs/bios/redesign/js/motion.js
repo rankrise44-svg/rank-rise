@@ -91,6 +91,16 @@ M.after = (root, nav) => {
       pth.style.transition = 'stroke-dashoffset 1s var(--ease-out) .35s'; pth.style.strokeDashoffset = '0';
     });
   });
+  /* evaluation retention chart: lines draw left to right, points follow */
+  root.querySelectorAll('svg[aria-label^="Viewer retention"]').forEach(svg => {
+    svg.querySelectorAll('path').forEach((pth, i) => {
+      const dash = pth.getAttribute('stroke-dasharray'); if(dash) return;  /* the dashed comparison line keeps its dashes */
+      pth.setAttribute('pathLength','1'); pth.style.strokeDasharray = '1'; pth.style.strokeDashoffset = '1'; pth.style.transition = 'none';
+      void pth.getBoundingClientRect();
+      pth.style.transition = `stroke-dashoffset 1.2s var(--ease-out) ${250 + i*150}ms`; pth.style.strokeDashoffset = '0';
+    });
+    svg.querySelectorAll('circle').forEach((c, i) => { c.style.opacity = '0'; c.style.transition = 'none'; void c.getBoundingClientRect(); c.style.transition = `opacity .35s ease ${500 + i*60}ms`; c.style.opacity = ''; });
+  });
   /* rings: sweep the arc in */
   root.querySelectorAll('.ringstat svg circle:nth-of-type(2)').forEach(c => {
     const target = c.getAttribute('stroke-dasharray'); if(!target) return;
