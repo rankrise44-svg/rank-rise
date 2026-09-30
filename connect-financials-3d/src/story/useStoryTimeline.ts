@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { story, STORY_LENGTH } from './state';
 import { startSmoothScroll } from './smoothScroll';
+import { isNarrow } from '../lib/device';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -109,15 +110,15 @@ export function useStoryTimeline(reduced: boolean) {
         .set('[data-wing-spark]', { autoAlpha: 0 }, 5.75)
         .fromTo(
           '[data-wing-item]',
-          { autoAlpha: 0, scale: 0.55 },
-          { autoAlpha: 1, scale: 1, duration: 0.3, stagger: { each: 0.1, from: 'center' }, ease: 'back.out(1.8)' },
+          { autoAlpha: 0, scale: () => (isNarrow() ? 1 : 0.55), y: () => (isNarrow() ? 14 : 0) },
+          { autoAlpha: 1, scale: 1, y: 0, duration: 0.3, stagger: { each: 0.1, from: isNarrow() ? 'start' : 'center' }, ease: isNarrow() ? 'power2.out' : 'back.out(1.8)' },
           5.33,
         )
         // (blur on its own ease: an overshooting ease would push it below zero)
-        .fromTo('[data-wing-item]', { filter: 'blur(8px)' }, { filter: 'blur(0px)', duration: 0.25, stagger: { each: 0.1, from: 'center' }, ease: 'power2.out' }, 5.33)
-        .fromTo('[data-wing-item]', { '--sheen': '-120%' }, { '--sheen': '120%', duration: 0.45, stagger: { each: 0.1, from: 'center' } }, 5.45)
+        .fromTo('[data-wing-item]', { filter: () => (isNarrow() ? 'blur(0px)' : 'blur(8px)') }, { filter: 'blur(0px)', duration: 0.25, stagger: { each: 0.1, from: 'center' }, ease: 'power2.out' }, 5.33)
+        .fromTo('[data-wing-item]', { '--sheen': '-120%' }, { '--sheen': '120%', duration: 0.3, stagger: { each: 0.06, from: 'center' } }, 5.42)
         //   Leaving: links fold back and the light withdraws into the body.
-        .to('[data-wing-item]', { autoAlpha: 0, scale: 0.7, filter: 'blur(6px)', duration: 0.3, stagger: { each: 0.05, from: 'edges' } }, 6.45)
+        .to('[data-wing-item]', { autoAlpha: 0, scale: () => (isNarrow() ? 1 : 0.7), y: () => (isNarrow() ? -10 : 0), filter: () => (isNarrow() ? 'blur(0px)' : 'blur(6px)'), duration: 0.3, stagger: { each: 0.05, from: 'edges' } }, 6.45)
         .to('[data-wing-line]', { strokeDashoffset: 1, duration: 0.35, stagger: { each: 0.05, from: 'edges' }, ease: 'power2.in' }, 6.5)
 
         // 4 · ROTATION / FLIGHT — the eagle banks and turns, the camera orbits,

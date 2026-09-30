@@ -80,7 +80,7 @@ html.lenis, html.lenis body { height: auto; }
   transform: translateX(var(--sheen));
 }
 @media (prefers-reduced-motion: no-preference) {
-  .wing-float { animation: wing-ride 5.2s ease-in-out infinite; }
+  @media (min-width: 48rem) { .wing-float { animation: wing-ride 5.2s ease-in-out infinite; } }
   .wing-dot { animation: wing-pulse 2.4s ease-in-out infinite; }
 }
 @keyframes wing-ride { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
