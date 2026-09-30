@@ -118,9 +118,9 @@ const year = new Date().getFullYear();
 B.screens.site = () => `
 <div class="w-bg" aria-hidden="true">
   <div class="w-bg-media">
-    <img class="w-bg-still" src="assets/media/still-fan.png" alt="" decoding="async">
-    <img class="w-bg-still" src="assets/media/still-x.png" alt="" decoding="async">
-    <img class="w-bg-still" src="assets/media/still-ribbon.png" alt="" decoding="async">
+    <img class="w-bg-still" src="assets/media/still-fan.jpg" alt="" decoding="async">
+    <img class="w-bg-still" src="assets/media/still-x.jpg" alt="" decoding="async">
+    <img class="w-bg-still" src="assets/media/still-ribbon.jpg" alt="" decoding="async">
     <video class="w-bg-video" muted playsinline preload="auto" disablepictureinpicture tabindex="-1"><source src="assets/media/part1.mp4" type="video/mp4"></video>
     <video class="w-bg-video" muted playsinline preload="auto" disablepictureinpicture tabindex="-1"><source src="assets/media/part2.mp4" type="video/mp4"></video>
   </div>
