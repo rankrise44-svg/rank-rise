@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Start your rise — RankRise</title>
+<meta name="description" content="Tell RankRise about your business and we'll take it from there.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#050508">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050508; --bg2:#111217; --bg3:#1E2029; --ink:#F1F1EE; --dim:#9A9AA0; --faint:rgba(154,154,160,.52);
+  --accent:#7F64D0; --accent-2:#A38FE3; --accent-3:#C9BCF0; --line:rgba(241,241,238,.12);
+  --teal:#3E9C8E; --teal-2:#85D3C7;
+  --e-rise:cubic-bezier(.2,.7,.2,1); --e-both:cubic-bezier(.2,.7,.2,1);
+  --t-tap:.18s; --t-ui:.3s; --t-rise:.9s;
+}
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; }
+body{ background:var(--bg); color:var(--ink); font-family:'DM Sans',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; min-height:100svh; }
+/* the same space the site opens in: charcoal, a breath of nebula, drifting stars */
+body::before{ content:""; position:fixed; inset:0; z-index:-2; background:
+  radial-gradient(900px 700px at 78% 6%, rgba(127,100,208,.16), transparent 70%),
+  radial-gradient(820px 640px at 12% 90%, rgba(62,156,142,.12), transparent 70%),
+  var(--bg); }
+#stars{ position:fixed; inset:0; z-index:-1; width:100%; height:100%; }
+a{ color:inherit; text-decoration:none; }
+::selection{ background:var(--accent); color:#fff; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+/* ── the spinning silver mark, same as the site ── */
+.spin3d{ display:inline-flex; perspective:460px; }
+.spin3d .s3o{ position:relative; display:inline-flex; transform-style:preserve-3d; animation:logoSpin 8s linear infinite; will-change:transform; }
+.spin3d svg{ display:block; }
+.spin3d svg:not(:first-child){ position:absolute; left:0; top:0; }
+.spin3d svg:nth-child(1){ transform:translateZ(3px); animation:logoGlint 8s linear infinite; }
+.spin3d svg:nth-child(2){ transform:translateZ(1.5px); filter:brightness(.45); }
+.spin3d svg:nth-child(3){ filter:brightness(.45); }
+.spin3d svg:nth-child(4){ transform:translateZ(-1.5px); filter:brightness(.45); }
+.spin3d svg:nth-child(5){ transform:translateZ(-3px); animation:logoGlint 8s linear infinite; }
+@keyframes logoSpin{ to{ transform:rotateY(360deg); } }
+@keyframes logoGlint{ 0%,50%,100%{ filter:brightness(1); } 25%,75%{ filter:brightness(1.55); } }
+
+.wrap{ max-width:640px; margin:0 auto; padding:0 clamp(20px,5vw,40px) 80px; }
+header{ display:flex; align-items:center; justify-content:center; gap:10px; padding:calc(26px + env(safe-area-inset-top)) 0 8px; font-family:'Anton'; font-weight:400; font-size:18px; }
+header svg{ width:26px; height:23px; }
+
+.hero{ text-align:center; padding:clamp(28px,6vh,52px) 0 clamp(26px,5vh,40px); }
+.eyebrow{ display:inline-flex; align-items:center; gap:10px; font-size:11px; font-weight:600; letter-spacing:.3em; text-transform:uppercase; color:var(--accent-2); }
+.eyebrow::before,.eyebrow::after{ content:""; width:26px; height:1px; background:var(--accent-2); }
+h1{ font-family:'Anton'; font-weight:400; font-size:clamp(30px,8vw,46px); letter-spacing:.01em; text-transform:uppercase; line-height:1.04; margin-top:14px; }
+h1 .grad{ color:var(--accent-2); }
+.hero p{ margin:14px auto 0; max-width:44ch; color:var(--dim); font-size:15px; line-height:1.6; }
+
+/* ── the form card ── */
+.card{ background:rgba(17,18,23,.7); border:1px solid var(--line); border-radius:20px; padding:clamp(22px,5vw,34px); backdrop-filter:blur(14px); }
+.fld{ margin-bottom:22px; }
+label.t{ display:block; font-size:11px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--faint); margin-bottom:10px; }
+label.t b{ color:var(--accent-2); font-weight:600; }
+input[type=text],input[type=tel],input[type=email],textarea{
+  width:100%; padding:14px 16px; border-radius:12px; border:1px solid var(--line); background:rgba(5,5,8,.55);
+  color:var(--ink); font:inherit; font-size:15px; transition:border-color var(--t-ui), box-shadow var(--t-ui), background var(--t-ui); }
+input::placeholder,textarea::placeholder{ color:var(--faint); }
+input:focus,textarea:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 1px rgba(163,143,227,.26), 0 10px 30px -12px rgba(127,100,208,.5); background:rgba(5,5,8,.75); }
+textarea{ min-height:110px; resize:vertical; }
+
+/* chips — suggestions you tap, with the site's presence feel */
+.chips{ display:flex; flex-wrap:wrap; gap:9px; }
+.chips input{ position:absolute; opacity:0; pointer-events:none; }
+.chips label{ position:relative; padding:10px 16px; border-radius:100px; border:1px solid var(--line); font-size:13.5px; font-weight:500; color:var(--dim); cursor:pointer; user-select:none;
+  transition:transform .3s var(--e-rise), color var(--t-tap), border-color var(--t-tap), background var(--t-ui); }
+@media(hover:hover) and (pointer:fine){
+  .chips label:hover{ transform:translateY(-3px); color:var(--ink); border-color:rgba(163,143,227,.5); }
+}
+.chips label:active{ transform:scale(.96); }
+.chips input:checked+label{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.chips input:focus-visible+label{ outline:2px solid var(--accent); outline-offset:3px; }
+#otherWrap{ margin-top:12px; display:none; }
+#otherWrap.show{ display:block; }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:16px 24px; border-radius:100px; border:0; cursor:pointer;
+  background:var(--accent); color:#fff; font:inherit; font-size:15px; font-weight:600; letter-spacing:.02em;
+  transition:transform .3s var(--e-rise), background var(--t-ui), box-shadow .3s var(--e-rise); }
+@media(hover:hover) and (pointer:fine){
+  .btn:hover{ transform:translateY(-3px) scale(1.012); background:#6C52C2; box-shadow:0 10px 30px -8px rgba(127,100,208,.5), 0 24px 64px -20px rgba(127,100,208,.38); }
+}
+.btn:active{ transform:translateY(-1px) scale(.985); }
+.hint{ margin-top:14px; text-align:center; font-size:12px; color:var(--faint); }
+
+/* thank-you state */
+#done{ display:none; text-align:center; padding:clamp(30px,7vh,60px) 0; }
+#done.show{ display:block; animation:pop .7s var(--e-rise) both; }
+#done .spin3d svg{ width:72px; height:64px; }
+#done h2{ font-family:'Anton'; font-weight:400; font-size:clamp(26px,6.5vw,38px); text-transform:uppercase; margin-top:20px; }
+#done p{ margin:12px auto 0; max-width:40ch; color:var(--dim); font-size:15px; line-height:1.6; }
+#done .wa{ display:inline-flex; margin-top:26px; width:auto; padding:14px 26px; }
+@keyframes pop{ from{ opacity:0; transform:translateY(26px); } to{ opacity:1; transform:none; } }
+
+footer{ text-align:center; padding:30px 0 calc(26px + env(safe-area-inset-bottom)); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); }
+
+.up{ opacity:0; transform:translateY(26px); animation:rise .8s var(--e-rise) both; }
+.up.d1{ animation-delay:.1s; } .up.d2{ animation-delay:.22s; } .up.d3{ animation-delay:.34s; }
+@keyframes rise{ to{ opacity:1; transform:none; } }
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; }
+  .up{ opacity:1; transform:none; }
+  .spin3d .s3o,.spin3d svg{ animation:none !important; transform:none; }
+  .spin3d svg:not(:first-child){ display:none; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <linearGradient id="silver" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#EDEEF0"/>
+    <stop offset=".42" stop-color="#C4C7CC"/>
+    <stop offset=".55" stop-color="#F4F5F6"/>
+    <stop offset=".72" stop-color="#A9ADB5"/>
+    <stop offset="1" stop-color="#8E939C"/>
+  </linearGradient>
+</defs>
+<symbol id="rr" viewBox="0 0 2270 2008"><path fill="url(#silver)" d="M 798.2,368.2 C 447.0,719.7 465.9,700.2 451.9,724.2 C 437.1,749.7 427.6,779.6 424.9,810.0 C 423.6,823.3 423.3,1175.0 424.5,1175.0 C 425.0,1175.0 583.5,1016.8 776.8,823.5 L 1128.3,472.0 L 1341.3,685.0 L 1554.3,898.0 L 1452.8,999.5 L 1351.3,1101.0 L 1239.7,989.4 L 1128.1,877.8 L 584.2,1422.0 C 285.1,1721.3 40.1,1966.6 40.0,1967.1 C 39.7,1967.7 108.8,1967.9 229.5,1967.7 C 405.3,1967.4 420.1,1967.3 429.8,1965.7 C 469.5,1959.0 501.8,1944.8 531.7,1920.8 C 535.9,1917.4 671.8,1782.3 833.8,1620.4 L 1128.3,1326.1 L 1422.8,1620.3 C 1584.8,1782.2 1720.9,1917.4 1725.3,1921.0 C 1754.9,1944.5 1787.8,1959.1 1826.8,1965.6 C 1836.6,1967.3 1850.8,1967.4 2027.1,1967.7 C 2131.4,1967.9 2216.8,1967.7 2216.8,1967.3 C 2216.8,1966.9 2069.2,1818.9 1888.8,1638.5 L 1560.8,1310.5 L 1770.0,1101.3 L 1979.3,892.0 L 1553.3,466.0 C 1319.0,231.7 1127.1,40.0 1126.8,40.0 C 1126.5,40.0 978.7,187.7 798.2,368.2"/></symbol></svg>
+
+<canvas id="stars" aria-hidden="true"></canvas>
+
+<div class="wrap">
+
+<header>
+  <span class="spin3d"><span class="s3o"><svg><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg></span></span>RankRise
+</header>
+
+<section class="hero up">
+  <span class="eyebrow">Where brands rise</span>
+  <h1>Tell us about <span class="grad">your business</span></h1>
+  <p>A minute of your time — and we'll know exactly how to make your brand rise. We'll get back to you personally.</p>
+</section>
+
+<main class="card up d1" id="formCard">
+  <form id="riseForm" name="rise-leads" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+    <input type="hidden" name="form-name" value="rise-leads">
+    <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
+
+    <div class="fld">
+      <label class="t" for="bizname">Name of business <b>*</b></label>
+      <input type="text" id="bizname" name="business" placeholder="e.g. Rise Café" required autocomplete="organization">
+    </div>
+
+    <div class="fld">
+      <label class="t" id="indLabel">Industry <b>*</b></label>
+      <div class="chips" role="radiogroup" aria-labelledby="indLabel">
+        <input type="radio" name="industry" id="i1" value="Restaurants &amp; Food"><label for="i1">Restaurants &amp; Food</label>
+        <input type="radio" name="industry" id="i2" value="Beauty &amp; Clinics"><label for="i2">Beauty &amp; Clinics</label>
+        <input type="radio" name="industry" id="i3" value="Real Estate"><label for="i3">Real Estate</label>
+        <input type="radio" name="industry" id="i4" value="Fashion &amp; Retail"><label for="i4">Fashion &amp; Retail</label>
+        <input type="radio" name="industry" id="i5" value="Fitness &amp; Sports"><label for="i5">Fitness &amp; Sports</label>
+        <input type="radio" name="industry" id="i6" value="Travel &amp; Tourism"><label for="i6">Travel &amp; Tourism</label>
+        <input type="radio" name="industry" id="i7" value="Education"><label for="i7">Education</label>
+        <input type="radio" name="industry" id="i8" value="Services"><label for="i8">Services</label>
+        <input type="radio" name="industry" id="i9" value="Other"><label for="i9">Other</label>
+      </div>
+      <div id="otherWrap">
+        <input type="text" id="otherInd" name="industry_other" placeholder="Tell us your industry">
+      </div>
+    </div>
+
+    <div class="fld">
+      <label class="t" id="szLabel">Team size <b>*</b></label>
+      <div class="chips" role="radiogroup" aria-labelledby="szLabel">
+        <input type="radio" name="team" id="s1" value="Just me"><label for="s1">Just me</label>
+        <input type="radio" name="team" id="s2" value="2–5"><label for="s2">2–5</label>
+        <input type="radio" name="team" id="s3" value="6–15"><label for="s3">6–15</label>
+        <input type="radio" name="team" id="s4" value="16–50"><label for="s4">16–50</label>
+        <input type="radio" name="team" id="s5" value="50+"><label for="s5">50+</label>
+      </div>
+    </div>
+
+    <div class="fld">
+      <label class="t" for="phone">Phone number <b>*</b></label>
+      <input type="tel" id="phone" name="phone" placeholder="+961 70 000 000" required autocomplete="tel" inputmode="tel">
+    </div>
+
+    <div class="fld">
+      <label class="t" for="email">Email <b>*</b></label>
+      <input type="email" id="email" name="email" placeholder="you@business.com" required autocomplete="email" inputmode="email">
+    </div>
+
+    <div class="fld">
+      <label class="t" for="about">Tell us more about your business <span style="text-transform:none; letter-spacing:.05em; color:var(--faint)">· optional</span></label>
+      <textarea id="about" name="about" placeholder="What do you do? What are you dreaming of?"></textarea>
+    </div>
+
+    <button class="btn" type="submit">Start your rise&nbsp;→</button>
+    <p class="hint">We reply personally — no spam, ever.</p>
+  </form>
+</main>
+
+<section id="done">
+  <span class="spin3d"><span class="s3o"><svg><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg></span></span>
+  <h2>You're on the launchpad</h2>
+  <p>We got your details. Someone from RankRise will reach out shortly — keep your phone close.</p>
+  <a class="btn wa" id="waLink" href="https://wa.me/96170991555" target="_blank" rel="noopener">Chat with us now on WhatsApp</a>
+</section>
+
+<footer class="up d3">RankRise — The Experience</footer>
+
+</div>
+
+<script>
+/* slow star drift, same sky as the site */
+(function(){
+  const cv=document.getElementById('stars'), cx=cv.getContext('2d');
+  const DPR=Math.min(devicePixelRatio||1,2);
+  let W,H,CX,CY;
+  function size(){ W=cv.width=Math.floor(innerWidth*DPR); H=cv.height=Math.floor(innerHeight*DPR); CX=W/2; CY=H/2; }
+  size(); addEventListener('resize',size);
+  const S=[]; for(let i=0;i<170;i++) S.push({x:Math.random()*2-1,y:Math.random()*2-1,z:Math.random()*.9+.1});
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){
+    cx.fillStyle='#050508'; cx.fillRect(0,0,W,H);
+    for(const s of S){ cx.fillStyle='rgba(226,224,240,'+(.2+(1-s.z)*.5)+')'; cx.fillRect(s.x/s.z*CX+CX, s.y/s.z*CY+CY, 2*DPR, 2*DPR); }
+    return;
+  }
+  (function frame(){
+    cx.fillStyle='rgba(5,5,8,.5)'; cx.fillRect(0,0,W,H);
+    for(const s of S){
+      const px=s.x/s.z*CX+CX, py=s.y/s.z*CY+CY;
+      s.z-=.0035*s.z;
+      const nx=s.x/s.z*CX+CX, ny=s.y/s.z*CY+CY;
+      if(s.z<=.02||nx<0||nx>W||ny<0||ny>H){ s.x=Math.random()*2-1; s.y=Math.random()*2-1; s.z=.95; continue; }
+      cx.strokeStyle='rgba(228,226,242,'+Math.min(1,(1-s.z))+')';
+      cx.lineWidth=Math.max(1,(1-s.z)*1.8);
+      cx.beginPath(); cx.moveTo(px,py); cx.lineTo(nx,ny); cx.stroke();
+    }
+    requestAnimationFrame(frame);
+  })();
+})();
+
+/* "Other" industry reveals its own field */
+document.querySelectorAll('input[name=industry]').forEach(r=>r.addEventListener('change',()=>{
+  const other=document.getElementById('i9').checked;
+  document.getElementById('otherWrap').classList.toggle('show',other);
+  if(other) document.getElementById('otherInd').focus();
+}));
+
+/* submit: post to Netlify when live; always land on the thank-you state.
+   The WhatsApp button carries the answers, so nothing is ever lost. */
+document.getElementById('riseForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const f=e.target;
+  if(!f.reportValidity()) return;
+  const ind=(f.industry.value==='Other' && f.industry_other.value.trim()) ? f.industry_other.value.trim() : f.industry.value;
+  if(!ind){ document.getElementById('indLabel').scrollIntoView({behavior:'smooth',block:'center'}); return; }
+  const data=new URLSearchParams(new FormData(f));
+  try{ await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:data.toString()}); }catch(_){}
+  const msg='Hi RankRise! I just scanned your QR code.\n'
+    +'Business: '+f.business.value+'\nIndustry: '+ind+'\nTeam: '+(f.team.value||'—')
+    +'\nPhone: '+f.phone.value+'\nEmail: '+f.email.value
+    +(f.about.value?'\nAbout: '+f.about.value:'');
+  document.getElementById('waLink').href='https://wa.me/96170991555?text='+encodeURIComponent(msg);
+  document.getElementById('formCard').style.display='none';
+  document.querySelector('.hero').style.display='none';
+  document.getElementById('done').classList.add('show');
+  scrollTo({top:0,behavior:'smooth'});
+});
+</script>
+</body>
+</html>
