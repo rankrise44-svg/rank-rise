@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Falcon Scroll Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #000000;
+    --gold: #D4AF37;
+    --gold-hi: #F5D27A;
+    --ink: #F5F7FA;
+    --muted: #8A94A8;
+    --line: rgba(212, 175, 55, 0.22);
+  }
+  /* The preview is black by design (it matches the video's own background), in both themes. */
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #000000; } }
+  :root[data-theme="dark"] { --bg: #000000; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { font: 15px/1.5 Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+  #track { position: relative; height: 720vh; }
+  #stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  .hud { position: absolute; left: 0; right: 0; pointer-events: none; padding: 0 16px; }
+  .top { top: max(18px, env(safe-area-inset-top)); display: flex; justify-content: space-between; align-items: center; max-width: 1280px; margin: 0 auto; }
+  .brand { font-family: 'Space Grotesk', sans-serif; font-weight: 600; letter-spacing: 0.28em; font-size: 12px; text-transform: uppercase; color: var(--gold); }
+  .count { font-family: 'Space Grotesk', sans-serif; font-variant-numeric: tabular-nums; font-size: 12px; letter-spacing: 0.14em; color: var(--muted); }
+
+  .title { top: 50%; transform: translateY(-50%); text-align: center; transition: opacity .5s ease; }
+  .title h1 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: clamp(34px, 8vw, 104px); line-height: .95; letter-spacing: -0.02em; margin: 0; text-shadow: 0 0 40px #000, 0 0 12px #000; }
+  .title h1 span { color: var(--gold-hi); }
+  .title p { margin: 16px 0 0; color: var(--muted); letter-spacing: .3em; text-transform: uppercase; font-size: 11px; }
+
+  .tag { bottom: max(64px, calc(env(safe-area-inset-bottom) + 48px)); text-align: center; opacity: 0; transition: opacity .6s ease, transform .6s ease; transform: translateY(12px); }
+  .tag.on { opacity: 1; transform: none; }
+  .tag h2 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(20px, 3.2vw, 38px); margin: 0; letter-spacing: -0.01em; text-shadow: 0 0 24px #000; }
+  .tag h2 em { font-style: normal; color: var(--gold-hi); }
+
+  .bar { bottom: max(22px, env(safe-area-inset-bottom)); max-width: 520px; margin: 0 auto; }
+  .bar .rail { height: 2px; background: var(--line); border-radius: 2px; overflow: hidden; }
+  .bar .fill { height: 100%; width: 0; background: linear-gradient(90deg, #9C7A1E, var(--gold), var(--gold-hi)); }
+  .bar .labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+  .bar .labels b { font-weight: 500; transition: color .3s; }
+  .bar .labels b.on { color: var(--gold); }
+
+  .hint { bottom: 110px; text-align: center; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); transition: opacity .4s; }
+  .hint i { display: block; width: 1px; height: 34px; margin: 10px auto 0; background: linear-gradient(var(--gold), transparent); animation: drop 1.6s ease-in-out infinite; }
+  @keyframes drop { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+  @media (prefers-reduced-motion: reduce) { .hint i { animation: none; } }
+
+  #loader { position: fixed; inset: 0; display: grid; place-items: center; background: var(--bg); z-index: 5; transition: opacity .6s ease; }
+  #loader.done { opacity: 0; pointer-events: none; }
+  #loader .box { text-align: center; }
+  #loader .pct { font-family: 'Space Grotesk', sans-serif; font-size: 44px; font-weight: 600; color: var(--gold-hi); font-variant-numeric: tabular-nums; }
+  #loader .sub { color: var(--muted); font-size: 11px; letter-spacing: .3em; text-transform: uppercase; margin-top: 6px; }
+
+  .after { min-height: 60vh; display: grid; place-items: center; text-align: center; padding: 80px 16px; border-top: 1px solid var(--line); }
+  .after p { color: var(--muted); max-width: 52ch; margin: 0 auto; }
+  .after h3 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(22px, 3vw, 32px); margin: 0 0 12px; color: var(--ink); }
+</style>
+</head>
+<body>
+<div id="loader"><div class="box"><div class="pct" id="pct">0%</div><div class="sub">Loading the falcon</div></div></div>
+
+<div id="track">
+  <div id="stage">
+    <canvas id="c" aria-label="The Connect Financials falcon turns a full circle and opens its wings as you scroll"></canvas>
+    <div class="hud top"><span class="brand">Connect Financials</span><span class="count" id="count">001 / 243</span></div>
+    <div class="hud title" id="title"><h1>Connect <span>Financials</span></h1><p>The falcon · scroll preview</p></div>
+    <div class="hud hint" id="hint">Scroll<i></i></div>
+    <div class="hud tag" id="tag"><h2>Trade Smarter, <em>Move Faster,</em> Go Further.</h2></div>
+    <div class="hud bar"><div class="rail"><div class="fill" id="fill"></div></div>
+      <div class="labels"><b id="l1" class="on">Front</b><b id="l2">Spin 360°</b><b id="l3">Wings open</b></div></div>
+  </div>
+</div>
+<section class="after"><div><h3>End of the preview</h3><p>This page is separate from the website. If you approve this falcon, the same frames go into the Connect Financials hero exactly as you see them here.</p></div></section>
+
+<script>
+(async () => {
+  const manifest = await (await fetch('manifest.json')).json();
+  const N = manifest.count;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  // Phones and small windows use the 1280 px set; everything else the 2560 px set.
+  const small = Math.max(innerWidth, innerHeight) * dpr < 1500;
+  const dir = small ? 'frames-1280/' : 'frames/';
+  const K = small ? 0.5 : 1; // frame px per manifest px
+  const url = (i) => dir + String(i + 1).padStart(manifest.pad, '0') + '.webp';
+
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d', { alpha: false });
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- loading: coarse frames first so scrolling works almost at once
+  const order = [];
+  const seen = new Uint8Array(N);
+  for (const step of [24, 12, 6, 3, 1]) for (let i = 0; i < N; i += step) if (!seen[i]) { seen[i] = 1; order.push(i); }
+  if (!seen[N - 1]) order.push(N - 1);
+  const blobs = new Array(N);
+  let loaded = 0;
+  let q = 0;
+  const worker = async () => {
+    while (q < order.length) {
+      const i = order[q++];
+      for (let tries = 0; tries < 3 && !blobs[i]; tries++) {
+        try { blobs[i] = await (await fetch(url(i))).blob(); } catch (e) { /* retry */ }
+      }
+      loaded++;
+      $('pct').textContent = Math.round((loaded / N) * 100) + '%';
+      if (loaded >= Math.min(N, 30)) $('loader').classList.add('done');
+    }
+  };
+  for (let w = 0; w < 6; w++) worker();
+
+  // ---------- decoding: only a small window of frames is kept decoded (a 2560 px frame is ~15 MB)
+  const MAX = small ? 16 : 10;
+  const bitmaps = new Map();   // index -> ImageBitmap
+  const pending = new Set();
+  const decode = (i) => {
+    if (i < 0 || i >= N || bitmaps.has(i) || pending.has(i) || !blobs[i]) return;
+    pending.add(i);
+    createImageBitmap(blobs[i]).then((bm) => {
+      pending.delete(i);
+      bitmaps.set(i, bm);
+      if (bitmaps.size > MAX) {
+        // drop the decoded frame furthest from where the viewer is
+        let far = -1, fd = -1;
+        for (const k of bitmaps.keys()) { const d = Math.abs(k - pos); if (d > fd) { fd = d; far = k; } }
+        bitmaps.get(far).close(); bitmaps.delete(far);
+      }
+    }, () => pending.delete(i));
+  };
+  const nearest = (i) => {
+    if (bitmaps.has(i)) return i;
+    for (let d = 1; d < N; d++) {
+      if (bitmaps.has(i - d)) return i - d;
+      if (bitmaps.has(i + d)) return i + d;
+    }
+    return -1;
+  };
+
+  // ---------- scroll -> frame
+  const track = $('track');
+  const END = 0.9; // the last 10 % of the track holds the open wings
+  let target = 0, pos = 0, last = performance.now(), lastPos = -1, lastW = 0, lastH = 0;
+  const readScroll = () => {
+    const r = track.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
+    target = Math.min(1, p / END) * (N - 1);
+    $('fill').style.width = (p * 100).toFixed(2) + '%';
+    $('title').style.opacity = String(Math.max(0, 1 - p * 14));
+    $('hint').style.opacity = String(Math.max(0, 1 - p * 30));
+    $('tag').classList.toggle('on', p > 0.84);
+    const f = p / END;
+    $('l1').classList.toggle('on', f < 0.1);
+    $('l2').classList.toggle('on', f >= 0.1 && f < 0.78);
+    $('l3').classList.toggle('on', f >= 0.78);
+  };
+  addEventListener('scroll', readScroll, { passive: true });
+  readScroll();
+
+  const resize = () => {
+    canvas.width = Math.round(innerWidth * dpr);
+    canvas.height = Math.round(innerHeight * dpr);
+    lastPos = -1;
+  };
+  addEventListener('resize', resize);
+  resize();
+
+  const [boxTop, boxBottom] = manifest.box;
+  const halfAt = (f) => {
+    const a = Math.floor(f), b = Math.min(N - 1, a + 1), t = f - a;
+    return manifest.halfWidth[a] * (1 - t) + manifest.halfWidth[b] * t;
+  };
+
+  const draw = (bmA, bmB, mix, f) => {
+    const cw = canvas.width, ch = canvas.height;
+    const boxH = boxBottom - boxTop;
+    const portrait = cw < ch;
+    // one size for the whole spin; zoom out only as far as the open wings need
+    const s = Math.min((ch * (portrait ? 0.62 : 0.8)) / boxH, (cw * 0.96) / (2 * halfAt(f)));
+    const x = cw / 2 - manifest.width / 2 * s;
+    const y = ch * 0.5 - (boxTop + boxH / 2) * s;
+    const w = manifest.width * s, h = manifest.height * s;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, cw, ch);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.globalAlpha = 1;
+    ctx.drawImage(bmA, x, y, w, h);
+    if (bmB && mix > 0.001) { ctx.globalAlpha = mix; ctx.drawImage(bmB, x, y, w, h); ctx.globalAlpha = 1; }
+  };
+
+  const tick = (now) => {
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    // glide toward the scroll position: no jumps, no stutter on fast wheels
+    pos += (target - pos) * (1 - Math.exp(-dt * 12));
+    if (Math.abs(target - pos) < 0.002) pos = target;
+    const a = Math.floor(pos), b = Math.min(N - 1, a + 1);
+    const ahead = target >= pos ? 1 : -1;
+    for (let d = -2; d <= 4; d++) decode(a + d * ahead);
+    const ia = nearest(a);
+    if (ia >= 0 && (pos !== lastPos || canvas.width !== lastW || canvas.height !== lastH || !bitmaps.has(a) || !bitmaps.has(b))) {
+      const exact = ia === a && bitmaps.has(b);
+      draw(bitmaps.get(ia), exact ? bitmaps.get(b) : null, exact ? pos - a : 0, pos);
+      if (ia === a) { lastPos = pos; lastW = canvas.width; lastH = canvas.height; }
+      $('count').textContent = String(Math.round(pos) + 1).padStart(3, '0') + ' / ' + N;
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
