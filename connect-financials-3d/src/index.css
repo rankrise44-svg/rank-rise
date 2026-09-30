@@ -23,7 +23,9 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
-body { margin: 0; overflow-x: hidden; background: var(--color-abyss); color: var(--color-ink); }
+/* clip, not hidden: keeps sticky working and stops wide content widening the phone viewport */
+html { overflow-x: clip; }
+body { margin: 0; overflow-x: clip; background: var(--color-abyss); color: var(--color-ink); }
 ::selection { background: var(--color-gold); color: var(--color-abyss); }
 
 /* Lenis */

@@ -6,6 +6,9 @@
 export const story = {
   /** true when the eagle is a flat image source (video frames): no 3D yaw on the plane */
   flat: false,
+  /** Flat source only: half-width and height of the falcon in the current frame (world units, 0 = unknown) */
+  flatHalf: 0,
+  flatHeight: 0,
   /** 0 → 1 wings closed → fully open (scrubs the GLB clip / frame index) */
   open: 0,
   /** 0 → 1 gold feather fringes catch the light, body outward (wing opening) */

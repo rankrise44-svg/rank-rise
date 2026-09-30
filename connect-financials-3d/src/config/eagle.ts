@@ -32,4 +32,8 @@ export interface FramesManifest {
   height: number;
   /** Frames keep the video's own black background (no alpha): shown as-is, no halo or floor glow */
   opaque?: boolean;
+  /** Per frame: half the falcon's width around the frame centre (px), smoothed — lets the camera fit every angle */
+  halfWidth?: number[];
+  /** Vertical extent of the falcon in the frame, [top, bottom] px (raised wings to talons) */
+  box?: [number, number];
 }

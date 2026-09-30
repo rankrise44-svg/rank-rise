@@ -139,7 +139,7 @@ function Site() {
 
         {/* 10 · Tools */}
         <Beat id="tools" beat="tools" eyebrow="Tools" title={<>Plan every <span className="text-gold-hi">trade</span></>} intro="Size positions, check margin and see what a losing streak would do to your capital before you risk it.">
-          <div className="mt-12 grid gap-10">
+          <div className="mt-12 grid grid-cols-1 gap-10 [&>*]:min-w-0">
             <div data-rise>
               <H3>Forex calculators</H3>
               <ForexCalculators />

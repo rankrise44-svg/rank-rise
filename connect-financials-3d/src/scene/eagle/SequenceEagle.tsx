@@ -174,6 +174,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
     story.flat = true;
     return () => {
       story.flat = false;
+      story.flatHalf = story.flatHeight = 0;
     };
   }, []);
 
@@ -233,6 +234,13 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
     lastTarget.current = target;
     pos.current += (target - pos.current) * (1 - Math.exp(-dt * 14));
     const p = pos.current;
+    const hw = manifest.halfWidth;
+    if (hw?.length === n && manifest.box) {
+      const k = SEQUENCE_HEIGHT / manifest.height;
+      const a = Math.floor(p), b = Math.min(n - 1, a + 1);
+      story.flatHalf = MathUtils.lerp(hw[a], hw[b], p - a) * k;
+      story.flatHeight = (manifest.box[1] - manifest.box[0]) * k;
+    }
 
     // Decode the frames around the position, ahead in the scroll direction.
     const base = Math.round(p);

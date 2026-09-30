@@ -37,13 +37,19 @@ export function CameraRig() {
     const e = o * o * (3 - 2 * o);
     let z = MathUtils.lerp(zClosed, zOpen, e) / ZOOM;
     if (story.flat) {
-      // Video falcon: the whole perched bird fills the height; once its wings
-      // spread (last 20% of the clip) pull back so they fit (phones crop the tips).
-      const spread = MathUtils.smoothstep(o, 0.68, 0.86); // pull back a little before the wings snap open
-      // The falcon (head to talons) is ~4.2 units tall in the frame; the full wingspan ~10 units wide.
-      const zPerched = Math.max(5.2 / 2 / tanV, 3.8 / 2 / tanH);
-      const zSpread = Math.max(zPerched, (portrait ? 10.8 : 11.8) / 2 / tanH);
-      z = MathUtils.lerp(zPerched, zSpread, spread) / ZOOM;
+      if (story.flatHalf > 0) {
+        // Video falcon: one size for the whole perched turn (fits the height), and
+        // just enough pull-back that every angle and the open wings fit the width.
+        const zH = story.flatHeight / (portrait ? 0.62 : 0.89) / 2 / tanV;
+        const zW = (2 * story.flatHalf) / (portrait ? 0.96 : 0.86) / 2 / tanH;
+        z = Math.max(zH, zW) / ZOOM;
+      } else {
+        // no framing data: the whole perched bird fills the height; pull back as the wings spread
+        const spread = MathUtils.smoothstep(o, 0.68, 0.86);
+        const zPerched = Math.max(5.2 / 2 / tanV, 3.8 / 2 / tanH);
+        const zSpread = Math.max(zPerched, (portrait ? 10.8 : 11.8) / 2 / tanH);
+        z = MathUtils.lerp(zPerched, zSpread, spread) / ZOOM;
+      }
     }
 
     // Orbit (beat 4) swings the camera around the eagle on a circle of radius z.
