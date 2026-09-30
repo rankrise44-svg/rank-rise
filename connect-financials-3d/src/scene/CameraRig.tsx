@@ -54,10 +54,12 @@ export function CameraRig() {
 
     // Orbit (beat 4) swings the camera around the eagle on a circle of radius z.
     const k = Math.min(dt * 3, 1);
-    const ox = Math.sin(story.orbit) * z + story.pointerX * 0.35;
-    const oz = Math.cos(story.orbit) * z;
+    // The video falcon is a picture: no orbit or pointer sway, it plays exactly as filmed.
+    const orbit = story.flat ? 0 : story.orbit;
+    const ox = Math.sin(orbit) * z + (story.flat ? 0 : story.pointerX * 0.35);
+    const oz = Math.cos(orbit) * z;
     camera.position.x += (ox - camera.position.x) * k;
-    camera.position.y += (target.y + 0.4 + story.pointerY * 0.2 - camera.position.y) * k;
+    camera.position.y += (target.y + 0.4 + (story.flat ? 0 : story.pointerY * 0.2) - camera.position.y) * k;
     camera.position.z += (oz - camera.position.z) * k;
     // aim higher on the perched bird (its face), lower once the wings are open
     target.y = FOCUS ?? (story.flat ? MathUtils.lerp(-0.5, -0.45, MathUtils.smoothstep(o, 0.68, 0.86)) : MathUtils.lerp(portrait ? 0.15 : 0.3, portrait ? PORTRAIT_Y : -0.25, e));

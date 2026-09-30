@@ -51,13 +51,13 @@ export type Story = typeof story;
 export const BEATS = [
   { id: 'hero', title: 'Closed wings', at: 0 },
   { id: 'opening', title: 'Opening', at: 0.6 },
-  { id: 'wings-open', title: 'Wings fully open', at: 3.0 },
-  { id: 'flight', title: 'Rotation and flight', at: 4.3 },
-  { id: 'transform', title: 'Awakening', at: 6.9 },
+  { id: 'wings-open', title: 'Wings fully open', at: 5.4 },
+  { id: 'flight', title: 'Rotation and flight', at: 6.7 },
+  { id: 'transform', title: 'Awakening', at: 9.3 },
 ] as const;
 
 /** Story track length in viewport heights. */
-export const STORY_LENGTH = 8.8;
+export const STORY_LENGTH = 11.2;
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 

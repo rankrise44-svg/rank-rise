@@ -85,48 +85,50 @@ export function useStoryTimeline(reduced: boolean) {
         .to('[data-hero] h1', { filter: 'blur(16px)', autoAlpha: 0, duration: 0.7 }, 0.05)
         .to('[data-hero-sub]', { autoAlpha: 0, y: -30, duration: 0.35 }, 0)
 
-        // 2 · OPENING — wings open, gold fringes catch the light body → tips, price cards drift in.
+        // 2 · OPENING — the falcon turns a full circle, then spreads its wings. One even,
+        //     linear scrub over five screens, so scroll speed = turn speed (like the video).
         .addLabel('opening', 0.6)
-        .to(story, { open: 1, duration: 2.3, ease: 'power1.inOut' }, 0.5)
-        .to(story, { reveal: 1, duration: 2.1 }, 0.75)
+        .to(story, { open: 1, duration: 5.0 }, 0.4)
+        .to(story, { reveal: 1, duration: 4.6 }, 0.6)
         .fromTo(
           '[data-price-card]',
           { autoAlpha: 0, y: (i, el) => 160 * Number((el as HTMLElement).dataset.depth) + i * 30 },
           { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.14, ease: 'power2.out' },
           0.95,
         )
-        .to('[data-price-card]', { y: (_, el) => -140 * Number((el as HTMLElement).dataset.depth), duration: 1.3 }, 1.75)
-        .to('[data-price-card]', { autoAlpha: 0, duration: 0.35, stagger: 0.05 }, 2.65)
+        .to('[data-price-card]', { y: (_, el) => -140 * Number((el as HTMLElement).dataset.depth), duration: 2.2 }, 1.75)
+        .to('[data-price-card]', { autoAlpha: 0, duration: 0.35, stagger: 0.05 }, 3.6)
 
         // 3 · WINGS FULLY OPEN — the options appear along the wings.
-        .addLabel('wings-open', 3.0)
-        .fromTo('[data-wing-item]', { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.45, stagger: 0.07 }, 2.8)
-        .to('[data-wing-item]', { autoAlpha: 0, y: -12, duration: 0.3, stagger: 0.03 }, 4.05)
+        .addLabel('wings-open', 5.4)
+        .fromTo('[data-wing-item]', { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.45, stagger: 0.07 }, 5.2)
+        .to('[data-wing-item]', { autoAlpha: 0, y: -12, duration: 0.3, stagger: 0.03 }, 6.45)
 
         // 4 · ROTATION / FLIGHT — the eagle banks and turns, the camera orbits,
         //     the backdrop becomes the navy grid and the light on the bird drops.
-        .addLabel('flight', 4.3)
-        .to(story, { spin: TAU, duration: 2.3, ease: 'power1.inOut' }, 4.35)
-        .to(story, { bank: 0.35, duration: 0.6, ease: 'sine.inOut' }, 4.35)
-        .to(story, { bank: -0.3, duration: 1.0, ease: 'sine.inOut' }, 4.95)
-        .to(story, { bank: 0, duration: 0.7, ease: 'sine.inOut' }, 5.95)
-        .to(story, { orbit: 0.55, duration: 1.1, ease: 'sine.inOut' }, 4.35)
-        .to(story, { orbit: 0, duration: 1.1, ease: 'sine.inOut' }, 5.45)
-        .to(story, { grid: 1, glow: 0.75, duration: 0.8 }, 4.35)
-        .to(story, { mix: 0, duration: 1.0 }, 4.6)
-        .fromTo('[data-fly]', { autoAlpha: 1, y: 0 }, { y: (_, el) => ({ far: -200, mid: -260, near: -330 })[(el as HTMLElement).dataset.fly as 'far'] + 'vh', duration: 2.6 }, 4.3)
-        .to('[data-fly]', { autoAlpha: 0, duration: 0.2 }, 6.7)
-        .fromTo('[data-flight-words]', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.2 }, 4.8)
-        .fromTo('[data-fw]', { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.35, stagger: 0.25 }, 4.8)
-        .to('[data-flight-words]', { autoAlpha: 0, y: -30, duration: 0.3 }, 6.3)
+        //     (The video falcon already turned in beat 2: it holds still, no orbit or bank.)
+        .addLabel('flight', 6.7)
+        .to(story, { spin: TAU, duration: 2.3, ease: 'power1.inOut' }, 6.75)
+        .to(story, { bank: 0.35, duration: 0.6, ease: 'sine.inOut' }, 6.75)
+        .to(story, { bank: -0.3, duration: 1.0, ease: 'sine.inOut' }, 7.35)
+        .to(story, { bank: 0, duration: 0.7, ease: 'sine.inOut' }, 8.35)
+        .to(story, { orbit: 0.55, duration: 1.1, ease: 'sine.inOut' }, 6.75)
+        .to(story, { orbit: 0, duration: 1.1, ease: 'sine.inOut' }, 7.85)
+        .to(story, { grid: 1, glow: 0.75, duration: 0.8 }, 6.75)
+        .to(story, { mix: 0, duration: 1.0 }, 7.0)
+        .fromTo('[data-fly]', { autoAlpha: 1, y: 0 }, { y: (_, el) => ({ far: -200, mid: -260, near: -330 })[(el as HTMLElement).dataset.fly as 'far'] + 'vh', duration: 2.6 }, 6.7)
+        .to('[data-fly]', { autoAlpha: 0, duration: 0.2 }, 9.1)
+        .fromTo('[data-flight-words]', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.2 }, 7.2)
+        .fromTo('[data-fw]', { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.35, stagger: 0.25 }, 7.2)
+        .to('[data-flight-words]', { autoAlpha: 0, y: -30, duration: 0.3 }, 8.7)
 
         // 5 · AWAKENING — a warm light sweeps down the falcon; behind it the gold
         //     fringes return and the blue eyes brighten.
-        .addLabel('transform', 6.9)
-        .to(story, { scan: 1, duration: 1.3 }, 6.9)
-        .to(story, { glow: 1, duration: 0.6 }, 6.9)
-        .fromTo('[data-transform-words]', { autoAlpha: 0, x: -30 }, { autoAlpha: 1, x: 0, duration: 0.3 }, 7.0)
-        .to('[data-transform-words]', { autoAlpha: 0, duration: 0.3 }, 8.3);
+        .addLabel('transform', 9.3)
+        .to(story, { scan: 1, duration: 1.3 }, 9.3)
+        .to(story, { glow: 1, duration: 0.6 }, 9.3)
+        .fromTo('[data-transform-words]', { autoAlpha: 0, x: -30 }, { autoAlpha: 1, x: 0, duration: 0.3 }, 9.4)
+        .to('[data-transform-words]', { autoAlpha: 0, duration: 0.3 }, 10.7);
       tl.to({}, { duration: Math.max(0, STORY_LENGTH - tl.duration()) });
 
       // ───────────────────────── Beats 6–12: one scrubbed timeline per section

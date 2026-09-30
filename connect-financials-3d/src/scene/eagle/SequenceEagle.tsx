@@ -37,7 +37,7 @@ function frameUrl(pattern: string, i: number, pad: number) {
 export const SEQUENCE_HEIGHT = 5.8;
 
 const DECODE_CACHE = 12;
-const GPU_POOL = 4;
+const GPU_POOL = 6;
 
 const vertex = /* glsl */ `
   uniform sampler2D uDA;
@@ -195,6 +195,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
         .then(async (b) => {
           if (cancelled) return;
           blobs.current[i] = b;
+          if (manifest.opaque) return; // no relief, so no small copies to make
           small.current[i] = await createImageBitmap(b, { imageOrientation: 'flipY', premultiplyAlpha: 'none', resizeWidth: 320, resizeHeight: 180, resizeQuality: 'medium' });
         })
         .catch(() => {})
@@ -219,8 +220,11 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
 
   useFrame((state, dt) => {
     // Relief turns a little with the pointer: parallax shows the body's volume.
-    mesh.rotation.y += (story.pointerX * 0.22 - mesh.rotation.y) * 0.06;
-    mesh.rotation.x += (-story.pointerY * 0.1 - mesh.rotation.x) * 0.06;
+    // Opaque video frames have no relief: they stay flat and still, exactly as filmed.
+    if (!manifest.opaque) {
+      mesh.rotation.y += (story.pointerX * 0.22 - mesh.rotation.y) * 0.06;
+      mesh.rotation.x += (-story.pointerY * 0.1 - mesh.rotation.x) * 0.06;
+    }
     const t = state.clock.elapsedTime;
     const L = mat.uniforms.uLight.value as number[];
     L[0] += (0.6 + story.pointerX * 0.6 + Math.sin(t * 0.4) * 0.15 - L[0]) * 0.05;
@@ -232,7 +236,8 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
     const target = MathUtils.clamp(view().open, 0, 1) * (n - 1);
     const dir = Math.sign(target - lastTarget.current) || 1;
     lastTarget.current = target;
-    pos.current += (target - pos.current) * (1 - Math.exp(-dt * 14));
+    pos.current += (target - pos.current) * (1 - Math.exp(-dt * 12));
+    if (Math.abs(target - pos.current) < 0.002) pos.current = target;
     const p = pos.current;
     const hw = manifest.halfWidth;
     if (hw?.length === n && manifest.box) {
@@ -250,7 +255,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
       if (i >= 0 && i < n && Math.abs(s) <= (Math.sign(s) === dir ? 7 : 3)) want.push(i);
     }
     for (const i of want) {
-      if (decoding.current.size >= 3) break;
+      if (decoding.current.size >= 4) break;
       if (decoded.current.has(i) || decoding.current.has(i) || !blobs.current[i]) continue;
       decoding.current.add(i);
       createImageBitmap(blobs.current[i]!, { imageOrientation: 'flipY', premultiplyAlpha: 'none' })
@@ -275,7 +280,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
     const ready = (i: number) => {
       if (gpu.current.has(i)) return true;
       const bmp = decoded.current.get(i);
-      if (!bmp || uploads >= 1) return false;
+      if (!bmp || uploads >= 2) return false;
       uploads++;
       gpu.current.set(i, makeTexture(bmp, false));
       if (gpu.current.size > GPU_POOL) {

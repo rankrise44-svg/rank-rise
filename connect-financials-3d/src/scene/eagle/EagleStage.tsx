@@ -59,7 +59,7 @@ export function EagleStage({ children, shadows }: { children: ReactNode; shadows
 
     group.position.copy(target.pos);
     group.scale.setScalar(Math.max(scale, 0.001));
-    group.rotation.set(0, story.flat ? 0 : v.spin, story.flat ? story.bank * 0.3 : story.bank);
+    group.rotation.set(0, story.flat ? 0 : v.spin, story.flat ? 0 : story.bank);
     group.visible = hide < 0.98;
   });
 
