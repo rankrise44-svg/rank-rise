@@ -55,6 +55,7 @@ export function useStoryTimeline(reduced: boolean) {
       // Static: wings open, gold fringes lit, eyes bright, menu visible, normal scrolling.
       Object.assign(story, { open: 1, reveal: 1, scan: 1, mix: 1 });
       gsap.set('[data-wing-item]', { autoAlpha: 1 });
+      gsap.set('[data-wing-line]', { strokeDashoffset: 0 });
       return;
     }
 
@@ -101,8 +102,23 @@ export function useStoryTimeline(reduced: boolean) {
 
         // 3 · WINGS FULLY OPEN — the options appear along the wings.
         .addLabel('wings-open', 5.4)
-        .fromTo('[data-wing-item]', { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.45, stagger: 0.07 }, 5.2)
-        .to('[data-wing-item]', { autoAlpha: 0, y: -12, duration: 0.3, stagger: 0.03 }, 6.45)
+        //   Light traces from the chest out along each wing (centre links first),
+        //   a spark runs ahead, and each link blooms where the line lands.
+        .fromTo('[data-wing-line]', { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.4, stagger: { each: 0.1, from: 'center' }, ease: 'power2.out' }, 5.05)
+        .fromTo('[data-wing-spark]', { strokeDashoffset: 0.04, autoAlpha: 1 }, { strokeDashoffset: -1, duration: 0.4, stagger: { each: 0.1, from: 'center' }, ease: 'power2.out' }, 5.05)
+        .set('[data-wing-spark]', { autoAlpha: 0 }, 5.75)
+        .fromTo(
+          '[data-wing-item]',
+          { autoAlpha: 0, scale: 0.55 },
+          { autoAlpha: 1, scale: 1, duration: 0.3, stagger: { each: 0.1, from: 'center' }, ease: 'back.out(1.8)' },
+          5.33,
+        )
+        // (blur on its own ease: an overshooting ease would push it below zero)
+        .fromTo('[data-wing-item]', { filter: 'blur(8px)' }, { filter: 'blur(0px)', duration: 0.25, stagger: { each: 0.1, from: 'center' }, ease: 'power2.out' }, 5.33)
+        .fromTo('[data-wing-item]', { '--sheen': '-120%' }, { '--sheen': '120%', duration: 0.45, stagger: { each: 0.1, from: 'center' } }, 5.45)
+        //   Leaving: links fold back and the light withdraws into the body.
+        .to('[data-wing-item]', { autoAlpha: 0, scale: 0.7, filter: 'blur(6px)', duration: 0.3, stagger: { each: 0.05, from: 'edges' } }, 6.45)
+        .to('[data-wing-line]', { strokeDashoffset: 1, duration: 0.35, stagger: { each: 0.05, from: 'edges' }, ease: 'power2.in' }, 6.5)
 
         // 4 · ROTATION / FLIGHT — the eagle banks and turns, the camera orbits,
         //     the backdrop becomes the navy grid and the light on the bird drops.

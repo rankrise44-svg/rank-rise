@@ -20,6 +20,10 @@ export type MenuId = (typeof MENU)[number]['id'];
 
 export const anchorObjects: Partial<Record<MenuId, Object3D>> = {};
 export const menuElements: Partial<Record<MenuId, HTMLElement>> = {};
+/** Gold light lines (and their sparks) drawn from the falcon's chest to each link */
+export const menuLines: Partial<Record<MenuId, SVGPathElement[]>> = {};
+/** Where the light lines start: the falcon's chest, in eagle space */
+export const MENU_ORIGIN: [number, number, number] = [0, 0.95, 0];
 
 export function clearAnchors() {
   for (const k of Object.keys(anchorObjects)) delete anchorObjects[k as MenuId];
