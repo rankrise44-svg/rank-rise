@@ -602,29 +602,13 @@ svg[aria-label^="Viewer retention"] circle{filter:drop-shadow(0 0 4px var(--acce
 .onbside{background:color-mix(in srgb,var(--surface) 85%,transparent);border-left-color:var(--glass-border);
   backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur))}
 
-/* ---------- Website view ---------- */
-.hero h1 em{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:drop-shadow(0 0 22px color-mix(in srgb,var(--accent) 45%,transparent))}
-.flownode,.answer,.layer,.agent,.tier{border-color:var(--glass-border);background:var(--surface);box-shadow:var(--shadow);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.flownode h4,.answer h4,.layer h3,.tier h4,.agent h4{font-family:var(--head);font-weight:600}
-.flownode.brainnode,.answer.bios,.tier.feat{border-color:transparent;border:1px solid transparent;
-  background:linear-gradient(color-mix(in srgb,var(--accent) 12%,var(--solid)),var(--solid)) padding-box,var(--grad-brand) border-box;
-  box-shadow:var(--glow-brand),var(--shadow-lift)}
-.flownode.brainnode{animation:gate-breathe-brand 3.6s ease-in-out infinite}
-@keyframes gate-breathe-brand{50%{box-shadow:0 0 0 1px rgba(139,108,255,.2),0 6px 20px -8px rgba(123,92,255,.35)}}
-.flownode.brainnode.m-hot{animation:none}
-.flownode.brainnode h4{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
-.answer.generic{background:color-mix(in srgb,var(--sunken) 70%,transparent)}
-.layer::before{background:var(--grad-brand);color:#fff;border-color:transparent;font-family:var(--sans);font-weight:700;box-shadow:0 0 14px -2px #7B5CFF}
-.agent .role{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:600}
-.tier li::before{color:var(--accent)}
+/* ---------- Website view: styled in site.css (all .site / w- scoped) ---------- */
 /* sections below the fold rise in as they scroll into view (motion.js adds/removes these classes) */
 .m-reveal{opacity:0;transform:translateY(22px)}
 .m-reveal.m-in{opacity:1;transform:none;transition:opacity .7s var(--ease-out),transform .8s var(--ease-spring);transition-delay:calc(var(--ri,0) * 70ms)}
 
 @media (prefers-reduced-motion:reduce){
-  .phase.on i,.flownode.brainnode{animation:none}
+  .phase.on i{animation:none}
   .drawer.on .body > *{animation:none}
   .m-reveal{opacity:1;transform:none}
 }

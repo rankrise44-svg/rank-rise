@@ -82,3 +82,26 @@ pages in turn, so all 81 pages are visited; then a look at the website, and
 back to the Overview. About two minutes; any new question stops the tour.
 On the Website page the same question gives a website-only A-to-Z. Change:
 `js/hermus.js` only.
+
+### Website view rebuilt (version 8)
+
+The Website view (Product | Website switch) was rebuilt from scratch as the
+BIOS marketing site: sticky nav (Agents, What we offer, How it works, Sign
+up), hero "Your entire marketing team. One intelligence system." with an
+animated data → brain → agents visual, stats strip, six offers, the 19
+agents in five filterable groups, four-step how it works, Why BIOS with the
+general-AI-vs-BIOS comparison, final CTA, footer, and a glass sign-up modal
+(validated front-end demo: nothing is sent or stored). Pricing tiers,
+credits note and the old "six core roles" copy were removed.
+
+- `js/screens/site.js`: rewritten; all markup, content and website-only behaviour.
+- `css/site.css`: rewritten; every rule scoped to `.site` or `w-` classes.
+- `js/hermus.js`: website walkthroughs re-pointed at the new sections;
+  pricing questions now answer "no pricing yet, early access".
+- `js/motion.js`, `css/command.css`: removed the step-7 styles for the old
+  website cards. **Bug fix:** those rules used the bare `.agent` class, which
+  also matched the Workforce radial nodes in the product, so hovering an
+  agent node there made it jump; it now stays in place.
+
+Product view: navigation, sidebar and all 79 pages checked unchanged
+against the archive.

@@ -48,6 +48,14 @@ no AI model, no real microphone, nothing recorded.
   (website) with `match`, `q` and `steps` (`say`, `go`, `spot`, `click`,
   `type`, `site`, `wait`, `flip`), and its id to `CHIPS` / `SITE_CHIPS`.
 
+## Website view
+
+`redesign/js/screens/site.js` + `redesign/css/site.css` (all `.site` / `w-`
+scoped). Sections: `.w-nav`, `.w-hero`, `.w-stats`, `#w-offer`, `#w-agents`
+(19 agents, 5 groups), `#w-how`, `#w-why`, `.w-final`, `.w-foot`, sign-up
+modal `.w-modal-wrap` (demo only, nothing sent). No pricing yet. If you
+rename a section, update Hermus's `SITE_SCRIPTS` selectors.
+
 ## How the owner likes to work
 
 - Talk in plain English. Show screenshots before/after changes.

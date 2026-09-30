@@ -16,7 +16,7 @@ const reduced = () => { try{ return matchMedia('(prefers-reduced-motion: reduce)
 M.countSel = ['.brainmeter .num', '.tile .v', '.ringstat .v', '.cibrainstats .n'];
 M.fillSel  = ['.brainmeter .meter i', '.meter i', '.stackbar i'];
 /* Cards that tilt toward the cursor, with their maximum angle in degrees. */
-M.tilt = [['.cichoose button',4],['.flownode',6],['.layer',4],['.agent',4],['.tier',4],['.answer',2],['.tile',6],['.card',5],['.decision',2.5],['.insight',2.5],['.alert',2],['.well',3],['.panel',1.4]];
+M.tilt = [['.cichoose button',4],['.tile',6],['.card',5],['.decision',2.5],['.insight',2.5],['.alert',2],['.well',3],['.panel',1.4]];
 M.enterSel = ['#content', '.site', '.onbmain'];
 
 const prevNum = new Map(), prevFill = new Map();
@@ -71,7 +71,7 @@ M.after = (root, nav) => {
   if(!nav || still) return;
   /* Website view: sections and cards below the fold rise in as they scroll into view */
   if(window.IntersectionObserver) root.querySelectorAll('.site section:not(.hero)').forEach(sec => {
-    const items = [sec].concat([...sec.querySelectorAll('.answer,.layer,.agent,.tier')]);
+    const items = [sec];  /* the website's own CSS staggers the cards inside */
     if(sec.getBoundingClientRect().top < innerHeight) return;
     items.forEach((el, i) => { el.classList.add('m-reveal'); if(i) el.style.setProperty('--ri', Math.min(i, 8)); });
     const io = new IntersectionObserver(ents => ents.forEach(en => { if(en.isIntersecting){ items.forEach(el => el.classList.add('m-in')); io.disconnect(); setTimeout(() => items.forEach(el => el.classList.remove('m-reveal','m-in')), 1700); } }), {rootMargin:'0px 0px -10% 0px'});

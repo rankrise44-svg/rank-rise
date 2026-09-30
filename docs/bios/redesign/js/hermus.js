@@ -49,7 +49,7 @@ const TOUR_TEXT = [
 ];
 const tourSteps = () => [{say:'With pleasure, {sir}. I will take you through BIOS from A to Z: fourteen stops, and I will open every page as we go. Ask me anything at any time to stop the tour.'}]
   .concat(TOUR_TEXT.map((t, i) => ({tour:i+1, of:TOUR_TEXT.length, flip: t.routes || routesOf(t.sec), spot:t.spot, say:t.say})))
-  .concat([{say:'There is also the public website, {sir}.', site:true}, {spot:'.site .hero', say:'This is what visitors see first.'},
+  .concat([{say:'There is also the public website, {sir}.', site:true}, {spot:'.site .w-hero', say:'This is what visitors see first.'},
     {say:'That is BIOS from A to Z, {sir}. Where would you like to go deeper?', go:'overview'}]);
 
 const SCRIPTS = [
@@ -87,9 +87,9 @@ const SCRIPTS = [
   ]},
   {id:'site', match:/website|site|landing|public/i, q:'Show me the website.', steps:[
     {say:'Switching to the public website, {sir}.', site:true},
-    {spot:'.site .hero', say:'This is what visitors see first.'},
-    {spot:'.site .split', say:'And here is the difference: a general assistant guesses, BIOS answers from your own data with every number sourced.'},
-    {spot:'.site .layers', say:'Four layers, one loop: understand, plan, execute, learn. Say the word and I will take you back to the product.'}
+    {spot:'.site .w-hero', say:'This is what visitors see first.'},
+    {spot:'.site #w-agents', say:'Here are the nineteen agents, grouped by what they do.'},
+    {spot:'.site #w-why', say:'And here is the difference: a general assistant guesses, BIOS answers from your own data with every number sourced. Say the word and I will take you back to the product.'}
   ]},
   {id:'back', match:/back|product|app|dashboard|home/i, q:'Take me back to the product.', steps:[
     {say:'Back to the product, {sir}.', go:'overview'}
@@ -102,33 +102,33 @@ const CHIPS = ['tour','health','leads','tasks','brain','eval','site'];
    workspace pages, type, click, switch views or leave BIOS. */
 const SITE_SCRIPTS = [
   {id:'w-tour', match:/describe|platform|a ?to ?z|a-z|tour|everything|all (the )?options|show me around/i, q:'Describe BIOS from A to Z.', steps:[
-    {spot:'.site .hero', say:'Gladly, {sir}. BIOS is an AI business intelligence operating system. It learns what your company actually is, finds what matters, plans what is next and remembers what happened.'},
-    {spot:'.site #difference', say:'Ask a general assistant a business question and it guesses. BIOS answers from your own data, with every number sourced and dated.'},
-    {spot:'.site .layers', say:'It works in four layers, one loop: understand, plan, execute and learn, and the results flow back into the Company Brain.'},
-    {spot:'.site .agents', say:'Nineteen specialist agents do the work under one Orchestrator, and a critic checks every answer before you see it.'},
-    {spot:'.site .tierlist', say:'Every client workspace is sealed from every other, and there are four plans from Starter to Enterprise.'},
-    {spot:'.site .hero-cta', say:'Inside the product there is much more: the brain, maps, company information, planning, execution, experiments and evaluation. Press Open the product and call me there, and I will show you all of it.'}
+    {spot:'.site .w-hero', say:'Gladly, {sir}. BIOS is a complete AI marketing tool. It learns your company from its website, documents, ad accounts and CRM, and a team of AI agents works on it with you.'},
+    {spot:'.site #w-offer', say:'It covers all of marketing: create, guide, consult, manage, research, and learn from the results.'},
+    {spot:'.site #w-agents', say:'The team is nineteen agents in five groups: research, understand, grow, think and plan, and trust. Two of them exist only to check the others.'},
+    {spot:'.site #w-how', say:'It works in four steps: connect your data, the agents research and analyse, you get strategy and a plan, and the results feed back into the brain.'},
+    {spot:'.site #w-why', say:'And every answer can be checked: each claim carries its source and date, and gaps are stated instead of hidden.'},
+    {spot:'.site .w-final', say:'BIOS is a prototype in early access. Press Sign up to join, or open the product and call me there, and I will show you all of it.'}
   ]},
   {id:'w-what', match:/what is|what's|about|bios|explain|intro/i, q:'What is BIOS?', steps:[
-    {spot:'.site .hero', say:'BIOS is an AI business intelligence operating system, {sir}. It learns what your company actually is from your website, documents, ad accounts and CRM, then finds what matters, plans what is next and remembers what happened.'}
+    {spot:'.site .w-hero', say:'BIOS is a complete AI marketing tool, {sir}. It learns your company from its website, documents, ad accounts and CRM. Then nineteen AI agents find problems, recommend strategy and track the results, and every answer shows where it came from.'}
   ]},
-  {id:'w-diff', match:/differ|chatgpt|assistant|compare|why bios|better/i, q:'How is it different from a general AI assistant?', steps:[
-    {spot:'.site #difference', say:'Here is the difference. Ask a general assistant why leads dropped and it guesses. BIOS answers from your own data, and every number carries its source and date.'}
+  {id:'w-offer', match:/offer|feature|service|what (can|does) (it|bios) do|price|pricing|cost|plan|tier|pay/i, q:'What does BIOS offer?', steps:[
+    {spot:'.site #w-offer', say:'Six things, {sir}: it creates content and campaigns, guides you step by step, consults on strategy, manages plans and reports, researches markets and competitors, and learns from every result. There is no pricing yet: BIOS is a prototype in early access.'}
   ]},
-  {id:'w-how', match:/how.*work|layer|loop|process|step/i, q:'How does it work?', steps:[
-    {spot:'.site .layers', say:'Four layers, one loop: understand the business, plan with evidence, execute with approval gates, and learn from what happened. The results go back into the brain.'}
+  {id:'w-team', match:/agent|team|specialist|who does|workforce/i, q:'Who are the 19 agents?', steps:[
+    {spot:'.site #w-agents', say:'Nineteen agents in five groups: one for research; four that understand your customers, market, competitors and brand; seven that grow the business; five that think and plan; and two that check every answer before you see it.'}
   ]},
-  {id:'w-team', match:/agent|team|specialist|who does|workforce/i, q:'Who does the work?', steps:[
-    {spot:'.site .agents', say:'Nineteen AI specialists do the work, each with its own data scope and tools, and one Orchestrator manages them. A critic checks every answer before you see it.'}
+  {id:'w-how', match:/how.*work|step|process|loop/i, q:'How does it work?', steps:[
+    {spot:'.site #w-how', say:'Four steps, {sir}: connect your data, the agents research and analyse, you get strategy and a plan, and the results feed back so the next plan starts smarter.'}
   ]},
-  {id:'w-plans', match:/price|pricing|plan|cost|tier|pay|agenc/i, q:'What are the plans?', steps:[
-    {spot:'.site .tierlist', say:'There are four plans: Starter, Growth, Agency and Enterprise. Usage is metered in credits, and refusals and failed runs are never charged.'}
+  {id:'w-diff', match:/differ|chatgpt|assistant|compare|why bios|better|trust|check/i, q:'How is it different from a general AI assistant?', steps:[
+    {spot:'.site #w-why', say:'Ask a general assistant why leads dropped and it guesses. BIOS answers from your own data, every number carries its source and date, and when something is unknown it says so.'}
   ]},
-  {id:'w-try', match:/try|start|sign|demo|product|open|use it/i, q:'How do I try it?', steps:[
-    {spot:'.site .hero-cta', say:'Press Open the product, or Product at the top of the page, {sir}. Call me again inside and I can walk you through your workspace.'}
+  {id:'w-try', match:/try|start|sign|join|demo|product|open|use it|access/i, q:'How do I get started?', steps:[
+    {spot:'.site .w-final', say:'Press Sign up to join early access, {sir}. Or press Product at the top to open the prototype, and call me again inside.'}
   ]}
 ];
-const SITE_CHIPS = ['w-tour','w-what','w-diff','w-how','w-team','w-plans','w-try'];
+const SITE_CHIPS = ['w-tour','w-what','w-offer','w-team','w-how','w-diff','w-try'];
 const PRODUCT_WORDS = /revenue|lead|task|approv|brain|campaign|insight|evidence|evaluat|customer|sales|budget|finance|data|kpi|number|report|workspace|dashboard|overview/i;
 H.mode = 'app';
 const chipsHTML = () => (H.mode==='site' ? SITE_CHIPS.map(id=>SITE_SCRIPTS.find(x=>x.id===id)) : CHIPS.map(id=>SCRIPTS.find(x=>x.id===id)))
