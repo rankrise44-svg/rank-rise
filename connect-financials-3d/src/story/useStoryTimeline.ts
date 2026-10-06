@@ -75,7 +75,8 @@ export function useStoryTimeline(reduced: boolean) {
           trigger: '#story',
           start: 'top top',
           end: 'bottom bottom',
-          scrub: 1,
+          // Lenis already smooths the wheel; a short scrub keeps the falcon on the scroll, not behind it
+          scrub: 0.3,
           onToggle: (self) => gsap.to('[data-story-layer]', { autoAlpha: self.isActive ? 1 : 0, duration: 0.3 }),
         },
       });
@@ -152,7 +153,7 @@ export function useStoryTimeline(reduced: boolean) {
       // A section that lives on another page gets a detached (inert) timeline.
       const beat = (trigger: string, start: string, end: string) =>
         document.querySelector(trigger)
-          ? gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger, start, end, scrub: 1 } })
+          ? gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger, start, end, scrub: 0.4 } })
           : gsap.timeline({ paused: true });
 
       // 7 · 3D TO CARD — the eagle folds into the portrait frame; About types in.

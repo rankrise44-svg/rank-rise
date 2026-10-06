@@ -68,23 +68,24 @@ class Fallback extends Component<{ children: ReactNode }, { failed: boolean }> {
   }
 }
 
-export function EagleRoot({ quality, shadows }: { quality: Quality; shadows: boolean }) {
+export function EagleRoot({ quality, shadows, onKind }: { quality: Quality; shadows: boolean; onKind?: (kind: EagleSourceKind) => void }) {
   useStudioEnvironment();
   return (
     <EagleStage shadows={shadows}>
-      <EagleSource quality={quality} />
+      <EagleSource quality={quality} onKind={onKind} />
     </EagleStage>
   );
 }
 
-function EagleSource({ quality }: { quality: Quality }) {
+function EagleSource({ quality, onKind }: { quality: Quality; onKind?: (kind: EagleSourceKind) => void }) {
   const [src, setSrc] = useState<Resolved | null>(null);
   useEffect(() => {
     resolveSource(quality).then((r) => {
       setSrc(r);
+      onKind?.(r.kind);
       document.documentElement.dataset.eagle = r.kind;
     });
-  }, [quality]);
+  }, [quality, onKind]);
 
   if (!src) return null;
   if (src.kind === 'sequence' && src.manifest) return <SequenceEagle manifest={src.manifest} />;

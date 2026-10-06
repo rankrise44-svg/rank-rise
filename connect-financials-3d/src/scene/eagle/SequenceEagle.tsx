@@ -36,8 +36,19 @@ function frameUrl(pattern: string, i: number, pad: number) {
 /** World height of the frame; the falcon fills most of it. */
 export const SEQUENCE_HEIGHT = 5.8;
 
-const DECODE_CACHE = 12;
-const GPU_POOL = 6;
+const DECODE_CACHE = 16;
+const GPU_POOL = 10;
+
+/**
+ * Decode frames at the size they are actually shown (the plane is ~1.06 screen
+ * heights tall), never above 1920 px wide: a 2560 px frame is 3.7 MP to upload,
+ * 1920 px is 2.1 MP, and on screen they look the same.
+ */
+function decodeWidth(full: number) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  const shown = window.innerHeight * dpr * 1.06 * (16 / 9);
+  return Math.round(Math.min(full, 1920, Math.max(1280, shown)));
+}
 
 const vertex = /* glsl */ `
   uniform sampler2D uDA;
@@ -130,7 +141,8 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
       fragmentShader: fragment,
       transparent: true,
     });
-    const segs = isNarrow() ? [128, 72] : [224, 126];
+    // Opaque video frames have no relief, so a flat quad is enough (no per-vertex texture reads).
+    const segs = manifest.opaque ? [1, 1] : isNarrow() ? [128, 72] : [224, 126];
     const mesh = new Mesh(new PlaneGeometry(h * aspect, h, segs[0], segs[1]), mat);
     // soft blue light pooled under the talons, so the bird stands in the scene
     const glowMat = new ShaderMaterial({
@@ -236,7 +248,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
     const target = MathUtils.clamp(view().open, 0, 1) * (n - 1);
     const dir = Math.sign(target - lastTarget.current) || 1;
     lastTarget.current = target;
-    pos.current += (target - pos.current) * (1 - Math.exp(-dt * 12));
+    pos.current += (target - pos.current) * (1 - Math.exp(-dt * 16));
     if (Math.abs(target - pos.current) < 0.002) pos.current = target;
     const p = pos.current;
     const hw = manifest.halfWidth;
@@ -258,7 +270,9 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
       if (decoding.current.size >= 4) break;
       if (decoded.current.has(i) || decoding.current.has(i) || !blobs.current[i]) continue;
       decoding.current.add(i);
-      createImageBitmap(blobs.current[i]!, { imageOrientation: 'flipY', premultiplyAlpha: 'none' })
+      const w = decodeWidth(manifest.width);
+      const resize = !isNarrow() && w < manifest.width ? { resizeWidth: w, resizeHeight: Math.round((w * manifest.height) / manifest.width), resizeQuality: 'high' as const } : {};
+      createImageBitmap(blobs.current[i]!, { imageOrientation: 'flipY', premultiplyAlpha: 'none', ...resize })
         .then((bmp) => {
           decoded.current.set(i, bmp);
           // keep only the frames nearest the current position
@@ -280,7 +294,7 @@ export function SequenceEagle({ manifest }: { manifest: FramesManifest }) {
     const ready = (i: number) => {
       if (gpu.current.has(i)) return true;
       const bmp = decoded.current.get(i);
-      if (!bmp || uploads >= 2) return false;
+      if (!bmp || uploads >= 1) return false;
       uploads++;
       gpu.current.set(i, makeTexture(bmp, false));
       if (gpu.current.size > GPU_POOL) {
