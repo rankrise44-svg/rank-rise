@@ -45,8 +45,57 @@ export const canSpeak = () => !!synth && valgon.get().voiceReady && !valgon.get(
 let speaking = false;
 let wordTimer: ReturnType<typeof setInterval> | null = null;
 
+/* ── natural voice from the site server (ElevenLabs), when it is running ── */
+let audioCtx: AudioContext | null = null;
+let current: AudioBufferSourceNode | null = null;
+let serverVoiceDown = false;
+
+async function speakFromServer(text: string): Promise<boolean> {
+  if (!VALGON.ttsEndpoint || serverVoiceDown || !canSpeak()) return false;
+  try {
+    const r = await fetch(VALGON.ttsEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
+    if (!r.ok) throw new Error(String(r.status));
+    audioCtx = audioCtx ?? new AudioContext();
+    await audioCtx.resume();
+    const buf = await audioCtx.decodeAudioData(await r.arrayBuffer());
+    const analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.connect(audioCtx.destination);
+    const bins = new Uint8Array(analyser.frequencyBinCount);
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    src.connect(analyser);
+    current = src;
+    signal.mode = 'speak';
+    speaking = true;
+    // the eye follows the real loudness of his voice
+    const meter = setInterval(() => {
+      analyser.getByteFrequencyData(bins);
+      let sum = 0;
+      for (let i = 2; i < 60; i++) sum += bins[i];
+      signal.pulse = Math.max(signal.pulse, Math.min(1, sum / (58 * 150)));
+    }, 60);
+    await new Promise<void>((resolve) => {
+      src.onended = () => resolve();
+      src.start();
+    });
+    clearInterval(meter);
+    speaking = false;
+    current = null;
+    return true;
+  } catch {
+    serverVoiceDown = true; // use the browser voice from now on
+    return false;
+  }
+}
+
 /** Speak (or, when speech isn't available, wait about as long as speaking would take). */
-export function speak(text: string): Promise<void> {
+export async function speak(text: string): Promise<void> {
+  if (await speakFromServer(text)) return;
+  return speakWithBrowser(text);
+}
+
+function speakWithBrowser(text: string): Promise<void> {
   const estimate = Math.max(1300, text.length * 58);
   signal.mode = 'speak';
   // Words drive the orb: real word boundaries where the browser reports them, a steady beat otherwise.
@@ -105,6 +154,12 @@ function stopBeat() {
 
 export function hush() {
   stopBeat();
+  try {
+    current?.stop();
+  } catch {
+    /* already stopped */
+  }
+  current = null;
   if (speaking || synth?.speaking) synth?.cancel();
   speaking = false;
 }

@@ -39,22 +39,29 @@ Steps he can take: `{ go: page, section? }`, `{ spot: cssSelector }`, `{ say }`,
 `{ openAccount: true, tier? }`, `{ instrument: 'XAUUSD' }`, `{ wait: ms }`.
 A new page goes in `src/config/pages.ts`; he can go there at once.
 
-## Connect a database or AI service
+## His brain and voice (the site server)
 
-Set `VITE_VALGON_ENDPOINT` in a `.env` file. Valgon will `POST`
+`server/index.js` runs the website with Valgon's AI:
 
-```json
-{ "message": "what is the raw account?", "page": "home", "history": [{ "who": "me", "text": "…" }] }
+- **Brain:** Groq (`openai/gpt-oss-20b`). A general assistant specialised in trading,
+  finance and markets, English only, using `server/knowledge.js` for every
+  Connect Financials fact. His only actions are on this website; he cannot reach
+  the internet or any other system, and he gives no buy or sell advice.
+- **Voice:** ElevenLabs (`eleven_multilingual_v2`, voice "Brian"); the browser voice if it fails.
+
+```bash
+# .env (never commit it)
+GROQ_API_KEY=gsk_...
+ELEVENLABS_API_KEY=sk_...
+PORT=8787
+
+npm start        # builds the site and serves it at http://localhost:8787
 ```
 
-and expects a `ValgonReply` back:
-
-```json
-{ "say": "…", "steps": [{ "go": "home", "section": "accounts" }], "suggestions": ["…"], "links": [{ "label": "…", "href": "…" }] }
-```
-
-If the service is slow (over 6 s), fails, or returns nothing, he answers from
-`knowledge.ts`, so the site never goes quiet. Steps that name unknown pages are dropped.
+`POST /api/valgon { message, page, history }` returns a `ValgonReply`
+(`say`, `steps`, `suggestions`). Without the server (for example the claude.ai
+preview) he answers from `knowledge.ts`, and he does the same if Groq fails.
+To use another service instead, point `VITE_VALGON_ENDPOINT` at it.
 
 ## Voice
 

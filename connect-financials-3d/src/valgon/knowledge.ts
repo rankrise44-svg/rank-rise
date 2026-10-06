@@ -22,13 +22,13 @@ const leverageWords = (l: string) => l.replace(/1:(\d+)/, '1 to $1');
 
 /* ── instruments people ask about by name ── */
 const INSTRUMENT_NAMES: [RegExp, string][] = [
-  [/\b(gold|xau)\b|ذهب/i, 'XAUUSD'],
-  [/\b(silver|xag)\b|فضة/i, 'XAGUSD'],
+  [/\b(gold|xau)\b/i, 'XAUUSD'],
+  [/\b(silver|xag)\b/i, 'XAGUSD'],
   [/\b(platinum|xpt)\b/i, 'XPTUSD'],
-  [/\b(bitcoin|btc)\b|بيتكوين/i, 'BTCUSD'],
+  [/\b(bitcoin|btc)\b/i, 'BTCUSD'],
   [/\b(ethereum|eth|ether)\b/i, 'ETHUSD'],
   [/\b(brent)\b/i, 'BRENT'],
-  [/\b(wti|crude|oil)\b|نفط/i, 'WTI'],
+  [/\b(wti|crude|oil)\b/i, 'WTI'],
   [/\b(nasdaq|nas100|us tech)\b/i, 'NAS100'],
   [/\b(dow|us30|wall st(reet)?)\b/i, 'US30'],
   [/\b(s ?& ?p|spx|sp500|us ?500)\b/i, 'SPX500'],
@@ -48,8 +48,8 @@ export function findInstrument(message: string): string | null {
 
 function tierFrom(message: string) {
   const m = message.toLowerCase();
-  if (/islam|sharia|swap[- ]?free|halal|إسلامي|اسلامي/.test(m)) return tiers.find((t) => t.id === 'islamic');
-  if (/\bdemo\b|practi[cs]e|paper|تجريبي/.test(m)) return tiers.find((t) => t.id === 'demo');
+  if (/islam|sharia|swap[- ]?free|halal/.test(m)) return tiers.find((t) => t.id === 'islamic');
+  if (/\bdemo\b|practi[cs]e|paper/.test(m)) return tiers.find((t) => t.id === 'demo');
   if (/\bvip\b|institution|fix api|fund/.test(m)) return tiers.find((t) => t.id === 'vip');
   if (/\braw\b|ecn|scalp|algo/.test(m)) return tiers.find((t) => t.id === 'raw');
   if (/\bplus\b|popular/.test(m)) return tiers.find((t) => t.id === 'plus');
@@ -79,7 +79,7 @@ export const INTENTS: Intent[] = [
   {
     id: 'hello',
     priority: -1,
-    patterns: [/^(hi|hello|hey|yo|good (morning|afternoon|evening)|salam|marhaba|مرحبا|السلام)\b/i],
+    patterns: [/^(hi|hello|hey|yo|good (morning|afternoon|evening)|salam|marhaba)\b/i],
     respond: () => ({
       say: `Hello. I am Valgon, your guide to ${COMPANY.brand}. Tell me where you want to go, or ask me about the accounts, the markets or the tools.`,
       suggestions: PAGES.valgon.suggestions,
@@ -122,18 +122,18 @@ export const INTENTS: Intent[] = [
   },
 
   /* ── places ── */
-  pageIntent('home', 'home', [/falcon|eagle|home ?page|\bhome\b|main page|the website|enter|start|landing|الصقر|الرئيسية/i], ['site', 'website'], 'Taking you to the falcon.'),
-  pageIntent('about', 'home', [/about (you|connect|the company|us)|who is connect|company|من نحن/i], ['history', 'story'], `Here is ${COMPANY.brand}: ${COMPANY.description}`, 'about', '#about'),
-  pageIntent('markets', 'markets', [/connect ?view|chart|market watch|order book|depth|terminal|live (prices|markets)|markets?|الشارت|الأسواق/i], ['trade', 'trading', 'candles', 'quotes'], 'Opening Connect View: live market watch, charts and the order book.', 'terminal', '#terminal'),
+  pageIntent('home', 'home', [/falcon|eagle|home ?page|\bhome\b|main page|the website|enter|start|landing/i], ['site', 'website'], 'Taking you to the falcon.'),
+  pageIntent('about', 'home', [/about (you|connect|the company|us)|who is connect|company/i], ['history', 'story'], `Here is ${COMPANY.brand}: ${COMPANY.description}`, 'about', '#about'),
+  pageIntent('markets', 'markets', [/connect ?view|chart|market watch|order book|depth|terminal|live (prices|markets)|markets?/i], ['trade', 'trading', 'candles', 'quotes'], 'Opening Connect View: live market watch, charts and the order book.', 'terminal', '#terminal'),
   pageIntent('currencies', 'markets', [/currenc(y|ies) strength|strength|sessions?|tokyo|london|new york|sydney|open now/i], [], 'Here are currency strength and the trading sessions, in UTC.', 'currencies', '#currencies'),
-  pageIntent('tools', 'tools', [/tools?|calculat|pip value|margin calc|position siz|lot siz|size (a |my )?(position|trade|lot)|how (many|much) lots|profit|risk of ruin|الحاسبة|حاسبة/i], ['size', 'lots'], 'Opening the calculators: pip value, margin, position size and profit and loss, plus capital and risk.', 'forex-calculators', '#forex-calculators'),
-  pageIntent('calendar', 'calendar', [/calendar|economic|events?|news|cpi|nfp|payrolls|interest rate|fomc|التقويم|الأخبار/i], ['inflation'], `Opening the economic calendar. ${ECONOMIC_EVENTS.filter((e) => e.impact === 'high').length} of the ${ECONOMIC_EVENTS.length} sample events are high impact.`, 'economic-calendar', '#economic-calendar'),
-  pageIntent('platforms', 'platforms', [/platforms?|download|mt4|mt5|metatrader|app|mobile app|desktop|web trader|partners?|\bib\b|introducing broker|المنصة/i], [], 'Here are the trading platforms and partners.', 'platforms-list', '#platforms-list'),
-  pageIntent('contact', 'contact', [/contact|reach you|phone|call (you|me)|address|office|تواصل|اتصل/i], [], `Here is how to reach the team. You can also email ${COMPANY.emails.support}.`, 'contact-form', '#contact-form'),
+  pageIntent('tools', 'tools', [/tools?|calculat|pip value|margin calc|position siz|lot siz|size (a |my )?(position|trade|lot)|how (many|much) lots|profit|risk of ruin/i], ['size', 'lots'], 'Opening the calculators: pip value, margin, position size and profit and loss, plus capital and risk.', 'forex-calculators', '#forex-calculators'),
+  pageIntent('calendar', 'calendar', [/calendar|economic|events?|news|cpi|nfp|payrolls|interest rate|fomc/i], ['inflation'], `Opening the economic calendar. ${ECONOMIC_EVENTS.filter((e) => e.impact === 'high').length} of the ${ECONOMIC_EVENTS.length} sample events are high impact.`, 'economic-calendar', '#economic-calendar'),
+  pageIntent('platforms', 'platforms', [/platforms?|download|mt4|mt5|metatrader|app|mobile app|desktop|web trader|partners?|\bib\b|introducing broker/i], [], 'Here are the trading platforms and partners.', 'platforms-list', '#platforms-list'),
+  pageIntent('contact', 'contact', [/contact|reach you|phone|call (you|me)|address|office/i], [], `Here is how to reach the team. You can also email ${COMPANY.emails.support}.`, 'contact-form', '#contact-form'),
   pageIntent('legal', 'legal', [/legal|terms|privacy|policy|disclosure|aml|kyc rules|complaint/i], [], 'Opening the legal documents and the risk disclosure.', 'legal-docs', '#legal-docs'),
   {
     id: 'portal',
-    patterns: [/portal|log ?in|sign ?in|my account|dashboard|client area|بوابة|دخول/i],
+    patterns: [/portal|log ?in|sign ?in|my account|dashboard|client area/i],
     respond: () => ({ say: 'Opening the Trader Portal. It is a preview with sample data.', steps: [{ go: 'portal' }] }),
   },
   {
@@ -146,7 +146,7 @@ export const INTENTS: Intent[] = [
   {
     id: 'account-one',
     priority: 1,
-    patterns: [/\b(standard|plus|raw|vip|islamic|demo)\b.*(account|tier)?|swap[- ]?free|sharia|ecn|scalp|إسلامي|اسلامي|تجريبي/i],
+    patterns: [/\b(standard|plus|raw|vip|islamic|demo)\b.*(account|tier)?|swap[- ]?free|sharia|ecn|scalp/i],
     respond: (m) => {
       const t = tierFrom(m);
       if (!t) return accountsOverview();
@@ -160,14 +160,14 @@ export const INTENTS: Intent[] = [
   },
   {
     id: 'accounts',
-    patterns: [/accounts?|tiers?|compare|which account|best account|suit(s)? me|for me|minimum deposit|min(imum)? to (start|open)|الحسابات|حساب/i],
+    patterns: [/accounts?|tiers?|compare|which account|best account|suit(s)? me|for me|minimum deposit|min(imum)? to (start|open)/i],
     keywords: ['deposit', 'beginner'],
     respond: () => accountsOverview(),
   },
   {
     id: 'open-account',
     priority: 2,
-    patterns: [/\bopen (an? |my )?([a-z-]+ ){0,2}account\b|sign ?up|register|create (an? )?([a-z-]+ )?account|\bjoin\b|start trading|افتح حساب|تسجيل/i],
+    patterns: [/\bopen (an? |my )?([a-z-]+ ){0,2}account\b|sign ?up|register|create (an? )?([a-z-]+ )?account|\bjoin\b|start trading/i],
     respond: (m) => {
       const t = tierFrom(m);
       return {
@@ -180,7 +180,7 @@ export const INTENTS: Intent[] = [
   /* ── money questions ── */
   {
     id: 'funding',
-    patterns: [/deposit|withdraw|fund(ing)?|payment|pay ?(in|out)|usdt|trc ?20|card|bank wire|wire transfer|سحب|إيداع/i],
+    patterns: [/deposit|withdraw|fund(ing)?|payment|pay ?(in|out)|usdt|trc ?20|card|bank wire|wire transfer/i],
     respond: () => ({
       say: `First deposits start at ${live.map((t) => `${money(t.minDeposit)} for ${t.name.replace(' Account', '')}`).join(', ')}. The Trader Portal lists bank wire, card and USDT on TRC20. For processing times and limits, the support team will confirm by email.`,
       links: contactLinks.slice(0, 1),
@@ -189,7 +189,7 @@ export const INTENTS: Intent[] = [
   },
   {
     id: 'fees',
-    patterns: [/spreads?|fees?|commission|costs?|charges?|cheap|swap(s)? rate|رسوم|سبريد/i],
+    patterns: [/spreads?|fees?|commission|costs?|charges?|cheap|swap(s)? rate/i],
     respond: () => ({
       say: `Spreads and commission by account: ${live.map((t) => `${t.name.replace(' Account', '')}, ${t.spread.toLowerCase()}, ${t.commission.toLowerCase()}`).join('. ')}.`,
       steps: [{ go: 'home', section: 'accounts' }, { spot: '#accounts ul' }],
@@ -198,7 +198,7 @@ export const INTENTS: Intent[] = [
   },
   {
     id: 'leverage',
-    patterns: [/leverage|margin|1 ?: ?\d+|رافعة/i],
+    patterns: [/leverage|margin|1 ?: ?\d+/i],
     respond: () => ({
       say: `Every account offers leverage ${leverageWords(tiers[0].leverage).toLowerCase()}. Leverage magnifies losses as well as gains. The margin calculator shows what a position needs.`,
       steps: [{ go: 'tools', section: 'forex-calculators' }, { spot: '#forex-calculators' }],
@@ -207,7 +207,7 @@ export const INTENTS: Intent[] = [
   {
     id: 'price',
     priority: 1,
-    patterns: [/price|quote|how much is|trading at|rate of|سعر/i],
+    patterns: [/price|quote|how much is|trading at|rate of/i],
     respond: (m) => {
       const id = findInstrument(m);
       const inst = id ? market.getSnapshot().byId[id] : null;
@@ -248,7 +248,7 @@ export const INTENTS: Intent[] = [
   /* ── trust ── */
   {
     id: 'regulation',
-    patterns: [/regulat|licen[cs]e|authori[sz]ed|safe|legit|scam|trust(worthy)?|fsa|مرخص|ترخيص/i],
+    patterns: [/regulat|licen[cs]e|authori[sz]ed|safe|legit|scam|trust(worthy)?|fsa/i],
     respond: () => ({
       say: `The regulators and licence numbers are listed on our legal page, with the registered address. For anything specific, the compliance team answers at ${COMPANY.emails.compliance}.`,
       steps: [{ go: 'legal', section: 'legal-docs' }, { spot: '#legal-docs' }],
@@ -257,7 +257,7 @@ export const INTENTS: Intent[] = [
   },
   {
     id: 'person',
-    patterns: [/human|\bperson\b|agent|someone|support|help ?desk|customer service|telegram|whatsapp|email|شخص|دعم/i],
+    patterns: [/human|\bperson\b|agent|someone|support|help ?desk|customer service|telegram|whatsapp|email/i],
     respond: () => ({
       say: 'The team can help you directly by email, Telegram or WhatsApp. I have put the links below.',
       links: contactLinks,
@@ -280,7 +280,7 @@ export const INTENTS: Intent[] = [
   {
     id: 'thanks',
     priority: -1,
-    patterns: [/^(thanks|thank you|thx|cheers|great|perfect|ok(ay)?|شكرا)\b/i],
+    patterns: [/^(thanks|thank you|thx|cheers|great|perfect|ok(ay)?)\b/i],
     respond: () => ({ say: 'My pleasure. Anything else?' }),
   },
 ];

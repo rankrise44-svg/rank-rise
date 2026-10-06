@@ -9,6 +9,8 @@ export default defineConfig(({ mode }) => {
   const single = mode === 'artifact';
   return {
     plugins: [react(), tailwindcss()],
+    // In development, Valgon's brain and voice come from the site server (npm run server).
+    server: { proxy: { '/api': 'http://localhost:8787' } },
     base: single ? './' : '/',
     build: {
       target: 'es2022',
