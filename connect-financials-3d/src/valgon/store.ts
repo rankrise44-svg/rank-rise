@@ -44,9 +44,10 @@ export const useValgon = () => useSyncExternalStore(valgon.subscribe, valgon.get
 
 /**
  * Read every frame by the orb animation (no React re-render): the current mode
- * and a 0–1 voice level that rises with each spoken word.
+ * and a 0–1 voice level that rises with each spoken word. `awake` turns true
+ * once Valgon has woken up on the first page (he starts each visit asleep).
  */
-export const signal = { mode: 'idle' as ValgonMode, level: 0, target: 0, pulse: 0 };
+export const signal = { mode: 'idle' as ValgonMode, level: 0, target: 0, pulse: 0, awake: false };
 
 let lineId = 0;
 export const nextLineId = () => ++lineId;

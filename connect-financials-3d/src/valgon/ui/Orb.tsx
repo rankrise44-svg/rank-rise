@@ -2,11 +2,13 @@ import { useEffect, useRef } from 'react';
 import { signal } from '../store';
 
 /**
- * Valgon's body: a holographic blue eagle eye, drawn in light.
+ * Valgon's body: a round, holographic blue eagle eye, drawn in light.
  * Rings and strands of light for the iris, a targeting ring for the pupil that
  * pulses with his voice (wide while listening, narrow while thinking),
  * scanlines, flicker and the odd glitch, a gold brow ridge; he blinks, glances
- * around and follows the pointer.
+ * around and follows the pointer. Each visit he starts asleep (eye closed,
+ * breathing glow) and wakes up: a sleepy flutter, the eye opens, the hologram
+ * powers up.
  * Gold HUD rings and a ring of voice bars frame it. One canvas, drawn every
  * frame from `signal` (no React re-renders). Kept under the name Orb so it can
  * be swapped for the final design in one place.
@@ -47,6 +49,10 @@ export function Orb({ className = '', detail = 'full', label = 'Valgon' }: { cla
     let blinkT = -1;
     let nextBlink = 2 + Math.random() * 3;
     let glitch = 0;
+    // asleep → awake, once per visit, on the big first-page eye
+    const sleeper = full && !signal.awake;
+    let wakeT = 0;
+    const easeOut = (x: number) => 1 - Math.pow(1 - x, 3);
     const ripples: { r: number; a: number }[] = [];
     let rippleClock = 0;
 
@@ -81,22 +87,25 @@ export function Orb({ className = '', detail = 'full', label = 'Valgon' }: { cla
       ctx.stroke();
     };
 
-    /** The eye opening: lower lid curve and an upper lid that slants into a brow. */
-    const eyePath = (c: number, a: number, b: number, open: number) => {
-      const Lx = c - a, Ly = c + b * 0.12;
-      const Rx = c + a, Ry = c - b * 0.08;
-      const lowY = c + b * 1.5;
-      const upA = c - b * 1.55, upB = c - b * 1.05;
-      // closing: the upper lid comes down to meet the lower one
-      const k = 1 - open;
-      const cu1 = upA + (lowY - 0.25 * b - upA) * k;
-      const cu2 = upB + (lowY - 0.25 * b - upB) * k;
-      const p = new Path2D();
-      p.moveTo(Lx, Ly);
-      p.bezierCurveTo(c - a * 0.55, cu2, c + a * 0.45, cu1, Rx, Ry);
-      p.quadraticCurveTo(c + a * 0.1, lowY, Lx, Ly);
-      p.closePath();
-      return { p, Lx, Ly, Rx, Ry, cu1, cu2 };
+    /** The round eye and its lids: two curves that meet in the middle when closed. */
+    const eyeShape = (c: number, re: number, open: number) => {
+      const circle = new Path2D();
+      circle.arc(c, c, re, 0, Math.PI * 2);
+      const w = re * 1.2;
+      const up = c - 2.3 * re * open;
+      const down = c + 2.1 * re * open;
+      const lids = new Path2D();
+      lids.moveTo(c - w, c);
+      lids.quadraticCurveTo(c, up, c + w, c);
+      lids.quadraticCurveTo(c, down, c - w, c);
+      lids.closePath();
+      const upper = new Path2D();
+      upper.moveTo(c - w, c);
+      upper.quadraticCurveTo(c, up, c + w, c);
+      const lower = new Path2D();
+      lower.moveTo(c - w, c);
+      lower.quadraticCurveTo(c, down, c + w, c);
+      return { circle, lids, upper, lower };
     };
 
     const frame = (now: number) => {
@@ -120,8 +129,27 @@ export function Orb({ className = '', detail = 'full', label = 'Valgon' }: { cla
       const wantPupil = m === 'hear' ? 0.5 : m === 'work' ? 0.24 : m === 'speak' ? 0.3 + lv * 0.16 : 0.36 + Math.sin(t * 0.9) * 0.02;
       pupil += (wantPupil - pupil) * Math.min(1, dt * (m === 'speak' ? 16 : 5));
 
+      // waking up: closed and breathing, a sleepy flutter, then fully open
+      let lidOpen = 1;
+      let power = 1;
+      const waking = sleeper && !signal.awake;
+      if (waking) {
+        wakeT += dt;
+        const asleep = reduced ? 0.3 : 1.1;
+        if (wakeT < asleep) {
+          lidOpen = 0;
+          power = 0.32 + 0.08 * Math.sin(wakeT * 3.2);
+        } else {
+          const u = (wakeT - asleep) * (reduced ? 3 : 1);
+          lidOpen = u < 0.35 ? easeOut(u / 0.35) * 0.38 : u < 0.6 ? 0.38 - ((u - 0.35) / 0.25) * 0.3 : 0.08 + 0.92 * easeOut(Math.min(1, (u - 0.6) / 0.9));
+          power = Math.min(1, 0.32 + (u / 1.5) * 0.68);
+          if (u > 1.7) signal.awake = true;
+        }
+        pupil += ((wakeT < asleep ? 0.55 : 0.5) - pupil) * Math.min(1, dt * 3);
+      }
+
       // gaze: follow the pointer for a moment after it moves, otherwise glance around
-      if (!reduced) {
+      if (!reduced && !waking) {
         if (t - pointer.at < 2.5) {
           gaze.tx = pointer.x;
           gaze.ty = pointer.y;
@@ -150,6 +178,7 @@ export function Orb({ className = '', detail = 'full', label = 'Valgon' }: { cla
       const c = size / 2;
       const R = size / 2;
       ctx.clearRect(0, 0, size, size);
+      ctx.globalAlpha = 0.35 + 0.65 * power;
 
       // ambient glow
       const glow = ctx.createRadialGradient(c, c, R * 0.1, c, c, R);
@@ -232,33 +261,41 @@ export function Orb({ className = '', detail = 'full', label = 'Valgon' }: { cla
         else ring(rp.r, 0, Math.PI * 2, `rgba(${ICE},${rp.a})`, 1.2);
       }
 
-      /* ── the eye: a hologram drawn in light ── */
-      const a = R * 0.56; // half width
-      const b = R * 0.34; // half height
-      const open = 1 - blink;
-      const eye = eyePath(c, a, b, Math.max(0.04, open));
-      // projector flicker and an occasional glitch
-      const flicker = reduced ? 1 : 0.86 + 0.14 * Math.abs(Math.sin(t * 23) * Math.sin(t * 7.7));
-      if (!reduced && glitch <= 0 && Math.random() < dt * 0.25) glitch = 0.09;
+      /* ── the eye: a round hologram drawn in light ── */
+      ctx.globalAlpha = 1;
+      const re = R * 0.42;
+      const open = Math.max(0.03, Math.min(lidOpen, 1 - blink));
+      const eye = eyeShape(c, re, open);
+      // projector flicker (heavy while powering up) and an occasional glitch
+      const settle = reduced ? 1 : 0.86 + 0.14 * Math.abs(Math.sin(t * 23) * Math.sin(t * 7.7));
+      const flicker = power < 1 && !reduced ? power * (0.55 + 0.45 * Math.random()) : power * settle;
+      if (!reduced && !waking && glitch <= 0 && Math.random() < dt * 0.25) glitch = 0.09;
       glitch -= dt;
       const gl = glitch > 0 ? (Math.random() - 0.5) * R * 0.06 : 0;
 
-      const gx = gaze.x * a * 0.22 + gl;
-      const gy = gaze.y * b * 0.22;
-      const ix = c + gx;
-      const iy = c + b * 0.12 + gy;
-      const ri = b * 1.12;
+      const ix = c + gaze.x * re * 0.13 + gl;
+      const iy = c + gaze.y * re * 0.13;
+      const ri = re * 0.9;
       const pr = ri * pupil;
       const rot = t * 0.08;
 
-      // faint projected volume inside the eye
+      // the socket: a faint ring of light that stays visible even with the eye shut
       ctx.save();
-      const vol = ctx.createRadialGradient(ix, iy, 0, ix, iy, ri * 1.4);
-      vol.addColorStop(0, `rgba(${BLUE},${0.22 + lv * 0.18})`);
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = 0.5 + 0.5 * power;
+      ctx.strokeStyle = `rgba(${ICE},0.28)`;
+      ctx.lineWidth = full ? 1.2 : 1;
+      ctx.stroke(eye.circle);
+      ctx.restore();
+
+      ctx.save();
+      ctx.clip(eye.circle);
+      ctx.clip(eye.lids);
+      const vol = ctx.createRadialGradient(ix, iy, 0, ix, iy, re * 1.2);
+      vol.addColorStop(0, `rgba(${BLUE},${(0.24 + lv * 0.18) * power})`);
       vol.addColorStop(1, `rgba(${BLUE},0.02)`);
       ctx.fillStyle = vol;
-      ctx.fill(eye.p);
-      ctx.clip(eye.p);
+      ctx.fillRect(c - re, c - re, re * 2, re * 2);
       ctx.globalCompositeOperation = 'lighter';
       ctx.globalAlpha = flicker;
 
@@ -313,7 +350,7 @@ export function Orb({ className = '', detail = 'full', label = 'Valgon' }: { cla
         ctx.beginPath();
         ctx.moveTo(ix + Math.cos(ang) * pr * 0.55, iy + Math.sin(ang) * pr * 0.55);
         ctx.lineTo(ix + Math.cos(ang) * pr * 0.82, iy + Math.sin(ang) * pr * 0.82);
-        ctx.strokeStyle = `rgba(${GOLD_HI},${0.7})`;
+        ctx.strokeStyle = `rgba(${GOLD_HI},0.7)`;
         ctx.lineWidth = full ? 1.4 : 1;
         ctx.stroke();
       }
@@ -327,48 +364,63 @@ export function Orb({ className = '', detail = 'full', label = 'Valgon' }: { cla
       const step = full ? 3 : 2.5;
       const off = (t * 18) % step;
       ctx.fillStyle = 'rgba(0,0,0,0.28)';
-      for (let y = c - b * 1.7 + off; y < c + b * 1.6; y += step) ctx.fillRect(c - a, y, a * 2, step * 0.45);
+      for (let y = c - re + off; y < c + re; y += step) ctx.fillRect(c - re, y, re * 2, step * 0.45);
       ctx.globalCompositeOperation = 'lighter';
-      const bandY = c - b * 1.6 + ((t * 0.35) % 1) * b * 3.2;
-      const band = ctx.createLinearGradient(0, bandY - b * 0.25, 0, bandY + b * 0.25);
+      const bandY = c - re + ((t * 0.35) % 1) * re * 2;
+      const band = ctx.createLinearGradient(0, bandY - re * 0.18, 0, bandY + re * 0.18);
       band.addColorStop(0, `rgba(${ICE},0)`);
       band.addColorStop(0.5, `rgba(${ICE},0.16)`);
       band.addColorStop(1, `rgba(${ICE},0)`);
       ctx.fillStyle = band;
-      ctx.fillRect(c - a, bandY - b * 0.25, a * 2, b * 0.5);
+      ctx.fillRect(c - re, bandY - re * 0.18, re * 2, re * 0.36);
       ctx.restore();
 
-      // the outline, in light: a faint colour split, then the bright line
+      // the lids, in light: a faint colour split, then the bright line (inside the round eye)
       ctx.save();
+      ctx.clip(eye.circle);
       ctx.globalCompositeOperation = 'lighter';
-      ctx.globalAlpha = flicker;
+      ctx.globalAlpha = Math.max(flicker, 0.45);
       ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.translate(-1.2, 0);
-      ctx.strokeStyle = 'rgba(255,90,140,0.22)';
-      ctx.lineWidth = full ? 1.6 : 1.2;
-      ctx.stroke(eye.p);
-      ctx.translate(2.4, 0);
-      ctx.strokeStyle = 'rgba(90,220,255,0.28)';
-      ctx.stroke(eye.p);
-      ctx.translate(-1.2, 0);
+      for (const [dx, col] of [[-1.2, 'rgba(255,90,140,0.22)'], [1.2, 'rgba(90,220,255,0.28)']] as const) {
+        ctx.translate(dx, 0);
+        ctx.strokeStyle = col;
+        ctx.lineWidth = full ? 1.6 : 1.2;
+        ctx.stroke(eye.upper);
+        ctx.stroke(eye.lower);
+        ctx.translate(-dx, 0);
+      }
       ctx.shadowColor = `rgba(${BLUE},1)`;
       ctx.shadowBlur = R * (0.06 + lv * 0.06);
       ctx.strokeStyle = `rgba(${ICE},${0.8 + lv * 0.2})`;
+      ctx.lineWidth = full ? 1.9 : 1.4;
+      ctx.stroke(eye.upper);
+      ctx.stroke(eye.lower);
+      ctx.restore();
+
+      // the round outline glows once the eye is open
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = open * flicker;
+      ctx.shadowColor = `rgba(${BLUE},1)`;
+      ctx.shadowBlur = R * (0.05 + lv * 0.06);
+      ctx.strokeStyle = `rgba(${ICE},${0.7 + lv * 0.25})`;
       ctx.lineWidth = full ? 1.8 : 1.3;
-      ctx.stroke(eye.p);
+      ctx.stroke(eye.circle);
+
       // the gold brow ridge, in light
+      ctx.globalAlpha = 0.45 + 0.55 * power;
       ctx.beginPath();
-      ctx.moveTo(eye.Lx - a * 0.12, eye.Ly - b * 0.25);
-      ctx.bezierCurveTo(c - a * 0.55, eye.cu2 - b * 0.42, c + a * 0.45, eye.cu1 - b * 0.38, eye.Rx + a * 0.22, eye.Ry - b * 0.62);
-      const brow = ctx.createLinearGradient(c - a, 0, c + a, 0);
+      ctx.moveTo(c - re * 1.15, c - re * 0.5);
+      ctx.bezierCurveTo(c - re * 0.55, c - re * 1.38, c + re * 0.6, c - re * 1.45, c + re * 1.28, c - re * 0.92);
+      const brow = ctx.createLinearGradient(c - re, 0, c + re, 0);
       brow.addColorStop(0, `rgba(${GOLD},0.15)`);
       brow.addColorStop(0.55, `rgba(${GOLD_HI},0.95)`);
       brow.addColorStop(1, `rgba(${GOLD},0.7)`);
       ctx.shadowColor = `rgba(${GOLD_HI},0.9)`;
       ctx.shadowBlur = R * 0.05;
       ctx.strokeStyle = brow;
-      ctx.lineWidth = full ? R * 0.022 : R * 0.035;
+      ctx.lineCap = 'round';
+      ctx.lineWidth = full ? R * 0.024 : R * 0.04;
       ctx.stroke();
       ctx.restore();
     };

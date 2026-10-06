@@ -141,6 +141,7 @@ export async function ask(text: string) {
   stopListening();
   unspot();
   addLine('me', q);
+  signal.awake = true;
   valgon.set({ interim: '' });
   mode('work', 'Thinking');
   const ctx = { page: currentRoute().page, history: valgon.get().lines };
@@ -157,8 +158,13 @@ export async function greet(force = false) {
   const id = ++run;
   const h = new Date().getHours();
   const part = h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening';
+  // He starts each visit asleep; the eye wakes, then he speaks.
+  mode('idle', 'Sleeping');
+  await sleep(1000);
+  if (!alive(id)) return;
   mode('work', 'Waking up');
-  await sleep(500);
+  for (let i = 0; i < 30 && !signal.awake; i++) await sleep(100);
+  signal.awake = true;
   if (!alive(id)) return;
   const back = requestedOnOpen;
   const backLabel = back ? (back.section && PAGES[back.page].sections.find((x) => x.id === back.section)?.label) || PAGES[back.page].label : null;
