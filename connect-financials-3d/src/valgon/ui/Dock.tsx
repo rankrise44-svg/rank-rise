@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { PAGES, type PageId } from '../../config/pages';
+import { navigate } from '../../lib/route';
 import { stopAll } from '../engine';
 import { useValgon, valgon } from '../store';
 import { Orb } from './Orb';
@@ -10,6 +11,11 @@ export const openDock = () => {
   valgon.set({ dockOpen: true, suggestions: s.suggestions.length ? s.suggestions : PAGES.valgon.suggestions });
 };
 export const closeDock = () => valgon.set({ dockOpen: false });
+/** Open the full Valgon page; the conversation carries over. */
+export const expandValgon = () => {
+  valgon.set({ dockOpen: false });
+  navigate('valgon');
+};
 
 /**
  * Valgon on every other page: a floating orb in the corner that opens into a
@@ -45,15 +51,22 @@ export function ValgonDock({ page }: { page: PageId }) {
       {dockOpen && (
         <div ref={panel} role="dialog" aria-label="Valgon" className="vg-dock fixed inset-x-2 bottom-2 z-[60] flex max-h-[min(62svh,calc(100svh-7rem))] flex-col sm:max-h-[calc(100svh-7rem)] overflow-hidden rounded-3xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px]">
           <header className="flex items-center gap-3 border-b border-gold/15 px-4 py-3">
-            <Orb detail="compact" className="h-12 w-12 shrink-0" label="" />
-            <div className="min-w-0 flex-1">
-              <p className="font-display text-[14px] font-semibold uppercase tracking-[0.26em] text-ink">Valgon</p>
-              <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-gold-hi">
-                <span className={`h-1.5 w-1.5 rounded-full ${mode === 'hear' ? 'bg-[#5B8CFF]' : 'bg-gold-hi'} vg-blink`} aria-hidden />
-                {status}
-              </p>
-            </div>
+            <button type="button" onClick={expandValgon} title="Open the full Valgon page" aria-label="Open the full Valgon page" className="group flex min-w-0 flex-1 items-center gap-3 rounded-2xl text-left">
+              <Orb detail="compact" className="h-12 w-12 shrink-0 transition group-hover:scale-105" label="" />
+              <span className="min-w-0">
+                <span className="block font-display text-[14px] font-semibold uppercase tracking-[0.26em] text-ink group-hover:text-gold-hi">Valgon</span>
+                <span className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-gold-hi">
+                  <span className={`h-1.5 w-1.5 rounded-full ${mode === 'hear' ? 'bg-[#5B8CFF]' : 'bg-gold-hi'} vg-blink`} aria-hidden />
+                  {status}
+                </span>
+              </span>
+            </button>
             <VoiceToggle />
+            <button type="button" onClick={expandValgon} aria-label="Open the full Valgon page" title="Full screen" className="grid h-8 w-8 place-items-center rounded-full border border-gold/25 text-ink/85 hover:border-gold-hi">
+              <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+                <path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
             <button type="button" onClick={closeDock} aria-label="Minimise Valgon" title="Minimise" className="grid h-8 w-8 place-items-center rounded-full border border-gold/25 text-ink/85 hover:border-gold-hi">
               –
             </button>
