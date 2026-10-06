@@ -23,7 +23,17 @@ function parse(hash: string): Route {
   return { page: 'valgon', section: null };
 }
 
-let current = parse(window.location.hash);
+/**
+ * Every visit starts with Valgon, whatever address the visitor arrives on.
+ * The page they asked for (or were on last time) is kept so Valgon can offer it.
+ */
+const arrived = parse(window.location.hash);
+export const requestedOnOpen: Route | null = arrived.page !== 'valgon' ? arrived : null;
+const reviewing = new URLSearchParams(window.location.search).has('studio');
+let current: Route = reviewing ? arrived : { page: 'valgon', section: null };
+if (!reviewing && window.location.hash && window.location.hash !== '#/') {
+  history.replaceState(history.state, '', `${window.location.pathname}${window.location.search}#/`);
+}
 /** Bumps when someone asks for the page they are already on, so the section is shown again */
 let nonce = 0;
 let snapshot = { ...current, nonce };

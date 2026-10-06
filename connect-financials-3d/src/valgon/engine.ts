@@ -1,5 +1,5 @@
 import { PAGES } from '../config/pages';
-import { currentRoute, navigate, waitFor } from '../lib/route';
+import { currentRoute, navigate, requestedOnOpen, waitFor } from '../lib/route';
 import { openAccount } from '../ui/openAccount';
 import { think } from './brain';
 import { nextLineId, signal, valgon, type ValgonMode } from './store';
@@ -160,8 +160,13 @@ export async function greet(force = false) {
   mode('work', 'Waking up');
   await sleep(500);
   if (!alive(id)) return;
-  valgon.set({ suggestions: PAGES.valgon.suggestions });
-  await say(`Good ${part}. I am Valgon, your guide to Connect Financials. Where would you like to go? You can ask me, or pick a destination below.`, id);
+  const back = requestedOnOpen;
+  const backLabel = back ? (back.section && PAGES[back.page].sections.find((x) => x.id === back.section)?.label) || PAGES[back.page].label : null;
+  valgon.set({ suggestions: backLabel ? [`Take me to ${backLabel}`, ...PAGES.valgon.suggestions.slice(0, 3)] : PAGES.valgon.suggestions });
+  await say(
+    `Good ${part}. I am Valgon, your guide to Connect Financials. ${backLabel ? `Shall I take you to ${backLabel}? Or tell me where you would like to go.` : 'Where would you like to go? You can ask me, or pick a destination below.'}`,
+    id,
+  );
   if (alive(id)) mode('listen', 'Listening');
 }
 
