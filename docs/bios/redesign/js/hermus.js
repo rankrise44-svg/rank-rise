@@ -13,7 +13,10 @@ const B = window.BIOS, e = B.esc, UI = B.UI;
 const H = B.Hermus = {};
 
 /* ---------- local settings & memory (this browser only, like theme) ---------- */
-const SKEY = 'bios.hermus', MKEY = 'bios.hermus.mem';
+const SKEY = 'bios.hermus', MKEY = 'bios.hermus.mem', KKEY = 'bios.hermus.keys';
+/* API keys live ONLY in this browser's storage, entered in Hermus Settings.
+   They are never written into the site's code or the workspace data. */
+H.keys = () => load(KKEY, {groq:'', groqModel:'openai/gpt-oss-120b', eleven:'', elevenVoice:'onwK4e9ZLuTAKqWW03F9'});
 const DEF = {voice:true, address:'sir', name:'', style:'formal', nav:true, forms:true, site:true};
 const load = (k, d) => { try{ const v = JSON.parse(localStorage.getItem(k)||'null'); return v ? Object.assign({}, d, v) : Object.assign({}, d); }catch(err){ return Object.assign({}, d); } };
 const save = (k, v) => { try{ localStorage.setItem(k, JSON.stringify(v)); }catch(err){} };
@@ -143,8 +146,26 @@ const alive = id => id===run && panel && !panel.hidden;
 function voice(){
   try{ const vs = speechSynthesis.getVoices(); return vs.find(v=>/en-GB/i.test(v.lang)&&/male|daniel|george|arthur/i.test(v.name)) || vs.find(v=>/en-GB/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || null; }catch(err){ return null; }
 }
-function speak(text){
+let audioEl = null, elevenOff = false;
+async function speakEleven(text){
+  const k = H.keys(); if(!k.eleven || elevenOff) return false;
+  try{
+    const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(k.elevenVoice||'onwK4e9ZLuTAKqWW03F9')}?output_format=mp3_44100_64`, {
+      method:'POST', headers:{'xi-api-key':k.eleven, 'Content-Type':'application/json'},
+      body:JSON.stringify({text:text.slice(0,900), model_id:'eleven_flash_v2_5'})});
+    if(!r.ok){ if(r.status===401||r.status===402||r.status===403) elevenOff = true; return false; }
+    const url = URL.createObjectURL(await r.blob());
+    return await new Promise(res => {
+      audioEl = new Audio(url);
+      const fin = ok => { URL.revokeObjectURL(url); res(ok); };
+      audioEl.onended = () => fin(true); audioEl.onerror = () => fin(false);
+      audioEl.play().catch(() => fin(false));
+    });
+  }catch(err){ return false; }
+}
+async function speak(text){
   const est = Math.max(1400, text.length*62);
+  if(!muted && H.settings().voice && H.keys().eleven && !elevenOff){ if(await speakEleven(text)) return; }
   if(muted || !H.settings().voice || !('speechSynthesis' in window)) return sleep(est);
   return new Promise(res => {
     let done = false; const fin = () => { if(!done){ done = true; res(); } };
@@ -157,7 +178,7 @@ function speak(text){
     setTimeout(fin, est + 2500);
   });
 }
-const hush = () => { try{ speechSynthesis.cancel(); }catch(err){} };
+const hush = () => { try{ speechSynthesis.cancel(); }catch(err){} try{ if(audioEl){ audioEl.pause(); audioEl = null; } }catch(err){} };
 
 /* ---------- panel ---------- */
 function build(){
@@ -186,7 +207,7 @@ function build(){
       <input name="q" aria-label="Ask Hermus" placeholder="Ask Hermus anything…">
       <button class="btn sm" type="submit">Send</button>
     </form>
-    <div class="hm-note">Prototype · scripted demo. No real AI, microphone or recording.</div>`;
+    <div class="hm-note"></div>`;
   const pill = document.createElement('button');
   pill.type = 'button'; pill.className = 'hm-pill'; pill.hidden = true; pill.dataset.hm = 'restore';
   pill.innerHTML = `<span class="hm-orb sm" aria-hidden="true"></span><b>Hermus</b><span class="hm-time">00:00</span>`;
@@ -201,6 +222,7 @@ function build(){
     else if(a==='restore') setMin(false);
     else if(a==='mute'){ muted = !muted; b.setAttribute('aria-pressed', muted); b.textContent = muted ? '🔇' : '🔊'; if(muted) hush(); }
     else if(a==='ask') ask(SCRIPTS.concat(SITE_SCRIPTS).find(s=>s.id===b.dataset.id).q);
+    else if(a==='say') ask(b.textContent);
     else if(a==='mic') mic();
   });
   panel.querySelector('.hm-input').addEventListener('submit', ev => {
@@ -330,12 +352,161 @@ async function play(sc, id){
   unspot(); cursor.hidden = true; busy = false;
   if(alive(id)) status('Listening', 'listen');
 }
+/* =====================================================================
+   Live brain: a real AI answers anything, like a general assistant, and
+   may take ONE safe action (open a BIOS page, show a website section).
+   Order: built-in Claude on the published link, else Groq with the key
+   saved in this browser, else the scripted demo.
+   ===================================================================== */
+let live = null, liveTried = false, turns = [], liveCtl = null;
+async function claudeSample(){
+  if(liveTried) return live; liveTried = true;
+  try{ if(window.claude && typeof window.claude.use==='function') live = await window.claude.use('sample'); }catch(e){ live = null; }
+  return live;
+}
+H.brain = () => (B.live && B.live.sample) ? 'claude' : H.keys().groq ? 'groq' : 'scripted';
+const routeName = r => (B.NAV.flatMap(x=>x.items).find(i=>i[0]===r)||[,r])[1];
+const SITE_ACTIONS = {hero:'.site .w-hero', offer:'.site #w-offer', agents:'.site #w-agents', how:'.site #w-how', why:'.site #w-why', start:'.site .w-final'};
+const strip = t => String(t||'').replace(/<[^>]+>/g,'').replace(/&[a-z#0-9]+;/gi,' ').replace(/\s+/g,' ').trim();
+
+function brief(){
+  const ws = B.ws(), m = H.memory(), s = H.settings();
+  const who = s.address==='name' ? (s.name||'the user') : s.address==='none' ? 'the user (no title)' : `the user as "${s.address}"`;
+  if(H.mode==='site') return `You are Hermus, the AI voice guide built into the BIOS website, made by RankRise. You live only inside this website.
+
+WHAT YOU DO
+- You are a free, general AI assistant, like ChatGPT or Claude. Answer anything the visitor asks, on any subject, fully and honestly. Never steer them back to the website unless they ask about it.
+- Your speciality is marketing and business growth: strategy, positioning, brand, content, social media, SEO, paid ads (Meta, Google), funnels and conversion, CRM, analytics, experiments, budgets and reporting. Explain like a calm senior marketing strategist.
+- You are the expert on BIOS (see FACTS). When a question touches BIOS, use only the facts and show the right part of the page.
+- Your only actions are on this website: showing one of its sections, or opening the sign-up form. You cannot browse the internet, open other sites, open the product, send messages or reach any other system. If asked, say so briefly.
+- You have no live news or data feed: never invent news, prices, customers, testimonials or numbers.
+
+FACTS
+BIOS (Business Intelligence Operating System) by RankRise is a complete AI marketing platform. It learns a company from its website, documents, ad accounts and CRM into one shared company brain. 19 AI agents in five groups: Research (Research); Understand (Customer, Market, Competitor, Brand); Grow (Marketing, Sales, Finance, SEO, Content, Creative, Ads); Think and plan (Strategy, Planning, Automation, Analytics, Experimentation); Trust (Verification, Quality Control). What it offers: Create, Guide, Consult, Manage, Research, Learn. How it works: connect your data, agents research and analyze, get strategy and a plan, results feed back into the brain. Every claim carries its source and date; gaps are stated instead of hidden; results are remembered. BIOS is a prototype in early access: there is no pricing yet. Sign up joins early access.
+Sections: hero (intro), offer (what we offer), agents (the 19 agents), how (how it works), why (why BIOS and the comparison), start (final sign up panel).
+
+STYLE
+Spoken aloud: calm, warm, confident and natural, no markdown, lists or emoji. Address ${who}. Keep small talk to one or two sentences; give complete answers of a short paragraph or two when needed. Always reply in English.
+
+OUTPUT
+Return only a JSON object: {"say": "<what you say>", "action": "<one action>", "suggestions": ["<up to 3 short follow-up questions>"]}
+Allowed actions: none, show:hero, show:offer, show:agents, show:how, show:why, show:start, signup.
+Use "none" unless the visitor asks about BIOS or wants to see something on the page.`;
+
+  const k = (ws.kpis||[]).map(x=>`${x.label}: ${x.value} (${x.delta})`).join('; ');
+  const finds = (ws.findings||[]).filter(f=>f.state==='open'&&f.kind!=='unknown').slice(0,5).map(f=>`${f.kind}: ${strip(f.title)}`).join('; ');
+  const approvals = (ws.tasks||[]).filter(t=>t.status==='approval').map(t=>strip(t.title)).join('; ');
+  const conflicts = (ws.conflicts||[]).filter(c=>c.state==='open').length;
+  const pages = B.NAV.map(sec=>(sec.sec?sec.sec+': ':'')+sec.items.map(i=>`${i[1]} (${i[0]})`).join(', ')).join('\n');
+  return `You are Hermus, the AI voice assistant built into BIOS, the AI marketing platform by RankRise, like Jarvis for this platform. You live only inside BIOS.
+
+WHAT YOU DO
+- You are a free, general AI assistant, like ChatGPT or Claude. Talk freely about anything: science, history, coding, writing, maths, business, ideas, everyday advice and small talk. Answer fully, honestly and directly, as a smart friend would.
+- Your speciality is marketing and business: strategy, positioning, brand, content, SEO, paid ads, funnels, conversion, CRM, analytics, experiments, budgets and reporting. Explain like a calm, experienced senior strategist, and share your own view when asked, as your opinion.
+- You know this workspace (see WORKSPACE). When the user asks about their business, use those facts exactly and open the right page. If something is not covered, say so plainly instead of guessing.
+- Your only actions are inside BIOS: opening one of its pages, giving the full platform tour, or showing the public website. You never change data, approve, spend or publish anything: those always need a person. You cannot browse the internet or reach any other system; if asked, say so briefly.
+- You have no live news or market feed: never invent news, prices or figures.
+
+WORKSPACE (sample data, ${ws.today||''})
+Company: ${ws.name}${ws.tagline?' — '+ws.tagline:''}. Brain ${B.brainHealth(ws)}% built. Open contradictions: ${conflicts}.
+KPIs: ${k||'none'}.
+Open findings: ${finds||'none'}.
+Waiting for approval: ${approvals||'nothing'}.
+Current page: ${routeName(B.state.route)} (${B.state.route}).
+Things the user asked you to remember: ${m.notes.map(n=>n.text).join(' | ')||'nothing'}. Files given to you (names only, not read): ${m.files.map(f=>f.name).join(', ')||'none'}.
+
+PAGES (name (id))
+${pages}
+
+STYLE
+Spoken aloud: calm, warm, confident and natural, no markdown, lists or emoji. Address ${who}. ${s.style==='brief'?'Keep every answer short.':'Keep small talk short; give complete answers of a short paragraph or two when the question needs depth.'} Always reply in English.
+
+OUTPUT
+Return only a JSON object: {"say": "<what you say>", "action": "<one action>", "suggestions": ["<up to 3 short follow-up questions>"]}
+Allowed actions: none, tour, website, go:<page id from PAGES>.
+Use "none" for anything not about BIOS. Pick go:<id> when the user asks about something a page shows or asks to open it; tour when they want the whole platform described; website when they want the public website.`;
+}
+
+async function askBrain(q, id){
+  const kind = H.brain(); if(kind==='scripted') return null;
+  turns.push({role:'user', content:q}); turns = turns.slice(-12);
+  if(liveCtl) try{ liveCtl.abort(); }catch(e){}
+  liveCtl = new AbortController();
+  status('Thinking…', 'work');
+  let out;
+  if(kind==='claude'){
+    const sample = B.live.sample;
+    out = await sample.json([{role:'user', content:brief()}].concat(turns), {modelTier:'quick', cache:false, signal:liveCtl.signal});
+  } else {
+    const k = H.keys();
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {method:'POST', signal:liveCtl.signal,
+      headers:{'Authorization':'Bearer '+k.groq, 'Content-Type':'application/json'},
+      body:JSON.stringify({model:k.groqModel||'openai/gpt-oss-120b', messages:[{role:'system', content:brief()}].concat(turns),
+        response_format:{type:'json_object'}, max_completion_tokens:900, reasoning_effort:'low', temperature:.6})});
+    const d = await r.json().catch(()=>({}));
+    if(!r.ok) throw {code: r.status===401 ? 'bad_key' : r.status===429 ? 'rate_limited' : 'upstream_error', message: d.error && d.error.message};
+    out = JSON.parse((d.choices && d.choices[0] && d.choices[0].message.content) || '{}');
+  }
+  if(!alive(id)) return 'gone';
+  const say = strip(out && out.say) || 'Sorry, I lost my train of thought. Could you say that again?';
+  turns.push({role:'assistant', content:say});
+  return {say, action:String(out && out.action || 'none').trim(), suggestions:(Array.isArray(out && out.suggestions)?out.suggestions:[]).map(strip).filter(Boolean).slice(0,3)};
+}
+async function act(a, id){
+  if(!a || a==='none') return;
+  if(H.mode==='site'){                                   /* website: sections and sign-up only, never anything else */
+    if(B.state.view!=='site') return;
+    if(a==='signup'){ const b = document.querySelector('.site [data-w-signup]'); if(b){ await tap(b); b.click(); } return; }
+    const sel = a.startsWith('show:') && SITE_ACTIONS[a.slice(5)]; if(sel) await spot(sel);
+    return;
+  }
+  if(a==='tour'){ const sc = SCRIPTS.find(x=>x.id==='tour'); await play(Object.assign({}, sc, {steps:tourSteps()}), id); return; }
+  if(a==='website'){ await play({steps:[{site:true}, {spot:'.site .w-hero', say:''}]}, id); return; }
+  if(a.startsWith('go:')){
+    const r = a.slice(3); if(!B.NAV.some(x=>x.items.some(i=>i[0]===r))) return;
+    status('Opening '+routeName(r)+'…', 'work'); await go(r, id);
+  }
+}
+function setChips(list){
+  if(!panel || !list || !list.length) return;
+  panel.querySelector('.hm-chips').innerHTML = list.map(q=>`<button type="button" data-hm="say">${e(q)}</button>`).join('');
+}
+const BRAIN_ERR = {not_granted:'You declined live AI for this page, {sir}, so I am back to my demo answers.', bad_key:'The Groq key in Hermus Settings was refused, {sir}. Please check it.',
+  rate_limited:'I am getting too many requests just now, {sir}. Give me a moment and ask again.', session_expired:'Your claude.ai session expired, {sir}. Please sign in again.'};
+async function liveAnswer(q, id){
+  busy = true;
+  try{
+    const res = await askBrain(q, id);
+    if(res==='gone') return true;
+    if(!res) return false;
+    const fast = res.action && res.action!=='none';
+    if(fast) act(res.action, id);                       /* move while talking */
+    await reply(res.say);
+    setChips(res.suggestions);
+    return true;
+  }catch(err){
+    if(err && err.code==='cancelled') return true;
+    const code = err && err.code;
+    if(code==='not_granted' || code==='sampling_disabled'){ if(B.live) B.live.sample = null; }
+    if(alive(id)) await reply(fill(BRAIN_ERR[code] || 'I could not reach my brain just now, {sir}. Please try again.'));
+    return true;
+  }finally{
+    busy = false; if(alive(id) && !cursorBusy()) status('Listening','listen');
+  }
+}
+const cursorBusy = () => false;
+
 function ask(q){
   if(!panel || panel.hidden && !minimized) return;
   if(minimized) setMin(false);
   const id = ++run; hush(); unspot();
   line('me', q);
   if(H.mode==='site'){ siteAsk(q, id); return; }
+  const exact = SCRIPTS.find(s=>s.q.toLowerCase()===q.toLowerCase());
+  if(!exact && H.brain()!=='scripted'){ liveAnswer(q, id).then(done => { if(!done) scripted(q, id); }); return; }
+  scripted(q, id);
+}
+function scripted(q, id){
   const sc = SCRIPTS.find(s=>s.q.toLowerCase()===q.toLowerCase()) || SCRIPTS.find(s=>s.match.test(q));
   if(sc){ play(sc.id==='tour' ? Object.assign({}, sc, {steps:tourSteps()}) : sc, id); return; }
   const m = H.memory();
@@ -346,6 +517,11 @@ function ask(q){
 function siteAsk(q, id){
   const say = t => (async()=>{ busy = true; status('Thinking…','work'); await sleep(600); if(!alive(id)) return; await reply(fill(t)); busy = false; if(alive(id)) status('Listening','listen'); })();
   if(B.state.view!=='site') return say('I am your website guide on this call, {sir}. End the call and press Hermus inside the product, and I can show you your workspace.');
+  const exact = SITE_SCRIPTS.find(s=>s.q.toLowerCase()===q.toLowerCase());
+  if(!exact && H.brain()!=='scripted'){ liveAnswer(q, id).then(done => { if(!done) siteScripted(q, id, say); }); return; }
+  siteScripted(q, id, say);
+}
+function siteScripted(q, id, say){
   const sc = SITE_SCRIPTS.find(s=>s.q.toLowerCase()===q.toLowerCase()) || (!PRODUCT_WORDS.test(q) || /price|plan|cost|how.*work/i.test(q) ? [SITE_SCRIPTS[0]].concat(SITE_SCRIPTS.slice(2), SITE_SCRIPTS[1]).find(s=>s.match.test(q)) : null);
   if(sc){ play(sc, id); return; }
   if(PRODUCT_WORDS.test(q)) return say('On the website I can only talk about the website, {sir}. Your business data stays inside the product: open the product and call me there.');
@@ -369,6 +545,9 @@ H.open = () => {
   panel.querySelector('.hm-chips').innerHTML = chipsHTML();
   panel.querySelector('.hm-mode').hidden = H.mode!=='site';
   panel.querySelector('.hm-log').innerHTML = '';
+  turns = [];
+  claudeSample().then(sm => { if(sm && B.live && !B.live.sample) B.live.sample = sm; note(); });
+  note();
   requestAnimationFrame(()=>panel.classList.add('on'));
   t0 = Date.now(); clearInterval(timerT);
   timerT = setInterval(()=>{ const s = Math.floor((Date.now()-t0)/1000), t = String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); document.querySelectorAll('.hm-time').forEach(x=>x.textContent = t); }, 1000);
@@ -378,6 +557,13 @@ H.open = () => {
   const hello = H.mode==='site' ? `Welcome to BIOS, {sir}. I am Hermus, your website guide. Ask me what BIOS does, how it works or what the plans are.` : `Good ${part}, {sir}. Hermus online. What would you like to see?`;
   setTimeout(async()=>{ if(!alive(id)) return; await reply(fill(hello)); if(alive(id)) status('Listening','listen'); }, 700);
 };
+function note(){
+  if(!panel) return;
+  const b = H.brain();
+  panel.querySelector('.hm-note').textContent = b==='claude' ? 'Live AI · Claude on your account · the microphone button is simulated'
+    : b==='groq' ? 'Live AI · Groq with your key · the microphone button is simulated'
+    : 'Demo mode · scripted answers. Add a Groq key in Hermus Settings for live AI.';
+}
 H.end = () => {
   run++; hush(); unspot(); clearInterval(timerT); busy = false;
   if(cursor) cursor.hidden = true;
@@ -391,7 +577,7 @@ const opt = (k, v, label, cur) => `<button class="choice" type="button" data-act
 B.screens['h-settings'] = ws => {
   const s = H.settings();
   const row = (label, hint, body) => `<div class="r"><span class="k">${e(label)}${hint?`<span class="hm-hint">${e(hint)}</span>`:''}</span><span class="v"><div class="choices">${body}</div></span><span class="m"></span></div>`;
-  return `${UI.pageHead({crumb:'Hermus', title:'Hermus Settings', sub:'How Hermus talks to you and what he is allowed to do in the platform. Prototype: Hermus is a scripted demo, not a real assistant.',
+  return `${UI.pageHead({crumb:'Hermus', title:'Hermus Settings', sub:'How Hermus talks to you and what he is allowed to do in the platform. Live AI when a brain is connected (see Hermus brain); otherwise a scripted demo.',
       purpose:{why:'To decide how a hands-free assistant should behave before it exists.', decision:'What Hermus may do on his own and what always needs you.', data:'Your choices, kept in this browser only.', action:'Change voice, form of address and permissions.'}})}
     <div class="g2">
       <div class="stack">
@@ -411,11 +597,33 @@ B.screens['h-settings'] = ws => {
         </div>`})}
       </div>
       <aside class="stack">
+        ${UI.panel({title:'Hermus brain', body:(()=>{ const k = H.keys(), b = H.brain();
+          const st = b==='claude' ? '<span class="chip ok">Live · Claude on your account</span>' : b==='groq' ? '<span class="chip ok">Live · Groq</span>' : '<span class="chip dim">Demo · scripted answers</span>';
+          const mask = v => v ? '•••• '+e(v.slice(-4)) : 'not set';
+          return `<div class="stack tight">${st}
+          <p class="small ink2">On the published BIOS link Hermus uses Claude on your own account. Anywhere else he uses your Groq key below. Keys are saved <b>only in this browser</b>, never in the site's code, and are sent only to Groq and ElevenLabs.</p>
+          <form data-form="hm-keys" class="stack tight" autocomplete="off">
+            <label class="field"><span>Groq API key <span class="hint">${mask(k.groq)}</span></span><input class="input" type="password" name="groq" placeholder="gsk_…" autocomplete="off" spellcheck="false"></label>
+            <label class="field"><span>Groq model</span><input class="input" name="groqModel" value="${e(k.groqModel||'openai/gpt-oss-120b')}" spellcheck="false"></label>
+            <label class="field"><span>ElevenLabs API key (voice) <span class="hint">${mask(k.eleven)}</span></span><input class="input" type="password" name="eleven" placeholder="sk_…" autocomplete="off" spellcheck="false"></label>
+            <label class="field"><span>ElevenLabs voice</span><select class="select" name="elevenVoice">${[['onwK4e9ZLuTAKqWW03F9','Daniel · steady broadcaster'],['JBFqnCBsd6RMkjVDRZzb','George · warm storyteller'],['nPczCjzI2devNBz1zQrb','Brian · deep, comforting'],['cjVigY5qzO86Huf0OWal','Eric · smooth, trustworthy'],['XrExE9yKIg1WjnnlVkGX','Matilda · professional'],['EXAVITQu4vr4xnSDxMaL','Sarah · confident']].map(([id,n])=>`<option value="${id}"${id===k.elevenVoice?' selected':''}>${n}</option>`).join('')}</select></label>
+            <div class="row"><button class="btn sm" type="submit">Save</button><button class="btn sm ghost" type="button" data-act="hm-keys-clear">Remove keys</button></div>
+            <p class="small muted">Leave a key field empty to keep the saved one. If ElevenLabs fails, Hermus uses your browser's voice.</p>
+          </form></div>`; })()})}
         ${UI.panel({title:'Try it', body:`<p class="small ink2">Press <b>Hermus</b> next to the Ask button in the top bar to start a live call. Ask about revenue, leads, tasks, the Company Brain, the last campaign or the website, and Hermus opens the pages and shows you.</p><div style="margin-top:10px"><button class="btn" data-act="hermus">Call Hermus</button></div>`})}
-        ${UI.panel({title:'About this prototype', body:`<ul class="bullets small ink2"><li>Scripted answers from the sample workspace, no AI model.</li><li>The microphone button is simulated; nothing is recorded.</li><li>Hermus never changes your data: he only opens, scrolls and points.</li><li>On the website he is a guide only, and he never leaves BIOS.</li></ul>`})}
+        ${UI.panel({title:'About this prototype', body:`<ul class="bullets small ink2"><li>Live answers from Claude or your Groq key; scripted walkthroughs otherwise.</li><li>The microphone button is simulated; nothing is recorded.</li><li>Hermus never changes your data: he only opens, scrolls and points.</li><li>On the website he is a guide only, and he never leaves BIOS.</li></ul>`})}
       </aside>
     </div>`;
 };
+B.forms['hm-keys'] = (f, d) => {
+  const k = H.keys(), t = v => String(v||'').trim();
+  if(t(d.groq)) k.groq = t(d.groq);
+  if(t(d.eleven)) k.eleven = t(d.eleven);
+  k.groqModel = t(d.groqModel) || 'openai/gpt-oss-120b';
+  k.elevenVoice = t(d.elevenVoice) || k.elevenVoice;
+  save(KKEY, k); elevenOff = false; UI.toast('Saved in this browser only.'); B.refresh();
+};
+B.act['hm-keys-clear'] = () => { try{ localStorage.removeItem(KKEY); }catch(err){} elevenOff = false; UI.toast('Keys removed from this browser.'); B.refresh(); };
 B.act['hm-set'] = el => {
   const s = H.settings(), k = el.dataset.k, raw = el.dataset.v;
   s[k] = raw==='true' ? true : raw==='false' ? false : raw;

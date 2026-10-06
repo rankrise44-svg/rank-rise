@@ -105,3 +105,15 @@ credits note and the old "six core roles" copy were removed.
 
 Product view: navigation, sidebar and all 79 pages checked unchanged
 against the archive.
+
+### Hermus live AI (version 10)
+
+Hermus now answers live, modelled on the Valgon prompt: a general assistant on
+any topic, a marketing and business specialist, and the expert on the
+workspace, replying as `{say, action, suggestions}`. On the published link he
+uses Claude on the viewer's own account; elsewhere, a Groq key saved in Hermus
+Settings (this browser only). Voice uses ElevenLabs when a key is saved, else
+the browser voice. He can only open BIOS pages, run the tour or show the
+website; on the website only its sections and the sign-up form. He never
+approves, spends, publishes or changes data. The suggestion chips' scripted
+walkthroughs still work. Change: `js/hermus.js` only.

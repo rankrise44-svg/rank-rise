@@ -18,8 +18,15 @@ HTML strings, the whole `#root` re-renders on each change).
 
 ## Hermus (the owner's assistant — keep him)
 
-Hermus is a **prototype voice assistant "like Jarvis"**. He is a scripted demo:
-no AI model, no real microphone, nothing recorded.
+Hermus is a **voice assistant "like Jarvis"**, modelled on the Valgon prompt:
+a general AI assistant (any topic) with marketing/business expertise and the
+workspace facts, replying as JSON `{say, action, suggestions}`. Brain order:
+built-in Claude (`sample` capability) on the published link → Groq with a key
+the user saves in Hermus Settings (browser localStorage `bios.hermus.keys`,
+**never commit keys to the repo**) → scripted demo. Voice: ElevenLabs with the
+saved key, else browser speech. Product actions: `none`, `tour`, `website`,
+`go:<route>`; website actions: `show:<section>`, `signup` only (enforced in
+`act()`). The microphone button is still simulated.
 
 - Files: `redesign/js/hermus.js` (all logic, scripts, Settings and Memory
   pages) and `redesign/css/hermus.css` (styles). Hooks: the Hermus button next
