@@ -1,15 +1,40 @@
 import { useEffect, useRef, useState } from 'react';
-import { MENU } from '../scene/eagle/anchors';
-import { scrollToId } from '../story/smoothScroll';
+import { NAV } from '../config/pages';
+import { hrefFor, navigate, useRoute } from '../lib/route';
+import { closeDock, openDock } from '../valgon/ui/Dock';
+import { useValgon } from '../valgon/store';
+import { unlockVoice } from '../valgon/voice';
 import { openAccount } from './openAccount';
 import { RiskNote } from './RiskNote';
 import logo from '../assets/logo.svg';
 
-/** Logo, Open Account and a full-screen menu so every option is always one tap away. */
+/** Valgon's button in the header: opens his panel, or on his own page puts the cursor in his box. */
+function ValgonButton() {
+  const { page } = useRoute();
+  const { dockOpen } = useValgon();
+  const onClick = () => {
+    unlockVoice();
+    if (page === 'valgon') document.querySelector<HTMLInputElement>('[data-page="valgon"] input[aria-label="Ask Valgon"]')?.focus();
+    else if (dockOpen) closeDock();
+    else openDock();
+  };
+  return (
+    <button type="button" onClick={onClick} aria-label="Talk to Valgon" className="vg-btn flex h-10 items-center gap-2 rounded-full px-3 text-[12px] font-semibold uppercase tracking-[0.22em] text-ink sm:px-4">
+      <span className="vg-dot" aria-hidden />
+      <span className="max-[380px]:hidden">Valgon</span>
+    </button>
+  );
+}
+
+/**
+ * The site header: logo (to the falcon page), the page links, Valgon, the
+ * Trader Portal and Open Account. Below xl the links move into the Menu.
+ */
 export function TopNav() {
   const [open, setOpen] = useState(false);
   const panel = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
+  const route = useRoute();
 
   useEffect(() => {
     if (!open) return;
@@ -24,46 +49,69 @@ export function TopNav() {
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
 
-  const go = (id: string) => (e: React.MouseEvent) => {
+  const go = (page: Parameters<typeof navigate>[0], section?: string) => (e: React.MouseEvent) => {
     e.preventDefault();
     setOpen(false);
-    if (id === 'open-account') openAccount();
-    else scrollToId(id);
+    navigate(page, section);
   };
+  const isActive = (n: (typeof NAV)[number]) => route.page === n.page && (n.section ? route.section === n.section : !route.section || n.page !== 'home');
 
   return (
     <>
-      <header className="fixed inset-x-0 top-8 z-40 flex h-16 items-center justify-between px-4 sm:px-8">
-        <a href="#top" onClick={go('top')} className="flex items-center gap-2.5" aria-label="Connect Financials — back to top">
+      <header className="fixed inset-x-0 top-8 z-40 flex h-16 items-center justify-between gap-3 bg-gradient-to-b from-abyss/80 to-transparent px-4 sm:px-8">
+        <a href={hrefFor('home')} onClick={go('home')} className="flex shrink-0 items-center gap-2.5" aria-label="Connect Financials — home">
           <img src={logo} alt="" width={48} height={30} className="h-8 w-auto" />
-          <span className="font-display text-[13px] font-semibold uppercase tracking-[0.28em] text-ink">
+          <span className="font-display text-[13px] font-semibold uppercase tracking-[0.28em] text-ink max-sm:hidden">
             Connect <span className="text-gold">Financials</span>
           </span>
         </a>
-        <div className="flex items-center gap-2 sm:gap-4">
-          <a href="#portal" className="hidden text-[13px] font-medium text-muted transition-colors hover:text-gold-hi sm:block">
+
+        <nav aria-label="Main" className="hidden xl:block">
+          <ul className="flex items-center gap-1">
+            {NAV.map((n) => {
+              const active = isActive(n);
+              return (
+                <li key={n.label}>
+                  <a
+                    href={hrefFor(n.page, n.section)}
+                    onClick={go(n.page, n.section)}
+                    aria-current={active ? 'page' : undefined}
+                    className={`relative rounded-full px-3 py-2 text-[12px] font-semibold uppercase tracking-[0.16em] transition-colors ${active ? 'text-gold-hi' : 'text-ink/75 hover:text-ink'}`}
+                  >
+                    {n.label}
+                    {active && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-gradient-to-r from-transparent via-gold-hi to-transparent" aria-hidden />}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <ValgonButton />
+          <a href={hrefFor('portal')} onClick={go('portal')} className="hidden text-[13px] font-medium text-muted transition-colors hover:text-gold-hi 2xl:block">
             Trader Portal
           </a>
-          <a
-            href="#open-account"
-            onClick={go('open-account')}
+          <button
+            type="button"
+            onClick={() => (setOpen(false), openAccount())}
             className="hidden rounded-full bg-gradient-to-b from-gold-hi to-gold px-5 py-2 text-[13px] font-semibold text-abyss shadow-[0_0_24px_rgba(212,175,55,0.35)] transition hover:brightness-110 sm:block"
           >
             Open Account
-          </a>
+          </button>
           <button
             ref={button}
             type="button"
             onClick={() => setOpen(true)}
             aria-expanded={open}
             aria-controls="site-menu"
-            className="flex h-10 items-center gap-2 rounded-full border border-gold/30 px-4 text-[12px] font-semibold uppercase tracking-[0.2em] text-ink transition hover:border-gold-hi"
+            className="flex h-10 items-center gap-2 rounded-full border border-gold/30 px-4 text-[12px] font-semibold uppercase tracking-[0.2em] text-ink transition hover:border-gold-hi xl:hidden"
           >
             <span className="flex flex-col gap-1" aria-hidden>
               <span className="block h-px w-4 bg-gold-hi" />
               <span className="block h-px w-4 bg-gold-hi" />
             </span>
-            Menu
+            <span className="max-sm:sr-only">Menu</span>
           </button>
         </div>
       </header>
@@ -89,22 +137,29 @@ export function TopNav() {
           </button>
           <nav aria-label="Main">
             <ol className="space-y-2">
-              {MENU.map((m, i) => (
-                <li key={m.id}>
+              {[{ label: 'Valgon', page: 'valgon' as const, section: undefined }, ...NAV].map((n, i) => (
+                <li key={n.label}>
                   <a
-                    href={`#${m.id}`}
-                    onClick={go(m.id)}
-                    className="group flex items-baseline gap-4 font-display text-[clamp(2rem,6vw,4.5rem)] font-semibold uppercase leading-none tracking-tight text-ink transition-colors hover:text-gold-hi"
+                    href={hrefFor(n.page, n.section)}
+                    onClick={go(n.page, n.section)}
+                    aria-current={isActive(n) ? 'page' : undefined}
+                    className="group flex items-baseline gap-4 font-display text-[clamp(1.8rem,5.5vw,4rem)] font-semibold uppercase leading-none tracking-tight text-ink transition-colors hover:text-gold-hi aria-[current=page]:text-gold-hi"
                   >
-                    <span className="num text-sm font-medium text-gold">0{i + 1}</span>
-                    {m.label}
+                    <span className="num text-sm font-medium text-gold">{String(i + 1).padStart(2, '0')}</span>
+                    {n.label}
                   </a>
                 </li>
               ))}
-              <li>
-                <a href="#portal" onClick={() => setOpen(false)} className="flex items-baseline gap-4 font-display text-[clamp(1.25rem,3vw,2rem)] font-semibold uppercase text-muted hover:text-gold-hi">
-                  <span className="num text-sm text-gold">07</span>Trader Portal
+              <li className="flex flex-wrap gap-x-8 gap-y-2 pt-4">
+                <a href={hrefFor('portal')} onClick={go('portal')} className="font-display text-[clamp(1.1rem,2.6vw,1.6rem)] font-semibold uppercase text-muted hover:text-gold-hi">
+                  Trader Portal
                 </a>
+                <a href={hrefFor('legal')} onClick={go('legal')} className="font-display text-[clamp(1.1rem,2.6vw,1.6rem)] font-semibold uppercase text-muted hover:text-gold-hi">
+                  Legal
+                </a>
+                <button type="button" onClick={() => (setOpen(false), openAccount())} className="font-display text-[clamp(1.1rem,2.6vw,1.6rem)] font-semibold uppercase text-gold-hi hover:text-ink">
+                  Open Account
+                </button>
               </li>
             </ol>
           </nav>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MarketWatch } from './MarketWatch';
 import { ChartTerminal } from './ChartTerminal';
 import { OrderBook } from './OrderBook';
@@ -9,6 +9,12 @@ import { OrderBook } from './OrderBook';
  */
 export function MarketsTerminal() {
   const [selected, setSelected] = useState('EURUSD');
+  // Valgon can pick the instrument ("show me the gold chart").
+  useEffect(() => {
+    const onPick = (e: Event) => setSelected((e as CustomEvent<string>).detail);
+    window.addEventListener('valgon:instrument', onPick);
+    return () => window.removeEventListener('valgon:instrument', onPick);
+  }, []);
 
   return (
     <div className="grid w-full min-w-0 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-5">

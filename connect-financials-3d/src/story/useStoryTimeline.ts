@@ -148,17 +148,12 @@ export function useStoryTimeline(reduced: boolean) {
         .to('[data-transform-words]', { autoAlpha: 0, duration: 0.3 }, 10.7);
       tl.to({}, { duration: Math.max(0, STORY_LENGTH - tl.duration()) });
 
-      // ───────────────────────── Beats 6–12: one scrubbed timeline per section
+      // ───────────────────────── Beats 7–12: one scrubbed timeline per section
+      // A section that lives on another page gets a detached (inert) timeline.
       const beat = (trigger: string, start: string, end: string) =>
-        gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger, start, end, scrub: 1 } });
-
-      // 6 · MARKETS — the eagle moves aside into its frame; the terminal tilts up into place.
-      beat('#trade', 'top bottom', 'top 15%').addLabel('markets').fromTo(story.p, { markets: 0 }, { markets: 1 });
-      beat('[data-tilt]', 'top 95%', 'top 30%').fromTo(
-        '[data-tilt] > *',
-        { rotateX: 28, y: 120, transformOrigin: '50% 0%' },
-        { rotateX: 0, y: 0, ease: 'power2.out' },
-      );
+        document.querySelector(trigger)
+          ? gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger, start, end, scrub: 1 } })
+          : gsap.timeline({ paused: true });
 
       // 7 · 3D TO CARD — the eagle folds into the portrait frame; About types in.
       beat('#about', 'top bottom', 'top 20%').addLabel('card').fromTo(story.p, { card: 0 }, { card: 1 });
@@ -187,8 +182,8 @@ export function useStoryTimeline(reduced: boolean) {
         beat('#values', 'top bottom', 'bottom top').fromTo(el, { yPercent: 0 }, { yPercent: Number(el.dataset.par) * 160 }),
       );
 
-      // 9–11 · ACCOUNTS, TOOLS, PLATFORMS — the eagle rests out of frame.
-      for (const id of ['#accounts', '#tools', '#platforms']) {
+      // 9 · ACCOUNTS — the eagle rests out of frame. (Tools and platforms now have their own pages.)
+      for (const id of ['#accounts']) {
         beat(id, 'top 90%', 'top 40%').fromTo(
           `${id} [data-rise]`,
           { y: 60, autoAlpha: 0 },

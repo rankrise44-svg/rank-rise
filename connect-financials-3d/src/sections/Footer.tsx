@@ -1,13 +1,12 @@
 import { COMPANY, RISK_WARNING_FULL } from '../config/company';
-import { goTo } from '../lib/route';
-import { MENU } from '../scene/eagle/anchors';
-import { scrollToId } from '../story/smoothScroll';
+import { NAV as PAGES_NAV } from '../config/pages';
+import { navigate } from '../lib/route';
 
 const NAV: { label: string; action: () => void }[] = [
-  ...MENU.map((m) => ({ label: m.label, action: () => scrollToId(m.id) })),
-  { label: 'Legal', action: () => scrollToId('legal') },
-  { label: 'Contact', action: () => scrollToId('contact') },
-  { label: 'Trader Portal', action: () => goTo('portal') },
+  { label: 'Valgon', action: () => navigate('valgon') },
+  ...PAGES_NAV.map((n) => ({ label: n.label, action: () => navigate(n.page, n.section) })),
+  { label: 'Legal', action: () => navigate('legal') },
+  { label: 'Trader Portal', action: () => navigate('portal') },
 ];
 
 const EMAILS = [

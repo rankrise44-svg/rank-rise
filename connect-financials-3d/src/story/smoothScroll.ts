@@ -28,7 +28,7 @@ export function scrollToId(id: string) {
   const el = document.getElementById(id);
   if (!el) return;
   if (lenis) lenis.scrollTo(el, { duration: 1.6 });
-  else el.scrollIntoView({ behavior: 'auto', block: 'start' });
+  else el.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   // Move focus for keyboard and screen-reader users once there.
   el.setAttribute('tabindex', '-1');
   el.focus({ preventScroll: true });

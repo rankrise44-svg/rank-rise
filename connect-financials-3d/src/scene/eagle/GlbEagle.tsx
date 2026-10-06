@@ -15,8 +15,8 @@ import { eagleMaterials, eagleUniforms, type EaglePart } from './eagleMaterial';
  *    frame 0 = wings folded, last frame = wings fully spread;
  *  - mesh names containing "eye", "beak", "claw", "talon"/"toe"/"leg",
  *    "head", "feather"/"wing" get the matching look; everything else is body;
- *  - optional empties named anchor_trade, anchor_accounts, anchor_platforms,
- *    anchor_tools, anchor_about, anchor_open-account parented to wing bones,
+ *  - optional empties named anchor_markets, anchor_accounts, anchor_platforms,
+ *    anchor_tools, anchor_calendar, anchor_open-account parented to wing bones,
  *    so the menu follows the wings exactly.
  */
 function partFor(name: string): EaglePart {

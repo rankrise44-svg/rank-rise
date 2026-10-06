@@ -1,7 +1,6 @@
 import { COMPANY } from '../config/company';
-import { MENU } from '../scene/eagle/anchors';
-import { scrollToId } from '../story/smoothScroll';
-import { goTo } from '../lib/route';
+import { NAV } from '../config/pages';
+import { goTo, hrefFor, navigate } from '../lib/route';
 import { openAccount } from '../ui/openAccount';
 import { RiskNote } from '../ui/RiskNote';
 import { ChartCard } from './ChartCard';
@@ -86,20 +85,16 @@ export function Closing() {
         </button>
       </div>
       <RiskNote className="mt-4 text-center" />
-      <nav aria-label="All sections" className="mt-12">
+      <nav aria-label="All pages" className="mt-12">
         <ul className="flex flex-wrap justify-center gap-x-8 gap-y-3">
-          {MENU.map((m) => (
-            <li key={m.id}>
+          {NAV.filter((n) => n.page !== 'home' || n.section).map((n) => (
+            <li key={n.label}>
               <a
-                href={`#${m.id}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (m.id === 'open-account') openAccount();
-                  else scrollToId(m.id);
-                }}
+                href={hrefFor(n.page, n.section)}
+                onClick={(e) => (e.preventDefault(), navigate(n.page, n.section))}
                 className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-muted hover:text-gold-hi"
               >
-                {m.label}
+                {n.label}
               </a>
             </li>
           ))}

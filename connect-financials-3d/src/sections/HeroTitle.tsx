@@ -1,5 +1,5 @@
 import { COMPANY } from '../config/company';
-import { scrollToId } from '../story/smoothScroll';
+import { hrefFor, navigate } from '../lib/route';
 import { RiskNote } from '../ui/RiskNote';
 import { openAccount } from '../ui/openAccount';
 
@@ -33,8 +33,8 @@ export function HeroTitle() {
             Open Account
           </a>
           <a
-            href="#trade"
-            onClick={(e) => (e.preventDefault(), scrollToId('trade'))}
+            href={hrefFor('markets')}
+            onClick={(e) => (e.preventDefault(), navigate('markets'))}
             className="rounded-full border border-gold/40 px-6 py-2.5 text-sm font-semibold text-ink transition hover:border-gold-hi hover:text-gold-hi"
           >
             Explore markets

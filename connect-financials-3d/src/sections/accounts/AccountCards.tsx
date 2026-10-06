@@ -32,7 +32,7 @@ export function AccountCards() {
     <div>
       <ul className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3" aria-label="Account types">
         {ACCOUNT_TIERS.map((tier) => (
-          <li key={tier.id} className="[perspective:1100px]">
+          <li key={tier.id} id={`account-${tier.id}`} className="scroll-mt-28 [perspective:1100px]">
             <TierCard tier={tier} canTilt={canTilt} />
           </li>
         ))}

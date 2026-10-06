@@ -1,5 +1,5 @@
 import { MENU, menuElements, menuLines, type MenuId } from '../scene/eagle/anchors';
-import { scrollToId } from '../story/smoothScroll';
+import { hrefFor, navigate } from '../lib/route';
 import { openAccount } from '../ui/openAccount';
 
 /**
@@ -54,9 +54,9 @@ export function WingMenu({ reduced = false }: { reduced?: boolean }) {
           >
             <div className="wing-float" style={{ animationDelay: `${-i * 0.9}s` }}>
               <a
-                href={`#${m.id}`}
+                href={m.page ? hrefFor(m.page, m.section) : '#open-account'}
                 data-wing-item
-                onClick={(e) => (e.preventDefault(), m.id === 'open-account' ? openAccount() : scrollToId(m.id))}
+                onClick={(e) => (e.preventDefault(), m.page ? navigate(m.page, m.section) : openAccount())}
                 onPointerEnter={() => setHot(m.id, true)}
                 onPointerLeave={() => setHot(m.id, false)}
                 onFocus={() => setHot(m.id, true)}

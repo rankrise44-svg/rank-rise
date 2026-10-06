@@ -8,12 +8,12 @@ import { Object3D } from 'three';
  * them where to stand.
  */
 export const MENU = [
-  { id: 'trade', label: 'Trade', wing: 'left' },
-  { id: 'accounts', label: 'Accounts', wing: 'left' },
-  { id: 'platforms', label: 'Platforms', wing: 'left' },
-  { id: 'tools', label: 'Tools', wing: 'right' },
-  { id: 'about', label: 'About', wing: 'right' },
-  { id: 'open-account', label: 'Open Account', wing: 'right' },
+  { id: 'markets', label: 'Connect View', wing: 'left', page: 'markets', section: null },
+  { id: 'accounts', label: 'Accounts', wing: 'left', page: 'home', section: 'accounts' },
+  { id: 'platforms', label: 'Platforms', wing: 'left', page: 'platforms', section: null },
+  { id: 'tools', label: 'Tools', wing: 'right', page: 'tools', section: null },
+  { id: 'calendar', label: 'Calendar', wing: 'right', page: 'calendar', section: null },
+  { id: 'open-account', label: 'Open Account', wing: 'right', page: null, section: null },
 ] as const;
 
 export type MenuId = (typeof MENU)[number]['id'];
@@ -35,10 +35,10 @@ export function clearAnchors() {
  * roughly along a spread wing's leading edge.
  */
 export const FALLBACK_ANCHORS: Record<MenuId, [number, number, number]> = {
-  trade: [-3.6, 1.9, 0],
+  markets: [-3.6, 1.9, 0],
   accounts: [-2.5, 1.55, 0],
   platforms: [-1.35, 1.2, 0],
   tools: [1.35, 1.2, 0],
-  about: [2.5, 1.55, 0],
+  calendar: [2.5, 1.55, 0],
   'open-account': [3.6, 1.9, 0],
 };

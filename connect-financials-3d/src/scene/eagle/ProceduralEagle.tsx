@@ -666,14 +666,14 @@ export function ProceduralEagle() {
   }, [lite]);
 
   useEffect(() => {
-    // Left wing: outer → inner reads Trade, Accounts, Platforms left to right.
+    // Left wing: outer → inner reads Connect View, Accounts, Platforms left to right.
     const [left, right] = rig.wings;
     const ids: [MenuId, Object3D][] = [
-      ['trade', left.anchors[2]],
+      ['markets', left.anchors[2]],
       ['accounts', left.anchors[1]],
       ['platforms', left.anchors[0]],
       ['tools', right.anchors[0]],
-      ['about', right.anchors[1]],
+      ['calendar', right.anchors[1]],
       ['open-account', right.anchors[2]],
     ];
     for (const [id, o] of ids) anchorObjects[id] = o;
