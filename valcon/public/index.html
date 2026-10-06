@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VALCON</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2711%27 fill=%27%2300e5ff%27/%3E%3C/svg%3E">
+</head>
+<body>
+  <!-- Boot: one click unlocks the microphone and sound, then the system boots -->
+  <section id="boot" class="boot">
+    <div class="boot-inner">
+      <div class="boot-title" id="bootTitle">VALCON</div>
+      <button id="initBtn" class="init-btn" type="button">INITIALIZE</button>
+      <p class="boot-hint" id="bootHint">Click or press any key to start. Chrome will ask for the microphone.</p>
+      <div class="boot-run" id="bootRun" hidden>
+        <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+        <div class="bar-pct" id="barPct">0%</div>
+        <pre class="boot-lines" id="bootLines"></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- HUD -->
+  <main id="hud" class="hud" hidden>
+    <header class="top">
+      <div class="brand">VALCON <span>// PERSONAL ASSISTANT</span></div>
+      <div class="state" id="stateBadge"><i></i><span id="stateText">STANDBY</span></div>
+      <div class="clock" id="clock">00:00:00</div>
+    </header>
+
+    <aside class="panel left">
+      <h2>SYSTEM LOG</h2>
+      <div class="log" id="logLeft"></div>
+    </aside>
+
+    <section class="center">
+      <canvas id="orb" aria-label="VALCON"></canvas>
+      <div class="hint" id="hint">Say “Hey Valcon”</div>
+      <div class="dialog">
+        <div class="line you"><b>YOU</b><span id="youText">—</span></div>
+        <div class="line val"><b>VALCON</b><span id="valText">—</span></div>
+      </div>
+      <form id="typeForm" class="type" autocomplete="off">
+        <input id="typeInput" placeholder="Or type a command and press Enter" aria-label="Type a command">
+      </form>
+    </section>
+
+    <aside class="panel right">
+      <h2>TELEMETRY</h2>
+      <dl class="tele">
+        <div><dt>BRAIN</dt><dd id="tModel">—</dd></div>
+        <div><dt>VOICE</dt><dd id="tVoice">—</dd></div>
+        <div><dt>LANGUAGE</dt><dd id="tLang">EN</dd></div>
+        <div><dt>MIC LEVEL</dt><dd><span class="meter"><i id="tMic"></i></span></dd></div>
+        <div><dt>LATENCY</dt><dd id="tLatency">—</dd></div>
+        <div><dt>UPTIME</dt><dd id="tUptime">00:00</dd></div>
+      </dl>
+      <h2>NETWORK LOG</h2>
+      <div class="log" id="logRight"></div>
+    </aside>
+
+    <footer class="bottom">
+      <span>“Hey Valcon” to talk</span>
+      <span><kbd>Space</kbd> talk without the wake word</span>
+      <span><kbd>L</kbd> English / العربية</span>
+      <span><kbd>M</kbd> mute mic</span>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
