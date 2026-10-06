@@ -1,0 +1,54 @@
+CONNECT FINANCIALS + VALGON — HOW TO RUN IT ON YOUR LAPTOP
+==========================================================
+
+You need this once:
+  - Google Chrome (or Microsoft Edge)
+  - Node.js, LTS version, from https://nodejs.org (click the big green button,
+    install with all the default options)
+  - Your Groq key (https://console.groq.com/keys) and, if you have it working,
+    your ElevenLabs key (https://elevenlabs.io/app/settings/api-keys)
+
+START IT
+--------
+Windows:  double-click  START-WINDOWS.bat
+Mac:      double-click  START-MAC.command
+          (first time only: right-click it > Open > Open, because macOS
+          blocks files downloaded from the internet)
+
+The first time:
+  1. Notepad (or TextEdit) opens a file called .env. Paste your keys after the
+     = signs, like this, then save and close it:
+
+        GROQ_API_KEY=gsk_your_key_here
+        ELEVENLABS_API_KEY=sk_your_key_here
+        PORT=8787
+
+  2. It installs the website (about a minute, only the first time).
+  3. Chrome opens http://localhost:8787 by itself.
+  4. Click the blue microphone button next to Valgon's text box, then click
+     "Allow" when Chrome asks for the microphone. Talk to him.
+
+Next times: just double-click the start file again. Keep its black window
+open while you use the site; close it to stop the site.
+
+IF SOMETHING IS WRONG
+---------------------
+- Window says "Node.js is not installed": install it from nodejs.org, restart
+  the laptop, double-click the start file again.
+- Valgon only answers with website options: your GROQ_API_KEY is missing or
+  wrong. Open the .env file in this folder with Notepad, fix the key, save,
+  close the black window and start again. The black window shows
+  "Valgon brain: Groq ..." when the key is loaded, and
+  "[valgon] brain failed: ..." with the reason when it fails.
+- Valgon speaks with the robot browser voice: your ElevenLabs key is missing,
+  wrong, or the ElevenLabs account is blocked. Everything else still works.
+- Microphone does not work: use Chrome or Edge (not Firefox), open the site
+  at http://localhost:8787 exactly, and make sure the microphone is allowed
+  (click the icon on the left of the address bar). Valgon tells you the exact
+  reason in the chat.
+- "Port 8787 is already in use": the site is already running in another
+  black window. Use that one, or close it first.
+
+KEEP YOUR KEYS SAFE
+-------------------
+The .env file holds your keys. Never send it to anyone or upload it anywhere.
