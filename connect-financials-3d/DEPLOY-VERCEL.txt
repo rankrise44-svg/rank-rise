@@ -1,0 +1,48 @@
+PUT CONNECT FINANCIALS ONLINE WITH VERCEL (free, about 5 minutes)
+==================================================================
+
+You get a public https link (like connect-financials.vercel.app). Open it in
+Chrome on your laptop or phone, allow the microphone, and talk to Valgon.
+Your keys are stored in Vercel's settings, never in the page.
+
+1. Go to https://vercel.com and click "Sign Up" > "Continue with GitHub"
+   (use the GitHub account that owns rankrise44-svg/rank-rise). Pick the free
+   "Hobby" plan.
+
+2. Click "Add New..." > "Project". Find "rank-rise" and click "Import"
+   (if it is not listed, click "Adjust GitHub App Permissions" and allow
+   the rank-rise repository).
+
+3. On the "Configure Project" screen:
+   - Project Name: connect-financials (this becomes your link)
+   - Root Directory: click "Edit" and choose  connect-financials-3d
+   - Framework Preset: Vite (it fills in by itself)
+   - Open "Environment Variables" and add two:
+        Name: GROQ_API_KEY         Value: your Groq key
+        Name: ELEVENLABS_API_KEY   Value: your ElevenLabs key
+   - Click "Deploy". This first try may fail: it uses the repository's main
+     branch, which holds your Rank Rise site, not this one. That is fine.
+
+4. Point Vercel at the Connect Financials branch:
+   - Open the project > "Settings" > "Environments" > "Production"
+     (on older screens: "Settings" > "Git" > "Production Branch").
+   - Set the branch to:   claude/nifty-maxwell-po5fhr   and save.
+
+5. Deploy that branch:
+   - Go to "Deployments" > "Create Deployment" (top right), type
+     claude/nifty-maxwell-po5fhr  and click "Create Deployment".
+   - Wait about a minute until it says "Ready".
+
+6. Click "Visit" (or open https://connect-financials.vercel.app). Click the
+   blue microphone next to Valgon's text box and choose "Allow".
+
+From now on, every change pushed to that branch goes online by itself.
+
+IF SOMETHING IS WRONG
+- Valgon only answers with website options: the GROQ_API_KEY variable is
+  missing or wrong. Fix it in Settings > Environment Variables, then
+  Deployments > the latest one > "..." > "Redeploy".
+- Robot browser voice: the ElevenLabs key is missing or its account is
+  blocked. Everything else still works.
+- Build failed: open the failed deployment, copy the red error lines, and
+  send them to Claude.
