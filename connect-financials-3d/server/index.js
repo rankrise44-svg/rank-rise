@@ -4,7 +4,8 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ACCOUNTS, SYSTEM_PROMPT } from './knowledge.js';
+import { SYSTEM_PROMPT } from './knowledge.js';
+import { stepsFor } from './actions.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = Number(process.env.PORT) || 8787;
@@ -13,29 +14,6 @@ const ELEVEN_KEY = process.env.ELEVENLABS_API_KEY || '';
 const MODELS = [process.env.GROQ_MODEL, 'openai/gpt-oss-20b', 'openai/gpt-oss-120b'].filter(Boolean);
 const VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'nPczCjzI2devNBz1zQrb'; // "Brian", calm and deep
 const TTS_MODEL = process.env.ELEVENLABS_MODEL || 'eleven_multilingual_v2';
-
-const PAGES = new Set(['home', 'markets', 'tools', 'calendar', 'platforms', 'contact', 'legal', 'portal']);
-const TIERS = new Set(ACCOUNTS.map((a) => a.id));
-const SYMBOL = /^[A-Z0-9]{3,8}$/;
-
-/** Turn the model's chosen action into the steps the page knows how to run. */
-function stepsFor(action) {
-  const a = String(action || 'none').trim();
-  let m;
-  if ((m = a.match(/^go:([a-z]+)(?:\/([a-z-]+))?$/)) && PAGES.has(m[1])) {
-    const steps = [{ go: m[1], ...(m[2] ? { section: m[2] } : {}) }];
-    const spot = m[2] ? `#${m[2] === 'accounts' ? 'accounts ul' : m[2]}` : { markets: '#terminal', tools: '#forex-calculators', calendar: '#economic-calendar', platforms: '#platforms-list', contact: '#contact-form', legal: '#legal-docs' }[m[1]];
-    if (spot) steps.push({ spot });
-    return steps;
-  }
-  if ((m = a.match(/^show_account:([a-z]+)$/)) && TIERS.has(m[1])) return [{ go: 'home', section: 'accounts' }, { spot: `#account-${m[1]}` }];
-  if ((m = a.match(/^open_account(?::([a-z]+))?$/))) return [{ openAccount: true, ...(m[1] && TIERS.has(m[1]) ? { tier: m[1] } : {}) }];
-  if ((m = a.match(/^show_instrument:([A-Za-z0-9/]+)$/))) {
-    const sym = m[1].toUpperCase().replace('/', '');
-    if (SYMBOL.test(sym)) return [{ go: 'markets', section: 'terminal' }, { instrument: sym }, { spot: '#terminal' }];
-  }
-  return [];
-}
 
 const app = express();
 app.use(express.json({ limit: '64kb' }));
