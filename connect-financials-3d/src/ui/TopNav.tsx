@@ -61,25 +61,25 @@ export function TopNav() {
       <header className="fixed inset-x-0 top-8 z-40 flex h-16 items-center justify-between gap-3 bg-gradient-to-b from-abyss/80 to-transparent px-4 sm:px-8">
         <a href={hrefFor('home')} onClick={go('home')} className="flex shrink-0 items-center gap-2.5" aria-label="Connect Financials — home">
           <img src={logo} alt="" width={48} height={30} className="h-8 w-auto" />
-          <span className="font-display text-[13px] font-semibold uppercase tracking-[0.28em] text-ink max-sm:hidden">
+          <span className="font-display text-[13px] font-semibold uppercase tracking-[0.28em] text-ink max-sm:hidden lg:max-2xl:hidden">
             Connect <span className="text-gold">Financials</span>
           </span>
         </a>
 
-        <nav aria-label="Main" className="hidden xl:block">
-          <ul className="flex items-center gap-1">
+        <nav aria-label="Main" className="hidden min-w-0 lg:block">
+          <ul className="flex items-center gap-0.5 xl:gap-1">
             {NAV.map((n) => {
               const active = isActive(n);
               return (
-                <li key={n.label}>
+                <li key={n.label} className={n.page === 'home' && !n.section ? 'max-xl:hidden' : undefined}>
                   <a
                     href={hrefFor(n.page, n.section)}
                     onClick={go(n.page, n.section)}
                     aria-current={active ? 'page' : undefined}
-                    className={`relative rounded-full px-3 py-2 text-[12px] font-semibold uppercase tracking-[0.16em] transition-colors ${active ? 'text-gold-hi' : 'text-ink/75 hover:text-ink'}`}
+                    className={`relative whitespace-nowrap rounded-full px-2 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors xl:px-3 xl:text-[12px] xl:tracking-[0.16em] ${active ? 'text-gold-hi' : 'text-ink/75 hover:text-ink'}`}
                   >
                     {n.label}
-                    {active && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-gradient-to-r from-transparent via-gold-hi to-transparent" aria-hidden />}
+                    {active && <span className="absolute inset-x-2 -bottom-0.5 xl:inset-x-3 h-px bg-gradient-to-r from-transparent via-gold-hi to-transparent" aria-hidden />}
                   </a>
                 </li>
               );
@@ -89,7 +89,7 @@ export function TopNav() {
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <ValgonButton />
-          <a href={hrefFor('portal')} onClick={go('portal')} className="hidden text-[13px] font-medium text-muted transition-colors hover:text-gold-hi 2xl:block">
+          <a href={hrefFor('portal')} onClick={go('portal')} className="hidden text-[13px] font-medium text-muted transition-colors hover:text-gold-hi min-[1760px]:block">
             Trader Portal
           </a>
           <button
@@ -105,13 +105,13 @@ export function TopNav() {
             onClick={() => setOpen(true)}
             aria-expanded={open}
             aria-controls="site-menu"
-            className="flex h-10 items-center gap-2 rounded-full border border-gold/30 px-4 text-[12px] font-semibold uppercase tracking-[0.2em] text-ink transition hover:border-gold-hi xl:hidden"
+            title="Menu" className="flex h-10 items-center gap-2 rounded-full border border-gold/30 px-4 text-[12px] font-semibold uppercase tracking-[0.2em] text-ink transition hover:border-gold-hi lg:w-10 lg:justify-center lg:px-0"
           >
             <span className="flex flex-col gap-1" aria-hidden>
               <span className="block h-px w-4 bg-gold-hi" />
               <span className="block h-px w-4 bg-gold-hi" />
             </span>
-            <span className="max-sm:sr-only">Menu</span>
+            <span className="max-sm:sr-only lg:sr-only">Menu</span>
           </button>
         </div>
       </header>
