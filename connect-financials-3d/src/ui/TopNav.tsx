@@ -71,16 +71,16 @@ export function TopNav() {
             {NAV.map((n) => {
               const active = isActive(n);
               return (
-                <li key={n.label} className={n.page === 'home' && !n.section ? 'max-xl:hidden' : undefined}>
+                <li key={n.label} className={`relative ${n.page === 'home' && !n.section ? 'max-xl:hidden' : ''}`}>
                   <a
                     href={hrefFor(n.page, n.section)}
                     onClick={go(n.page, n.section)}
                     aria-current={active ? 'page' : undefined}
-                    className={`relative whitespace-nowrap rounded-full px-2 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors xl:px-3 xl:text-[12px] xl:tracking-[0.16em] ${active ? 'text-gold-hi' : 'text-ink/75 hover:text-ink'}`}
+                    className={`nav-gold relative inline-block whitespace-nowrap rounded-full px-2 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] xl:px-3 xl:text-[12px] xl:tracking-[0.16em] ${active ? 'is-active' : ''}`}
                   >
                     {n.label}
-                    {active && <span className="absolute inset-x-2 -bottom-0.5 xl:inset-x-3 h-px bg-gradient-to-r from-transparent via-gold-hi to-transparent" aria-hidden />}
                   </a>
+                  {active && <span className="pointer-events-none absolute inset-x-2 bottom-0.5 h-px bg-gradient-to-r from-transparent via-gold-hi to-transparent xl:inset-x-3" aria-hidden />}
                 </li>
               );
             })}

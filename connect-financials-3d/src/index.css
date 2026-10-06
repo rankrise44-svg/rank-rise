@@ -148,3 +148,23 @@ li:nth-child(5) > .vg-tile { animation-delay: .16s; } li:nth-child(6) > .vg-tile
   .vg-dot::after, .vg-blink, .vg-mic-on, .vg-line, .vg-tile, .vg-dock, .vg-fab { animation: none !important; }
   .vg-pointer { transition: none; }
 }
+
+/* Header links: metallic gold that lifts, glows and catches the light on hover */
+.nav-gold {
+  background-image: linear-gradient(100deg, #9C7A1E 0%, #D4AF37 22%, #FFF1C4 38%, #E8C35A 50%, #B8902B 66%, #F5D27A 82%, #9C7A1E 100%);
+  background-size: 220% 100%;
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.6)) saturate(0.85) brightness(0.92);
+  transition: transform .3s cubic-bezier(.3, 1.4, .5, 1), filter .3s ease, background-position .9s ease;
+}
+.nav-gold:hover, .nav-gold:focus-visible {
+  transform: translateY(-2px);
+  background-position: 100% 50%;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.6)) drop-shadow(0 6px 14px rgba(212, 175, 55, 0.45)) saturate(1.1) brightness(1.12);
+}
+.nav-gold:active { transform: translateY(0); }
+.nav-gold.is-active { filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.6)) drop-shadow(0 0 10px rgba(212, 175, 55, 0.35)) saturate(1.1) brightness(1.1); }
+@media (prefers-reduced-motion: reduce) { .nav-gold { transition: filter .2s; } .nav-gold:hover { transform: none; } }
