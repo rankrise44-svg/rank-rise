@@ -60,7 +60,7 @@ app.post('/api/valgon', async (req, res) => {
   for (let i = 0; i < queue.length; i++) {
     const { model } = queue[i];
     try {
-      const body = { model, messages, temperature: 0.4, max_completion_tokens: 700, response_format: { type: 'json_object' } };
+      const body = { model, messages, temperature: 0.4, max_completion_tokens: 1400, response_format: { type: 'json_object' } };
       if (model.startsWith('openai/gpt-oss')) body.reasoning_effort = 'low';
       const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
@@ -102,7 +102,7 @@ app.post('/api/valgon', async (req, res) => {
 
 /** Valgon's voice: ElevenLabs multilingual. The page falls back to the browser voice on any error. */
 app.post('/api/tts', async (req, res) => {
-  const text = String(req.body?.text || '').trim().slice(0, 1000);
+  const text = String(req.body?.text || '').trim().slice(0, 2500);
   if (!text) return res.status(400).json({ error: 'Empty text' });
   if (!ELEVEN_KEY) return res.status(503).json({ error: 'ELEVENLABS_API_KEY missing' });
   try {

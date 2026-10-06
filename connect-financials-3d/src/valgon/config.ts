@@ -15,7 +15,7 @@ export const VALGON = {
   /** Natural voice (ElevenLabs via the server); the browser voice is the fallback */
   ttsEndpoint: (import.meta.env.VITE_VALGON_TTS as string | undefined) || (import.meta.env.MODE === 'artifact' ? null : '/api/tts'),
   /** Milliseconds to wait for the endpoint before answering locally */
-  endpointTimeout: 9000,
+  endpointTimeout: 20000,
   voice: { preferLang: 'en-GB', rate: 1, pitch: 0.82 },
   listenLang: 'en-US',
 };
