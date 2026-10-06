@@ -186,10 +186,23 @@ export async function repeatLast() {
   if (alive(id)) mode('listen', 'Listening');
 }
 
+/** Why the microphone failed, in words the visitor can act on. */
+function micProblem(reason: string): string {
+  if (reason === 'not-allowed' || reason === 'service-not-allowed') {
+    if (window.self !== window.top) return 'This preview does not allow the microphone. Run the website with npm start and open localhost:8787 in Chrome to talk to me.';
+    if (!window.isSecureContext) return 'Browsers only allow the microphone on localhost or https. Open the site at localhost:8787.';
+    return 'The microphone is blocked. Click the icon on the left of the address bar, allow the microphone, and try again.';
+  }
+  if (reason === 'audio-capture') return 'I cannot find a microphone. Check that one is connected and selected in your system settings.';
+  if (reason === 'network') return 'Chrome could not reach its speech service. Check your internet connection and try again.';
+  if (reason === 'language-not-supported') return 'This browser does not support English speech recognition. Please use Chrome.';
+  return 'I could not hear you. Type your question instead.';
+}
+
 /** Microphone: listen, then ask what was heard. */
 export async function talk() {
   if (!canListen) {
-    addLine('valgon', 'Voice input is not available in this browser. Type your question and I will answer out loud.');
+    addLine('valgon', 'Voice input is not available in this browser. Please use Chrome or Edge, or type your question and I will answer out loud.');
     return;
   }
   const id = ++run;
@@ -206,7 +219,7 @@ export async function talk() {
     if (!alive(id)) return;
     valgon.set({ interim: '' });
     const reason = (err as Error).message;
-    addLine('valgon', reason === 'not-allowed' || reason === 'service-not-allowed' ? 'The microphone is blocked for this page. Type your question instead, or allow the microphone in your browser.' : 'I could not hear you. Type your question instead.');
+    addLine('valgon', micProblem(reason));
     mode('listen', 'Listening');
   }
 }
