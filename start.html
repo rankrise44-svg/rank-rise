@@ -97,6 +97,8 @@ textarea{ min-height:110px; resize:vertical; }
 #done h2{ font-family:'Anton'; font-weight:400; font-size:clamp(26px,6.5vw,38px); text-transform:uppercase; margin-top:20px; }
 #done p{ margin:12px auto 0; max-width:40ch; color:var(--dim); font-size:15px; line-height:1.6; }
 #done .wa{ display:inline-flex; margin-top:26px; width:auto; padding:14px 26px; }
+#done .wa.pulse{ animation:waPulse 1.7s ease-in-out infinite; }
+@keyframes waPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(127,100,208,.55); } 50%{ box-shadow:0 0 0 16px rgba(127,100,208,0); } }
 @keyframes pop{ from{ opacity:0; transform:translateY(26px); } to{ opacity:1; transform:none; } }
 
 footer{ text-align:center; padding:30px 0 calc(26px + env(safe-area-inset-bottom)); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); }
@@ -203,8 +205,8 @@ footer{ text-align:center; padding:30px 0 calc(26px + env(safe-area-inset-bottom
 
 <section id="done">
   <span class="spin3d"><span class="s3o"><svg><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg><svg aria-hidden="true"><use href="#rr"/></svg></span></span>
-  <h2>You're on the launchpad</h2>
-  <p>We got your details. Someone from RankRise will reach out shortly — keep your phone close.</p>
+  <h2 id="doneTitle">You're on the launchpad</h2>
+  <p id="doneText">We got your details. Someone from RankRise will reach out shortly — keep your phone close.</p>
   <a class="btn wa" id="waLink" href="https://wa.me/96170991555" target="_blank" rel="noopener">Chat with us now on WhatsApp</a>
 </section>
 
@@ -258,12 +260,24 @@ document.getElementById('riseForm').addEventListener('submit',async e=>{
   const ind=(f.industry.value==='Other' && f.industry_other.value.trim()) ? f.industry_other.value.trim() : f.industry.value;
   if(!ind){ document.getElementById('indLabel').scrollIntoView({behavior:'smooth',block:'center'}); return; }
   const data=new URLSearchParams(new FormData(f));
-  try{ await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:data.toString()}); }catch(_){}
+  /* Netlify Forms exists only on the real domain; anywhere else (preview,
+     artifact) the WhatsApp handoff IS the submission — and the copy says so
+     honestly instead of claiming the details were received. */
+  const hosted=/rankrise|netlify/i.test(location.hostname);
+  let saved=false;
+  if(hosted){ try{ const r=await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:data.toString()}); saved=r.ok; }catch(_){} }
   const msg='Hi RankRise! I just scanned your QR code.\n'
     +'Business: '+f.business.value+'\nIndustry: '+ind+'\nTeam: '+(f.team.value||'—')
     +'\nPhone: '+f.phone.value+'\nEmail: '+f.email.value
     +(f.about.value?'\nAbout: '+f.about.value:'');
-  document.getElementById('waLink').href='https://wa.me/96170991555?text='+encodeURIComponent(msg);
+  const wa=document.getElementById('waLink');
+  wa.href='https://wa.me/96170991555?text='+encodeURIComponent(msg);
+  if(!saved){
+    document.getElementById('doneTitle').textContent='One tap to lift off';
+    document.getElementById('doneText').textContent='Your answers are packed into the message below — press the button and they land straight in our WhatsApp.';
+    wa.textContent='Send it to RankRise on WhatsApp';
+    wa.classList.add('pulse');
+  }
   document.getElementById('formCard').style.display='none';
   document.querySelector('.hero').style.display='none';
   document.getElementById('done').classList.add('show');
