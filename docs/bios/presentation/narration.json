@@ -1,0 +1,75 @@
+{
+  "_note": "Voiceover for riser-explainer.html. 'at' is seconds from the start of the video. voice: narrator or hermus.",
+  "lines": [
+    {
+      "at": 0.6,
+      "voice": "narrator",
+      "text": "This is RISER. Your entire marketing team, in one intelligence system."
+    },
+    {
+      "at": 6.0,
+      "voice": "narrator",
+      "text": "You sign in, and your workspace opens. Understand, plan, execute and learn, with nineteen AI agents ready to work."
+    },
+    {
+      "at": 12.6,
+      "voice": "narrator",
+      "text": "First, tell it about your business. Answer a few simple questions, connect your website, files, ads and CRM, and RISER asks follow-ups for anything missing."
+    },
+    {
+      "at": 23.5,
+      "voice": "narrator",
+      "text": "Everything it learns goes into one company brain. Every fact keeps its source and confidence. Contradictions are flagged, and gaps become questions."
+    },
+    {
+      "at": 34.5,
+      "voice": "narrator",
+      "text": "Then the agents get to work. An orchestrator hands each task to the right specialists. They work in parallel, and two agents check every answer before you see it."
+    },
+    {
+      "at": 46.5,
+      "voice": "narrator",
+      "text": "Ask anything. Why did our leads drop? RISER picks the data it needs, checks every number against its source, and answers with the evidence attached."
+    },
+    {
+      "at": 58.5,
+      "voice": "narrator",
+      "text": "Maps show how it all connects, from every source to the brain. A red line is a broken source, and a task is already created to fix it."
+    },
+    {
+      "at": 68.5,
+      "voice": "narrator",
+      "text": "From strategy to done. Every plan has a target. Agents draft the tasks and content, and you approve anything that spends or publishes."
+    },
+    {
+      "at": 79.5,
+      "voice": "narrator",
+      "text": "Every campaign is evaluated: what worked, what was weak, and what to test next. The lesson goes back into the brain."
+    },
+    {
+      "at": 91.3,
+      "voice": "narrator",
+      "text": "And you can just talk to it."
+    },
+    {
+      "at": 92.6,
+      "voice": "you",
+      "text": "How is the business doing?"
+    },
+    {
+      "at": 93.8,
+      "voice": "hermus",
+      "text": "Good morning, sir. Revenue is up, mobile conversion is recovering since the fix, and two items need your approval."
+    },
+    {
+      "at": 100.5,
+      "voice": "narrator",
+      "text": "Understand. Plan. Act. Learn. Every week, a little smarter."
+    },
+    {
+      "at": 107.2,
+      "voice": "narrator",
+      "text": "RISER, by RankRise."
+    }
+  ]
+}
