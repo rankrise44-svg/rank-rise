@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>RISER explainer</title>
+<!-- Animated product explainer. Driven by window.seek(t) so every frame is
+     deterministic; render with render-explainer.js. Sample data: Meridian Supply. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--bg:#06071A;--ink:#EEF0FF;--ink2:#B9BEE3;--mut:#7E84B3;--line:rgba(255,255,255,.09);--glass:rgba(22,24,58,.72);
+  --v:#8B6CFF;--b:#3D7BFF;--c:#3FD6FF;--g:#3BE08A;--o:#FFB547;--r:#FF5C7A;--p:#FF4D8D}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;
+  background:radial-gradient(1100px 700px at 75% 35%,rgba(91,60,220,.28),transparent 60%),radial-gradient(900px 600px at 10% 90%,rgba(40,140,255,.16),transparent 60%),var(--bg)}
+#grid{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:28px 28px;opacity:.6}
+.sc{position:absolute;inset:0;display:none}
+.txt{position:absolute;left:110px;top:150px;width:600px}
+.k{font:700 18px Manrope;letter-spacing:.32em;text-transform:uppercase;color:var(--c)}
+.k b{display:inline-grid;place-items:center;width:44px;height:44px;margin-right:14px;border-radius:12px;color:#fff;letter-spacing:0;font:400 24px Anton;background:linear-gradient(135deg,var(--v),var(--b));vertical-align:middle}
+h1{font:400 92px/0.98 Anton,Impact,sans-serif;text-transform:uppercase;margin-top:26px;letter-spacing:.005em}
+h1 i{font-style:normal;background:linear-gradient(95deg,var(--v),var(--b) 55%,var(--c));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font:500 26px/1.45 Manrope;color:var(--ink2);margin-top:26px}
+.pts{margin-top:44px;display:grid;gap:20px}
+.pt{display:flex;gap:16px;align-items:flex-start;font:600 22px/1.4 Manrope;color:var(--ink)}
+.pt::before{content:"";flex:none;width:12px;height:12px;margin-top:9px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--v));box-shadow:0 0 14px var(--v)}
+.vis{position:absolute;left:800px;top:110px;width:1020px;height:860px}
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:26px;box-shadow:0 30px 80px -30px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:blur(14px)}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:999px;font:700 15px Manrope;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink2)}
+.chip.ok{color:var(--g);border-color:rgba(59,224,138,.4);background:rgba(59,224,138,.08)}
+.chip.bad{color:var(--r);border-color:rgba(255,92,122,.45);background:rgba(255,92,122,.1)}
+.chip.warn{color:var(--o);border-color:rgba(255,181,71,.45);background:rgba(255,181,71,.08)}
+.chip.info{color:var(--c);border-color:rgba(63,214,255,.4);background:rgba(63,214,255,.08)}
+.dot{width:10px;height:10px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
+.num{font-family:Manrope;font-weight:800;font-variant-numeric:tabular-nums}
+svg{overflow:visible}
+.cursor{position:absolute;width:30px;height:34px;z-index:5;filter:drop-shadow(0 4px 10px rgba(0,0,0,.6))}
+.ring{position:absolute;border-radius:50%;border:2px solid var(--v)}
+/* app shell */
+.app{position:absolute;inset:0;display:grid;grid-template-columns:250px 1fr;overflow:hidden;border-radius:26px}
+.side{border-right:1px solid var(--line);padding:24px 18px;background:rgba(10,11,32,.6)}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.logo b{font:400 30px Anton;letter-spacing:.14em;background:linear-gradient(95deg,#fff 45%,#B8A6FF 75%,var(--c));-webkit-background-clip:text;background-clip:text;color:transparent}
+.nav{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:11px;font:600 16px Manrope;color:var(--ink2)}
+.nav i{width:22px;height:22px;border-radius:7px;flex:none;background:linear-gradient(135deg,var(--v),var(--b))}
+.nav.on{background:rgba(139,108,255,.18);color:#fff;box-shadow:inset 0 0 0 1px rgba(139,108,255,.5)}
+.main{padding:34px 40px}
+/* agents */
+.ag{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.035);transition:none}
+.ag .ic{width:34px;height:34px;border-radius:10px;flex:none;display:grid;place-items:center;font:800 15px Manrope;color:#fff;opacity:.5}
+.ag .n{font:700 16px Manrope}
+.ag .st{font:600 12.5px Manrope;color:var(--mut);margin-top:2px;display:flex;align-items:center;gap:6px}
+.ag.on{border-color:rgba(139,108,255,.6);background:rgba(139,108,255,.12);box-shadow:0 0 30px -8px var(--v)}
+.ag.on .ic{opacity:1}
+.ag.on .st{color:var(--c)}
+.ag.done{border-color:rgba(59,224,138,.45)}
+.ag.done .st{color:var(--g)}
+/* kanban */
+.col{border-radius:18px;background:rgba(255,255,255,.03);border:1px solid var(--line);padding:14px;display:grid;gap:10px;align-content:start}
+.col h4{font:700 13px Manrope;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);padding:2px 4px 6px;border-top:3px solid var(--cc);border-radius:2px;padding-top:10px}
+.card{border-radius:14px;border:1px solid var(--line);background:rgba(16,18,46,.95);padding:13px 14px;font:700 16px/1.3 Manrope}
+.card small{display:block;font:500 13px Manrope;color:var(--mut);margin-top:5px}
+.card.gate{border-color:rgba(255,181,71,.7);box-shadow:0 0 30px -10px var(--o)}
+.btn{display:inline-block;margin-top:10px;padding:7px 14px;border-radius:10px;font:800 13px Manrope;color:#fff;background:linear-gradient(95deg,var(--v),var(--b))}
+.tile{border-radius:20px;padding:20px 22px;border:1px solid var(--line);background:linear-gradient(160deg,rgba(40,30,110,.55),rgba(16,18,46,.9))}
+.tile .l{font:700 13px Manrope;letter-spacing:.18em;text-transform:uppercase;color:var(--mut)}
+.tile .v{font:800 46px/1.1 Manrope;margin-top:8px;font-variant-numeric:tabular-nums}
+.tile .d{font:700 15px Manrope;margin-top:6px}
+.bubble{padding:14px 18px;border-radius:18px;font:600 20px/1.45 Manrope;max-width:760px}
+.bubble.me{margin-left:auto;background:linear-gradient(95deg,var(--v),var(--b));border-bottom-right-radius:6px}
+.bubble.ai{background:rgba(255,255,255,.06);border:1px solid var(--line);border-bottom-left-radius:6px}
+.tag{position:absolute;right:30px;bottom:24px;font:700 13px Manrope;letter-spacing:.2em;text-transform:uppercase;color:rgba(238,240,255,.45)}
+</style></head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="mk" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3FD6FF"/><stop offset=".55" stop-color="#8B6CFF"/><stop offset="1" stop-color="#FF4D8D"/></linearGradient></defs><defs><radialGradient id="core" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#9C83FF"/><stop offset=".55" stop-color="#4B39C9"/><stop offset="1" stop-color="#1B1760"/></radialGradient>
+      <linearGradient id="arc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9B7BFF"/><stop offset="1" stop-color="#3FD6FF"/></linearGradient></defs><linearGradient id="arcu" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1020" y2="860"><stop offset="0" stop-color="#9B7BFF"/><stop offset="1" stop-color="#3FD6FF"/></linearGradient></svg>
+<div id="stage"><div id="grid"></div>
+
+<!-- ============ S0 intro ============ -->
+<section class="sc" data-s="0" data-e="5.5">
+  <div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center">
+    <div>
+      <div data-in=".2" data-m="pop" style="display:flex;align-items:center;justify-content:center;gap:22px">
+        <svg width="96" height="96" viewBox="0 0 32 32"><g fill="url(#mk)"><rect x="3" y="18" width="6" height="11" rx="2"/><rect x="13" y="11" width="6" height="18" rx="2"/><rect x="23" y="4" width="6" height="25" rx="2"/></g><path data-draw=".7" data-dd="1" d="M4 14 L14 7 L20 10 L28.5 3" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div style="text-align:left"><div style="font:400 104px/1 Anton;letter-spacing:.16em;background:linear-gradient(95deg,#fff 40%,#B8A6FF 75%,#3FD6FF);-webkit-background-clip:text;background-clip:text;color:transparent">RISER</div>
+        <div style="font:700 18px Manrope;letter-spacing:.5em;color:var(--mut);margin-top:8px">BY RANKRISE</div></div>
+      </div>
+      <h1 data-in="1.2" style="font-size:86px;margin-top:56px">Your entire marketing team.<br><i>One intelligence system.</i></h1>
+      <p class="sub" data-in="2.2" style="font-size:28px">Inside the platform: what happens when you become a customer.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S1 sign in ============ -->
+<section class="sc" data-s="5.5" data-e="12">
+  <div class="txt">
+    <div class="k" data-in=".2"><b>1</b>You sign in</div>
+    <h1 data-in=".4">Your workspace <i>opens</i></h1>
+    <p class="sub" data-in=".7">Every part of your marketing in one place, organised the way a marketing team works.</p>
+    <div class="pts"><div class="pt" data-in="1.6">Understand, plan, execute, learn</div><div class="pt" data-in="2.1">19 AI agents ready to work</div><div class="pt" data-in="2.6">One shared company brain</div></div>
+  </div>
+  <div class="vis glass" data-in=".5" data-m="right">
+    <div class="app">
+      <div class="side">
+        <div class="logo"><svg width="30" height="30" viewBox="0 0 32 32"><g fill="url(#mk)"><rect x="3" y="18" width="6" height="11" rx="2"/><rect x="13" y="11" width="6" height="18" rx="2"/><rect x="23" y="4" width="6" height="25" rx="2"/></g></svg><b>RISER</b></div>
+        <div class="nav on" data-in="1.0" data-m="left"><i></i>Overview</div>
+        <div class="nav" data-in="1.12" data-m="left"><i style="background:linear-gradient(135deg,#3FD6FF,#3D7BFF)"></i>Ask</div>
+        <div class="nav" data-in="1.24" data-m="left"><i style="background:linear-gradient(135deg,#19D3C5,#3BE08A)"></i>Company Brain</div>
+        <div class="nav" data-in="1.36" data-m="left"><i style="background:linear-gradient(135deg,#FFB547,#FF7A3D)"></i>Maps</div>
+        <div class="nav" data-in="1.48" data-m="left"><i></i>Company Information</div>
+        <div class="nav" data-in="1.6" data-m="left"><i></i>Understand</div>
+        <div class="nav" data-in="1.72" data-m="left"><i></i>Plan</div>
+        <div class="nav" data-in="1.84" data-m="left"><i></i>Execute</div>
+        <div class="nav" data-in="1.96" data-m="left"><i></i>Learn &amp; improve</div>
+        <div class="nav" data-in="2.08" data-m="left"><i></i>Experiments</div>
+        <div class="nav" data-in="2.2" data-m="left"><i></i>Evaluation</div>
+        <div class="nav" data-in="2.32" data-m="left"><i></i>AI workforce</div>
+        <div class="nav" data-in="2.44" data-m="left"><i style="background:radial-gradient(circle at 35% 30%,#C9F6FF,#3FD6FF 25%,#7B5CFF 60%,#2A1A8C)"></i>Hermus</div>
+      </div>
+      <div class="main">
+        <div data-in="1.4" style="font:500 18px Manrope;color:var(--mut)">Mon 3 Nov</div>
+        <div data-in="1.6" style="font:400 64px/1.05 Anton;text-transform:uppercase;margin-top:10px">Welcome, Sara.</div>
+        <div data-in="2" style="font:600 24px Manrope;color:var(--ink2);margin-top:14px">Let's build your company brain.</div>
+        <div data-in="2.6" data-m="pop" style="margin-top:34px;display:inline-block;padding:16px 30px;border-radius:16px;font:800 22px Manrope;background:linear-gradient(95deg,var(--v),var(--b));box-shadow:0 0 0 calc(var(--pulse,0)*14px) rgba(139,108,255,.18),0 18px 40px -14px var(--v)" data-pulse="3">Start setup →</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:60px">
+          <div class="tile" data-in="3.0"><div class="l">Brain built</div><div class="v">0%</div><div class="d" style="color:var(--mut)">nothing known yet</div></div>
+          <div class="tile" data-in="3.15"><div class="l">Sources</div><div class="v">0</div><div class="d" style="color:var(--mut)">connect your data</div></div>
+          <div class="tile" data-in="3.3"><div class="l">Agents</div><div class="v">19</div><div class="d" style="color:var(--g)">ready</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S2 company information ============ -->
+<section class="sc" data-s="12" data-e="23">
+  <div class="txt">
+    <div class="k" data-in=".2"><b>2</b>Company information</div>
+    <h1 data-in=".4">Tell it about <i>your business</i></h1>
+    <p class="sub" data-in=".7">A few questions and your data sources. RISER does the rest.</p>
+    <div class="pts"><div class="pt" data-in="1.5">Answer simple questions once</div><div class="pt" data-in="3.8">Connect website, files, ads and CRM</div><div class="pt" data-in="7.0">AI asks follow-ups for anything missing</div></div>
+  </div>
+  <div class="vis" style="display:grid;grid-template-rows:auto auto 1fr;gap:22px">
+    <div class="glass" data-in=".5" style="padding:28px 32px">
+      <div style="display:flex;justify-content:space-between;align-items:center"><div style="font:700 15px Manrope;letter-spacing:.2em;color:var(--mut)">COMPANY PROFILE</div>
+        <div style="display:flex;align-items:center;gap:12px;font:800 20px Manrope"><span data-count="0,92,1.2,6.5,0,,%">0%</span><div style="width:220px;height:10px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden"><div data-fill="92,1.2,6.5" style="height:100%;background:linear-gradient(90deg,var(--g),var(--c));border-radius:6px"></div></div></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px 22px;margin-top:22px">
+        <div><div style="font:600 14px Manrope;color:var(--mut)">Company name</div><div class="glass" style="border-radius:12px;padding:12px 14px;margin-top:6px;font:600 19px Manrope;min-height:50px" data-type="1.2,22">Meridian Supply</div></div>
+        <div><div style="font:600 14px Manrope;color:var(--mut)">Industry</div><div class="glass" style="border-radius:12px;padding:12px 14px;margin-top:6px;font:600 19px Manrope;min-height:50px" data-type="2.0,24">E-commerce · coffee equipment</div></div>
+        <div><div style="font:600 14px Manrope;color:var(--mut)">Main customers</div><div class="glass" style="border-radius:12px;padding:12px 14px;margin-top:6px;font:600 19px Manrope;min-height:50px" data-type="3.0,24">Home baristas, small cafés</div></div>
+        <div><div style="font:600 14px Manrope;color:var(--mut)">Monthly revenue</div><div class="glass" style="border-radius:12px;padding:12px 14px;margin-top:6px;font:600 19px Manrope;min-height:50px" data-type="4.0,20">€140k – €150k</div></div>
+      </div>
+    </div>
+    <div class="glass" data-in="3.6" style="padding:24px 32px">
+      <div style="font:700 15px Manrope;letter-spacing:.2em;color:var(--mut)">DATA SOURCES</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:16px">
+        <div class="glass" data-in="4.0" data-m="pop" style="border-radius:16px;padding:16px;text-align:center"><div style="font:800 18px Manrope">Website</div><div style="margin-top:10px" ><span class="chip ok" data-in="4.8"><span class="dot"></span>142 pages</span></div></div>
+        <div class="glass" data-in="4.4" data-m="pop" style="border-radius:16px;padding:16px;text-align:center"><div style="font:800 18px Manrope">Brand guide.pdf</div><div style="margin-top:10px"><span class="chip ok" data-in="5.2"><span class="dot"></span>11 rules</span></div></div>
+        <div class="glass" data-in="4.8" data-m="pop" style="border-radius:16px;padding:16px;text-align:center"><div style="font:800 18px Manrope">Meta Ads</div><div style="margin-top:10px"><span class="chip ok" data-in="5.6"><span class="dot"></span>connected</span></div></div>
+        <div class="glass" data-in="5.2" data-m="pop" style="border-radius:16px;padding:16px;text-align:center"><div style="font:800 18px Manrope">Shopify</div><div style="margin-top:10px"><span class="chip info" data-in="6.0"><span class="dot"></span>8,914 orders</span></div></div>
+        <div class="glass" data-in="5.6" data-m="pop" style="border-radius:16px;padding:16px;text-align:center"><div style="font:800 18px Manrope">HubSpot CRM</div><div style="margin-top:10px"><span class="chip ok" data-in="6.4"><span class="dot"></span>connected</span></div></div>
+      </div>
+    </div>
+    <div class="glass" data-in="7.0" style="padding:22px 28px;display:flex;gap:18px;align-items:center;align-self:start;border-color:rgba(63,214,255,.4)">
+      <div style="width:46px;height:46px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,#C9F6FF,#3FD6FF 25%,#7B5CFF 60%,#2A1A8C);box-shadow:0 0 24px #3FD6FF"></div>
+      <div><div style="font:700 13px Manrope;letter-spacing:.2em;color:var(--c)">AI FOLLOW-UP</div><div style="font:600 21px/1.4 Manrope;margin-top:4px" data-type="7.4,40">You mentioned cafés. Roughly what share of revenue comes from them?</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S3 brain ============ -->
+<section class="sc" data-s="23" data-e="34">
+  <div class="txt">
+    <div class="k" data-in=".2"><b>3</b>The company brain</div>
+    <h1 data-in=".4">Everything it learns, <i>in one brain</i></h1>
+    <p class="sub" data-in=".7">Your data becomes facts the whole team can trust.</p>
+    <div class="pts"><div class="pt" data-in="2.0">Every fact keeps its source, date and confidence</div><div class="pt" data-in="5.0">Contradictions are flagged, never hidden</div><div class="pt" data-in="7.2">Gaps become questions to fill</div></div>
+  </div>
+  <div class="vis">
+    <svg width="1020" height="860" viewBox="0 0 1020 860" id="brainsvg">
+      
+      <g id="brainnodes"></g>
+      <circle cx="510" cy="385" r="150" fill="none" stroke="rgba(139,108,255,.25)" stroke-dasharray="4 10" data-spin="12"/>
+      <circle cx="510" cy="385" r="112" fill="url(#core)" style="filter:drop-shadow(0 0 40px rgba(123,92,255,.8))" data-in=".5" data-m="pop"/>
+      <text x="510" y="367" text-anchor="middle" style="font:400 30px Anton;letter-spacing:.14em;fill:#fff">COMPANY BRAIN</text>
+      <text x="510" y="425" text-anchor="middle" style="font:800 54px Manrope;fill:#fff" data-count="0,65,1.0,7.5,0,,%">0%</text>
+      <text x="510" y="455" text-anchor="middle" style="font:600 17px Manrope;fill:rgba(255,255,255,.75)" data-count="0,42,1.0,7.5,0,,/53 facts">0/53 facts</text>
+    </svg>
+    <div style="position:absolute;left:20px;bottom:0;display:flex;gap:12px;flex-wrap:wrap;width:1000px">
+      <span class="chip ok" data-in="3.2" data-m="pop" style="font-size:17px;padding:10px 16px"><span class="dot"></span>Verified · free shipping over €200</span>
+      <span class="chip bad" data-in="5.2" data-m="pop" style="font-size:17px;padding:10px 16px"><span class="dot"></span>Contradiction · active customers (3 sources disagree)</span>
+      <span class="chip warn" data-in="7.2" data-m="pop" style="font-size:17px;padding:10px 16px"><span class="dot"></span>Gap · gross margin unknown</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S4 agents ============ -->
+<section class="sc" data-s="34" data-e="46">
+  <div class="txt">
+    <div class="k" data-in=".2"><b>4</b>The AI workforce</div>
+    <h1 data-in=".4">19 agents <i>get to work</i></h1>
+    <p class="sub" data-in=".7">An orchestrator hands each task to the right specialists, automatically.</p>
+    <div class="pts"><div class="pt" data-in="2.0">Each agent has one job and its own data</div><div class="pt" data-in="5.0">They work in parallel on your business</div><div class="pt" data-in="8.0">Two agents check every answer before you see it</div></div>
+  </div>
+  <div class="vis">
+    <div class="glass" data-in=".4" data-m="pop" style="position:absolute;left:330px;top:0;width:360px;padding:18px 22px;text-align:center;border-color:rgba(139,108,255,.6);box-shadow:0 0 50px -10px var(--v)">
+      <div style="font:700 13px Manrope;letter-spacing:.24em;color:var(--c)">ORCHESTRATOR</div>
+      <div style="font:700 19px Manrope;margin-top:6px" data-swap="0:Waiting for a task|1.2:Plan: weekly business review|5.5:Routing to 11 agents|8.8:Checking every claim|10.2:Report ready ✓">Waiting</div>
+    </div>
+    <svg width="1020" height="860" style="position:absolute;inset:0" id="agentlines"></svg>
+    <div id="agentgrid" style="position:absolute;left:0;top:150px;width:1020px;display:grid;grid-template-columns:repeat(5,1fr);gap:14px"></div>
+    <div style="position:absolute;left:0;bottom:0;display:flex;gap:14px;align-items:center;font:800 22px Manrope">
+      <span class="chip info" style="font-size:18px;padding:10px 16px"><span class="dot"></span><span data-count="0,11,2,7.5,0,, agents working">0 agents working</span></span>
+      <span class="chip ok" data-in="10.2" data-m="pop" style="font-size:18px;padding:10px 16px"><span class="dot"></span>4 findings · every claim cited</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S5 ask ============ -->
+<section class="sc" data-s="46" data-e="58">
+  <div class="txt">
+    <div class="k" data-in=".2"><b>5</b>Ask anything</div>
+    <h1 data-in=".4">Real questions, <i>real answers</i></h1>
+    <p class="sub" data-in=".7">Answered from your own data, with the evidence attached.</p>
+    <div class="pts"><div class="pt" data-in="3.0">It picks the data and agents it needs</div><div class="pt" data-in="6.0">It checks every number against its source</div><div class="pt" data-in="8.6">It tells you what it still doesn't know</div></div>
+  </div>
+  <div class="vis" style="display:grid;gap:20px;align-content:start">
+    <div class="glass" data-in=".4" style="padding:22px 26px;display:flex;gap:16px;align-items:center">
+      <div style="flex:1;font:600 26px Manrope;min-height:36px"><span data-type="1.0,22">Why did our leads drop in October?</span><span data-blink="1" style="display:inline-block;width:3px;height:30px;background:var(--c);vertical-align:-5px;margin-left:3px"></span></div>
+      <div class="btn" style="margin:0;padding:12px 22px;font-size:18px">Ask</div>
+    </div>
+    <div class="glass" data-in="2.6" style="padding:22px 26px">
+      <div style="font:700 13px Manrope;letter-spacing:.2em;color:var(--mut)">ORCHESTRATION</div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:14px" id="pipe"></div>
+    </div>
+    <div class="glass" data-in="7.2" style="padding:26px 30px;border-color:rgba(139,108,255,.55);box-shadow:0 0 60px -20px var(--v)">
+      <div style="display:flex;justify-content:space-between"><div style="font:700 13px Manrope;letter-spacing:.2em;color:var(--c)">ANSWER</div><span class="chip ok"><span class="dot"></span>High confidence</span></div>
+      <div style="font:600 24px/1.5 Manrope;margin-top:12px" data-type="7.6,70">Leads fell 32.6% while ad spend held flat, so this is conversion, not traffic. Mobile checkout conversion collapsed from 3.1% to 1.9% after the 12 September redesign.</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+        <span class="chip info" data-in="10.2" data-m="pop"><span class="dot"></span>GA4 · 2 Nov</span>
+        <span class="chip info" data-in="10.4" data-m="pop"><span class="dot"></span>Google Ads · 2 Nov</span>
+        <span class="chip info" data-in="10.6" data-m="pop"><span class="dot"></span>Session recordings</span>
+        <span class="chip warn" data-in="10.8" data-m="pop"><span class="dot"></span>Unknown: creative data before 12 Sept</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S6 maps ============ -->
+<section class="sc" data-s="58" data-e="68">
+  <div class="txt">
+    <div class="k" data-in=".2"><b>6</b>Maps</div>
+    <h1 data-in=".4">See how <i>it all connects</i></h1>
+    <p class="sub" data-in=".7">Your business drawn as live systems, from every source to the brain.</p>
+    <div class="pts"><div class="pt" data-in="2.6">Trace any fact back to where it came from</div><div class="pt" data-in="4.8">Moving lines are syncing right now</div><div class="pt" data-in="6.6">A red line is a broken source to fix</div></div>
+  </div>
+  <div class="vis"><svg width="1020" height="860" viewBox="0 0 1020 860" id="mapsvg"></svg></div>
+</section>
+
+<!-- ============ S7 plan & act ============ -->
+<section class="sc" data-s="68" data-e="79">
+  <div class="txt">
+    <div class="k" data-in=".2"><b>7</b>Plan &amp; execute</div>
+    <h1 data-in=".4">From strategy <i>to done</i></h1>
+    <p class="sub" data-in=".7">A plan with a target, then the work, prepared for you.</p>
+    <div class="pts"><div class="pt" data-in="1.8">Every strategy has a mechanism and a KPI</div><div class="pt" data-in="4.0">Agents draft the tasks and content</div><div class="pt" data-in="6.6">You approve anything that spends or publishes</div></div>
+  </div>
+  <div class="vis">
+    <div class="glass" data-in=".5" style="padding:22px 28px;display:flex;justify-content:space-between;align-items:center;border-color:rgba(59,224,138,.4)">
+      <div><div style="font:700 13px Manrope;letter-spacing:.2em;color:var(--g)">STRATEGY · ACTIVE</div><div style="font:800 28px Manrope;margin-top:6px">Mobile checkout recovery</div><div style="font:500 17px Manrope;color:var(--ink2);margin-top:4px">Restore the one-page mobile checkout</div></div>
+      <div style="text-align:right"><div style="font:700 13px Manrope;letter-spacing:.2em;color:var(--mut)">KPI · MOBILE CONVERSION</div><div style="font:800 40px Manrope;margin-top:4px"><span data-count="1.9,2.3,1.5,3,1,,%">1.9%</span> <span style="color:var(--mut);font-size:26px">→ 3.1%</span></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px;height:640px;position:relative" id="kan">
+      <div class="col" style="--cc:#3FD6FF"><h4>To do</h4></div>
+      <div class="col" style="--cc:#8B6CFF"><h4>Doing</h4></div>
+      <div class="col" style="--cc:#FFB547"><h4>Waiting approval</h4></div>
+      <div class="col" style="--cc:#3BE08A"><h4>Done</h4></div>
+      <div class="card" data-k="0:0,3.2:1,5.2:3" style="position:absolute;width:241px">Session recordings of checkout<small>Analytics agent</small></div>
+      <div class="card" data-k="0:0,3.6:1" style="position:absolute;width:241px">Restore one-page mobile checkout<small>Rami · due 4 Nov</small></div>
+      <div class="card" data-k="0:0" style="position:absolute;width:241px">A/B test: new vs restored flow<small>Experimentation agent</small></div>
+      <div class="card gate" data-k="0:2,9.0:3" style="position:absolute;width:241px">Publish 2 content drafts<small>Content agent · needs a reviewer</small><div class="btn" data-press="8.4">Approve</div></div>
+      <div class="card" data-k="0:3" style="position:absolute;width:241px">Fix address-form bug<small>Rami</small></div>
+    </div>
+    <svg class="cursor" data-cur="6.6:760,820|7.8:585,292|8.4:585,292|9.6:720,560" viewBox="0 0 22 26"><path d="M2 2 L2 21 L7.5 16 L11 24 L14.5 22.5 L11 15 L18.5 15 Z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  </div>
+</section>
+
+<!-- ============ S8 evaluation ============ -->
+<section class="sc" data-s="79" data-e="91">
+  <div class="txt">
+    <div class="k" data-in=".2"><b>8</b>Evaluation</div>
+    <h1 data-in=".4">Every campaign, <i>evaluated</i></h1>
+    <p class="sub" data-in=".7">What happened, why, and what to test next.</p>
+    <div class="pts"><div class="pt" data-in="2.2">Results measured against the target</div><div class="pt" data-in="5.2">What worked and the weak points, with evidence</div><div class="pt" data-in="8.4">Lessons are written back to the brain</div></div>
+  </div>
+  <div class="vis">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+      <div class="tile" data-in=".5"><div class="l">Spend</div><div class="v" data-count="0,2410,.8,2.4,0,€">€0</div><div class="d" style="color:var(--mut)">15 days · Meta</div></div>
+      <div class="tile" data-in=".65"><div class="l">Purchases</div><div class="v" data-count="0,73,.9,2.4,0">0</div><div class="d" style="color:var(--mut)">attributed</div></div>
+      <div class="tile" data-in=".8"><div class="l">Cost / purchase</div><div class="v" data-count="0,33.01,1.0,2.4,2,€">€0</div><div class="d" style="color:var(--g)">target €35 · met ✓</div></div>
+      <div class="tile" data-in=".95"><div class="l">ROAS</div><div class="v" data-count="0,6.48,1.1,2.4,2,,×">0×</div><div class="d" style="color:var(--g)">€15,622 revenue</div></div>
+    </div>
+    <div class="glass" data-in="2.4" style="margin-top:18px;padding:22px 26px">
+      <div style="font:700 13px Manrope;letter-spacing:.2em;color:var(--mut)">PURCHASES BY CREATIVE</div>
+      <div style="display:grid;gap:14px;margin-top:16px" id="bars"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:18px">
+      <div class="glass" data-in="5.2" style="padding:18px 20px;border-color:rgba(59,224,138,.45)"><div style="font:700 13px Manrope;letter-spacing:.18em;color:var(--g)">WHAT WORKED</div><div style="font:700 18px/1.4 Manrope;margin-top:8px">The grinder-care reel: 56% of purchases at €27.32</div></div>
+      <div class="glass" data-in="6.0" style="padding:18px 20px;border-color:rgba(255,92,122,.45)"><div style="font:700 13px Manrope;letter-spacing:.18em;color:var(--r)">WEAK POINT</div><div style="font:700 18px/1.4 Manrope;margin-top:8px">Stories cost €50 per purchase, 51% above average</div></div>
+      <div class="glass" data-in="6.8" style="padding:18px 20px;border-color:rgba(63,214,255,.45)"><div style="font:700 13px Manrope;letter-spacing:.18em;color:var(--c)">NEXT TEST</div><div style="font:700 18px/1.4 Manrope;margin-top:8px">Show a care step by second 3 to hold viewers</div></div>
+    </div>
+    <div class="glass" data-in="8.4" data-m="pop" style="margin-top:18px;padding:16px 22px;display:flex;align-items:center;gap:16px;border-color:rgba(139,108,255,.55)">
+      <div style="width:40px;height:40px;border-radius:50%;background:url(#);background:radial-gradient(circle at 38% 32%,#9C83FF,#4B39C9 55%,#1B1760);box-shadow:0 0 22px var(--v)"></div>
+      <div style="font:700 19px Manrope">Lesson saved to the company brain: <span style="color:var(--c)">refresh creatives when frequency passes 3.5</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S9 hermus ============ -->
+<section class="sc" data-s="91" data-e="100">
+  <div class="txt">
+    <div class="k" data-in=".2"><b>9</b>Hermus</div>
+    <h1 data-in=".4">Just <i>talk to it</i></h1>
+    <p class="sub" data-in=".7">A voice assistant that knows your business and walks you through it.</p>
+    <div class="pts"><div class="pt" data-in="2.0">Ask anything, out loud</div><div class="pt" data-in="4.0">He opens the right pages and explains</div><div class="pt" data-in="6.0">He never spends or approves for you</div></div>
+  </div>
+  <div class="vis" style="display:grid;place-items:center">
+    <div class="glass" data-in=".4" data-m="pop" style="width:900px;padding:34px 36px;border-color:rgba(63,214,255,.45);box-shadow:0 0 80px -30px var(--c)">
+      <div style="display:flex;align-items:center;gap:28px">
+        <div style="position:relative;width:150px;height:150px;flex:none;display:grid;place-items:center">
+          <div class="ring" style="inset:0;border-color:rgba(63,214,255,.35)" data-spin="6"></div><div class="ring" style="inset:16px;border-style:dashed;border-color:rgba(139,108,255,.6)" data-spin="-10"></div>
+          <div data-breath="1" style="width:92px;height:92px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#C9F6FF,#3FD6FF 22%,#7B5CFF 58%,#2A1A8C);box-shadow:0 0 50px #3FD6FF"></div>
+        </div>
+        <div><div style="font:400 44px Anton;letter-spacing:.14em">HERMUS</div><div style="display:flex;gap:4px;align-items:center;height:40px;margin-top:8px" id="wave"></div></div>
+      </div>
+      <div style="display:grid;gap:14px;margin-top:26px">
+        <div class="bubble me" data-in="1.4" data-m="pop">How is the business doing?</div>
+        <div class="bubble ai" data-in="2.6" data-m="pop"><span data-type="2.8,45">Good morning, sir. October revenue is €141.5k. Mobile conversion is recovering at 2.3% since the fix, and Meta cost per purchase is down to €33.10. Two items need your approval.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S10 loop + end ============ -->
+<section class="sc" data-s="100" data-e="112">
+  <div style="position:absolute;inset:0;display:grid;place-items:center">
+    <svg width="1100" height="760" viewBox="0 0 1100 760" id="loopsvg"></svg>
+  </div>
+  <div data-in="7.0" style="position:absolute;inset:0;display:grid;place-items:center;text-align:center;background:radial-gradient(900px 500px at 50% 45%,#22156A,#06071A 70%)">
+    <div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:20px"><svg width="84" height="84" viewBox="0 0 32 32"><g fill="url(#mk)"><rect x="3" y="18" width="6" height="11" rx="2"/><rect x="13" y="11" width="6" height="18" rx="2"/><rect x="23" y="4" width="6" height="25" rx="2"/></g><path d="M4 14 L14 7 L20 10 L28.5 3" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div style="text-align:left"><div style="font:400 96px/1 Anton;letter-spacing:.16em;background:linear-gradient(95deg,#fff 40%,#B8A6FF 75%,#3FD6FF);-webkit-background-clip:text;background-clip:text;color:transparent">RISER</div><div style="font:700 17px Manrope;letter-spacing:.5em;color:var(--mut);margin-top:6px">BY RANKRISE</div></div></div>
+      <p class="sub" style="font-size:30px;margin-top:40px">19 AI agents · one shared company brain · every answer cited</p>
+      <p style="margin-top:22px;font:700 16px Manrope;letter-spacing:.3em;color:var(--c)">PROTOTYPE · EARLY ACCESS</p>
+    </div>
+  </div>
+</section>
+
+<div class="tag">RISER prototype · sample company</div>
+</div>
+
+<script>
+/* ---------- build generated parts ---------- */
+const NS='http://www.w3.org/2000/svg';
+const mk=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+
+/* brain: 10 nodes on a ring with arcs filling, particles flying in */
+(function(){
+  const g=document.getElementById('brainnodes'), cx=510, cy=385, R=292;
+  const N=[['Business',100],['Products',80],['Customers',48],['Market',62],['Competitors',52],['Brand',66],['Marketing',72],['Sales',65],['Finance',60],['Team',68]];
+  N.forEach(([n,v],i)=>{
+    const a=-Math.PI/2+i*2*Math.PI/N.length, x=cx+R*Math.cos(a), y=cy+R*Math.sin(a);
+    mk('line',{x1:cx,y1:cy,x2:x,y2:y,stroke:'rgba(139,108,255,.25)','stroke-width':1.5},g);
+    const p=mk('path',{d:`M${x} ${y} L${cx} ${cy}`,fill:'none',stroke:'none',id:'bp'+i},g);
+    for(let k=0;k<3;k++) mk('circle',{r:4,fill:i===2?'#FF5C7A':'#3FD6FF','data-along':'bp'+i,'data-at':(1+i*.25+k*1.3).toFixed(2),'data-per':'1.6',style:'filter:drop-shadow(0 0 6px #3FD6FF)'},g);
+    const nd=mk('g',{'data-in':(.6+i*.18).toFixed(2),'data-m':'pop','style':`transform-origin:${x}px ${y}px;transform-box:view-box`},g);
+    mk('circle',{cx:x,cy:y,r:60,fill:'rgba(16,18,46,.95)',stroke:'rgba(255,255,255,.12)'},nd);
+    mk('circle',{cx:x,cy:y,r:60,fill:'none',stroke:'rgba(255,255,255,.06)','stroke-width':6},nd);
+    const c=2*Math.PI*60;
+    mk('circle',{cx:x,cy:y,r:60,fill:'none',stroke:v<50?'#FFB547':'url(#arc)','stroke-width':6,'stroke-linecap':'round',transform:`rotate(-90 ${x} ${y})`,'data-arc':`${v},${(1.2+i*.3).toFixed(2)},3.5,${c.toFixed(1)}`},nd);
+    const t=mk('text',{x,y:y-2,'text-anchor':'middle',style:`font:800 ${n.length>9?15:17}px Manrope;fill:#fff`},nd);t.textContent=n;
+    const s=mk('text',{x,y:y+20,'text-anchor':'middle',style:'font:700 14px Manrope;fill:rgba(255,255,255,.65)','data-count':`0,${v},${(1.2+i*.3).toFixed(2)},3.5,0,,%`},nd);s.textContent='0%';
+    if(i===2){ const al=mk('circle',{cx:x+42,cy:y-42,r:9,fill:'#FF5C7A','data-in':'5.2','data-m':'pop',style:`transform-origin:${x+42}px ${y-42}px;transform-box:view-box;filter:drop-shadow(0 0 8px #FF5C7A)`},g); }
+  });
+})();
+
+/* agents */
+(function(){
+  const G=[['Research','#3FD6FF,#3D7BFF',['Research']],['Understand','#9B7BFF,#5B4BFF',['Customer','Market','Competitor','Brand']],['Grow','#19D3C5,#3BE08A',['Marketing','Sales','Finance','SEO','Content','Creative','Ads']],['Think & plan','#FFB547,#FF7A3D',['Strategy','Planning','Automation','Analytics','Experimentation']],['Trust','#FF4D8D,#B44DFF',['Verification','Quality Control']]];
+  const busy={Research:[2.0,'Researching competitors'],Customer:[2.6,'Reading 96 reviews'],Market:[3.0,'Checking seasonality'],Competitor:[3.4,'Comparing prices'],Marketing:[4.0,'Scoring channels'],Sales:[4.4,'Tracing the funnel'],Ads:[4.8,'Watching ad fatigue'],Analytics:[5.2,'Computing trends'],Strategy:[6.4,'Drafting options'],Verification:[8.8,'Checking every claim'],'Quality Control':[9.4,'Reviewing answers']};
+  const grid=document.getElementById('agentgrid'), lines=document.getElementById('agentlines');
+  G.forEach(([gname,col,list],gi)=>{
+    const c=document.createElement('div');c.style.cssText='display:grid;gap:10px;align-content:start';
+    c.innerHTML=`<div style="font:700 13px Manrope;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);padding-left:4px" data-in="${(.8+gi*.1).toFixed(2)}">${gname}</div>`;
+    list.forEach((n,k)=>{
+      const b=busy[n], el=document.createElement('div');
+      el.className='ag';el.dataset.in=(1+gi*.12+k*.06).toFixed(2);el.dataset.m='pop';el.id='ag-'+n.replace(/\W/g,'');
+      if(b){ el.dataset.on=b[0]; el.dataset.done=(b[0]+3.6).toFixed(1); }
+      el.innerHTML=`<div class="ic" style="background:linear-gradient(135deg,${col})">${n[0]}</div><div><div class="n">${n}</div><div class="st"><span class="dot" style="width:7px;height:7px"></span><span ${b?`data-swap="0:Idle|${b[0]}:${b[1]}|${(b[0]+3.6).toFixed(1)}:Done ✓"`:''}>Idle</span></div></div>`;
+      c.appendChild(el);
+    });
+    grid.appendChild(c);
+  });
+  /* lines from orchestrator to busy agents, positioned after layout */
+  window.__agentLines=()=>{ if(lines.querySelector('path')) return; const vr=lines.getBoundingClientRect();
+    Object.entries(busy).forEach(([n,[t]])=>{ const el=document.getElementById('ag-'+n.replace(/\W/g,'')); if(!el) return; const r=el.getBoundingClientRect();
+      const x2=r.left-vr.left+r.width/2, y2=146; mk('path',{d:`M510 86 C 510 ${(86+y2)/2}, ${x2} ${(86+y2)/2-30}, ${x2} ${y2}`,fill:'none',stroke:'url(#arc)','stroke-width':2.2,'data-draw':(t-.5).toFixed(2),'data-dd':'.6',pathLength:'1',style:'stroke-dasharray:1;filter:drop-shadow(0 0 6px #8B6CFF)'},lines); }); };
+})();
+mk('defs',{},document.getElementById('agentlines')).innerHTML='<linearGradient id="arc2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9B7BFF"/><stop offset="1" stop-color="#3FD6FF"/></linearGradient>';
+
+/* ask pipeline */
+(function(){
+  const P=[['Task','understood: sales'],['Data','31 facts'],['Agents','6 activated'],['Analysis','14 metrics'],['Cross-check','2 claims fixed'],['Answer','4 findings']];
+  document.getElementById('pipe').innerHTML=P.map(([a,b],i)=>`<div class="ag" data-on="${(3+i*.7).toFixed(1)}" data-done="${(3.5+i*.7).toFixed(1)}" style="display:block;padding:12px"><div style="display:flex;align-items:center;gap:8px"><span style="width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:800 12px Manrope;background:rgba(255,255,255,.08)" data-swap="0:${i+1}|${(3.5+i*.7).toFixed(1)}:✓">${i+1}</span><span class="n" style="font-size:15px">${a}</span></div><div class="st" style="margin-top:6px">${b}</div></div>`).join('');
+})();
+
+/* map */
+(function(){
+  const s=document.getElementById('mapsvg');
+  const cols=[[60,'SOURCES',['Website','Instagram','Meta Ads','Google Ads','Shopify','HubSpot']],[320,'DATA',['Website','Social','Ad platforms','Sales','CRM']],[580,'KNOWLEDGE',['Business','Customers','Marketing','Sales']]];
+  const pos={};
+  cols.forEach(([x,t,list],ci)=>{ const tt=mk('text',{x:x+80,y:40,'text-anchor':'middle',style:'font:700 13px Manrope;letter-spacing:.2em;fill:#7E84B3','data-in':(.4+ci*.2).toFixed(1)},s);tt.textContent=t;
+    list.forEach((n,i)=>{ const gap=ci===0?118:ci===1?140:170, y=100+i*gap+(ci===2?40:0); pos[ci+':'+n]=[x,y];
+      const g=mk('g',{'data-in':(.6+ci*.6+i*.1).toFixed(2),'data-m':'pop',style:`transform-origin:${x+80}px ${y+26}px;transform-box:view-box`},s);
+      mk('rect',{x,y,width:160,height:52,rx:13,fill:'rgba(16,18,46,.96)',stroke:n==='HubSpot'?'rgba(255,92,122,.7)':'rgba(255,255,255,.14)'},g);
+      const tx=mk('text',{x:x+16,y:y+31,style:'font:700 17px Manrope;fill:#EEF0FF'},g);tx.textContent=n; });});
+  const brain=mk('g',{'data-in':'2.6','data-m':'pop',style:'transform-origin:900px 430px;transform-box:view-box'},s);
+  mk('circle',{cx:900,cy:430,r:78,fill:'url(#core)',style:'filter:drop-shadow(0 0 30px rgba(123,92,255,.8))'},brain);
+  const bt=mk('text',{x:900,y:425,'text-anchor':'middle',style:'font:400 22px Anton;letter-spacing:.12em;fill:#fff'},brain);bt.textContent='BRAIN';
+  const bs=mk('text',{x:900,y:452,'text-anchor':'middle',style:'font:700 15px Manrope;fill:rgba(255,255,255,.8)'},brain);bs.textContent='65% built';
+  const E=[['0:Website','1:Website'],['0:Instagram','1:Social'],['0:Meta Ads','1:Ad platforms','flow'],['0:Google Ads','1:Ad platforms'],['0:Shopify','1:Sales','flow'],['0:HubSpot','1:CRM','bad'],
+    ['1:Website','2:Business'],['1:Social','2:Marketing'],['1:Ad platforms','2:Marketing','flow'],['1:Sales','2:Sales','flow'],['1:CRM','2:Customers','bad'],['1:Sales','2:Customers'],
+    ['2:Business','B'],['2:Customers','B'],['2:Marketing','B','flow'],['2:Sales','B','flow']];
+  E.forEach(([a,b,k],i)=>{ const [x1,y1]=pos[a]; const [x2,y2]=b==='B'?[822,430]:pos[b]; const sx=x1+160,sy=y1+26,ex=x2,ey=b==='B'?y2:y2+26, m=(sx+ex)/2;
+    const d=`M${sx} ${sy} C ${m} ${sy}, ${m} ${ey}, ${ex} ${ey}`;
+    mk('path',{d,fill:'none',stroke:k==='bad'?'#FF5C7A':k==='flow'?'url(#arcu)':'rgba(139,108,255,.45)','stroke-width':k==='flow'?2.6:1.8,
+      ...(k==='bad'?{'stroke-dasharray':'4 7','data-in':(4.2+i*.05).toFixed(2)}:k==='flow'?{'data-flow':'40','stroke-dasharray':'6 9','data-in':(2.4+i*.08).toFixed(2)}:{'data-draw':(1.2+i*.12).toFixed(2),'data-dd':'.8'})},s);
+  });
+  s.insertBefore(s.lastChild,s.firstChild);
+  const n=mk('g',{'data-in':'6.6','data-m':'pop',style:'transform-origin:250px 825px;transform-box:view-box'},s);
+  mk('rect',{x:20,y:800,width:460,height:50,rx:14,fill:'rgba(255,92,122,.12)',stroke:'rgba(255,92,122,.5)'},n);
+  const nt=mk('text',{x:40,y:832,style:'font:700 17px Manrope;fill:#FF8DA1'},n);nt.textContent='HubSpot stopped syncing → task created to reconnect';
+  /* edges drawn behind nodes */
+  [...s.querySelectorAll('path')].forEach(p=>s.insertBefore(p,s.firstChild));
+})();
+
+/* eval bars */
+(function(){
+  const B=[['Grinder-care reel',56,'#3BE08A'],['Servicing carousel',23,'#8B6CFF'],['Bench close-up',21,'#FFB547']];
+  document.getElementById('bars').innerHTML=B.map(([n,v,c],i)=>`<div style="display:grid;grid-template-columns:220px 1fr 70px;gap:14px;align-items:center;font:700 17px Manrope"><span>${n}</span><div style="height:16px;border-radius:9px;background:rgba(255,255,255,.07);overflow:hidden"><div data-fill="${v},${(2.8+i*.3).toFixed(1)},1.6" style="height:100%;border-radius:9px;background:${c};box-shadow:0 0 14px ${c}"></div></div><span data-count="0,${v},${(2.8+i*.3).toFixed(1)},1.6,0,,%" style="text-align:right">0%</span></div>`).join('');
+})();
+
+/* hermus wave */
+document.getElementById('wave').innerHTML=Array.from({length:28},(_,i)=>`<i data-wave="${i}" style="display:block;width:5px;border-radius:3px;background:linear-gradient(#3FD6FF,#7B5CFF);height:6px"></i>`).join('');
+
+/* loop */
+(function(){
+  const s=document.getElementById('loopsvg'), cx=550, cy=380, R=250;
+  const L=[['UNDERSTAND','Company info · brain · maps'],['PLAN','Strategy · goals · campaigns'],['ACT','Agents · tasks · approvals'],['LEARN','Evaluation · lessons']];
+  L.forEach(([t,sub],i)=>{ const a=-Math.PI/2+i*Math.PI/2, x=cx+R*Math.cos(a), y=cy+R*Math.sin(a);
+    const a2=a+Math.PI/2, x2=cx+R*Math.cos(a2), y2=cy+R*Math.sin(a2);
+    mk('path',{d:`M${x} ${y} A ${R} ${R} 0 0 1 ${x2} ${y2}`,fill:'none',stroke:'url(#arc)','stroke-width':4,'data-draw':(1.0+i*1.2).toFixed(1),'data-dd':'1.0',style:'filter:drop-shadow(0 0 10px #8B6CFF)'},s);
+    const g=mk('g',{'data-in':(.4+i*1.2).toFixed(1),'data-m':'pop',style:`transform-origin:${x}px ${y}px;transform-box:view-box`},s);
+    mk('rect',{x:x-150,y:y-50,width:300,height:100,rx:22,fill:'rgba(16,18,46,.97)',stroke:'rgba(139,108,255,.6)'},g);
+    const tt=mk('text',{x,y:y-6,'text-anchor':'middle',style:'font:400 34px Anton;letter-spacing:.12em;fill:#fff'},g);tt.textContent=t;
+    const st=mk('text',{x,y:y+26,'text-anchor':'middle',style:'font:600 16px Manrope;fill:#B9BEE3'},g);st.textContent=sub; });
+  const c=mk('g',{'data-in':'5.4','data-m':'pop',style:`transform-origin:${cx}px ${cy}px;transform-box:view-box`},s);
+  mk('circle',{cx,cy,r:92,fill:'url(#core)',style:'filter:drop-shadow(0 0 40px rgba(123,92,255,.9))'},c);
+  const t=mk('text',{x:cx,y:cy+12,'text-anchor':'middle',style:'font:400 38px Anton;letter-spacing:.14em;fill:#fff'},c);t.textContent='RISER';
+})();
+
+/* ---------- timeline engine ---------- */
+const clamp=x=>x<0?0:x>1?1:x, ease=x=>{x=clamp(x);return 1-Math.pow(1-x,3)}, easeIO=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const SC=[...document.querySelectorAll('.sc')];
+document.querySelectorAll('[data-type]').forEach(el=>{el.dataset.text=el.textContent;el.textContent='';});
+document.querySelectorAll('[data-draw]').forEach(p=>{p.setAttribute('pathLength','1');p.style.strokeDasharray='1';});
+const fmt=(v,dec,pre,suf)=>{let s=Math.abs(v).toFixed(dec);const [a,b]=s.split('.');s=a.replace(/\B(?=(\d{3})+(?!\d))/g,',')+(b?'.'+b:'');return (pre||'')+s+(suf||'');};
+function kanPos(el,lt){ /* data-k "t:col,..." → animate between columns */
+  const steps=el.dataset.k.split(',').map(s=>s.split(':').map(Number)); const cols=[...document.querySelectorAll('#kan .col')]; const kr=document.getElementById('kan').getBoundingClientRect();
+  let cur=steps[0][1], prev=cur, p=1; for(const [t,c] of steps){ if(lt>=t){ prev=cur; cur=c; p=ease((lt-t)/.7);} }
+  /* stack index within column: order of appearance */
+  const idx=el.__idx||0, x=c=>cols[c].getBoundingClientRect().left-kr.left+14; el.style.width=(cols[0].getBoundingClientRect().width-28)+'px';
+  el.style.left=(x(prev)+(x(cur)-x(prev))*p)+'px'; el.style.top=(56+idx*112)+'px'; }
+window.seek=t=>{
+  SC.forEach(sc=>{const s=+sc.dataset.s,e=+sc.dataset.e,on=t>=s&&t<e; sc.style.display=on?'block':'none'; if(!on) return;
+    const lt=t-s; sc.style.opacity=Math.min(clamp(lt/.5),clamp((e-t)/.5));
+    if(sc.querySelector('#agentlines') && window.__agentLines) window.__agentLines();
+    sc.querySelectorAll('[data-in]').forEach(el=>{const p=ease((lt-+el.dataset.in)/(+el.dataset.d||.7)),m=el.dataset.m||'up';el.style.opacity=p;
+      const tr=m==='up'?`translateY(${(1-p)*26}px)`:m==='pop'?`scale(${.86+.14*p})`:m==='left'?`translateX(${(1-p)*-30}px)`:m==='right'?`translateX(${(1-p)*60}px)`:'';
+      el.style.transform=tr;});
+    sc.querySelectorAll('[data-type]').forEach(el=>{const [at,cps]=el.dataset.type.split(',').map(Number);el.textContent=el.dataset.text.slice(0,Math.max(0,Math.floor((lt-at)*cps)));});
+    sc.querySelectorAll('[data-count]').forEach(el=>{const [f,to,at,dur,dec,pre,suf]=el.dataset.count.split(',');const v=+f+(+to-+f)*ease((lt-+at)/+dur);el.textContent=fmt(v,+dec,pre,suf);});
+    sc.querySelectorAll('[data-fill]').forEach(el=>{const [to,at,dur]=el.dataset.fill.split(',').map(Number);el.style.width=(to*easeIO((lt-at)/dur))+'%';});
+    sc.querySelectorAll('[data-arc]').forEach(el=>{const [v,at,dur,c]=el.dataset.arc.split(',').map(Number);const L=c*v/100*easeIO((lt-at)/dur);el.setAttribute('stroke-dasharray',`${L} ${c}`);});
+    sc.querySelectorAll('[data-draw]').forEach(p=>{p.style.strokeDashoffset=1-easeIO((lt-+p.dataset.draw)/(+p.dataset.dd||1));});
+    sc.querySelectorAll('[data-flow]').forEach(p=>{p.style.strokeDashoffset=-lt*+p.dataset.flow;});
+    sc.querySelectorAll('[data-spin]').forEach(el=>{const d=+el.dataset.spin;el.style.transformOrigin='center';el.style.transformBox='fill-box';el.style.transform=`rotate(${lt*360/d}deg)`;});
+    sc.querySelectorAll('[data-swap]').forEach(el=>{let txt=el.textContent;el.dataset.swap.split('|').forEach(s=>{const i=s.indexOf(':');if(lt>=+s.slice(0,i))txt=s.slice(i+1);});el.textContent=txt;});
+    sc.querySelectorAll('[data-on]').forEach(el=>{el.classList.toggle('on',lt>=+el.dataset.on&&!(el.dataset.done&&lt>=+el.dataset.done));if(el.dataset.done)el.classList.toggle('done',lt>=+el.dataset.done);});
+    sc.querySelectorAll('[data-pulse]').forEach(el=>{const p=lt>=+el.dataset.pulse?(Math.sin((lt-+el.dataset.pulse)*4)+1)/2:0;el.style.setProperty('--pulse',p);});
+    sc.querySelectorAll('[data-blink]').forEach(el=>{el.style.opacity=Math.floor(lt*2)%2?0:1;});
+    sc.querySelectorAll('[data-breath]').forEach(el=>{el.style.transform=`scale(${1+.06*Math.sin(lt*6)})`;});
+    sc.querySelectorAll('[data-wave]').forEach(el=>{const i=+el.dataset.wave,talk=lt>2.8&&lt<8.6;el.style.height=(talk?8+30*Math.abs(Math.sin(lt*7+i*.7))*(.5+.5*Math.sin(i*1.3)):6)+'px';});
+    sc.querySelectorAll('[data-along]').forEach(c=>{const p=document.getElementById(c.dataset.along),at=+c.dataset.at,per=+c.dataset.per;if(lt<at){c.style.opacity=0;return;}const k=((lt-at)%per)/per,L=p.getTotalLength(),pt=p.getPointAtLength(k*L);c.setAttribute('cx',pt.x);c.setAttribute('cy',pt.y);c.style.opacity=k<.1?k*10:k>.9?(1-k)*10:1;});
+    sc.querySelectorAll('[data-press]').forEach(el=>{const d=lt-+el.dataset.press;el.style.transform=d>0&&d<.3?'scale(.92)':'none';el.style.filter=d>0?'brightness(1.3)':'';});
+    sc.querySelectorAll('[data-k]').forEach((el,i)=>{});
+    if(sc.querySelector('#kan')){ const cards=[...sc.querySelectorAll('[data-k]')];
+      const colOf=(el)=>{let c=0;el.dataset.k.split(',').forEach(s=>{const [tt,cc]=s.split(':').map(Number);if(lt>=tt)c=cc;});return c;};
+      const counts={}; cards.forEach(el=>{const c=colOf(el);el.__idx=counts[c]=(counts[c]===undefined?0:counts[c]+1);}); cards.forEach(el=>kanPos(el,lt)); }
+    sc.querySelectorAll('[data-cur]').forEach(el=>{const K=el.dataset.cur.split('|').map(s=>{const [tt,xy]=s.split(':');const [x,y]=xy.split(',').map(Number);return [+tt,x,y];});
+      if(lt<K[0][0]){el.style.opacity=0;return;} el.style.opacity=1; let x=K[0][1],y=K[0][2]; for(let i=1;i<K.length;i++){const [t0,x0,y0]=K[i-1],[t1,x1,y1]=K[i]; if(lt>=t0){const p=easeIO((lt-t0)/(t1-t0));x=x0+(x1-x0)*p;y=y0+(y1-y0)*p;}}
+      el.style.left=x+'px';el.style.top=y+'px';});
+  });
+};
+window.DURATION=112;
+window.seek(0);
+</script>
+</body></html>
