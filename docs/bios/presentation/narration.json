@@ -9,7 +9,7 @@
     {
       "at": 6.0,
       "voice": "narrator",
-      "text": "You sign in, and your workspace opens. Understand, plan, execute and learn, with nineteen AI agents ready to work."
+      "text": "You sign in, and your workspace opens, with nineteen AI agents ready to work."
     },
     {
       "at": 12.6,
@@ -47,27 +47,27 @@
       "text": "Every campaign is evaluated: what worked, what was weak, and what to test next. The lesson goes back into the brain."
     },
     {
-      "at": 91.3,
+      "at": 88.8,
       "voice": "narrator",
       "text": "And you can just talk to it."
     },
     {
-      "at": 92.6,
+      "at": 92.4,
       "voice": "you",
       "text": "How is the business doing?"
     },
     {
-      "at": 93.8,
+      "at": 94.4,
       "voice": "hermus",
-      "text": "Good morning, sir. Revenue is up, mobile conversion is recovering since the fix, and two items need your approval."
+      "text": "Good morning, sir. Revenue is up, conversion is recovering, and two items need your approval."
     },
     {
-      "at": 100.5,
+      "at": 102.6,
       "voice": "narrator",
       "text": "Understand. Plan. Act. Learn. Every week, a little smarter."
     },
     {
-      "at": 107.2,
+      "at": 109.2,
       "voice": "narrator",
       "text": "RISER, by RankRise."
     }

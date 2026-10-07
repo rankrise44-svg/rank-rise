@@ -315,7 +315,7 @@ svg{overflow:visible}
 </section>
 
 <!-- ============ S9 hermus ============ -->
-<section class="sc" data-s="91" data-e="100">
+<section class="sc" data-s="91" data-e="102">
   <div class="txt">
     <div class="k" data-in=".2"><b>9</b>Hermus</div>
     <h1 data-in=".4">Just <i>talk to it</i></h1>
@@ -333,14 +333,14 @@ svg{overflow:visible}
       </div>
       <div style="display:grid;gap:14px;margin-top:26px">
         <div class="bubble me" data-in="1.4" data-m="pop">How is the business doing?</div>
-        <div class="bubble ai" data-in="2.6" data-m="pop"><span data-type="2.8,45">Good morning, sir. October revenue is €141.5k. Mobile conversion is recovering at 2.3% since the fix, and Meta cost per purchase is down to €33.10. Two items need your approval.</span></div>
+        <div class="bubble ai" data-in="2.6" data-m="pop"><span data-type="3.4,26">Good morning, sir. October revenue is €141.5k. Mobile conversion is recovering at 2.3% since the fix, and Meta cost per purchase is down to €33.10. Two items need your approval.</span></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ============ S10 loop + end ============ -->
-<section class="sc" data-s="100" data-e="112">
+<section class="sc" data-s="102" data-e="114">
   <div style="position:absolute;inset:0;display:grid;place-items:center">
     <svg width="1100" height="760" viewBox="0 0 1100 760" id="loopsvg"></svg>
   </div>
@@ -498,7 +498,7 @@ window.seek=t=>{
     sc.querySelectorAll('[data-pulse]').forEach(el=>{const p=lt>=+el.dataset.pulse?(Math.sin((lt-+el.dataset.pulse)*4)+1)/2:0;el.style.setProperty('--pulse',p);});
     sc.querySelectorAll('[data-blink]').forEach(el=>{el.style.opacity=Math.floor(lt*2)%2?0:1;});
     sc.querySelectorAll('[data-breath]').forEach(el=>{el.style.transform=`scale(${1+.06*Math.sin(lt*6)})`;});
-    sc.querySelectorAll('[data-wave]').forEach(el=>{const i=+el.dataset.wave,talk=lt>2.8&&lt<8.6;el.style.height=(talk?8+30*Math.abs(Math.sin(lt*7+i*.7))*(.5+.5*Math.sin(i*1.3)):6)+'px';});
+    sc.querySelectorAll('[data-wave]').forEach(el=>{const i=+el.dataset.wave,talk=lt>3.4&&lt<10.9;el.style.height=(talk?8+30*Math.abs(Math.sin(lt*7+i*.7))*(.5+.5*Math.sin(i*1.3)):6)+'px';});
     sc.querySelectorAll('[data-along]').forEach(c=>{const p=document.getElementById(c.dataset.along),at=+c.dataset.at,per=+c.dataset.per;if(lt<at){c.style.opacity=0;return;}const k=((lt-at)%per)/per,L=p.getTotalLength(),pt=p.getPointAtLength(k*L);c.setAttribute('cx',pt.x);c.setAttribute('cy',pt.y);c.style.opacity=k<.1?k*10:k>.9?(1-k)*10:1;});
     sc.querySelectorAll('[data-press]').forEach(el=>{const d=lt-+el.dataset.press;el.style.transform=d>0&&d<.3?'scale(.92)':'none';el.style.filter=d>0?'brightness(1.3)':'';});
     sc.querySelectorAll('[data-k]').forEach((el,i)=>{});
@@ -510,7 +510,7 @@ window.seek=t=>{
       el.style.left=x+'px';el.style.top=y+'px';});
   });
 };
-window.DURATION=112;
+window.DURATION=114;
 window.seek(0);
 </script>
 </body></html>

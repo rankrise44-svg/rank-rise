@@ -15,3 +15,16 @@ Render to MP4 (Playwright + ffmpeg):
 `FONTS` is a folder with the Google Fonts CSS for Anton + Manrope saved as
 `css.css`, its font URLs rewritten to local `f1.ttf`, `f2.ttf`, … files.
 Rendered videos are not committed.
+
+## Voiceover and music
+
+`narration.json` holds every spoken line and when it starts. The voices are
+free Microsoft neural voices via `edge-tts` (`pip install edge-tts`, no key):
+narrator Andrew, Hermus as Ryan (British), the customer as Brian.
+
+    python3 vo-gen.py    # writes vo/lNN.mp3 and checks each line fits
+    python3 mix.py       # ambient pad + voices, music ducks under speech -> vo/soundtrack.m4a
+    ffmpeg -i video.mp4 -i vo/soundtrack.m4a -c:v copy -c:a copy -shortest out.mp4
+
+`tts.py` points the TLS check at the cloud proxy's CA bundle; change that path
+when running elsewhere. No API keys are used or stored.
