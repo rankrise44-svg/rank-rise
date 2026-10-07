@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+# The old standalone case pages stay reachable but the canonical
+# versions live at /case.html — keep crawlers off the duplicates.
+Disallow: /projects/
+Disallow: /portal.html
 
 Sitemap: https://rankrise.media/sitemap.xml
