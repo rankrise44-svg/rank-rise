@@ -117,3 +117,12 @@ the browser voice. He can only open BIOS pages, run the tour or show the
 website; on the website only its sections and the sign-up form. He never
 approves, spends, publishes or changes data. The suggestion chips' scripted
 walkthroughs still work. Change: `js/hermus.js` only.
+
+### Website renamed RISER by RankRise (version 11)
+
+The Website view is now branded RISER by RankRise: a new wordmark (rising-bars
+mark with an upward line, RISER in Anton with a violet-to-cyan fade, BY
+RANKRISE underneath) in the nav and footer; every BIOS mention on the website
+reads RISER; the hero eyebrow is now "AI marketing intelligence" (it spelled
+out BIOS). Hermus's website guide says RISER. The product keeps the BIOS name.
+Files: `js/screens/site.js`, `css/site.css`, `js/hermus.js`.

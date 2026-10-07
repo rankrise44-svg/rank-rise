@@ -57,6 +57,9 @@ saved key, else browser speech. Product actions: `none`, `tour`, `website`,
 
 ## Website view
 
+The public website is branded **RISER by RankRise** (wordmark: rising-bars mark +
+RISER in Anton). The product inside is still called BIOS.
+
 `redesign/js/screens/site.js` + `redesign/css/site.css` (all `.site` / `w-`
 scoped). Sections: `.w-nav`, `.w-hero`, `.w-stats`, `#w-offer`, `#w-agents`
 (19 agents, 5 groups), `#w-how`, `#w-why`, `.w-final`, `.w-foot`, sign-up

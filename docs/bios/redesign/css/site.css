@@ -67,9 +67,15 @@
   background:color-mix(in srgb,var(--bg) 72%,transparent);border-bottom:1px solid var(--glass-border);
   backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%)}
 .w-nav-in{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:20px}
-.w-logo{display:flex;align-items:baseline;gap:8px;background:none;border:0;padding:0;cursor:pointer;color:var(--ink)}
-.w-logo b{font:400 23px var(--display);letter-spacing:.08em}
-.w-logo span{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.w-logo{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer;color:var(--ink)}
+.w-mark{width:30px;height:30px;flex:none;fill:url(#w-mark-g);stroke:url(#w-mark-g);filter:drop-shadow(0 0 10px rgba(139,108,255,.45));transition:transform .4s var(--ease-spring)}
+.w-mark rect{opacity:.9}
+.w-mark path{fill:none;stroke:#fff;opacity:.9}
+.w-logo:hover .w-mark{transform:translateY(-2px) rotate(-4deg)}
+.w-wm{display:grid;line-height:1}
+.w-wm b{font:400 25px/1 var(--display);letter-spacing:.14em;
+  background:linear-gradient(95deg,var(--ink) 0%,var(--ink) 45%,#B8A6FF 75%,#3FD6FF 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.w-wm span{margin-top:3px;font:600 8.5px var(--sans);letter-spacing:.32em;text-transform:uppercase;color:var(--muted)}
 .w-logo.static{cursor:default}
 .w-links{display:flex;gap:4px;margin-left:12px}
 .w-links button,.w-drop button,.w-foot-links button{background:none;border:0;cursor:pointer;color:var(--ink-2);font:600 14px var(--sans);padding:8px 12px;border-radius:10px;transition:color .2s,background .2s}
@@ -266,7 +272,7 @@
   .w-modal{padding:24px 20px}
 }
 @media (max-width:420px){
-  .w-logo span{display:none}
+  .w-wm b{font-size:22px}
   .w-hero h1{font-size:40px}
   .w-btn{padding:0 18px}
   .w-cta .w-btn{flex:1 1 100%}

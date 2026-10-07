@@ -1,5 +1,5 @@
 /* =====================================================================
-   Website view — the BIOS marketing site.
+   Website view — the RISER marketing site.
    Self-contained: every class is .site-scoped or w- prefixed, and the
    only shared pieces reused are the prototype controls in the nav
    (Hermus button, Product | Website switch, theme toggle), unchanged.
@@ -78,7 +78,7 @@ const AGENTS = [
   ['trust','Quality Control','badge','Reviews each answer and removes anything unsupported.']
 ];
 const STEPS = [
-  ['plug','Connect your data','Link your website, documents, ad accounts and CRM. BIOS reads them into one shared company brain.'],
+  ['plug','Connect your data','Link your website, documents, ad accounts and CRM. RISER reads them into one shared company brain.'],
   ['spark','Agents research and analyze','The agents study your business, your market and your competitors, and find the problems and the openings.'],
   ['map','Get strategy and a plan','You get clear options with the reasoning behind them, then a plan with dated tasks and owners.'],
   ['loop','Results feed back','What happens is measured and written back to the brain, so the next plan starts smarter.']
@@ -94,7 +94,7 @@ function heroVisual(){
   const outP = out.map(([,y],i)=>`<path class="w-flow out" style="--d:${.6+i*.3}s" d="M${cx+46} ${cy} C 340 ${cy}, 350 ${y}, 412 ${y}"/>`).join('');
   const srcN = src.map(([t,y])=>`<g class="w-vnode"><rect x="10" y="${y-15}" width="108" height="30" rx="15"/><text x="64" y="${y+4.5}">${t}</text></g>`).join('');
   const outN = out.map(([t,y])=>`<g class="w-vnode ag"><rect x="412" y="${y-14}" width="98" height="28" rx="14"/><circle cx="428" cy="${y}" r="4"/><text x="467" y="${y+4.5}">${t}</text></g>`).join('');
-  return `<figure class="w-visual" aria-label="Your data flows into the BIOS company brain and out to the AI agents">
+  return `<figure class="w-visual" aria-label="Your data flows into the RISER company brain and out to the AI agents">
     <svg viewBox="0 0 520 360" role="img" aria-hidden="true">
       <defs>
         <radialGradient id="w-core" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#9C83FF"/><stop offset=".55" stop-color="#4B39C9"/><stop offset="1" stop-color="#1B1760"/></radialGradient>
@@ -128,7 +128,7 @@ B.screens.site = () => `
 </div>
 <header class="w-nav" id="w-top">
   <div class="w-nav-in">
-    <button class="w-logo" type="button" data-w-go="top" aria-label="BIOS by RankRise, back to top"><b>BIOS</b><span>by RankRise</span></button>
+    <button class="w-logo" type="button" data-w-go="top" aria-label="RISER by RankRise, back to top"><svg class="w-mark" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="w-mark-g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3FD6FF"/><stop offset=".55" stop-color="#8B6CFF"/><stop offset="1" stop-color="#FF4D8D"/></linearGradient></defs><rect x="3" y="18" width="6" height="11" rx="2"/><rect x="13" y="11" width="6" height="18" rx="2"/><rect x="23" y="4" width="6" height="25" rx="2"/><path d="M4 14 L14 7 L20 10 L28.5 3" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="w-wm"><b>RISER</b><span>by RankRise</span></span></button>
     <nav class="w-links" aria-label="Website">
       <button type="button" data-w-go="agents">Agents</button>
       <button type="button" data-w-go="offer">What we offer</button>
@@ -156,9 +156,9 @@ B.screens.site = () => `
     <div class="w-glow" aria-hidden="true"></div>
     <div class="w-wrap w-hero-in">
       <div class="w-hero-copy">
-        <p class="w-eyebrow">Business Intelligence Operating System</p>
+        <p class="w-eyebrow">AI marketing intelligence</p>
         <h1 id="w-h1" class="w-display">Your entire marketing team. <em>One intelligence system.</em></h1>
-        <p class="w-lede">BIOS is a complete AI marketing tool. It learns your company from its website, documents, ad accounts and CRM. Then 19 AI agents create, guide, consult, manage and research with you, and every answer shows where it came from.</p>
+        <p class="w-lede">RISER is a complete AI marketing tool. It learns your company from its website, documents, ad accounts and CRM. Then 19 AI agents create, guide, consult, manage and research with you, and every answer shows where it came from.</p>
         <div class="w-cta">
           <button class="w-btn w-primary" type="button" data-w-signup>Sign up</button>
           <button class="w-btn w-ghost" type="button" data-w-go="agents">See the agents</button>
@@ -168,7 +168,7 @@ B.screens.site = () => `
     </div>
   </section>
 
-  <section class="w-stats" aria-label="BIOS at a glance">
+  <section class="w-stats" aria-label="RISER at a glance">
     <div class="w-wrap w-stats-in">
       <div class="w-stat w-glass w-rise" style="--i:0"><span class="n">19</span><span class="l">AI agents</span></div>
       <div class="w-stat w-glass w-rise" style="--i:1"><span class="n">1</span><span class="l">shared company brain</span></div>
@@ -180,7 +180,7 @@ B.screens.site = () => `
     <div class="w-wrap">
       <p class="w-eyebrow">What we offer</p>
       <h2 id="w-offer-h" class="w-h2">All of marketing, in one place.</h2>
-      <p class="w-lede sm">From the first piece of research to the report at the end of the month, BIOS covers the whole job.</p>
+      <p class="w-lede sm">From the first piece of research to the report at the end of the month, RISER covers the whole job.</p>
       <div class="w-offer">
         ${OFFER.map(([i,t,d],n)=>`<article class="w-card w-glass w-rise" style="--i:${n}"><span class="w-tile">${ic(i)}</span><h3>${t}</h3><p>${d}</p></article>`).join('')}
       </div>
@@ -218,11 +218,11 @@ B.screens.site = () => `
 
   <section id="w-why" aria-labelledby="w-why-h">
     <div class="w-wrap">
-      <p class="w-eyebrow">Why BIOS</p>
+      <p class="w-eyebrow">Why RISER</p>
       <h2 id="w-why-h" class="w-h2">Answers you can check.</h2>
       <div class="w-points">
         <div class="w-point w-rise" style="--i:0">${ic('quote')}<div><b>Every claim carries its source and date.</b><span>You can see where each number came from and when.</span></div></div>
-        <div class="w-point w-rise" style="--i:1">${ic('eye')}<div><b>Gaps are stated, not hidden.</b><span>When the data is missing, BIOS says so instead of guessing.</span></div></div>
+        <div class="w-point w-rise" style="--i:1">${ic('eye')}<div><b>Gaps are stated, not hidden.</b><span>When the data is missing, RISER says so instead of guessing.</span></div></div>
         <div class="w-point w-rise" style="--i:2">${ic('brain')}<div><b>Results are remembered.</b><span>What you tried and what followed stays in the company brain.</span></div></div>
       </div>
       <p class="w-q">Same question: <b>“Why did our leads drop in October?”</b></p>
@@ -233,7 +233,7 @@ B.screens.site = () => `
           <div class="w-verdict">Fluent, plausible, and true of every business on earth. It has no idea what you sell or what you changed.</div>
         </div>
         <div class="w-ans w-glass bios">
-          <h3>BIOS</h3>
+          <h3>RISER</h3>
           <p>Leads fell <b>32.6%</b> <span class="w-src">GA4 · 2 Oct</span> while spend held flat <span class="w-src">Google Ads · 2 Oct</span>, so this is conversion, not traffic. Two things changed in the window: checkout was redesigned on <b>12 Sept</b> <span class="w-src warn">Sara · unverified</span>, and Meta frequency <span class="w-src">Meta · 2 Oct</span> doubled to <b>4.1</b>. Landing-page conversion fell on mobile only.<br><b>I can't yet tell you</b> whether the checkout change or creative fatigue dominates: there's no creative-level data before 12 Sept.</p>
           <div class="w-verdict">Every number carries its source and its date. The gap in the evidence is stated, not papered over.</div>
         </div>
@@ -245,7 +245,7 @@ B.screens.site = () => `
     <div class="w-wrap">
       <div class="w-final w-glass">
         <div class="w-glow sm" aria-hidden="true"></div>
-        <h2 id="w-final-h" class="w-display">Start with BIOS</h2>
+        <h2 id="w-final-h" class="w-display">Start with RISER</h2>
         <p class="w-lede sm">Give your marketing a team that knows your business, and shows its work.</p>
         <button class="w-btn w-primary w-lg" type="button" data-w-signup>Sign up</button>
         <p class="w-note">Prototype · early access</p>
@@ -255,14 +255,14 @@ B.screens.site = () => `
 
   <footer class="w-foot">
     <div class="w-wrap w-foot-in">
-      <div class="w-logo static"><b>BIOS</b><span>by RankRise</span></div>
+      <div class="w-logo static"><svg class="w-mark" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="w-mark-g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3FD6FF"/><stop offset=".55" stop-color="#8B6CFF"/><stop offset="1" stop-color="#FF4D8D"/></linearGradient></defs><rect x="3" y="18" width="6" height="11" rx="2"/><rect x="13" y="11" width="6" height="18" rx="2"/><rect x="23" y="4" width="6" height="25" rx="2"/><path d="M4 14 L14 7 L20 10 L28.5 3" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="w-wm"><b>RISER</b><span>by RankRise</span></span></div>
       <nav class="w-foot-links" aria-label="Footer">
         <button type="button" data-w-go="agents">Agents</button>
         <button type="button" data-w-go="offer">What we offer</button>
         <button type="button" data-w-go="how">How it works</button>
         <button type="button" data-w-signup>Sign up</button>
       </nav>
-      <p class="w-copy">© ${year} RankRise. BIOS is a prototype.</p>
+      <p class="w-copy">© ${year} RankRise. RISER is a prototype.</p>
     </div>
   </footer>
 
@@ -272,11 +272,11 @@ B.screens.site = () => `
       <button class="w-x" type="button" data-w-close aria-label="Close">✕</button>
       <form class="w-form" novalidate>
         <p class="w-eyebrow">Early access</p>
-        <h2 id="w-su-h" class="w-h3">Sign up for BIOS</h2>
+        <h2 id="w-su-h" class="w-h3">Sign up for RISER</h2>
         <label class="w-field"><span>Name</span><input name="name" autocomplete="name" required maxlength="80"><em class="w-err" hidden>Please enter your name.</em></label>
         <label class="w-field"><span>Email</span><input name="email" type="email" autocomplete="email" required maxlength="120"><em class="w-err" hidden>Please enter a valid email address.</em></label>
         <label class="w-field"><span>Company</span><input name="company" autocomplete="organization" required maxlength="120"><em class="w-err" hidden>Please enter your company.</em></label>
-        <label class="w-field"><span>What do you want to use BIOS for?</span>
+        <label class="w-field"><span>What do you want to use RISER for?</span>
           <select name="use" required><option value="">Choose one</option>${USES.map(u=>`<option>${u}</option>`).join('')}</select><em class="w-err" hidden>Please choose one.</em></label>
         <button class="w-btn w-primary w-full" type="submit">Join early access</button>
         <p class="w-fine">Prototype: this form is a demo. Nothing is sent or stored.</p>

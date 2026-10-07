@@ -104,19 +104,19 @@ const CHIPS = ['tour','health','leads','tasks','brain','eval','site'];
    limited to the website. He can scroll and explain it; he cannot open
    workspace pages, type, click, switch views or leave BIOS. */
 const SITE_SCRIPTS = [
-  {id:'w-tour', match:/describe|platform|a ?to ?z|a-z|tour|everything|all (the )?options|show me around/i, q:'Describe BIOS from A to Z.', steps:[
-    {spot:'.site .w-hero', say:'Gladly, {sir}. BIOS is a complete AI marketing tool. It learns your company from its website, documents, ad accounts and CRM, and a team of AI agents works on it with you.'},
+  {id:'w-tour', match:/describe|platform|a ?to ?z|a-z|tour|everything|all (the )?options|show me around/i, q:'Describe RISER from A to Z.', steps:[
+    {spot:'.site .w-hero', say:'Gladly, {sir}. RISER is a complete AI marketing tool. It learns your company from its website, documents, ad accounts and CRM, and a team of AI agents works on it with you.'},
     {spot:'.site #w-offer', say:'It covers all of marketing: create, guide, consult, manage, research, and learn from the results.'},
     {spot:'.site #w-agents', say:'The team is nineteen agents in five groups: research, understand, grow, think and plan, and trust. Two of them exist only to check the others.'},
     {spot:'.site #w-how', say:'It works in four steps: connect your data, the agents research and analyse, you get strategy and a plan, and the results feed back into the brain.'},
     {spot:'.site #w-why', say:'And every answer can be checked: each claim carries its source and date, and gaps are stated instead of hidden.'},
-    {spot:'.site .w-final', say:'BIOS is a prototype in early access. Press Sign up to join, or open the product and call me there, and I will show you all of it.'}
+    {spot:'.site .w-final', say:'RISER is a prototype in early access. Press Sign up to join, or open the product and call me there, and I will show you all of it.'}
   ]},
-  {id:'w-what', match:/what is|what's|about|bios|explain|intro/i, q:'What is BIOS?', steps:[
-    {spot:'.site .w-hero', say:'BIOS is a complete AI marketing tool, {sir}. It learns your company from its website, documents, ad accounts and CRM. Then nineteen AI agents find problems, recommend strategy and track the results, and every answer shows where it came from.'}
+  {id:'w-what', match:/what is|what's|about|bios|explain|intro/i, q:'What is RISER?', steps:[
+    {spot:'.site .w-hero', say:'RISER is a complete AI marketing tool, {sir}. It learns your company from its website, documents, ad accounts and CRM. Then nineteen AI agents find problems, recommend strategy and track the results, and every answer shows where it came from.'}
   ]},
-  {id:'w-offer', match:/offer|feature|service|what (can|does) (it|bios) do|price|pricing|cost|plan|tier|pay/i, q:'What does BIOS offer?', steps:[
-    {spot:'.site #w-offer', say:'Six things, {sir}: it creates content and campaigns, guides you step by step, consults on strategy, manages plans and reports, researches markets and competitors, and learns from every result. There is no pricing yet: BIOS is a prototype in early access.'}
+  {id:'w-offer', match:/offer|feature|service|what (can|does) (it|bios) do|price|pricing|cost|plan|tier|pay/i, q:'What does RISER offer?', steps:[
+    {spot:'.site #w-offer', say:'Six things, {sir}: it creates content and campaigns, guides you step by step, consults on strategy, manages plans and reports, researches markets and competitors, and learns from every result. There is no pricing yet: RISER is a prototype in early access.'}
   ]},
   {id:'w-team', match:/agent|team|specialist|who does|workforce/i, q:'Who are the 19 agents?', steps:[
     {spot:'.site #w-agents', say:'Nineteen agents in five groups: one for research; four that understand your customers, market, competitors and brand; seven that grow the business; five that think and plan; and two that check every answer before you see it.'}
@@ -125,7 +125,7 @@ const SITE_SCRIPTS = [
     {spot:'.site #w-how', say:'Four steps, {sir}: connect your data, the agents research and analyse, you get strategy and a plan, and the results feed back so the next plan starts smarter.'}
   ]},
   {id:'w-diff', match:/differ|chatgpt|assistant|compare|why bios|better|trust|check/i, q:'How is it different from a general AI assistant?', steps:[
-    {spot:'.site #w-why', say:'Ask a general assistant why leads dropped and it guesses. BIOS answers from your own data, every number carries its source and date, and when something is unknown it says so.'}
+    {spot:'.site #w-why', say:'Ask a general assistant why leads dropped and it guesses. RISER answers from your own data, every number carries its source and date, and when something is unknown it says so.'}
   ]},
   {id:'w-try', match:/try|start|sign|join|demo|product|open|use it|access/i, q:'How do I get started?', steps:[
     {spot:'.site .w-final', say:'Press Sign up to join early access, {sir}. Or press Product at the top to open the prototype, and call me again inside.'}
@@ -372,18 +372,18 @@ const strip = t => String(t||'').replace(/<[^>]+>/g,'').replace(/&[a-z#0-9]+;/gi
 function brief(){
   const ws = B.ws(), m = H.memory(), s = H.settings();
   const who = s.address==='name' ? (s.name||'the user') : s.address==='none' ? 'the user (no title)' : `the user as "${s.address}"`;
-  if(H.mode==='site') return `You are Hermus, the AI voice guide built into the BIOS website, made by RankRise. You live only inside this website.
+  if(H.mode==='site') return `You are Hermus, the AI voice guide built into the RISER website, made by RankRise. You live only inside this website.
 
 WHAT YOU DO
 - You are a free, general AI assistant, like ChatGPT or Claude. Answer anything the visitor asks, on any subject, fully and honestly. Never steer them back to the website unless they ask about it.
 - Your speciality is marketing and business growth: strategy, positioning, brand, content, social media, SEO, paid ads (Meta, Google), funnels and conversion, CRM, analytics, experiments, budgets and reporting. Explain like a calm senior marketing strategist.
-- You are the expert on BIOS (see FACTS). When a question touches BIOS, use only the facts and show the right part of the page.
+- You are the expert on RISER (see FACTS). When a question touches RISER, use only the facts and show the right part of the page.
 - Your only actions are on this website: showing one of its sections, or opening the sign-up form. You cannot browse the internet, open other sites, open the product, send messages or reach any other system. If asked, say so briefly.
 - You have no live news or data feed: never invent news, prices, customers, testimonials or numbers.
 
 FACTS
-BIOS (Business Intelligence Operating System) by RankRise is a complete AI marketing platform. It learns a company from its website, documents, ad accounts and CRM into one shared company brain. 19 AI agents in five groups: Research (Research); Understand (Customer, Market, Competitor, Brand); Grow (Marketing, Sales, Finance, SEO, Content, Creative, Ads); Think and plan (Strategy, Planning, Automation, Analytics, Experimentation); Trust (Verification, Quality Control). What it offers: Create, Guide, Consult, Manage, Research, Learn. How it works: connect your data, agents research and analyze, get strategy and a plan, results feed back into the brain. Every claim carries its source and date; gaps are stated instead of hidden; results are remembered. BIOS is a prototype in early access: there is no pricing yet. Sign up joins early access.
-Sections: hero (intro), offer (what we offer), agents (the 19 agents), how (how it works), why (why BIOS and the comparison), start (final sign up panel).
+RISER by RankRise is a complete AI marketing platform. It learns a company from its website, documents, ad accounts and CRM into one shared company brain. 19 AI agents in five groups: Research (Research); Understand (Customer, Market, Competitor, Brand); Grow (Marketing, Sales, Finance, SEO, Content, Creative, Ads); Think and plan (Strategy, Planning, Automation, Analytics, Experimentation); Trust (Verification, Quality Control). What it offers: Create, Guide, Consult, Manage, Research, Learn. How it works: connect your data, agents research and analyze, get strategy and a plan, results feed back into the brain. Every claim carries its source and date; gaps are stated instead of hidden; results are remembered. RISER is a prototype in early access: there is no pricing yet. Sign up joins early access.
+Sections: hero (intro), offer (what we offer), agents (the 19 agents), how (how it works), why (why RISER and the comparison), start (final sign up panel).
 
 STYLE
 Spoken aloud: calm, warm, confident and natural, no markdown, lists or emoji. Address ${who}. Keep small talk to one or two sentences; give complete answers of a short paragraph or two when needed. Always reply in English.
@@ -391,7 +391,7 @@ Spoken aloud: calm, warm, confident and natural, no markdown, lists or emoji. Ad
 OUTPUT
 Return only a JSON object: {"say": "<what you say>", "action": "<one action>", "suggestions": ["<up to 3 short follow-up questions>"]}
 Allowed actions: none, show:hero, show:offer, show:agents, show:how, show:why, show:start, signup.
-Use "none" unless the visitor asks about BIOS or wants to see something on the page.`;
+Use "none" unless the visitor asks about RISER or wants to see something on the page.`;
 
   const k = (ws.kpis||[]).map(x=>`${x.label}: ${x.value} (${x.delta})`).join('; ');
   const finds = (ws.findings||[]).filter(f=>f.state==='open'&&f.kind!=='unknown').slice(0,5).map(f=>`${f.kind}: ${strip(f.title)}`).join('; ');
@@ -525,7 +525,7 @@ function siteScripted(q, id, say){
   const sc = SITE_SCRIPTS.find(s=>s.q.toLowerCase()===q.toLowerCase()) || (!PRODUCT_WORDS.test(q) || /price|plan|cost|how.*work/i.test(q) ? [SITE_SCRIPTS[0]].concat(SITE_SCRIPTS.slice(2), SITE_SCRIPTS[1]).find(s=>s.match.test(q)) : null);
   if(sc){ play(sc, id); return; }
   if(PRODUCT_WORDS.test(q)) return say('On the website I can only talk about the website, {sir}. Your business data stays inside the product: open the product and call me there.');
-  return say('On the website I can tell you what BIOS is, how it is different, how it works, who does the work, what the plans are, and how to try it.');
+  return say('On the website I can tell you what RISER is, how it is different, how it works, who does the work, what the plans are, and how to try it.');
 }
 let micStep = 0;
 function mic(){
@@ -554,7 +554,7 @@ H.open = () => {
   const id = ++run;
   status('Connecting…', 'work');
   const h = new Date().getHours(), part = h<12 ? 'morning' : h<18 ? 'afternoon' : 'evening';
-  const hello = H.mode==='site' ? `Welcome to BIOS, {sir}. I am Hermus, your website guide. Ask me what BIOS does, how it works or what the plans are.` : `Good ${part}, {sir}. Hermus online. What would you like to see?`;
+  const hello = H.mode==='site' ? `Welcome to RISER, {sir}. I am Hermus, your website guide. Ask me what RISER does, how it works or what the plans are.` : `Good ${part}, {sir}. Hermus online. What would you like to see?`;
   setTimeout(async()=>{ if(!alive(id)) return; await reply(fill(hello)); if(alive(id)) status('Listening','listen'); }, 700);
 };
 function note(){
