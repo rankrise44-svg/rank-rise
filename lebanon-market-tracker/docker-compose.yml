@@ -1,0 +1,28 @@
+# Local/self-hosted stack: PostgreSQL + web + background worker.
+# Usage: cp .env.example .env && edit secrets && docker compose up --build
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: lmt
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: lmt
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck: { test: ["CMD", "pg_isready", "-U", "lmt"], interval: 5s, retries: 10 }
+  worker:
+    build: { context: ., target: worker }
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://lmt:${POSTGRES_PASSWORD:-change-me}@db:5432/lmt
+    depends_on: { db: { condition: service_healthy } }
+    restart: unless-stopped
+  web:
+    build: { context: ., target: web }
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://lmt:${POSTGRES_PASSWORD:-change-me}@db:5432/lmt
+    ports: ["3000:3000"]
+    depends_on: [worker]
+    restart: unless-stopped
+volumes:
+  pgdata:

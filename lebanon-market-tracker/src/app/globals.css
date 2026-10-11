@@ -1,0 +1,116 @@
+@import "tailwindcss";
+@import "@fontsource/ibm-plex-sans-arabic/400.css";
+@import "@fontsource/ibm-plex-sans-arabic/500.css";
+@import "@fontsource/ibm-plex-sans-arabic/600.css";
+@import "@fontsource/ibm-plex-sans-arabic/700.css";
+@import "leaflet/dist/leaflet.css";
+
+/* Design tokens — dark intelligence-dashboard palette (navy/near-black, thin blue-gray borders). */
+@theme {
+  --font-sans: "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --color-bg: #060a13;
+  --color-panel: #0b1220;
+  --color-panel-2: #0f192c;
+  --color-panel-3: #14213a;
+  --color-line: #1b2a44;
+  --color-line-strong: #27395a;
+  --color-ink: #e7ecf6;
+  --color-ink-2: #b4c0d6;
+  --color-muted: #7d8aa3;
+  --color-faint: #56627a;
+  --color-cyan: #22d3ee;
+  --color-sky: #60a5fa;
+  --color-emerald: #34d399;
+  --color-amber: #fbbf24;
+  --color-rose: #f87171;
+  --color-violet: #a78bfa;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 1;
+  background-image:
+    radial-gradient(1200px 600px at 85% -10%, rgba(34, 211, 238, 0.06), transparent 60%),
+    radial-gradient(900px 500px at 0% 0%, rgba(96, 165, 250, 0.05), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* Numbers and codes stay left-to-right inside RTL text. */
+.ltr-num {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+}
+
+::selection {
+  background: rgba(34, 211, 238, 0.3);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Thin scrollbars for dense panels */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Leaflet dark adjustments */
+.leaflet-container {
+  background: #0a1324;
+  font-family: var(--font-sans);
+}
+.leaflet-control-attribution {
+  background: rgba(6, 10, 19, 0.75) !important;
+  color: var(--color-muted) !important;
+  font-size: 10px;
+}
+.leaflet-control-attribution a {
+  color: var(--color-ink-2) !important;
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--color-panel-2);
+  color: var(--color-ink);
+  border: 1px solid var(--color-line-strong);
+}
+.leaflet-bar a {
+  background: var(--color-panel-2) !important;
+  color: var(--color-ink) !important;
+  border-color: var(--color-line) !important;
+}
+.dark-tiles {
+  filter: invert(1) hue-rotate(185deg) brightness(0.78) contrast(0.92) saturate(0.6);
+}
+
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

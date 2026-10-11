@@ -1,0 +1,28 @@
+{
+  "_note": "Verified on 2026-10-11 from official pages and live requests. Free tiers change; re-check before relying on them. Nothing here switches to a paid service automatically.",
+  "integrations": [
+    { "key": "worldbank-indicators", "free_tier": "Free, no key", "rate_limits": "None documented on pages reviewed; client spaces calls ≥0.5s", "credentials": "none", "usage_restrictions": "CC BY 4.0 — attribute The World Bank", "paid_upgrade": "n/a", "fallback": "IMF DataMapper covers several headline series" },
+    { "key": "imf-datamapper", "free_tier": "Free, no key", "rate_limits": "Undocumented; HTTP 429 observed after ~7 rapid calls — client spaces calls ≥2s", "credentials": "none", "usage_restrictions": "IMF terms; attribute IMF WEO", "paid_upgrade": "n/a", "fallback": "World Bank WDI" },
+    { "key": "cas", "free_tier": "Public website (robots.txt allows the CPI pages)", "rate_limits": "Polite: one page + one workbook per run, daily", "credentials": "none", "usage_restrictions": "Official statistics; cite CAS", "paid_upgrade": "n/a", "fallback": "Manual CSV import with document link" },
+    { "key": "bdl-official-rate", "free_tier": "Frankfurter v2: free incl. commercial use, no quotas (abuse rate-limiting only)", "rate_limits": "Twice daily by schedule", "credentials": "none", "usage_restrictions": "Rates fall under BDL's own terms", "paid_upgrade": "Self-host Frankfurter (open source) if the public instance changes", "fallback": "Manual entry with BDL citation" },
+    { "key": "ecb-frankfurter", "free_tier": "Free, no key", "rate_limits": "No quotas", "credentials": "none", "usage_restrictions": "ECB reference rates (not for transactions)", "paid_upgrade": "n/a", "fallback": "Twelve Data / Alpha Vantage FX (key required)" },
+    { "key": "gold-api", "free_tier": "Live price endpoint free, no key, commercial use permitted per its terms", "rate_limits": "None for live prices per docs; history endpoints require a paid key (not used)", "credentials": "none", "usage_restrictions": "Third-party indicative quotes, no warranty", "paid_upgrade": "gold-api.com history (paid) or Twelve Data XAU/USD", "fallback": "Twelve Data XAU/USD with key" },
+    { "key": "wfp-food-prices", "free_tier": "Free download from HDX", "rate_limits": "Weekly schedule; ~5 MB file", "credentials": "none", "usage_restrictions": "CC BY-IGO — attribute WFP", "paid_upgrade": "n/a", "fallback": "World Bank real-time prices dataset on HDX (not yet implemented)" },
+    { "key": "gdelt-doc", "free_tier": "Free, no key", "rate_limits": "≤ 1 request / 5 s (GDELT request); frequent 429/503 observed", "credentials": "none", "usage_restrictions": "Metadata and links only", "paid_upgrade": "GDELT BigQuery tables (Google Cloud billing)", "fallback": "RSS feeds" },
+    { "key": "rss-*", "free_tier": "Public feeds", "rate_limits": "Hourly per feed", "credentials": "none", "usage_restrictions": "Store titles, links, dates, short excerpts only; publisher copyright", "paid_upgrade": "n/a", "fallback": "GDELT" },
+    { "key": "twelvedata", "free_tier": "Basic: 8 credits/min, 800/day, personal & non-commercial use", "rate_limits": "Client spaces calls ≥8s", "credentials": "API key", "usage_restrictions": "Commercial use requires a Business plan", "paid_upgrade": "Grow/Pro/Business plans", "fallback": "gold-api.com + Frankfurter" },
+    { "key": "alphavantage", "free_tier": "25 requests/day", "rate_limits": "Client spaces calls ≥15s", "credentials": "API key", "usage_restrictions": "See terms of service", "paid_upgrade": "Premium plans", "fallback": "Twelve Data" },
+    { "key": "llm-anthropic", "free_tier": "No free tier; usage billed per token", "rate_limits": "Per account tier", "credentials": "LLM_API_KEY", "usage_restrictions": "Anthropic usage policies", "paid_upgrade": "n/a", "fallback": "openai_compatible local model, or retrieval-only mode (no LLM)" },
+    { "key": "llm-openai-compatible", "free_tier": "Local open-source model (e.g. Ollama) — free but needs local compute", "rate_limits": "Local hardware", "credentials": "optional", "usage_restrictions": "Model licence", "paid_upgrade": "Any compatible hosted API", "fallback": "Retrieval-only mode" },
+    { "key": "osm-tiles", "free_tier": "tile.openstreetmap.org — light use only, no SLA", "rate_limits": "Tile usage policy: attribution, valid User-Agent/Referer, honour caching, no bulk download", "credentials": "none", "usage_restrictions": "© OpenStreetMap contributors (ODbL)", "paid_upgrade": "Commercial tile provider for heavy traffic", "fallback": "Boundaries render without tiles" }
+  ],
+  "investigated_not_implemented": [
+    { "source": "Banque du Liban website", "reason": "Cloudflare bot challenge (HTTP 403); not bypassed. Official rate obtained via Frankfurter (provider BDL)." },
+    { "source": "Ministry of Economy and Trade", "reason": "Cloudflare bot challenge (HTTP 403)." },
+    { "source": "Ministry of Finance", "reason": "Site reachable with some xlsx/PDF links but no stable documented dataset endpoint; Public Debt page returned 503. Use manual CSV import." },
+    { "source": "L'Orient Today / L'Orient-Le Jour, NNA, Al-Akhbar, Al Mayadeen RSS", "reason": "Cloudflare challenge (HTTP 403)." },
+    { "source": "ReliefWeb API", "reason": "v1 decommissioned (410); v2 requires a pre-approved appname (application form)." },
+    { "source": "Google Trends API", "reason": "Official API is an application-only alpha; no unofficial scrapers are used." },
+    { "source": "Property / job / tender listings", "reason": "No public source verified as lawful to collect automatically; listings module is ready for a vetted adapter." }
+  ]
+}

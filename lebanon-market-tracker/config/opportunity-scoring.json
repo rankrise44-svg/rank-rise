@@ -1,0 +1,23 @@
+{
+  "version": "scoring-v1",
+  "description": "Transparent opportunity scoring. Each component is 0-100 (higher = more favourable). Components without enough input are left null and excluded from the weighted average; they are never imputed. A high score is NOT a probability of financial success.",
+  "weights": {
+    "demand_evidence": 0.25,
+    "market_accessibility": 0.15,
+    "competitive_intensity": 0.15,
+    "economic_feasibility": 0.15,
+    "regulatory_operational_risk": 0.15,
+    "evidence_quality": 0.15
+  },
+  "data_derived": ["demand_evidence", "evidence_quality"],
+  "analyst_rated": ["market_accessibility", "competitive_intensity", "economic_feasibility", "regulatory_operational_risk"],
+  "evidence_weights": { "indicator": 1.0, "market": 1.0, "document": 0.9, "signal": 0.6, "company": 0.6, "news": 0.5, "note": 0.3 },
+  "recency_half_life_days": 120,
+  "min_components_for_score": 3,
+  "confidence_rules": {
+    "unvalidated": "evidence_quality < 40 OR fewer than 3 supporting items OR fewer than min_components_for_score components",
+    "low": "evidence_quality 40-59",
+    "medium": "evidence_quality 60-79 AND at least 2 analyst-rated components",
+    "high": "evidence_quality >= 80 AND all components present AND status = validated"
+  }
+}

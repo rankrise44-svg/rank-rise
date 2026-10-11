@@ -8,3 +8,11 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# The Lebanon Market Tracker app lives in this repo but is deployed separately;
+# never serve its source tree from the marketing site.
+[[redirects]]
+  from = "/lebanon-market-tracker/*"
+  to = "/404.html"
+  status = 404
+  force = true
