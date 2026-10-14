@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { PageId } from '../config/pages';
 import { hrefFor } from '../lib/route';
-import logo from '../assets/logo.svg';
 import { universeMotion } from './universeMotion';
 
 export type OrbitItem = { label: string; page: PageId; section?: string };
@@ -19,7 +18,7 @@ const PLANETS: { name: string; size: number; period: number; skin: string; ring?
 ];
 
 /**
- * The site menu as a solar system: a black hole bearing the logo at its centre,
+ * The site menu as a solar system: a small black hole at its centre,
  * and each tab a planet on its own (undrawn) orbit (tilted, so planets pass in front of and behind the sun). The planets
  * turn together, evenly spaced, so they never run into each other. Names are
  * hidden until a planet is pointed at (or tapped once on a touch screen); the
@@ -123,7 +122,7 @@ export function OrbitMenu({
         const r = p.r * (0.78 + 0.32 * p.depth);
         return { x: p.x - r, y: p.y - r, w: r * 2, h: r * 2 };
       });
-      const sunR = g.sun / 2 + 4;
+      const sunR = g.hole / 2 + 4;
       obstacles.push({ x: g.cx - sunR, y: g.cy - sunR, w: sunR * 2, h: sunR * 2 });
       for (let i = 0; i < n; i++) {
         const el = planets.current[i];
@@ -195,11 +194,10 @@ export function OrbitMenu({
         aria-label={frozen ? 'Resume the orbits' : 'Pause the orbits'}
         title={frozen ? 'Resume the orbits' : 'Pause the orbits'}
         className="cf-sun absolute z-20 -translate-x-1/2 -translate-y-1/2 rounded-full"
-        style={{ left: geo.cx, top: geo.cy, width: geo.sun, height: geo.sun }}
+        style={{ left: geo.cx, top: geo.cy, width: geo.hole, height: geo.hole }}
       >
-        {/* a black hole: the glowing disk of matter behind, the black core with its bright rim, the logo on it */}
+        {/* a small black hole: the deep end of the wormhole, with its thin bright rim */}
         <BlackHole />
-        <img src={logo} alt="" className="cf-sun-logo" draggable={false} />
         <span className="sr-only">{frozen ? 'Resume' : 'Pause'}</span>
       </button>
 
@@ -281,7 +279,9 @@ function orbitGeometry(w: number, h: number, n: number, big = false) {
     rx.push(rx0 + (rxMax - rx0) * k);
     ry.push(ry0 + (ryMax - ry0) * k);
   }
-  return { cx, cy, rx, ry, sun, scale };
+  // the black hole itself is drawn at half the room kept for it, so it reads as a small, deep hole
+  const hole = Math.round(sun * 0.5);
+  return { cx, cy, rx, ry, sun, hole, scale };
 }
 
 /**

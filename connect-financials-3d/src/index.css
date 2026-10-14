@@ -188,11 +188,8 @@ li:nth-child(5) > .vg-tile { animation-delay: .16s; } li:nth-child(6) > .vg-tile
 .cf-sun { background: transparent; transition: filter .3s, transform .3s; }
 /* the black hole drawing, with room round the button for its arcs of light */
 .cf-bh { position: absolute; left: -130%; top: -20%; width: 360%; height: 140%; overflow: visible; pointer-events: none; }
-/* the logo on the black, in its own colours */
-.cf-sun-logo {
-  position: absolute; left: 50%; top: 50%; width: 54%; height: auto; transform: translate(-50%, -48%);
-  filter: drop-shadow(0 0 6px rgba(245, 210, 122, .35)); pointer-events: none; user-select: none;
-}
+/* a generous, invisible target round the small black hole (it pauses the orbits) */
+.cf-sun::before { content: ''; position: absolute; inset: -16px; border-radius: 50%; }
 .cf-sun:hover { filter: brightness(1.15); }
 .cf-sun[aria-pressed='true'] { filter: saturate(.8) brightness(.9); }
 @keyframes cf-corona { 0%, 100% { transform: scale(1); opacity: .8; } 50% { transform: scale(1.12); opacity: 1; } }
