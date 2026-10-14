@@ -227,26 +227,29 @@ li:nth-child(5) > .vg-tile { animation-delay: .16s; } li:nth-child(6) > .vg-tile
   border: 2px solid rgba(232, 207, 143, .85); border-top-color: rgba(232, 207, 143, .25); transform: rotate(-18deg);
 }
 .cf-planet-label {
-  position: absolute; top: 0; white-space: nowrap;
+  position: absolute; top: 0; white-space: nowrap; pointer-events: none;
   font-family: var(--font-display, inherit); font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
-  color: var(--color-ink); padding: 3px 9px; border-radius: 999px;
-  background: rgba(0, 0, 0, .5); box-shadow: 0 0 0 1px rgba(212, 175, 55, .12);
-  opacity: calc(.75 + .25 * var(--depth)); transition: color .25s, opacity .3s, background .25s;
+  color: var(--color-gold-hi); padding: 3px 9px; border-radius: 999px;
+  background: rgba(0, 0, 0, .72); box-shadow: 0 0 0 1px rgba(245, 210, 122, .55);
+  /* hidden until the planet is pointed at, focused or clicked */
+  opacity: 0; visibility: hidden; transition: opacity .25s, visibility 0s linear .25s;
 }
+.cf-planet[data-hot] .cf-planet-label, .cf-planet[data-picked] .cf-planet-label, .cf-planet-link:focus-visible .cf-planet-label {
+  opacity: 1; visibility: visible; transition: opacity .2s, visibility 0s;
+}
+/* a generous, invisible target round each planet, now that the names are hidden */
+.cf-planet-body::before { content: ''; position: absolute; inset: -12px; border-radius: 50%; }
 .cf-planet[data-side='right'] .cf-planet-label { left: calc(var(--size) / 2 + 8px); transform: translateY(-50%); }
 .cf-planet[data-side='left'] .cf-planet-label { right: calc(var(--size) / 2 + 8px); transform: translateY(-50%); }
 .cf-planet[data-side='top'] .cf-planet-label { left: 0; top: auto; bottom: calc(var(--size) / 2 + 6px); transform: translateX(-50%); }
 .cf-planet[data-side='bottom'] .cf-planet-label { left: 0; top: calc(var(--size) / 2 + 6px); transform: translateX(-50%); }
-.cf-planet[data-crowded] .cf-planet-label { opacity: .08; }
-.cf-planet-link:hover .cf-planet-label, .cf-planet-link:focus-visible .cf-planet-label { opacity: 1; color: var(--color-gold-hi); background: rgba(0, 0, 0, .72); box-shadow: 0 0 0 1px rgba(245, 210, 122, .55); }
 .cf-planet-link:focus-visible .cf-planet-label { outline: 2px solid var(--color-gold-hi); outline-offset: 2px; }
 .cf-planet-link[aria-current='page'] .cf-planet-label { color: var(--color-gold-hi); }
-.cf-planet-link:hover .cf-planet-body, .cf-planet-link:focus-visible .cf-planet-body {
+.cf-planet[data-hot] .cf-planet-body, .cf-planet-link:focus-visible .cf-planet-body {
   opacity: 1; transform: scale(calc(1.05 + .32 * var(--depth))); box-shadow: inset -3px -4px 8px rgba(0, 0, 0, .55), 0 0 0 2px rgba(245, 210, 122, .8), 0 0 22px rgba(245, 210, 122, .55);
 }
 .cf-planet-link[aria-current='page'] .cf-planet-body { box-shadow: inset -3px -4px 8px rgba(0, 0, 0, .55), 0 0 0 1.5px rgba(245, 210, 122, .6), 0 0 16px rgba(245, 210, 122, .35); }
-.cf-orbits[data-selected] .cf-planet:not([data-picked]) .cf-planet-body,
-.cf-orbits[data-selected] .cf-planet:not([data-picked]) .cf-planet-label { opacity: .15; }
+.cf-orbits[data-selected] .cf-planet:not([data-picked]) .cf-planet-body { opacity: .15; }
 .cf-planet[data-picked] .cf-planet-body {
   opacity: 1; transform: scale(1.5); box-shadow: inset -3px -4px 8px rgba(0, 0, 0, .5), 0 0 0 2px #F5D27A, 0 0 34px 6px rgba(245, 210, 122, .65);
 }

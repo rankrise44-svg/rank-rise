@@ -21,10 +21,10 @@ const PLANETS: { name: string; size: number; period: number; skin: string; ring?
 /**
  * The site menu as a solar system: a black hole bearing the logo at its centre,
  * and each tab a planet on its own (undrawn) orbit (tilted, so planets pass in front of and behind the sun). The planets
- * turn together, evenly spaced, so they never run into each other; each name
- * finds a free place beside its planet every frame (right, left, above or
- * below), clear of the other names, the other planets and the sun, and fades
- * only if there is truly no room. Pointing at a planet pauses them so it can
+ * turn together, evenly spaced, so they never run into each other. Names are
+ * hidden until a planet is pointed at (or tapped once on a touch screen); the
+ * shown name finds a free place beside its planet (right, left, above or below),
+ * clear of the planets and the black hole. Pointing at a planet pauses them so it can
  * be clicked, clicking one freezes the whole system and lights it before its
  * page opens, and the sun pauses or resumes the orbits. With reduced motion the
  * system stands still.
@@ -62,6 +62,7 @@ export function OrbitMenu({
   const frozenRef = useRef(frozen);
   const hover = useRef(false);
   const hotRef = useRef<number | null>(null);
+  const noHover = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
   frozenRef.current = frozen || selected !== null;
   hotRef.current = hot;
   selectedRef.current = selected;
@@ -86,7 +87,6 @@ export function OrbitMenu({
     let last = performance.now();
     let t = 0;
     const sides: (Side | undefined)[] = [];
-    const dimmed: boolean[] = [];
     const loop = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
@@ -117,7 +117,8 @@ export function OrbitMenu({
         el.style.zIndex = String(depth > 0.5 ? 30 + Math.round(depth * 10) : 10 + Math.round(depth * 10));
       }
 
-      // Place the names: nearest planets (and the one being pointed at) choose first.
+      // Names are hidden until a planet is pointed at or clicked; place the one that is shown,
+      // clear of the planets and the black hole's disk.
       const obstacles: Rect[] = P.map((p) => {
         const r = p.r * (0.78 + 0.32 * p.depth);
         return { x: p.x - r, y: p.y - r, w: r * 2, h: r * 2 };
@@ -125,41 +126,33 @@ export function OrbitMenu({
       const sunR = g.sun / 2 + 4;
       const diskR = g.sun * 0.92; // the glowing disk reaches out to the sides
       obstacles.push({ x: g.cx - diskR, y: g.cy - sunR, w: diskR * 2, h: sunR * 2 });
-      const placed: Rect[] = [];
-      const order = [...P.keys()].sort((x, y) => (x === hotRef.current ? -1 : y === hotRef.current ? 1 : P[y].depth - P[x].depth));
-      for (const i of order) {
-        const lab = labels.current[i];
+      for (let i = 0; i < n; i++) {
         const el = planets.current[i];
-        if (!lab || !el) continue;
-        const lw = LW[i];
-        const lh = LH[i];
-        const { x, y, r } = P[i];
-        const rectFor = (side: Side): Rect =>
-          side === 'right' ? { x: x + r + 8, y: y - lh / 2, w: lw, h: lh }
-          : side === 'left' ? { x: x - r - 8 - lw, y: y - lh / 2, w: lw, h: lh }
-          : side === 'top' ? { x: x - lw / 2, y: y - r - 6 - lh, w: lw, h: lh }
-          : { x: x - lw / 2, y: y + r + 6, w: lw, h: lh };
-        const free = (side: Side) => {
-          const q = rectFor(side);
-          if (q.x < 0 || q.y < 0 || q.x + q.w > W || q.y + q.h > H) return false;
-          for (let k = 0; k < obstacles.length; k++) if (k !== i && hit(q, obstacles[k], 2)) return false;
-          for (const o of placed) if (hit(q, o)) return false;
-          return true;
-        };
+        if (!el) continue;
         const natural: Side = P[i].cos > 0.3 ? 'left' : 'right';
-        const prefs: Side[] = [natural, natural === 'left' ? 'right' : 'left', 'top', 'bottom'];
-        // keep the current place while it stays free, so names do not jump about
-        let side = sides[i] && free(sides[i]!) ? sides[i]! : prefs.find(free);
-        const crowded = !side;
-        if (!side) side = sides[i] ?? natural;
-        placed.push(rectFor(side));
+        let side: Side = natural;
+        if (i === hotRef.current || i === selectedRef.current) {
+          const lw = LW[i];
+          const lh = LH[i];
+          const { x, y, r } = P[i];
+          const rectFor = (sd: Side): Rect =>
+            sd === 'right' ? { x: x + r + 8, y: y - lh / 2, w: lw, h: lh }
+            : sd === 'left' ? { x: x - r - 8 - lw, y: y - lh / 2, w: lw, h: lh }
+            : sd === 'top' ? { x: x - lw / 2, y: y - r - 6 - lh, w: lw, h: lh }
+            : { x: x - lw / 2, y: y + r + 6, w: lw, h: lh };
+          const free = (sd: Side) => {
+            const q = rectFor(sd);
+            if (q.x < 0 || q.y < 0 || q.x + q.w > W || q.y + q.h > H) return false;
+            for (let k = 0; k < obstacles.length; k++) if (k !== i && hit(q, obstacles[k], 2)) return false;
+            return true;
+          };
+          // keep the current place while it stays free, so the name does not jump about
+          const prefs: Side[] = [natural, natural === 'left' ? 'right' : 'left', 'top', 'bottom'];
+          side = sides[i] && free(sides[i]!) ? sides[i]! : prefs.find(free) ?? natural;
+        }
         if (sides[i] !== side) {
           sides[i] = side;
           el.dataset.side = side;
-        }
-        if (dimmed[i] !== crowded) {
-          dimmed[i] = crowded;
-          el.toggleAttribute('data-crowded', crowded);
         }
       }
       raf = requestAnimationFrame(loop);
@@ -175,12 +168,26 @@ export function OrbitMenu({
   const go = (i: number) => (e: React.MouseEvent) => {
     e.preventDefault();
     if (selected !== null) return;
+    // phones and tablets have no pointer to hover with: the first tap shows the name and holds the orbits
+    if (noHover && hotRef.current !== i) {
+      hover.current = true;
+      setHot(i);
+      return;
+    }
     setSelected(i);
     window.setTimeout(() => onGo(items[i]), reduced ? 0 : 650);
   };
 
   return (
-    <div ref={box} className={`cf-orbits relative mx-auto min-h-[340px] w-full flex-1 ${big ? 'is-big cf-arrive max-w-[1500px]' : 'max-w-[1200px]'}`} data-selected={selected !== null ? '' : undefined}>
+    <div ref={box} className={`cf-orbits relative mx-auto min-h-[340px] w-full flex-1 ${big ? 'is-big cf-arrive max-w-[1500px]' : 'max-w-[1200px]'}`} data-selected={selected !== null ? '' : undefined}
+      onPointerDown={(e) => {
+        // on touch, tapping anywhere but a planet hides the name and lets the orbits run again
+        if (noHover && !(e.target as Element).closest('.cf-planet-link')) {
+          hover.current = false;
+          setHot(null);
+        }
+      }}
+    >
 
       <button
         type="button"
@@ -212,16 +219,18 @@ export function OrbitMenu({
                 className="cf-planet absolute left-0 top-0"
                 data-side="right"
                 data-picked={selected === i ? '' : undefined}
+                data-hot={hot === i ? '' : undefined}
                 style={{ '--size': `${Math.round(p.size * geo.scale)}px` } as CSSProperties}
               >
                 <a
                   href={hrefFor(item.page, item.section)}
                   onClick={go(i)}
                   // pointing at a planet (or focusing it) freezes the orbits until the pointer leaves
-                  onPointerEnter={() => ((hover.current = true), setHot(i))}
-                  onPointerLeave={() => ((hover.current = false), setHot(null))}
-                  onFocus={() => ((hover.current = true), setHot(i))}
-                  onBlur={() => ((hover.current = false), setHot(null))}
+                  onPointerEnter={(e) => e.pointerType !== 'touch' && ((hover.current = true), setHot(i))}
+                  onPointerLeave={(e) => e.pointerType !== 'touch' && ((hover.current = false), setHot(null))}
+                  // keyboard focus counts as pointing; the focus a tap gives a link does not (the tap is handled in go)
+                  onFocus={(e) => e.currentTarget.matches(':focus-visible') && ((hover.current = true), setHot(i))}
+                  onBlur={() => hotRef.current === i && !noHover && ((hover.current = false), setHot(null))}
                   aria-current={active ? 'page' : undefined}
                   className="cf-planet-link group"
                 >
@@ -245,10 +254,12 @@ export function OrbitMenu({
         {selected !== null
           ? `Opening ${items[selected].label}…`
           : hot !== null
-            ? `${items[hot].label} · click to open`
+            ? `${items[hot].label} · ${noHover ? 'tap again to open' : 'click to open'}`
             : frozen
-              ? 'Orbits paused · tap the sun to resume'
-              : 'Point at a planet to stop the orbits · click it to go'}
+              ? 'Orbits paused · tap the black hole to resume'
+              : noHover
+                ? 'Tap a planet to see its name · tap again to go'
+                : 'Point at a planet to see its name · click it to go'}
       </p>
     </div>
   );
