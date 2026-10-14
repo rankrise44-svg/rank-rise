@@ -38,7 +38,8 @@ export function ValgonDock({ page }: { page: PageId }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [dockOpen]);
 
-  if (page === 'valgon' || page === 'portal') return null;
+  // Valgon has his own page, and sits below the universe; the portal is a separate app.
+  if (page === 'valgon' || page === 'universe' || page === 'portal') return null;
 
   return (
     <>

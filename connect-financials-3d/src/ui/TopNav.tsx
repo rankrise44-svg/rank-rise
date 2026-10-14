@@ -16,7 +16,7 @@ function ValgonButton() {
   const { dockOpen } = useValgon();
   const onClick = () => {
     unlockVoice();
-    if (page === 'valgon') document.querySelector<HTMLInputElement>('[data-page="valgon"] input[aria-label="Ask Valgon"]')?.focus();
+    if (page === 'valgon' || page === 'universe') document.querySelector<HTMLInputElement>(`[data-page="${page}"] input[aria-label="Ask Valgon"]`)?.focus();
     else if (dockOpen) closeDock();
     else openDock();
   };

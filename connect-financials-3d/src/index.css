@@ -197,37 +197,45 @@ li:nth-child(5) > .vg-tile { animation-delay: .16s; } li:nth-child(6) > .vg-tile
 @keyframes cf-corona { 0%, 100% { transform: scale(1); opacity: .8; } 50% { transform: scale(1.12); opacity: 1; } }
 
 .cf-planet { width: 0; height: 0; will-change: transform; --depth: .5; }
-.cf-planet-link {
-  position: absolute; top: calc(var(--size) / -2); left: calc(var(--size) / -2);
-  display: flex; align-items: center; gap: 10px; white-space: nowrap; border-radius: 999px;
-  opacity: calc(.55 + .45 * var(--depth)); transition: opacity .3s;
-}
-.cf-planet[data-side='left'] .cf-planet-link { left: auto; right: calc(var(--size) / -2); flex-direction: row-reverse; }
+/* the link sits on the planet's centre; the body and the name are placed around it */
+.cf-planet-link { position: absolute; left: 0; top: 0; width: 0; height: 0; outline: none; }
 .cf-planet-body {
-  position: relative; flex: none; width: var(--size); height: var(--size); border-radius: 50%;
+  position: absolute; left: calc(var(--size) / -2); top: calc(var(--size) / -2); width: var(--size); height: var(--size); border-radius: 50%;
   box-shadow: inset -3px -4px 8px rgba(0, 0, 0, .6), 0 0 12px rgba(91, 140, 255, .18);
-  transform: scale(calc(.78 + .32 * var(--depth))); transition: transform .35s cubic-bezier(.3, 1.4, .5, 1), box-shadow .3s;
+  opacity: calc(.6 + .4 * var(--depth));
+  transform: scale(calc(.78 + .32 * var(--depth))); transition: transform .35s cubic-bezier(.3, 1.4, .5, 1), box-shadow .3s, opacity .3s;
 }
 .cf-planet-body.has-ring::after {
   content: ''; position: absolute; left: -45%; right: -45%; top: 38%; bottom: 38%; border-radius: 50%;
   border: 2px solid rgba(232, 207, 143, .85); border-top-color: rgba(232, 207, 143, .25); transform: rotate(-18deg);
 }
 .cf-planet-label {
+  position: absolute; top: 0; white-space: nowrap;
   font-family: var(--font-display, inherit); font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
-  color: var(--color-ink); text-shadow: 0 1px 6px rgba(0, 0, 0, .9); padding: 2px 4px; transition: color .25s;
+  color: var(--color-ink); padding: 3px 9px; border-radius: 999px;
+  background: rgba(0, 0, 0, .5); box-shadow: 0 0 0 1px rgba(212, 175, 55, .12);
+  opacity: calc(.75 + .25 * var(--depth)); transition: color .25s, opacity .3s, background .25s;
 }
-.cf-planet-link:hover .cf-planet-label, .cf-planet-link:focus-visible .cf-planet-label, .cf-planet-link[aria-current='page'] .cf-planet-label { color: var(--color-gold-hi); }
+.cf-planet[data-side='right'] .cf-planet-label { left: calc(var(--size) / 2 + 8px); transform: translateY(-50%); }
+.cf-planet[data-side='left'] .cf-planet-label { right: calc(var(--size) / 2 + 8px); transform: translateY(-50%); }
+.cf-planet[data-side='top'] .cf-planet-label { left: 0; top: auto; bottom: calc(var(--size) / 2 + 6px); transform: translateX(-50%); }
+.cf-planet[data-side='bottom'] .cf-planet-label { left: 0; top: calc(var(--size) / 2 + 6px); transform: translateX(-50%); }
+.cf-planet[data-crowded] .cf-planet-label { opacity: .08; }
+.cf-planet-link:hover .cf-planet-label, .cf-planet-link:focus-visible .cf-planet-label { opacity: 1; color: var(--color-gold-hi); background: rgba(0, 0, 0, .72); box-shadow: 0 0 0 1px rgba(245, 210, 122, .55); }
+.cf-planet-link:focus-visible .cf-planet-label { outline: 2px solid var(--color-gold-hi); outline-offset: 2px; }
+.cf-planet-link[aria-current='page'] .cf-planet-label { color: var(--color-gold-hi); }
 .cf-planet-link:hover .cf-planet-body, .cf-planet-link:focus-visible .cf-planet-body {
-  transform: scale(calc(1.05 + .32 * var(--depth))); box-shadow: inset -3px -4px 8px rgba(0, 0, 0, .55), 0 0 0 2px rgba(245, 210, 122, .8), 0 0 22px rgba(245, 210, 122, .55);
+  opacity: 1; transform: scale(calc(1.05 + .32 * var(--depth))); box-shadow: inset -3px -4px 8px rgba(0, 0, 0, .55), 0 0 0 2px rgba(245, 210, 122, .8), 0 0 22px rgba(245, 210, 122, .55);
 }
 .cf-planet-link[aria-current='page'] .cf-planet-body { box-shadow: inset -3px -4px 8px rgba(0, 0, 0, .55), 0 0 0 1.5px rgba(245, 210, 122, .6), 0 0 16px rgba(245, 210, 122, .35); }
-.cf-orbits[data-selected] .cf-planet:not([data-picked]) .cf-planet-link { opacity: .18; }
-.cf-planet[data-picked] .cf-planet-link { opacity: 1; }
+.cf-orbits[data-selected] .cf-planet:not([data-picked]) .cf-planet-body,
+.cf-orbits[data-selected] .cf-planet:not([data-picked]) .cf-planet-label { opacity: .15; }
 .cf-planet[data-picked] .cf-planet-body {
-  transform: scale(1.5); box-shadow: inset -3px -4px 8px rgba(0, 0, 0, .5), 0 0 0 2px #F5D27A, 0 0 34px 6px rgba(245, 210, 122, .65);
+  opacity: 1; transform: scale(1.5); box-shadow: inset -3px -4px 8px rgba(0, 0, 0, .5), 0 0 0 2px #F5D27A, 0 0 34px 6px rgba(245, 210, 122, .65);
 }
-.cf-planet[data-picked] .cf-planet-label { color: var(--color-gold-hi); }
-@media (max-width: 639.98px) { .cf-planet-label { font-size: 10px; letter-spacing: .12em; } .cf-planet-link { gap: 6px; } }
+.cf-planet[data-picked] .cf-planet-label { opacity: 1; color: var(--color-gold-hi); }
+.cf-orbits.is-big .cf-planet-label { font-size: 13px; letter-spacing: .17em; }
+@media (max-width: 639.98px) { .cf-planet-label, .cf-orbits.is-big .cf-planet-label { font-size: 10px; letter-spacing: .1em; padding: 2px 7px; } }
 
 /* header icon: a small solar system that freezes when clicked (menu open) */
 .cf-uo { transform-box: view-box; transform-origin: 50% 50%; animation: cf-spin linear infinite; }
@@ -237,9 +245,6 @@ li:nth-child(5) > .vg-tile { animation-delay: .16s; } li:nth-child(6) > .vg-tile
 .cf-universe[data-frozen] .cf-uo { animation-play-state: paused; }
 @keyframes cf-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .cf-uo, .cf-sun::after { animation: none; } }
-.cf-orbits.is-big .cf-planet-label { font-size: 14px; letter-spacing: .18em; }
-@media (max-width: 639.98px) { .cf-orbits.is-big .cf-planet-label { font-size: 11px; letter-spacing: .12em; } }
-.cf-planet-link:hover, .cf-planet-link:focus-visible { opacity: 1; }
 /* the nebula behind the universe turns very slowly */
 .cf-nebula { transform-origin: 50% 50%; animation: cf-nebula 480s linear infinite; }
 @keyframes cf-nebula { to { transform: rotate(360deg); } }
