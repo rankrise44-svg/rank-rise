@@ -118,15 +118,13 @@ export function OrbitMenu({
       }
 
       // Names are hidden until a planet is pointed at or clicked; place the one that is shown,
-      // clear of the planets and the black hole's disk.
+      // clear of the planets and the black hole.
       const obstacles: Rect[] = P.map((p) => {
         const r = p.r * (0.78 + 0.32 * p.depth);
         return { x: p.x - r, y: p.y - r, w: r * 2, h: r * 2 };
       });
       const sunR = g.sun / 2 + 4;
       obstacles.push({ x: g.cx - sunR, y: g.cy - sunR, w: sunR * 2, h: sunR * 2 });
-      // the black hole's disk: a thin band reaching far out to the sides
-      obstacles.push({ x: g.cx - g.sun * 1.75, y: g.cy - g.sun * 0.16, w: g.sun * 3.5, h: g.sun * 0.34 });
       for (let i = 0; i < n; i++) {
         const el = planets.current[i];
         if (!el) continue;
@@ -287,27 +285,14 @@ function orbitGeometry(w: number, h: number, n: number, big = false) {
 }
 
 /**
- * The black hole at the centre, drawn like a real one seen almost edge-on: a
- * small black hole with a bright rim; its disk of glowing matter thick and
- * white-hot next to the hole and thinning to fine points far out to the sides;
- * the far side of the disk bent by gravity into an arc over the top (and
- * faintly under); the near side passing in front of the hole. The button is one hole across; this drawing reaches 1.8 holes
- * out to each side.
+ * The black hole at the centre: a black hole with a thin bright rim, and a fine
+ * arc of light bent over its top (and faintly under it). The button is one hole
+ * across; the drawing has room around it for the arcs.
  */
 function BlackHole() {
-  const lens = 'M -178 0 Q 0 -28 178 0 Q 0 28 -178 0 Z';
   return (
     <svg className="cf-bh" viewBox="-180 -70 360 140" aria-hidden>
       <defs>
-        <linearGradient id="bh-disk" x1="-180" x2="180" y1="0" y2="0" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#9a4512" stopOpacity="0" />
-          <stop offset="0.16" stopColor="#c8692a" stopOpacity="0.35" />
-          <stop offset="0.34" stopColor="#f0a645" stopOpacity="0.85" />
-          <stop offset="0.5" stopColor="#fff6dc" stopOpacity="1" />
-          <stop offset="0.66" stopColor="#f0a645" stopOpacity="0.85" />
-          <stop offset="0.84" stopColor="#c8692a" stopOpacity="0.35" />
-          <stop offset="1" stopColor="#9a4512" stopOpacity="0" />
-        </linearGradient>
         <radialGradient id="bh-core" cx="0" cy="0" r="40" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#000" />
           <stop offset="0.82" stopColor="#000" />
@@ -317,21 +302,9 @@ function BlackHole() {
         <filter id="bh-soft" x="-10%" y="-80%" width="120%" height="260%">
           <feGaussianBlur stdDeviation="1.4" />
         </filter>
-        <filter id="bh-glow" x="-20%" y="-150%" width="140%" height="400%">
-          <feGaussianBlur stdDeviation="5" />
-        </filter>
-        <clipPath id="bh-near">
-          <rect x="-180" y="6" width="360" height="40" />
-        </clipPath>
       </defs>
 
-      {/* far side of the disk, behind the hole */}
-      <g transform="rotate(-6)">
-        <path d={lens} fill="url(#bh-disk)" filter="url(#bh-glow)" opacity="0.55" transform="scale(1 1.9)" />
-        <path className="cf-bh-disk" d={lens} fill="url(#bh-disk)" filter="url(#bh-soft)" />
-      </g>
-
-      {/* light from the far side, bent over the top of the hole and faintly under it */}
+      {/* light bent over the top of the hole and faintly under it */}
       <path d="M -46 3 A 46 47 0 0 1 46 3" fill="none" stroke="#ffd98c" strokeWidth="7" opacity="0.35" filter="url(#bh-soft)" />
       <path d="M -44 3 A 44 45 0 0 1 44 3" fill="none" stroke="#fff0c8" strokeWidth="1.8" opacity="0.9" />
       <path d="M -43 3 A 43 44 0 0 0 43 3" fill="none" stroke="#ffcf7a" strokeWidth="1.2" opacity="0.35" />
@@ -339,12 +312,6 @@ function BlackHole() {
       {/* the hole, with its thin bright rim */}
       <circle r="40" fill="url(#bh-core)" />
       <circle r="41" fill="none" stroke="#ffe6b0" strokeWidth="1.1" opacity="0.85" />
-
-      {/* near side of the disk, passing in front of the hole */}
-      <g transform="rotate(-6)" clipPath="url(#bh-near)">
-        <path className="cf-bh-disk" d={lens} fill="url(#bh-disk)" filter="url(#bh-soft)" />
-      </g>
     </svg>
   );
 }
-
