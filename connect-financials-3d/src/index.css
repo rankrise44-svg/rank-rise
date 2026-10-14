@@ -240,3 +240,7 @@ li:nth-child(5) > .vg-tile { animation-delay: .16s; } li:nth-child(6) > .vg-tile
 .cf-orbits.is-big .cf-planet-label { font-size: 14px; letter-spacing: .18em; }
 @media (max-width: 639.98px) { .cf-orbits.is-big .cf-planet-label { font-size: 11px; letter-spacing: .12em; } }
 .cf-planet-link:hover, .cf-planet-link:focus-visible { opacity: 1; }
+/* the nebula behind the universe turns very slowly */
+.cf-nebula { transform-origin: 50% 50%; animation: cf-nebula 480s linear infinite; }
+@keyframes cf-nebula { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .cf-nebula { animation: none; } }

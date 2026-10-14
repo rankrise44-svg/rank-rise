@@ -5,6 +5,7 @@ import { closeDock, openDock } from '../valgon/ui/Dock';
 import { useValgon } from '../valgon/store';
 import { unlockVoice } from '../valgon/voice';
 import { openAccount } from './openAccount';
+import { CosmicBackdrop } from './CosmicBackdrop';
 import { OrbitMenu, UniverseIcon } from './OrbitMenu';
 import { RiskNote } from './RiskNote';
 import logo from '../assets/logo.svg';
@@ -123,6 +124,7 @@ export function TopNav() {
           aria-label="Site menu"
           className="cf-stars fixed inset-0 z-[70] flex h-[100dvh] flex-col overflow-y-auto px-4 pb-6 pt-24 sm:px-10"
         >
+          <CosmicBackdrop />
           <button
             type="button"
             onClick={() => {
@@ -141,7 +143,7 @@ export function TopNav() {
               navigate(n.page, n.section);
             }}
           />
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+          <div className="relative mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
             <a href={hrefFor('portal')} onClick={go('portal')} className="font-display text-[15px] font-semibold uppercase tracking-[0.14em] text-muted hover:text-gold-hi">
               Trader Portal
             </a>
@@ -152,7 +154,7 @@ export function TopNav() {
               Open Account
             </button>
           </div>
-          <RiskNote className="mx-auto mt-4 text-center" />
+          <RiskNote className="relative mx-auto mt-4 text-center" />
         </div>
       )}
     </>
