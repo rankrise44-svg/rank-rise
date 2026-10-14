@@ -38,11 +38,11 @@ export function UniverseLanding() {
   );
 }
 
-/** Valgon below the universe: his eye, his last words, and the voice and text box. */
+/** Valgon below the universe, on see-through glass: his eye, his last words, and the voice and text box. */
 function ValgonBar() {
   const { lines, status, interim } = useValgon();
   return (
-    <section aria-label="Ask Valgon" className="relative z-40 mx-auto mt-2 w-full max-w-2xl rounded-3xl border border-gold/20 bg-abyss/60 p-2.5 backdrop-blur-md sm:p-3">
+    <section aria-label="Ask Valgon" className="relative z-40 mx-auto mt-2 w-full max-w-2xl rounded-3xl border border-gold/15 bg-abyss/10 p-2.5 backdrop-blur-[1px] [text-shadow:0_1px_6px_rgba(0,0,0,0.95)] sm:p-3">
       <div className="flex items-center gap-3 px-1 pb-2">
         <Orb detail="compact" className="h-11 w-11 shrink-0 sm:h-12 sm:w-12" label="" />
         <div className="min-w-0 flex-1">
@@ -58,7 +58,7 @@ function ValgonBar() {
         </div>
         <VoiceToggle className="shrink-0" />
       </div>
-      <Composer />
+      <Composer glass />
     </section>
   );
 }

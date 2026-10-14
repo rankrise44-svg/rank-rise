@@ -42,7 +42,7 @@ export function Transcript({ last, className = '' }: { last?: number; className?
 }
 
 /** Typing box with the microphone and send buttons. */
-export function Composer({ autoFocus = false, big = false }: { autoFocus?: boolean; big?: boolean }) {
+export function Composer({ autoFocus = false, big = false, glass = false }: { autoFocus?: boolean; big?: boolean; /** see-through, for the universe */ glass?: boolean }) {
   const { mode } = useValgon();
   const [text, setText] = useState('');
   const input = useRef<HTMLInputElement>(null);
@@ -58,7 +58,7 @@ export function Composer({ autoFocus = false, big = false }: { autoFocus?: boole
   };
   const hearing = mode === 'hear';
   return (
-    <form onSubmit={submit} className={`flex items-center gap-2 rounded-full border border-gold/30 bg-abyss/70 p-1.5 backdrop-blur-md transition focus-within:border-gold-hi focus-within:shadow-[0_0_0_4px_rgba(212,175,55,0.12)] ${big ? 'pl-1.5' : ''}`} autoComplete="off">
+    <form onSubmit={submit} className={`flex items-center gap-2 rounded-full border p-1.5 transition focus-within:border-gold-hi focus-within:shadow-[0_0_0_4px_rgba(212,175,55,0.12)] ${glass ? 'border-gold/25 bg-abyss/20 backdrop-blur-[1px]' : 'border-gold/30 bg-abyss/70 backdrop-blur-md'} ${big ? 'pl-1.5' : ''}`} autoComplete="off">
       <button
         type="button"
         onClick={() => (unlockVoice(), talk())}
