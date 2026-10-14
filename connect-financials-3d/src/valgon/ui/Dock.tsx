@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { PAGES, type PageId } from '../../config/pages';
-import { navigate } from '../../lib/route';
+import { navigate, useRoute } from '../../lib/route';
 import { stopAll } from '../engine';
 import { useValgon, valgon } from '../store';
 import { Orb } from './Orb';
@@ -14,7 +14,7 @@ export const closeDock = () => valgon.set({ dockOpen: false });
 /** Open the full Valgon page; the conversation carries over. */
 export const expandValgon = () => {
   valgon.set({ dockOpen: false });
-  navigate('valgon');
+  navigate('universe', 'valgon');
 };
 
 /**
@@ -23,6 +23,7 @@ export const expandValgon = () => {
  */
 export function ValgonDock({ page }: { page: PageId }) {
   const { dockOpen, status, mode } = useValgon();
+  const { section } = useRoute();
   const panel = useRef<HTMLDivElement>(null);
 
   // Offer this page's questions when arriving on it with nothing else queued.
@@ -38,8 +39,9 @@ export function ValgonDock({ page }: { page: PageId }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [dockOpen]);
 
-  // Valgon has his own page, and sits below the universe; the portal is a separate app.
-  if (page === 'valgon' || page === 'universe' || page === 'portal') return null;
+  // Valgon has his own page and his own panel, and sits below the universe's planets;
+  // over any other panel in the universe he waits in the corner. The portal is a separate app.
+  if (page === 'valgon' || page === 'portal' || (page === 'universe' && (!section || section === 'valgon'))) return null;
 
   return (
     <>

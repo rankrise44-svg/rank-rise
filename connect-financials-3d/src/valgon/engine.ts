@@ -1,6 +1,7 @@
 import { PAGES } from '../config/pages';
 import { currentRoute, navigate, requestedOnOpen, waitFor } from '../lib/route';
 import { openAccount } from '../ui/openAccount';
+import { panelFor } from '../lib/universe';
 import { think } from './brain';
 import { nextLineId, signal, valgon, type ValgonMode } from './store';
 import type { ValgonLink, ValgonReply } from './types';
@@ -96,6 +97,20 @@ async function spot(selector: string, id: number) {
 async function go(page: Parameters<typeof navigate>[0], section: string | undefined, id: number) {
   const from = currentRoute().page;
   mode('work', `Opening ${section ? PAGES[page].sections.find((s) => s.id === section)?.label ?? PAGES[page].label : PAGES[page].label}`);
+  // Every page now opens inside the universe, as a panel over it.
+  const panel = panelFor(page, section);
+  if (panel) {
+    // the conversation carries on in the docked panel (except on Valgon's own panel)
+    if (panel !== 'valgon') valgon.set({ dockOpen: true });
+    navigate('universe', panel);
+    await waitFor(`[data-panel-id="${panel}"]`, 4000);
+    if (section && section !== panel) {
+      const el = await waitFor(`#${CSS.escape(section)}`, 4000);
+      el?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      await sleep(900);
+    } else await sleep(500);
+    return alive(id);
+  }
   // Leaving the Valgon page or the universe: the conversation carries on in the docked panel.
   if ((from === 'valgon' || from === 'universe') && page !== 'valgon' && page !== 'universe') valgon.set({ dockOpen: true });
   navigate(page, section);

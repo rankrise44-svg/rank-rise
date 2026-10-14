@@ -4,6 +4,7 @@ import { navigate, useRoute } from '../lib/route';
 import logo from '../assets/logo.svg';
 import { CosmicBackdrop } from '../ui/CosmicBackdrop';
 import { OrbitMenu } from '../ui/OrbitMenu';
+import { panelFor } from '../lib/universe';
 import { IN_UNIVERSE, PlanetPanel } from './PlanetPanel';
 import { RiskNote } from '../ui/RiskNote';
 import { useValgon } from '../valgon/store';
@@ -14,8 +15,8 @@ import { Composer, Transcript, VoiceToggle } from '../valgon/ui/Parts';
  * The first page: the Connect Financials universe. The logo, a gold sun with
  * every page a planet on its own orbit (pointing at a planet freezes the
  * orbits; clicking it opens that page), and Valgon below, ready to answer by
- * voice or text. Some pages (see IN_UNIVERSE) open right here, over the moving
- * universe, at #/universe/<page>.
+ * voice or text. Every page opens right here, over the moving universe, at
+ * #/universe/<page> (see IN_UNIVERSE).
  */
 export function UniverseLanding() {
   const { section } = useRoute();
@@ -35,10 +36,20 @@ export function UniverseLanding() {
           Connect <span className="text-gold-hi">Financials</span>
         </h1>
       </header>
-      <OrbitMenu big label="Pages" items={[{ label: 'Valgon', page: 'valgon' }, ...NAV]} isActive={() => false} onGo={(n) => (IN_UNIVERSE[n.page] ? navigate('universe', n.page) : navigate(n.page, n.section))} />
+      <OrbitMenu
+        big
+        label="Pages"
+        items={[{ label: 'Valgon', page: 'valgon' }, ...NAV]}
+        isActive={() => false}
+        onGo={(n) => {
+          const id = panelFor(n.page, n.section);
+          if (id) navigate('universe', id);
+          else navigate(n.page, n.section);
+        }}
+      />
       <ValgonBar />
       <RiskNote className="relative z-40 mx-auto mt-2 text-center" />
-      {panel && <PlanetPanel id={panel} />}
+      {panel && <PlanetPanel key={panel} id={panel} />}
     </main>
   );
 }
