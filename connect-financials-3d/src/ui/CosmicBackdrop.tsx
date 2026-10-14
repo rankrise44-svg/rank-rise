@@ -165,7 +165,7 @@ export function CosmicBackdrop() {
       for (let i = 0; i < 18; i++) {
         const u = rand();
         const x = -0.05 * w + u * 1.1 * w;
-        const y = h * 0.92 - u * h * 0.95 + gauss(rand) * h * 0.04;
+        const y = h * 0.6 - u * h * 0.75 + gauss(rand) * h * 0.04;
         const r = Math.max(w, h) * (0.05 + rand() * 0.07);
         const g = f.createRadialGradient(x, y, 0, x, y, r);
         const col = rand() < 0.3 ? '255,214,150' : '150,175,255';
@@ -188,7 +188,7 @@ export function CosmicBackdrop() {
         const off = gauss(rand) * h * 0.09;
         f.globalAlpha = 0.05 + rand() * 0.28 * Math.exp(-Math.abs(off) / (h * 0.06));
         f.fillStyle = rand() < 0.2 ? '#ffe2a8' : '#dfe8ff';
-        f.fillRect(-0.1 * w + u * 1.2 * w, h * 0.92 - u * h * 0.95 + off, 0.7, 0.7);
+        f.fillRect(-0.1 * w + u * 1.2 * w, h * 0.6 - u * h * 0.75 + off, 0.7, 0.7);
       }
       f.globalAlpha = 1;
     };
@@ -252,8 +252,10 @@ export function CosmicBackdrop() {
         const size = p.size * k * 1.2;
         const x = vx + p.x * k * 0.9;
         const y = vy + p.y * k * 0.9;
-        // fade in from the distance, dissolve as we pass through
-        const fade = Math.min(1, (1 - p.z) / 0.2) * Math.min(1, Math.max(0, (p.z - 0.1) / 0.4));
+        // fade in from the distance, dissolve as we pass through, and keep clear of the black hole
+        const dHole = Math.hypot(x - vx, y - vy);
+        const clear = Math.min(1, Math.max(0, (dHole - f * 0.35) / (f * 0.9)));
+        const fade = Math.min(1, (1 - p.z) / 0.2) * Math.min(1, Math.max(0, (p.z - 0.1) / 0.4)) * clear;
         if (fade <= 0 || x + size < 0 || x - size > w || y + size < 0 || y - size > h) continue;
         cctx.globalAlpha = p.a * fade;
         cctx.drawImage(sprites[p.img], x - size, y - size, size * 2, size * 2);
@@ -274,13 +276,6 @@ export function CosmicBackdrop() {
       // the tunnel takes the screen's shape: wide rings on a wide screen, tall ones on a phone
       const kx = (w / Math.max(w, h)) * 1.45;
       const ky = (h / Math.max(w, h)) * 1.45;
-      // light at the far end of the tunnel, behind the black hole
-      const endGlow = ctx.createRadialGradient(vx, vy, 0, vx, vy, f * 0.9);
-      endGlow.addColorStop(0, 'rgba(255,205,130,0.13)');
-      endGlow.addColorStop(0.4, 'rgba(150,140,255,0.05)');
-      endGlow.addColorStop(1, 'rgba(60,80,200,0)');
-      ctx.fillStyle = endGlow;
-      ctx.fillRect(vx - f, vy - f, f * 2, f * 2);
       for (const ring of rings) {
         if (!reduced) ring.z -= speed * 0.8 * dt;
         if (ring.z < 0.035) ring.z += 1;
@@ -360,20 +355,6 @@ export function CosmicBackdrop() {
         const r0 = plane.r0 * sc;
         const span = (plane.r1 - plane.r0) * sc;
         const spinRate = universeMotion.hold ? 0.15 : 1;
-        // a soft glowing haze over the disk: warm near the sun, blue at the rim
-        ctx.save();
-        ctx.translate(cx, cy);
-        ctx.scale(1, Math.max(0.2, plane.k));
-        const haze = ctx.createRadialGradient(0, 0, r0 * 0.6, 0, 0, r0 + span);
-        haze.addColorStop(0, 'rgba(235,190,105,0.09)');
-        haze.addColorStop(0.35, 'rgba(200,150,90,0.05)');
-        haze.addColorStop(0.7, 'rgba(90,120,230,0.05)');
-        haze.addColorStop(1, 'rgba(60,90,200,0)');
-        ctx.fillStyle = haze;
-        ctx.beginPath();
-        ctx.arc(0, 0, r0 + span, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
         for (let ci = 0; ci < 3; ci++) {
           ctx.fillStyle = `rgb(${dustColors[ci]})`;
           for (const d of dust) {
