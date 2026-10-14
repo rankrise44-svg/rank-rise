@@ -263,33 +263,3 @@ function orbitGeometry(w: number, h: number, n: number, big = false) {
   }
   return { cx, cy, rx, ry, sun, scale };
 }
-
-/**
- * The header's menu icon: a small solar system whose planets orbit, and freeze
- * while the menu is open (or with reduced motion).
- */
-export function UniverseIcon({ frozen }: { frozen: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" className="cf-universe h-6 w-6" data-frozen={frozen ? '' : undefined} aria-hidden>
-      <defs>
-        <radialGradient id="cf-universe-sun" cx="40%" cy="38%" r="70%">
-          <stop offset="0%" stopColor="#FFF1C4" />
-          <stop offset="55%" stopColor="#F5D27A" />
-          <stop offset="100%" stopColor="#B8902A" />
-        </radialGradient>
-      </defs>
-      <circle cx="12" cy="12" r="5.6" fill="none" stroke="rgba(212,175,55,.45)" strokeWidth=".6" />
-      <circle cx="12" cy="12" r="9.6" fill="none" stroke="rgba(212,175,55,.32)" strokeWidth=".6" />
-      <circle cx="12" cy="12" r="2.7" fill="url(#cf-universe-sun)" />
-      <g className="cf-uo cf-uo-a">
-        <circle cx="17.6" cy="12" r="1.25" fill="#5B8CFF" />
-      </g>
-      <g className="cf-uo cf-uo-b">
-        <circle cx="12" cy="2.4" r="1.6" fill="#E2C27A" />
-      </g>
-      <g className="cf-uo cf-uo-c">
-        <circle cx="5.2" cy="18.8" r="1.05" fill="#D35A2C" />
-      </g>
-    </svg>
-  );
-}

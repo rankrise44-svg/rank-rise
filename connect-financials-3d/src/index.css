@@ -237,14 +237,7 @@ li:nth-child(5) > .vg-tile { animation-delay: .16s; } li:nth-child(6) > .vg-tile
 .cf-orbits.is-big .cf-planet-label { font-size: 13px; letter-spacing: .17em; }
 @media (max-width: 639.98px) { .cf-planet-label, .cf-orbits.is-big .cf-planet-label { font-size: 10px; letter-spacing: .1em; padding: 2px 7px; } }
 
-/* header icon: a small solar system that freezes when clicked (menu open) */
-.cf-uo { transform-box: view-box; transform-origin: 50% 50%; animation: cf-spin linear infinite; }
-.cf-uo-a { animation-duration: 3.2s; }
-.cf-uo-b { animation-duration: 7s; }
-.cf-uo-c { animation-duration: 11s; }
-.cf-universe[data-frozen] .cf-uo { animation-play-state: paused; }
-@keyframes cf-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .cf-uo, .cf-sun::after { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .cf-sun::after { animation: none; } }
 /* the nebula behind the universe turns very slowly */
 .cf-nebula { transform-origin: 50% 50%; animation: cf-nebula 480s linear infinite; }
 @keyframes cf-nebula { to { transform: rotate(360deg); } }
