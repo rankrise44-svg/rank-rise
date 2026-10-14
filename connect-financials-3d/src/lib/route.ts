@@ -3,8 +3,8 @@ import { isPage, LEGACY_ANCHORS, type PageId } from '../config/pages';
 import { scrollToId } from '../story/smoothScroll';
 
 /**
- * Hash routing: #/ is Valgon (the first thing a visitor sees), #/home is the
- * falcon page, #/tools, #/calendar… are the other pages, and #/home/accounts
+ * Hash routing: #/ is the universe (the first thing a visitor sees: every page
+ * a planet), #/valgon is Valgon, #/home is the falcon page, #/tools, #/calendar… are the other pages, and #/home/accounts
  * opens a page at a section. Works on any static host and inside a sandboxed
  * preview. Old single-page anchors (#tools, #portal) still land in the right place.
  */
@@ -15,22 +15,22 @@ export interface Route {
 
 function parse(hash: string): Route {
   const h = hash.replace(/^#\/?/, '');
-  if (!h) return { page: 'valgon', section: null };
+  if (!h) return { page: 'universe', section: null };
   const [first, second] = h.split('/');
   if (isPage(first)) return { page: first, section: second || null };
   const legacy = LEGACY_ANCHORS[first];
   if (legacy) return { page: legacy.page, section: legacy.section ?? null };
-  return { page: 'valgon', section: null };
+  return { page: 'universe', section: null };
 }
 
 /**
- * Every visit starts with Valgon, whatever address the visitor arrives on.
+ * Every visit starts in the universe, whatever address the visitor arrives on.
  * The page they asked for (or were on last time) is kept so Valgon can offer it.
  */
 const arrived = parse(window.location.hash);
-export const requestedOnOpen: Route | null = arrived.page !== 'valgon' ? arrived : null;
+export const requestedOnOpen: Route | null = arrived.page !== 'universe' && arrived.page !== 'valgon' ? arrived : null;
 const reviewing = new URLSearchParams(window.location.search).has('studio');
-let current: Route = reviewing ? arrived : { page: 'valgon', section: null };
+let current: Route = reviewing ? arrived : { page: 'universe', section: null };
 if (!reviewing && window.location.hash && window.location.hash !== '#/') {
   history.replaceState(history.state, '', `${window.location.pathname}${window.location.search}#/`);
 }
@@ -58,13 +58,13 @@ export function useRoute() {
 export const currentRoute = () => current;
 
 export function hrefFor(page: PageId, section?: string | null) {
-  return page === 'valgon' ? '#/' : `#/${page}${section ? `/${section}` : ''}`;
+  return page === 'universe' ? '#/' : `#/${page}${section ? `/${section}` : ''}`;
 }
 
 /** Go to a page (and optionally a section on it). */
 export function navigate(page: PageId, section?: string | null) {
   const target = hrefFor(page, section);
-  if (window.location.hash === target || (page === 'valgon' && !window.location.hash)) {
+  if (window.location.hash === target || (page === 'universe' && !window.location.hash)) {
     nonce++;
     emit();
     return;

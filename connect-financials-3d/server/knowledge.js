@@ -12,6 +12,8 @@ export const ACCOUNTS = [
 ];
 
 export const PAGES = {
+  universe: 'Universe (the start page): every page of the site as a planet orbiting a gold sun',
+  valgon: 'Valgon: your own page, with the big eye',
   home: 'Home: the falcon, About Connect, the accounts, and Open Account',
   markets: 'Connect View: live market watch, charts from 1 minute to daily, the order book, currency strength and trading sessions',
   tools: 'Tools: pip value, margin, position size, profit and loss, and capital and risk calculators',
@@ -41,6 +43,7 @@ const pagesText = Object.entries(PAGES).map(([id, d]) => `- ${id}: ${d}`).join('
 
 export const ACTIONS = [
   'none',
+  'go:universe', 'go:valgon',
   'go:home', 'go:home/about', 'go:home/accounts',
   'go:markets', 'go:markets/currencies',
   'go:tools', 'go:tools/capital-risk',

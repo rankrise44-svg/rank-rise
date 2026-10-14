@@ -3,10 +3,10 @@
  * wing menu and Valgon all read from here, so adding a page (or a section that
  * Valgon can take people to) is one entry.
  *
- * Routing is by hash (#/tools, #/home/accounts) so the site works on any static
+ * Routing is by hash (#/ the universe, #/valgon, #/tools, #/home/accounts) so the site works on any static
  * host and inside a sandboxed preview.
  */
-export type PageId = 'valgon' | 'home' | 'markets' | 'tools' | 'calendar' | 'platforms' | 'contact' | 'legal' | 'portal';
+export type PageId = 'universe' | 'valgon' | 'home' | 'markets' | 'tools' | 'calendar' | 'platforms' | 'contact' | 'legal' | 'portal';
 
 export interface PageSection {
   id: string;
@@ -24,6 +24,13 @@ export interface PageDef {
 }
 
 export const PAGES: Record<PageId, PageDef> = {
+  universe: {
+    id: 'universe',
+    label: 'Universe',
+    blurb: 'the start page: the Connect Financials universe, with every page as a planet',
+    sections: [],
+    suggestions: ['Show me the falcon', 'Which account suits me?', 'Open Connect View'],
+  },
   valgon: {
     id: 'valgon',
     label: 'Valgon',

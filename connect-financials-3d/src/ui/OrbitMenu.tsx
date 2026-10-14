@@ -23,7 +23,20 @@ const PLANETS: { name: string; size: number; period: number; skin: string; ring?
  * freezes the whole system and lights it before its page opens, and the sun
  * pauses or resumes the orbits. With reduced motion the system stands still.
  */
-export function OrbitMenu({ items, isActive, onGo }: { items: OrbitItem[]; isActive: (n: OrbitItem) => boolean; onGo: (n: OrbitItem) => void }) {
+export function OrbitMenu({
+  items,
+  isActive,
+  onGo,
+  big = false,
+  label = 'Site pages',
+}: {
+  items: OrbitItem[];
+  isActive: (n: OrbitItem) => boolean;
+  onGo: (n: OrbitItem) => void;
+  /** The full-page universe: larger planets and labels */
+  big?: boolean;
+  label?: string;
+}) {
   const box = useRef<HTMLDivElement>(null);
   const planets = useRef<(HTMLLIElement | null)[]>([]);
   const size = useRef({ w: 0, h: 0 });
@@ -31,12 +44,13 @@ export function OrbitMenu({ items, isActive, onGo }: { items: OrbitItem[]; isAct
   const reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const [frozen, setFrozen] = useState(reduced);
   const [selected, setSelected] = useState<number | null>(null);
+  const [hot, setHot] = useState<number | null>(null);
   const frozenRef = useRef(frozen);
   const hover = useRef(false);
   frozenRef.current = frozen || selected !== null;
 
   const n = Math.min(items.length, PLANETS.length);
-  const geo = orbitGeometry(dims.w, dims.h, n);
+  const geo = orbitGeometry(dims.w, dims.h, n, big);
 
   useEffect(() => {
     const el = box.current;
@@ -59,7 +73,7 @@ export function OrbitMenu({ items, isActive, onGo }: { items: OrbitItem[]; isAct
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       if (!frozenRef.current && !hover.current) t += dt;
-      const g = orbitGeometry(size.current.w, size.current.h, n);
+      const g = orbitGeometry(size.current.w, size.current.h, n, big);
       for (let i = 0; i < n; i++) {
         const el = planets.current[i];
         if (!el) continue;
@@ -81,7 +95,7 @@ export function OrbitMenu({ items, isActive, onGo }: { items: OrbitItem[]; isAct
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [n]);
+  }, [n, big]);
 
   const go = (i: number) => (e: React.MouseEvent) => {
     e.preventDefault();
@@ -91,11 +105,11 @@ export function OrbitMenu({ items, isActive, onGo }: { items: OrbitItem[]; isAct
   };
 
   return (
-    <div ref={box} className="cf-orbits relative mx-auto min-h-[440px] w-full max-w-[1200px] flex-1" data-selected={selected !== null ? '' : undefined}>
+    <div ref={box} className={`cf-orbits relative mx-auto min-h-[440px] w-full flex-1 ${big ? 'is-big max-w-[1500px]' : 'max-w-[1200px]'}`} data-selected={selected !== null ? '' : undefined}>
       {dims.w > 0 && (
         <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
           {geo.rx.map((rx, i) => (
-            <ellipse key={i} cx={geo.cx} cy={geo.cy} rx={rx} ry={geo.ry[i]} fill="none" stroke={selected === i ? 'rgba(245,210,122,0.75)' : 'rgba(212,175,55,0.16)'} strokeWidth={selected === i ? 1.4 : 1} />
+            <ellipse key={i} cx={geo.cx} cy={geo.cy} rx={rx} ry={geo.ry[i]} fill="none" stroke={selected === i ? 'rgba(245,210,122,0.75)' : hot === i ? 'rgba(245,210,122,0.45)' : 'rgba(212,175,55,0.16)'} strokeWidth={selected === i ? 1.4 : hot === i ? 1.2 : 1} />
           ))}
         </svg>
       )}
@@ -112,7 +126,7 @@ export function OrbitMenu({ items, isActive, onGo }: { items: OrbitItem[]; isAct
         <span className="sr-only">{frozen ? 'Resume' : 'Pause'}</span>
       </button>
 
-      <nav aria-label="Main">
+      <nav aria-label={label}>
         <ol>
           {items.slice(0, n).map((item, i) => {
             const p = PLANETS[i];
@@ -131,10 +145,11 @@ export function OrbitMenu({ items, isActive, onGo }: { items: OrbitItem[]; isAct
                 <a
                   href={hrefFor(item.page, item.section)}
                   onClick={go(i)}
-                  onPointerEnter={() => (hover.current = true)}
-                  onPointerLeave={() => (hover.current = false)}
-                  onFocus={() => (hover.current = true)}
-                  onBlur={() => (hover.current = false)}
+                  // pointing at a planet (or focusing it) freezes the orbits until the pointer leaves
+                  onPointerEnter={() => ((hover.current = true), setHot(i))}
+                  onPointerLeave={() => ((hover.current = false), setHot(null))}
+                  onFocus={() => ((hover.current = true), setHot(i))}
+                  onBlur={() => ((hover.current = false), setHot(null))}
                   aria-current={active ? 'page' : undefined}
                   className="cf-planet-link group"
                 >
@@ -150,19 +165,25 @@ export function OrbitMenu({ items, isActive, onGo }: { items: OrbitItem[]; isAct
       </nav>
 
       <p className="pointer-events-none absolute inset-x-0 bottom-0 text-center text-[11px] uppercase tracking-[0.24em] text-muted/80">
-        {selected !== null ? `Opening ${items[selected].label}…` : frozen ? 'Orbits paused · tap the sun to resume' : 'Tap a planet to go · tap the sun to pause'}
+        {selected !== null
+          ? `Opening ${items[selected].label}…`
+          : hot !== null
+            ? `${items[hot].label} · click to open`
+            : frozen
+              ? 'Orbits paused · tap the sun to resume'
+              : 'Point at a planet to stop the orbits · click it to go'}
       </p>
     </div>
   );
 }
 
 /** Orbit sizes for the space available: tilted ellipses on wide screens, taller ones on phones. */
-function orbitGeometry(w: number, h: number, n: number) {
+function orbitGeometry(w: number, h: number, n: number, big = false) {
   const cx = w / 2;
   const cy = (h - 24) / 2;
   const narrow = w < 640;
-  const scale = narrow ? 0.72 : w < 1000 ? 0.86 : 1;
-  const sun = Math.round(Math.max(48, Math.min(120, Math.min(w, h) * (narrow ? 0.17 : 0.15))));
+  const scale = (narrow ? 0.72 : w < 1000 ? 0.86 : 1) * (big && !narrow ? 1.3 : 1);
+  const sun = Math.round(Math.max(48, Math.min(big ? 150 : 120, Math.min(w, h) * (narrow ? 0.17 : big ? 0.17 : 0.15))));
   const rxMax = Math.max(0, w / 2 - 22 * scale);
   const ryMax = Math.max(0, (h - 24) / 2 - 20 * scale);
   const rx0 = sun / 2 + (narrow ? 22 : 40);

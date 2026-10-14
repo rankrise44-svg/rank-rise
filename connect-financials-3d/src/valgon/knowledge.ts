@@ -122,7 +122,8 @@ export const INTENTS: Intent[] = [
   },
 
   /* ── places ── */
-  pageIntent('home', 'home', [/falcon|eagle|home ?page|\bhome\b|main page|the website|enter|start|landing/i], ['site', 'website'], 'Taking you to the falcon.'),
+  pageIntent('home', 'home', [/falcon|eagle|home ?page|\bhome\b|main page|the website|enter/i], ['site', 'website'], 'Taking you to the falcon.'),
+  pageIntent('universe', 'universe', [/universe|planets?|solar system|start page|first page|landing/i], ['space', 'orbit'], 'Taking you to the universe. Every page is a planet: point at one to stop the orbits, then click it.'),
   pageIntent('about', 'home', [/about (you|connect|the company|us)|who is connect|company/i], ['history', 'story'], `Here is ${COMPANY.brand}: ${COMPANY.description}`, 'about', '#about'),
   pageIntent('markets', 'markets', [/connect ?view|chart|market watch|order book|depth|terminal|live (prices|markets)|markets?/i], ['trade', 'trading', 'candles', 'quotes'], 'Opening Connect View: live market watch, charts and the order book.', 'terminal', '#terminal'),
   pageIntent('currencies', 'markets', [/currenc(y|ies) strength|strength|sessions?|tokyo|london|new york|sydney|open now/i], [], 'Here are currency strength and the trading sessions, in UTC.', 'currencies', '#currencies'),

@@ -237,3 +237,6 @@ li:nth-child(5) > .vg-tile { animation-delay: .16s; } li:nth-child(6) > .vg-tile
 .cf-universe[data-frozen] .cf-uo { animation-play-state: paused; }
 @keyframes cf-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .cf-uo, .cf-sun::after { animation: none; } }
+.cf-orbits.is-big .cf-planet-label { font-size: 14px; letter-spacing: .18em; }
+@media (max-width: 639.98px) { .cf-orbits.is-big .cf-planet-label { font-size: 11px; letter-spacing: .12em; } }
+.cf-planet-link:hover, .cf-planet-link:focus-visible { opacity: 1; }

@@ -2,7 +2,7 @@
 // the site server (Groq) and the page itself (the claude.ai preview).
 import { ACCOUNTS } from './knowledge.js';
 
-const PAGES = new Set(['home', 'markets', 'tools', 'calendar', 'platforms', 'contact', 'legal', 'portal']);
+const PAGES = new Set(['universe', 'valgon', 'home', 'markets', 'tools', 'calendar', 'platforms', 'contact', 'legal', 'portal']);
 const TIERS = new Set(ACCOUNTS.map((a) => a.id));
 const SYMBOL = /^[A-Z0-9]{3,8}$/;
 

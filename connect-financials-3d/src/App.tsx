@@ -4,11 +4,12 @@ import { CalendarPage, ContactPage, LegalPage, MarketsPage, PlatformsPage, Tools
 import { OpenAccountModal } from './ui/OpenAccountModal';
 import { TickerBar } from './ui/TickerBar';
 import { TopNav } from './ui/TopNav';
+import { UniverseLanding } from './pages/Universe';
 import { ValgonDock } from './valgon/ui/Dock';
 import { ValgonLanding } from './valgon/ui/Landing';
 import { unlockVoice } from './valgon/voice';
 
-// The falcon page carries three.js; it loads when someone goes there (Valgon prefetches it).
+// The falcon page carries three.js; it loads when someone goes there (the universe prefetches it).
 const Home = lazy(() => import('./pages/Home'));
 const Portal = lazy(() => import('./pages/Portal'));
 
@@ -21,6 +22,7 @@ function Loading() {
 }
 
 const PAGE = {
+  universe: UniverseLanding,
   valgon: ValgonLanding,
   home: Home,
   markets: MarketsPage,
