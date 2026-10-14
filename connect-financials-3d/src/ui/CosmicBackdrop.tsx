@@ -2,8 +2,11 @@ import { useEffect, useRef } from 'react';
 import { universeMotion } from './universeMotion';
 
 /**
- * The sky behind the universe, in 3D: we are travelling through it.
+ * The sky behind the universe, in 3D: we are travelling through a wormhole.
  *
+ * - The wormhole: rings of stardust at depth, wide at the screen's edges and
+ *   narrowing to the black hole in the middle, twisted into a slow spiral and
+ *   flowing out of the hole towards us. Everything below flows out of the hole too.
  * - Stars sit at different depths and stream past from the distance; nearer
  *   ones grow brighter and bigger. At speed they draw out into streaks.
  * - Nebula clouds (blue, violet, gold) float at depth too: they swell as we
@@ -115,12 +118,24 @@ export function CosmicBackdrop() {
       return p;
     };
 
+    // ── the wormhole's rings, at depth like the stars
+    const TWIST = 2.6; // how far the tunnel turns from its far end to us
+    let clock = 0;
+    type Ring = { z: number; seed: number; jitter: Float32Array };
+    const RINGS = typeof window !== 'undefined' && window.innerWidth < 640 ? 26 : 40;
+    const rings: Ring[] = Array.from({ length: RINGS }, (_, i) => {
+      const rand = mulberry32(300 + i);
+      const jitter = new Float32Array(97);
+      for (let k = 0; k < jitter.length; k++) jitter[k] = rand() * 2 - 1;
+      return { z: (i + 0.5) / RINGS, seed: rand() * Math.PI * 2, jitter };
+    });
+
     // ── stardust round the sun
     type Dust = { r: number; a: number; z: number; size: number; alpha: number; c: number; w: number };
     let dust: Dust[] = [];
     const buildDust = () => {
       const rand = mulberry32(7);
-      const count = w < 640 ? 600 : 1800;
+      const count = w < 640 ? 450 : 1200;
       dust = [];
       for (let i = 0; i < count; i++) {
         const t = Math.pow(rand(), 0.75);
@@ -193,7 +208,7 @@ export function CosmicBackdrop() {
       cloud.height = Math.max(1, Math.round(h * CLOUD_RES));
       buildFar();
       buildDust();
-      const nStars = w < 640 ? 320 : 760;
+      const nStars = w < 640 ? 260 : 620;
       stars = Array.from({ length: nStars }, () => spawn({} as Star, true));
       if (!puffs.length) puffs = Array.from({ length: w < 640 ? 7 : 11 }, () => spawnPuff({} as Puff, true));
       if (reduced) draw(0);
@@ -206,9 +221,23 @@ export function CosmicBackdrop() {
     const draw = (dt: number) => {
       pointer.x += (pointer.tx - pointer.x) * 0.04;
       pointer.y += (pointer.ty - pointer.y) * 0.04;
-      // where we are heading: the centre, steered a little by the pointer
-      const vx = w / 2 + pointer.x * w * 0.08;
-      const vy = h * 0.46 + pointer.y * h * 0.08;
+      // where we are heading: into the black hole at the end of the wormhole, steered a little by the pointer
+      const plane = universeMotion.plane;
+      let holeX = w / 2;
+      let holeY = h * 0.46;
+      let planeBox: DOMRect | null = null;
+      let hostBox: DOMRect | null = null;
+      let sc = 1;
+      if (plane && plane.box.isConnected) {
+        hostBox = host.getBoundingClientRect();
+        planeBox = plane.box.getBoundingClientRect();
+        sc = plane.box.offsetWidth ? planeBox.width / plane.box.offsetWidth : 1; // follows the arrival zoom
+        holeX = planeBox.left - hostBox.left + plane.cx * sc;
+        holeY = planeBox.top - hostBox.top + plane.cy * sc;
+      }
+      const vx = holeX + pointer.x * w * 0.06;
+      const vy = holeY + pointer.y * h * 0.06;
+      if (!reduced) clock += dt * (universeMotion.hold ? 0.08 : universeMotion.warp ? 3 : 1);
       const f = Math.min(w, h) * 0.42;
       const zoom = (z: number) => f / z;
 
@@ -237,6 +266,59 @@ export function CosmicBackdrop() {
       ctx.clearRect(0, 0, w, h);
       if (far) ctx.drawImage(far, pointer.x * -3, pointer.y * -3, w, h);
       ctx.globalCompositeOperation = 'lighter';
+
+      // ── the wormhole: rings of stardust flowing out of the hole towards us; wide at the
+      //    screen's edges, narrowing to the hole in the middle. Each ring is a soft band of haze
+      //    with stardust along it, gathered into three spiral arms that twist with depth.
+      const reach = Math.hypot(w, h) * 0.62;
+      // the tunnel takes the screen's shape: wide rings on a wide screen, tall ones on a phone
+      const kx = (w / Math.max(w, h)) * 1.45;
+      const ky = (h / Math.max(w, h)) * 1.45;
+      // light at the far end of the tunnel, behind the black hole
+      const endGlow = ctx.createRadialGradient(vx, vy, 0, vx, vy, f * 0.9);
+      endGlow.addColorStop(0, 'rgba(255,205,130,0.13)');
+      endGlow.addColorStop(0.4, 'rgba(150,140,255,0.05)');
+      endGlow.addColorStop(1, 'rgba(60,80,200,0)');
+      ctx.fillStyle = endGlow;
+      ctx.fillRect(vx - f, vy - f, f * 2, f * 2);
+      for (const ring of rings) {
+        if (!reduced) ring.z -= speed * 0.8 * dt;
+        if (ring.z < 0.035) ring.z += 1;
+        const R = (f * 0.2) / ring.z;
+        if (R > reach * 1.35) continue;
+        const fadeIn = Math.min(1, (1 - ring.z) / 0.2);
+        // near rings stay visible right out past the screen's edges: the tunnel spans the whole page
+        const fadeOut = Math.min(1, Math.max(0, (reach * 1.35 - R) / (reach * 0.4)));
+        const a = fadeIn * fadeOut;
+        if (a < 0.01) continue;
+        const near = 1 - ring.z;
+        const rgb = ring.z > 0.62 ? '245,210,122' : ring.z > 0.32 ? '214,222,255' : '125,155,255';
+        // the soft band of haze
+        ctx.strokeStyle = `rgba(${rgb},${(0.06 + 0.06 * near) * a})`;
+        ctx.lineWidth = 1.5 + near * near * 12;
+        ctx.beginPath();
+        ctx.ellipse(vx, vy, R * kx, R * ky, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        // stardust along it, brightest on the spiral arms
+        ctx.fillStyle = `rgb(${rgb})`;
+        const count = Math.max(48, Math.min(w < 640 ? 260 : 520, Math.round((2 * Math.PI * R) / 5)));
+        const size = 0.7 + near * near * 2.2;
+        const twist = ring.z * TWIST + clock * 0.12 + ring.seed * 0.15;
+        for (let k = 0; k < count; k++) {
+          const j = ring.jitter[k % ring.jitter.length];
+          const ang = (k / count) * Math.PI * 2 + j * 0.03;
+          const arm = Math.cos(3 * (ang - twist));
+          const bright = 0.1 + 0.9 * (arm > 0 ? arm * arm * arm : 0);
+          if (bright < 0.2 && (k & 1)) continue;
+          const r = R * (1 + j * 0.06);
+          const x = vx + Math.cos(ang) * r * kx;
+          const y = vy + Math.sin(ang) * r * ky;
+          if (x < -4 || x > w + 4 || y < -4 || y > h + 4) continue;
+          ctx.globalAlpha = 0.7 * a * bright;
+          ctx.fillRect(x, y, size, size);
+        }
+      }
+      ctx.globalAlpha = 1;
 
       // ── stars streaming past
       const tail = Math.min(0.2, speed * 0.06); // depth covered by a streak's tail
@@ -271,14 +353,10 @@ export function CosmicBackdrop() {
         }
       }
 
-      // ── stardust round the sun, on the plane of the orbits
-      const plane = universeMotion.plane;
-      if (plane && plane.box.isConnected) {
-        const hostBox = host.getBoundingClientRect();
-        const b = plane.box.getBoundingClientRect();
-        const sc = plane.box.offsetWidth ? b.width / plane.box.offsetWidth : 1; // follows the arrival zoom
-        const cx = b.left - hostBox.left + plane.cx * sc;
-        const cy = b.top - hostBox.top + plane.cy * sc;
+      // ── stardust round the black hole, on the plane of the orbits
+      if (plane && planeBox && hostBox) {
+        const cx = holeX;
+        const cy = holeY;
         const r0 = plane.r0 * sc;
         const span = (plane.r1 - plane.r0) * sc;
         const spinRate = universeMotion.hold ? 0.15 : 1;
