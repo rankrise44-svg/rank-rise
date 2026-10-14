@@ -291,8 +291,7 @@ function orbitGeometry(w: number, h: number, n: number, big = false) {
  * small black hole with a bright rim; its disk of glowing matter thick and
  * white-hot next to the hole and thinning to fine points far out to the sides;
  * the far side of the disk bent by gravity into an arc over the top (and
- * faintly under); the near side passing in front of the hole; streaks of light
- * flowing round. The button is one hole across; this drawing reaches 1.8 holes
+ * faintly under); the near side passing in front of the hole. The button is one hole across; this drawing reaches 1.8 holes
  * out to each side.
  */
 function BlackHole() {
@@ -330,9 +329,6 @@ function BlackHole() {
       <g transform="rotate(-6)">
         <path d={lens} fill="url(#bh-disk)" filter="url(#bh-glow)" opacity="0.55" transform="scale(1 1.9)" />
         <path className="cf-bh-disk" d={lens} fill="url(#bh-disk)" filter="url(#bh-soft)" />
-        <g className="cf-bh-flow" fill="none" stroke="#fff1cc" strokeWidth="0.8" strokeDasharray="5 16" opacity="0.6">
-          <path d="M -166 -2 Q 0 -20 166 -2" />
-        </g>
       </g>
 
       {/* light from the far side, bent over the top of the hole and faintly under it */}
@@ -347,9 +343,6 @@ function BlackHole() {
       {/* near side of the disk, passing in front of the hole */}
       <g transform="rotate(-6)" clipPath="url(#bh-near)">
         <path className="cf-bh-disk" d={lens} fill="url(#bh-disk)" filter="url(#bh-soft)" />
-        <g className="cf-bh-flow" fill="none" stroke="#fff6e0" strokeWidth="0.8" strokeDasharray="5 16" opacity="0.7">
-          <path d="M -166 2 Q 0 20 166 2" />
-        </g>
       </g>
     </svg>
   );
