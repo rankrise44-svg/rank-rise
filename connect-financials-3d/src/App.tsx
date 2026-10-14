@@ -52,7 +52,8 @@ export default function App() {
   }, [page]);
 
   useEffect(() => {
-    if (section) revealSection(section);
+    // pages opened inside the universe are panels there, not sections to scroll to
+    if (section && page !== 'universe') revealSection(section);
     else if (nonce) window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [page, section, nonce]);
 

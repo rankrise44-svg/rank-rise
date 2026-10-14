@@ -173,7 +173,13 @@ export function OrbitMenu({
       return;
     }
     setSelected(i);
-    window.setTimeout(() => onGo(items[i]), reduced ? 0 : 650);
+    window.setTimeout(() => {
+      onGo(items[i]);
+      // if the page opened inside the universe, the planets stay: let them move again
+      setSelected(null);
+      setHot(null);
+      hover.current = false;
+    }, reduced ? 0 : 650);
   };
 
   return (

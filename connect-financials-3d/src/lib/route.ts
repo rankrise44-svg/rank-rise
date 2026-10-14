@@ -30,8 +30,9 @@ function parse(hash: string): Route {
 const arrived = parse(window.location.hash);
 export const requestedOnOpen: Route | null = arrived.page !== 'universe' && arrived.page !== 'valgon' ? arrived : null;
 const reviewing = new URLSearchParams(window.location.search).has('studio');
-let current: Route = reviewing ? arrived : { page: 'universe', section: null };
-if (!reviewing && window.location.hash && window.location.hash !== '#/') {
+// a page opened inside the universe (#/universe/contact) survives a reload
+let current: Route = reviewing || arrived.page === 'universe' ? arrived : { page: 'universe', section: null };
+if (!reviewing && arrived.page !== 'universe' && window.location.hash && window.location.hash !== '#/') {
   history.replaceState(history.state, '', `${window.location.pathname}${window.location.search}#/`);
 }
 /** Bumps when someone asks for the page they are already on, so the section is shown again */
@@ -58,13 +59,14 @@ export function useRoute() {
 export const currentRoute = () => current;
 
 export function hrefFor(page: PageId, section?: string | null) {
-  return page === 'universe' ? '#/' : `#/${page}${section ? `/${section}` : ''}`;
+  if (page === 'universe') return section ? `#/universe/${section}` : '#/';
+  return `#/${page}${section ? `/${section}` : ''}`;
 }
 
 /** Go to a page (and optionally a section on it). */
 export function navigate(page: PageId, section?: string | null) {
   const target = hrefFor(page, section);
-  if (window.location.hash === target || (page === 'universe' && !window.location.hash)) {
+  if (window.location.hash === target || (page === 'universe' && !section && !window.location.hash)) {
     nonce++;
     emit();
     return;

@@ -242,3 +242,11 @@ li:nth-child(5) > .vg-tile { animation-delay: .16s; } li:nth-child(6) > .vg-tile
 .cf-arrive { animation: cf-arrive 5.6s cubic-bezier(.12, .9, .25, 1) both; }
 @keyframes cf-arrive { 0% { transform: scale(.12); opacity: 0; } 22% { opacity: 1; } 100% { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .cf-arrive { animation: none; } }
+
+/* a page open inside the universe: the planets and Valgon step back behind the glass */
+main[data-panel] .cf-orbits, main[data-panel] > header { opacity: .16; pointer-events: none; transition: opacity .6s; }
+main[data-panel] section[aria-label='Ask Valgon'] { opacity: 0; pointer-events: none; transition: opacity .4s; }
+.cf-orbits, main[data-page='universe'] > header, main[data-page='universe'] section[aria-label='Ask Valgon'] { transition: opacity .6s; }
+.cf-panel-in { animation: cf-panel-in .7s cubic-bezier(.16, 1, .3, 1) both; }
+@keyframes cf-panel-in { from { opacity: 0; transform: translateY(14px) scale(.96); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+@media (prefers-reduced-motion: reduce) { .cf-panel-in { animation: none; } }

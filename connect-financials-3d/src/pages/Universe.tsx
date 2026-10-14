@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { NAV } from '../config/pages';
-import { navigate } from '../lib/route';
+import { navigate, useRoute } from '../lib/route';
 import logo from '../assets/logo.svg';
 import { CosmicBackdrop } from '../ui/CosmicBackdrop';
 import { OrbitMenu } from '../ui/OrbitMenu';
+import { IN_UNIVERSE, PlanetPanel } from './PlanetPanel';
 import { RiskNote } from '../ui/RiskNote';
 import { useValgon } from '../valgon/store';
 import { Orb } from '../valgon/ui/Orb';
@@ -13,9 +14,12 @@ import { Composer, Transcript, VoiceToggle } from '../valgon/ui/Parts';
  * The first page: the Connect Financials universe. The logo, a gold sun with
  * every page a planet on its own orbit (pointing at a planet freezes the
  * orbits; clicking it opens that page), and Valgon below, ready to answer by
- * voice or text.
+ * voice or text. Some pages (see IN_UNIVERSE) open right here, over the moving
+ * universe, at #/universe/<page>.
  */
 export function UniverseLanding() {
+  const { section } = useRoute();
+  const panel = section && IN_UNIVERSE[section] ? section : null;
   // Warm up the falcon page (three.js) while the visitor looks around.
   useEffect(() => {
     const t = window.setTimeout(() => void import('./Home'), 2500);
@@ -23,7 +27,7 @@ export function UniverseLanding() {
   }, []);
 
   return (
-    <main data-page="universe" className="cf-stars relative flex h-[100svh] min-h-[620px] flex-col overflow-hidden px-4 pb-3 pt-14 sm:px-10">
+    <main data-page="universe" data-panel={panel ? '' : undefined} className="cf-stars relative flex h-[100svh] min-h-[620px] flex-col overflow-hidden px-4 pb-3 pt-14 sm:px-10">
       <CosmicBackdrop />
       <header className="pointer-events-none relative z-40 flex flex-col items-center justify-center gap-2 text-center [@media(max-height:820px)]:flex-row [@media(max-height:820px)]:gap-4">
         <img src={logo} alt="" width={96} height={60} className="h-11 w-auto drop-shadow-[0_0_16px_rgba(212,175,55,0.5)] sm:h-14 [@media(max-height:820px)]:h-9" />
@@ -31,9 +35,10 @@ export function UniverseLanding() {
           Connect <span className="text-gold-hi">Financials</span>
         </h1>
       </header>
-      <OrbitMenu big label="Pages" items={[{ label: 'Valgon', page: 'valgon' }, ...NAV]} isActive={() => false} onGo={(n) => navigate(n.page, n.section)} />
+      <OrbitMenu big label="Pages" items={[{ label: 'Valgon', page: 'valgon' }, ...NAV]} isActive={() => false} onGo={(n) => (IN_UNIVERSE[n.page] ? navigate('universe', n.page) : navigate(n.page, n.section))} />
       <ValgonBar />
       <RiskNote className="relative z-40 mx-auto mt-2 text-center" />
+      {panel && <PlanetPanel id={panel} />}
     </main>
   );
 }
