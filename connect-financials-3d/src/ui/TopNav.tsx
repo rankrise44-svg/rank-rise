@@ -5,6 +5,7 @@ import { closeDock, openDock } from '../valgon/ui/Dock';
 import { useValgon } from '../valgon/store';
 import { unlockVoice } from '../valgon/voice';
 import { openAccount } from './openAccount';
+import { OrbitMenu, UniverseIcon } from './OrbitMenu';
 import { RiskNote } from './RiskNote';
 import logo from '../assets/logo.svg';
 
@@ -105,12 +106,9 @@ export function TopNav() {
             onClick={() => setOpen(true)}
             aria-expanded={open}
             aria-controls="site-menu"
-            title="Menu" className="flex h-10 items-center gap-2 rounded-full border border-gold/30 px-4 text-[12px] font-semibold uppercase tracking-[0.2em] text-ink transition hover:border-gold-hi lg:w-10 lg:justify-center lg:px-0"
+            title="Menu" className="flex h-10 items-center gap-2 rounded-full border border-gold/30 pl-2 pr-4 text-[12px] font-semibold uppercase tracking-[0.2em] text-ink transition hover:border-gold-hi lg:w-10 lg:justify-center lg:px-0"
           >
-            <span className="flex flex-col gap-1" aria-hidden>
-              <span className="block h-px w-4 bg-gold-hi" />
-              <span className="block h-px w-4 bg-gold-hi" />
-            </span>
+            <UniverseIcon frozen={open} />
             <span className="max-sm:sr-only lg:sr-only">Menu</span>
           </button>
         </div>
@@ -123,7 +121,7 @@ export function TopNav() {
           role="dialog"
           aria-modal="true"
           aria-label="Site menu"
-          className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-abyss/95 px-6 pb-10 pt-24 backdrop-blur-xl sm:px-16"
+          className="cf-stars fixed inset-0 z-[70] flex h-[100dvh] flex-col overflow-y-auto px-4 pb-6 pt-24 sm:px-10"
         >
           <button
             type="button"
@@ -135,35 +133,26 @@ export function TopNav() {
           >
             Close
           </button>
-          <nav aria-label="Main">
-            <ol className="space-y-2">
-              {[{ label: 'Valgon', page: 'valgon' as const, section: undefined }, ...NAV].map((n, i) => (
-                <li key={n.label}>
-                  <a
-                    href={hrefFor(n.page, n.section)}
-                    onClick={go(n.page, n.section)}
-                    aria-current={isActive(n) ? 'page' : undefined}
-                    className="group flex items-baseline gap-4 font-display text-[clamp(1.8rem,5.5vw,4rem)] font-semibold uppercase leading-none tracking-tight text-ink transition-colors hover:text-gold-hi aria-[current=page]:text-gold-hi"
-                  >
-                    <span className="num text-sm font-medium text-gold">{String(i + 1).padStart(2, '0')}</span>
-                    {n.label}
-                  </a>
-                </li>
-              ))}
-              <li className="flex flex-wrap gap-x-8 gap-y-2 pt-4">
-                <a href={hrefFor('portal')} onClick={go('portal')} className="font-display text-[clamp(1.1rem,2.6vw,1.6rem)] font-semibold uppercase text-muted hover:text-gold-hi">
-                  Trader Portal
-                </a>
-                <a href={hrefFor('legal')} onClick={go('legal')} className="font-display text-[clamp(1.1rem,2.6vw,1.6rem)] font-semibold uppercase text-muted hover:text-gold-hi">
-                  Legal
-                </a>
-                <button type="button" onClick={() => (setOpen(false), openAccount())} className="font-display text-[clamp(1.1rem,2.6vw,1.6rem)] font-semibold uppercase text-gold-hi hover:text-ink">
-                  Open Account
-                </button>
-              </li>
-            </ol>
-          </nav>
-          <RiskNote className="mt-auto pt-10" />
+          <OrbitMenu
+            items={[{ label: 'Valgon', page: 'valgon' }, ...NAV]}
+            isActive={isActive}
+            onGo={(n) => {
+              setOpen(false);
+              navigate(n.page, n.section);
+            }}
+          />
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+            <a href={hrefFor('portal')} onClick={go('portal')} className="font-display text-[15px] font-semibold uppercase tracking-[0.14em] text-muted hover:text-gold-hi">
+              Trader Portal
+            </a>
+            <a href={hrefFor('legal')} onClick={go('legal')} className="font-display text-[15px] font-semibold uppercase tracking-[0.14em] text-muted hover:text-gold-hi">
+              Legal
+            </a>
+            <button type="button" onClick={() => (setOpen(false), openAccount())} className="font-display text-[15px] font-semibold uppercase tracking-[0.14em] text-gold-hi hover:text-ink">
+              Open Account
+            </button>
+          </div>
+          <RiskNote className="mx-auto mt-4 text-center" />
         </div>
       )}
     </>

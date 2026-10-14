@@ -168,3 +168,72 @@ li:nth-child(5) > .vg-tile { animation-delay: .16s; } li:nth-child(6) > .vg-tile
 .nav-gold:active { transform: translateY(0); }
 .nav-gold.is-active { filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.6)) drop-shadow(0 0 10px rgba(212, 175, 55, 0.35)) saturate(1.1) brightness(1.1); }
 @media (prefers-reduced-motion: reduce) { .nav-gold { transition: filter .2s; } .nav-gold:hover { transform: none; } }
+
+/* ───────────── Menu: the solar system ───────────── */
+.cf-stars {
+  background-color: #000;
+  background-image:
+    radial-gradient(1px 1px at 8% 14%, rgba(255, 255, 255, .75), transparent 70%),
+    radial-gradient(1px 1px at 23% 72%, rgba(255, 255, 255, .55), transparent 70%),
+    radial-gradient(1.5px 1.5px at 37% 28%, rgba(245, 210, 122, .7), transparent 70%),
+    radial-gradient(1px 1px at 52% 88%, rgba(255, 255, 255, .5), transparent 70%),
+    radial-gradient(1px 1px at 64% 9%, rgba(255, 255, 255, .7), transparent 70%),
+    radial-gradient(1.5px 1.5px at 78% 61%, rgba(170, 200, 255, .7), transparent 70%),
+    radial-gradient(1px 1px at 91% 33%, rgba(255, 255, 255, .6), transparent 70%),
+    radial-gradient(1px 1px at 14% 47%, rgba(255, 255, 255, .4), transparent 70%),
+    radial-gradient(1px 1px at 46% 55%, rgba(255, 255, 255, .35), transparent 70%),
+    radial-gradient(1px 1px at 86% 84%, rgba(255, 255, 255, .5), transparent 70%),
+    radial-gradient(900px 500px at 50% 45%, rgba(91, 140, 255, .07), transparent 70%);
+}
+.cf-sun {
+  background: radial-gradient(circle at 40% 38%, #fffbe8 0%, #ffe39a 22%, #f5c451 48%, #c98f1f 78%, #7a4f08 100%);
+  box-shadow: 0 0 30px 6px rgba(245, 196, 81, .55), 0 0 90px 24px rgba(212, 150, 40, .28), inset -6px -8px 18px rgba(120, 70, 0, .45);
+  transition: filter .3s, transform .3s;
+}
+.cf-sun::after { content: ''; position: absolute; inset: -18%; border-radius: 50%; background: radial-gradient(circle, rgba(255, 214, 120, .35), transparent 65%); animation: cf-corona 4s ease-in-out infinite; pointer-events: none; }
+.cf-sun:hover { filter: brightness(1.12); }
+.cf-sun[aria-pressed='true'] { filter: saturate(.75) brightness(.9); }
+.cf-sun[aria-pressed='true']::after { animation-play-state: paused; }
+@keyframes cf-corona { 0%, 100% { transform: scale(1); opacity: .8; } 50% { transform: scale(1.12); opacity: 1; } }
+
+.cf-planet { width: 0; height: 0; will-change: transform; --depth: .5; }
+.cf-planet-link {
+  position: absolute; top: calc(var(--size) / -2); left: calc(var(--size) / -2);
+  display: flex; align-items: center; gap: 10px; white-space: nowrap; border-radius: 999px;
+  opacity: calc(.55 + .45 * var(--depth)); transition: opacity .3s;
+}
+.cf-planet[data-side='left'] .cf-planet-link { left: auto; right: calc(var(--size) / -2); flex-direction: row-reverse; }
+.cf-planet-body {
+  position: relative; flex: none; width: var(--size); height: var(--size); border-radius: 50%;
+  box-shadow: inset -3px -4px 8px rgba(0, 0, 0, .6), 0 0 12px rgba(91, 140, 255, .18);
+  transform: scale(calc(.78 + .32 * var(--depth))); transition: transform .35s cubic-bezier(.3, 1.4, .5, 1), box-shadow .3s;
+}
+.cf-planet-body.has-ring::after {
+  content: ''; position: absolute; left: -45%; right: -45%; top: 38%; bottom: 38%; border-radius: 50%;
+  border: 2px solid rgba(232, 207, 143, .85); border-top-color: rgba(232, 207, 143, .25); transform: rotate(-18deg);
+}
+.cf-planet-label {
+  font-family: var(--font-display, inherit); font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--color-ink); text-shadow: 0 1px 6px rgba(0, 0, 0, .9); padding: 2px 4px; transition: color .25s;
+}
+.cf-planet-link:hover .cf-planet-label, .cf-planet-link:focus-visible .cf-planet-label, .cf-planet-link[aria-current='page'] .cf-planet-label { color: var(--color-gold-hi); }
+.cf-planet-link:hover .cf-planet-body, .cf-planet-link:focus-visible .cf-planet-body {
+  transform: scale(calc(1.05 + .32 * var(--depth))); box-shadow: inset -3px -4px 8px rgba(0, 0, 0, .55), 0 0 0 2px rgba(245, 210, 122, .8), 0 0 22px rgba(245, 210, 122, .55);
+}
+.cf-planet-link[aria-current='page'] .cf-planet-body { box-shadow: inset -3px -4px 8px rgba(0, 0, 0, .55), 0 0 0 1.5px rgba(245, 210, 122, .6), 0 0 16px rgba(245, 210, 122, .35); }
+.cf-orbits[data-selected] .cf-planet:not([data-picked]) .cf-planet-link { opacity: .18; }
+.cf-planet[data-picked] .cf-planet-link { opacity: 1; }
+.cf-planet[data-picked] .cf-planet-body {
+  transform: scale(1.5); box-shadow: inset -3px -4px 8px rgba(0, 0, 0, .5), 0 0 0 2px #F5D27A, 0 0 34px 6px rgba(245, 210, 122, .65);
+}
+.cf-planet[data-picked] .cf-planet-label { color: var(--color-gold-hi); }
+@media (max-width: 639.98px) { .cf-planet-label { font-size: 10px; letter-spacing: .12em; } .cf-planet-link { gap: 6px; } }
+
+/* header icon: a small solar system that freezes when clicked (menu open) */
+.cf-uo { transform-box: view-box; transform-origin: 50% 50%; animation: cf-spin linear infinite; }
+.cf-uo-a { animation-duration: 3.2s; }
+.cf-uo-b { animation-duration: 7s; }
+.cf-uo-c { animation-duration: 11s; }
+.cf-universe[data-frozen] .cf-uo { animation-play-state: paused; }
+@keyframes cf-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .cf-uo, .cf-sun::after { animation: none; } }
