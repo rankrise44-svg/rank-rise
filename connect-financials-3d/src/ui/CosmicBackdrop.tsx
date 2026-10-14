@@ -8,7 +8,8 @@ import { universeMotion } from './universeMotion';
  *   narrowing to the black hole in the middle, twisted into a slow spiral and
  *   flowing out of the hole towards us. Everything below flows out of the hole too.
  * - Stars sit at different depths and stream past from the distance; nearer
- *   ones grow brighter and bigger. At speed they draw out into streaks.
+ *   ones grow brighter and bigger. At speed they draw out into streaks, and a
+ *   light stream of white warp streaks keeps flying past all the time.
  * - Nebula clouds (blue, violet, gold) float at depth too: they swell as we
  *   approach and dissolve as we pass through them.
  * - The far sky (the Milky Way and the faintest stars) is at infinity, so it
@@ -57,6 +58,9 @@ export function CosmicBackdrop() {
     let yr = 1.1;
     type Star = { x: number; y: number; z: number; s: number; b: number; c: string };
     let stars: Star[] = [];
+    // a light stream of white warp streaks that keeps flying out of the black hole, always
+    let streaks: Star[] = [];
+    let streakSpeed = 1.2;
     const tints = ['255,255,255', '255,255,255', '214,226,255', '255,232,180'];
     const spawn = (st: Star, anywhere: boolean) => {
       st.x = (live() * 2 - 1) * xr;
@@ -210,6 +214,7 @@ export function CosmicBackdrop() {
       buildDust();
       const nStars = w < 640 ? 260 : 620;
       stars = Array.from({ length: nStars }, () => spawn({} as Star, true));
+      streaks = Array.from({ length: w < 640 ? 45 : 90 }, () => spawn({} as Star, true));
       if (!puffs.length) puffs = Array.from({ length: w < 640 ? 7 : 11 }, () => spawnPuff({} as Puff, true));
       if (reduced) draw(0);
     };
@@ -345,6 +350,35 @@ export function CosmicBackdrop() {
           ctx.beginPath();
           ctx.arc(x, y, size * 0.6, 0, Math.PI * 2);
           ctx.fill();
+        }
+      }
+
+      // ── the white warp streaks: always moving (slower while a planet is pointed at, faster at warp)
+      if (!reduced) {
+        const streakTarget = universeMotion.warp ? 2.6 : universeMotion.hold ? 0.35 : 0.9;
+        streakSpeed += (Math.max(streakTarget, speed) - streakSpeed) * (1 - Math.exp(-dt * 2));
+        const sTail = Math.min(0.22, streakSpeed * 0.07);
+        ctx.lineCap = 'round';
+        for (const st of streaks) {
+          st.z -= streakSpeed * dt;
+          if (st.z <= 0.03) spawn(st, false);
+          const k = zoom(st.z);
+          const x = vx + st.x * k * 0.55;
+          const y = vy + st.y * k * 0.55;
+          if (x < -20 || x > w + 20 || y < -20 || y > h + 20) {
+            spawn(st, false);
+            continue;
+          }
+          const near = 1 - st.z;
+          const a = (0.35 + 0.5 * st.b) * Math.min(1, near * 1.5) * Math.min(1, (1 - st.z) / 0.15);
+          if (a <= 0.01) continue;
+          const k2 = zoom(Math.min(1, st.z + sTail));
+          ctx.strokeStyle = `rgba(235,242,255,${a})`;
+          ctx.lineWidth = Math.max(0.6, st.s * (0.4 + near * near * 1.8));
+          ctx.beginPath();
+          ctx.moveTo(vx + st.x * k2 * 0.55, vy + st.y * k2 * 0.55);
+          ctx.lineTo(x, y);
+          ctx.stroke();
         }
       }
 
