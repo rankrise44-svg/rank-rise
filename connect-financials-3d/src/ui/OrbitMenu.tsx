@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { PageId } from '../config/pages';
 import { hrefFor } from '../lib/route';
+import { universeMotion } from './universeMotion';
 
 export type OrbitItem = { label: string; page: PageId; section?: string };
 
@@ -50,6 +51,8 @@ export function OrbitMenu({
   const box = useRef<HTMLDivElement>(null);
   const planets = useRef<(HTMLLIElement | null)[]>([]);
   const labels = useRef<(HTMLSpanElement | null)[]>([]);
+  const orbitsEls = useRef<(SVGEllipseElement | null)[]>([]);
+  const selectedRef = useRef<number | null>(null);
   const size = useRef({ w: 0, h: 0 });
   const [dims, setDims] = useState({ w: 0, h: 0 });
   const reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -61,6 +64,7 @@ export function OrbitMenu({
   const hotRef = useRef<number | null>(null);
   frozenRef.current = frozen || selected !== null;
   hotRef.current = hot;
+  selectedRef.current = selected;
 
   const n = Math.min(items.length, PLANETS.length);
   const geo = orbitGeometry(dims.w, dims.h, n, big);
@@ -94,13 +98,19 @@ export function OrbitMenu({
       const H = size.current.h - 24;
       const g = orbitGeometry(size.current.w, size.current.h, n, big);
       const spin = (2 * Math.PI * t) / PERIOD;
+      // the camera drifts: the plane's tilt opens and closes slowly, so the system reads in 3D
+      const tilt = big && !reduced ? 0.92 + 0.08 * Math.sin((2 * Math.PI * t) / 46) : 1;
+      for (let i = 0; i < n; i++) orbitsEls.current[i]?.setAttribute('ry', (g.ry[i] * tilt).toFixed(1));
+      universeMotion.hold = hover.current || frozenRef.current;
+      universeMotion.warp = selectedRef.current !== null;
+      if (box.current && n > 0) universeMotion.plane = { box: box.current, cx: g.cx, cy: g.cy, r0: g.rx[0] * 0.75, r1: g.rx[n - 1] * 1.12, k: (g.ry[n - 1] * tilt) / Math.max(1, g.rx[n - 1]) };
       const P: { x: number; y: number; depth: number; r: number; cos: number }[] = [];
       for (let i = 0; i < n; i++) {
         // evenly spread round the sun, all turning together: planets never collide
         const a = (i / n) * Math.PI * 2 + Math.PI * 0.35 + spin;
         const depth = (Math.sin(a) + 1) / 2; // 1 = nearest the viewer (below the sun)
         const size0 = PLANETS[i].size * g.scale;
-        P.push({ x: g.cx + g.rx[i] * Math.cos(a), y: g.cy + g.ry[i] * Math.sin(a), depth, r: size0 / 2, cos: Math.cos(a) });
+        P.push({ x: g.cx + g.rx[i] * Math.cos(a), y: g.cy + g.ry[i] * tilt * Math.sin(a), depth, r: size0 / 2, cos: Math.cos(a) });
         const el = planets.current[i];
         if (!el) continue;
         el.style.transform = `translate3d(${P[i].x.toFixed(1)}px, ${P[i].y.toFixed(1)}px, 0)`;
@@ -155,8 +165,12 @@ export function OrbitMenu({
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
-  }, [n, big]);
+    return () => {
+      cancelAnimationFrame(raf);
+      universeMotion.plane = null;
+      universeMotion.hold = universeMotion.warp = false;
+    };
+  }, [n, big, reduced]);
 
   const go = (i: number) => (e: React.MouseEvent) => {
     e.preventDefault();
@@ -166,11 +180,16 @@ export function OrbitMenu({
   };
 
   return (
-    <div ref={box} className={`cf-orbits relative mx-auto min-h-[340px] w-full flex-1 ${big ? 'is-big max-w-[1500px]' : 'max-w-[1200px]'}`} data-selected={selected !== null ? '' : undefined}>
+    <div ref={box} className={`cf-orbits relative mx-auto min-h-[340px] w-full flex-1 ${big ? 'is-big cf-arrive max-w-[1500px]' : 'max-w-[1200px]'}`} data-selected={selected !== null ? '' : undefined}>
       {dims.w > 0 && (
         <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
           {geo.rx.map((rx, i) => (
-            <ellipse key={i} cx={geo.cx} cy={geo.cy} rx={rx} ry={geo.ry[i]} fill="none" stroke={selected === i ? 'rgba(245,210,122,0.75)' : hot === i ? 'rgba(245,210,122,0.45)' : 'rgba(212,175,55,0.16)'} strokeWidth={selected === i ? 1.4 : hot === i ? 1.2 : 1} />
+            <ellipse
+              key={i}
+              ref={(el) => {
+                orbitsEls.current[i] = el;
+              }}
+              cx={geo.cx} cy={geo.cy} rx={rx} ry={geo.ry[i]} fill="none" stroke={selected === i ? 'rgba(245,210,122,0.75)' : hot === i ? 'rgba(245,210,122,0.45)' : 'rgba(212,175,55,0.16)'} strokeWidth={selected === i ? 1.4 : hot === i ? 1.2 : 1} />
           ))}
         </svg>
       )}

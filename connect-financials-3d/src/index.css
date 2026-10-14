@@ -238,7 +238,7 @@ li:nth-child(5) > .vg-tile { animation-delay: .16s; } li:nth-child(6) > .vg-tile
 @media (max-width: 639.98px) { .cf-planet-label, .cf-orbits.is-big .cf-planet-label { font-size: 10px; letter-spacing: .1em; padding: 2px 7px; } }
 
 @media (prefers-reduced-motion: reduce) { .cf-sun::after { animation: none; } }
-/* the nebula behind the universe turns very slowly */
-.cf-nebula { transform-origin: 50% 50%; animation: cf-nebula 480s linear infinite; }
-@keyframes cf-nebula { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .cf-nebula { animation: none; } }
+/* arriving in the universe: the solar system flies in from the distance as we come out of warp */
+.cf-arrive { animation: cf-arrive 2.8s cubic-bezier(.16, 1, .3, 1) both; }
+@keyframes cf-arrive { 0% { transform: scale(.2); opacity: 0; } 30% { opacity: 1; } 100% { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .cf-arrive { animation: none; } }
