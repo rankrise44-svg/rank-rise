@@ -287,8 +287,8 @@ export function CosmicBackdrop() {
         ctx.translate(cx, cy);
         ctx.scale(1, Math.max(0.2, plane.k));
         const haze = ctx.createRadialGradient(0, 0, r0 * 0.6, 0, 0, r0 + span);
-        haze.addColorStop(0, 'rgba(245,200,110,0.16)');
-        haze.addColorStop(0.35, 'rgba(200,150,90,0.07)');
+        haze.addColorStop(0, 'rgba(235,190,105,0.09)');
+        haze.addColorStop(0.35, 'rgba(200,150,90,0.05)');
         haze.addColorStop(0.7, 'rgba(90,120,230,0.05)');
         haze.addColorStop(1, 'rgba(60,90,200,0)');
         ctx.fillStyle = haze;
@@ -358,7 +358,8 @@ export function CosmicBackdrop() {
       last = now;
       // speed: warp when a planet is clicked, nearly still while one is pointed at, else cruise
       const target = universeMotion.warp ? 2.6 : universeMotion.hold ? 0.006 : CRUISE;
-      const rate = universeMotion.warp ? 3.2 : now - born < 600 ? 0 : 1.5; // hold the warp a moment on arrival
+      const age = now - born;
+      const rate = universeMotion.warp ? 3.2 : age < 1600 ? 0 : age < 7000 ? 0.75 : 1.5; // a long arrival: hold the warp, then ease down slowly
       speed += (target - speed) * (1 - Math.exp(-dt * rate));
       draw(dt);
       raf = requestAnimationFrame(loop);

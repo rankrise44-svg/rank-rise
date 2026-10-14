@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { PageId } from '../config/pages';
 import { hrefFor } from '../lib/route';
+import logo from '../assets/logo.svg';
 import { universeMotion } from './universeMotion';
 
 export type OrbitItem = { label: string; page: PageId; section?: string };
@@ -18,8 +19,8 @@ const PLANETS: { name: string; size: number; period: number; skin: string; ring?
 ];
 
 /**
- * The site menu as a solar system: a gold sun, and each tab a planet on its own
- * orbit (tilted, so planets pass in front of and behind the sun). The planets
+ * The site menu as a solar system: a gold sun bearing the logo, and each tab a
+ * planet on its own (undrawn) orbit (tilted, so planets pass in front of and behind the sun). The planets
  * turn together, evenly spaced, so they never run into each other; each name
  * finds a free place beside its planet every frame (right, left, above or
  * below), clear of the other names, the other planets and the sun, and fades
@@ -51,7 +52,6 @@ export function OrbitMenu({
   const box = useRef<HTMLDivElement>(null);
   const planets = useRef<(HTMLLIElement | null)[]>([]);
   const labels = useRef<(HTMLSpanElement | null)[]>([]);
-  const orbitsEls = useRef<(SVGEllipseElement | null)[]>([]);
   const selectedRef = useRef<number | null>(null);
   const size = useRef({ w: 0, h: 0 });
   const [dims, setDims] = useState({ w: 0, h: 0 });
@@ -100,7 +100,6 @@ export function OrbitMenu({
       const spin = (2 * Math.PI * t) / PERIOD;
       // the camera drifts: the plane's tilt opens and closes slowly, so the system reads in 3D
       const tilt = big && !reduced ? 0.92 + 0.08 * Math.sin((2 * Math.PI * t) / 46) : 1;
-      for (let i = 0; i < n; i++) orbitsEls.current[i]?.setAttribute('ry', (g.ry[i] * tilt).toFixed(1));
       universeMotion.hold = hover.current || frozenRef.current;
       universeMotion.warp = selectedRef.current !== null;
       if (box.current && n > 0) universeMotion.plane = { box: box.current, cx: g.cx, cy: g.cy, r0: g.rx[0] * 0.75, r1: g.rx[n - 1] * 1.12, k: (g.ry[n - 1] * tilt) / Math.max(1, g.rx[n - 1]) };
@@ -181,18 +180,6 @@ export function OrbitMenu({
 
   return (
     <div ref={box} className={`cf-orbits relative mx-auto min-h-[340px] w-full flex-1 ${big ? 'is-big cf-arrive max-w-[1500px]' : 'max-w-[1200px]'}`} data-selected={selected !== null ? '' : undefined}>
-      {dims.w > 0 && (
-        <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
-          {geo.rx.map((rx, i) => (
-            <ellipse
-              key={i}
-              ref={(el) => {
-                orbitsEls.current[i] = el;
-              }}
-              cx={geo.cx} cy={geo.cy} rx={rx} ry={geo.ry[i]} fill="none" stroke={selected === i ? 'rgba(245,210,122,0.75)' : hot === i ? 'rgba(245,210,122,0.45)' : 'rgba(212,175,55,0.16)'} strokeWidth={selected === i ? 1.4 : hot === i ? 1.2 : 1} />
-          ))}
-        </svg>
-      )}
 
       <button
         type="button"
@@ -203,6 +190,7 @@ export function OrbitMenu({
         className="cf-sun absolute z-20 -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{ left: geo.cx, top: geo.cy, width: geo.sun, height: geo.sun }}
       >
+        <img src={logo} alt="" className="cf-sun-logo" draggable={false} />
         <span className="sr-only">{frozen ? 'Resume' : 'Pause'}</span>
       </button>
 
