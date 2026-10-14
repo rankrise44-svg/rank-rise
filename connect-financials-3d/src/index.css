@@ -188,29 +188,20 @@ li:nth-child(5) > .vg-tile { animation-delay: .16s; } li:nth-child(6) > .vg-tile
 .cf-sun { background: transparent; transition: filter .3s, transform .3s; }
 /* the faint warm glow of the light bent round the black hole */
 .cf-sun::after { content: ''; position: absolute; inset: -30%; z-index: -1; border-radius: 50%; background: radial-gradient(circle, rgba(240, 180, 90, .16), rgba(240, 180, 90, .05) 45%, transparent 68%); animation: cf-corona 5s ease-in-out infinite; pointer-events: none; }
-/* the accretion disk: a ring of glowing matter behind the core, reaching out to the sides */
-.cf-bh-disk {
-  position: absolute; left: 50%; top: 50%; width: 185%; height: 44%; border-radius: 50%; pointer-events: none;
-  transform: translate(-50%, -50%) rotate(-7deg);
-  background: radial-gradient(ellipse at center, transparent 0 30%, rgba(255, 236, 190, .95) 36%, rgba(250, 190, 90, .8) 44%, rgba(214, 130, 45, .45) 57%, rgba(150, 70, 20, .12) 68%, transparent 74%);
-  filter: blur(1.2px); animation: cf-disk 4.5s ease-in-out infinite;
-}
-/* the event horizon: black, with a thin bright ring of light at its edge */
-.cf-bh-core {
-  position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
-  background: radial-gradient(circle at 50% 50%, #000 0 62%, #040302 74%, #0e0904 87%, #23160a 100%);
-  box-shadow: 0 0 0 1.5px rgba(255, 224, 160, .9), 0 0 12px 3px rgba(255, 200, 110, .55), 0 0 40px 10px rgba(230, 160, 60, .22), inset 0 0 14px 2px rgba(255, 190, 100, .3);
-}
-.cf-bh-core::after { content: ''; position: absolute; inset: -7%; border-radius: 50%; border: 1px solid rgba(255, 232, 180, .35); filter: blur(.6px); }
+/* the black hole drawing reaches 1.8 holes out to each side of the button */
+.cf-bh { position: absolute; left: -130%; top: -20%; width: 360%; height: 140%; overflow: visible; pointer-events: none; }
+.cf-bh-disk { animation: cf-disk 4.5s ease-in-out infinite; }
+.cf-bh-flow path { animation: cf-flow 2.8s linear infinite; }
+@keyframes cf-flow { to { stroke-dashoffset: -42; } }
 /* the logo on the black, in its own colours */
 .cf-sun-logo {
-  position: absolute; left: 50%; top: 50%; width: 60%; height: auto; transform: translate(-50%, -48%);
+  position: absolute; left: 50%; top: 37%; width: 48%; height: auto; transform: translate(-50%, -50%);
   filter: drop-shadow(0 0 6px rgba(245, 210, 122, .35)); pointer-events: none; user-select: none;
 }
 .cf-sun:hover { filter: brightness(1.15); }
 .cf-sun[aria-pressed='true'] { filter: saturate(.8) brightness(.9); }
-.cf-sun[aria-pressed='true']::after, .cf-sun[aria-pressed='true'] .cf-bh-disk { animation-play-state: paused; }
-@keyframes cf-disk { 0%, 100% { filter: blur(1.2px) brightness(1); } 50% { filter: blur(1.2px) brightness(1.18); } }
+.cf-sun[aria-pressed='true']::after, .cf-sun[aria-pressed='true'] .cf-bh-disk, .cf-sun[aria-pressed='true'] .cf-bh-flow path { animation-play-state: paused; }
+@keyframes cf-disk { 0%, 100% { opacity: .85; } 50% { opacity: 1; } }
 @keyframes cf-corona { 0%, 100% { transform: scale(1); opacity: .8; } 50% { transform: scale(1.12); opacity: 1; } }
 
 .cf-planet { width: 0; height: 0; will-change: transform; --depth: .5; }
@@ -257,7 +248,7 @@ li:nth-child(5) > .vg-tile { animation-delay: .16s; } li:nth-child(6) > .vg-tile
 .cf-orbits.is-big .cf-planet-label { font-size: 13px; letter-spacing: .17em; }
 @media (max-width: 639.98px) { .cf-planet-label, .cf-orbits.is-big .cf-planet-label { font-size: 10px; letter-spacing: .1em; padding: 2px 7px; } }
 
-@media (prefers-reduced-motion: reduce) { .cf-sun::after, .cf-bh-disk { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .cf-sun::after, .cf-bh-disk, .cf-bh-flow path { animation: none; } }
 /* arriving in the universe: the solar system flies in from the distance as we come out of warp */
 .cf-arrive { animation: cf-arrive 5.6s cubic-bezier(.12, .9, .25, 1) both; }
 @keyframes cf-arrive { 0% { transform: scale(.12); opacity: 0; } 22% { opacity: 1; } 100% { transform: none; opacity: 1; } }
