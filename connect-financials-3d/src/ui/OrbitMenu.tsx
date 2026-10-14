@@ -19,8 +19,8 @@ const PLANETS: { name: string; size: number; period: number; skin: string; ring?
 ];
 
 /**
- * The site menu as a solar system: a gold sun bearing the logo, and each tab a
- * planet on its own (undrawn) orbit (tilted, so planets pass in front of and behind the sun). The planets
+ * The site menu as a solar system: a black hole bearing the logo at its centre,
+ * and each tab a planet on its own (undrawn) orbit (tilted, so planets pass in front of and behind the sun). The planets
  * turn together, evenly spaced, so they never run into each other; each name
  * finds a free place beside its planet every frame (right, left, above or
  * below), clear of the other names, the other planets and the sun, and fades
@@ -123,7 +123,8 @@ export function OrbitMenu({
         return { x: p.x - r, y: p.y - r, w: r * 2, h: r * 2 };
       });
       const sunR = g.sun / 2 + 4;
-      obstacles.push({ x: g.cx - sunR, y: g.cy - sunR, w: sunR * 2, h: sunR * 2 });
+      const diskR = g.sun * 0.92; // the glowing disk reaches out to the sides
+      obstacles.push({ x: g.cx - diskR, y: g.cy - sunR, w: diskR * 2, h: sunR * 2 });
       const placed: Rect[] = [];
       const order = [...P.keys()].sort((x, y) => (x === hotRef.current ? -1 : y === hotRef.current ? 1 : P[y].depth - P[x].depth));
       for (const i of order) {
@@ -190,6 +191,9 @@ export function OrbitMenu({
         className="cf-sun absolute z-20 -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{ left: geo.cx, top: geo.cy, width: geo.sun, height: geo.sun }}
       >
+        {/* a black hole: the glowing disk of matter behind, the black core with its bright rim, the logo on it */}
+        <span className="cf-bh-disk" aria-hidden />
+        <span className="cf-bh-core" aria-hidden />
         <img src={logo} alt="" className="cf-sun-logo" draggable={false} />
         <span className="sr-only">{frozen ? 'Resume' : 'Pause'}</span>
       </button>
