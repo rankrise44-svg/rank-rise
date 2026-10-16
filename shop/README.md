@@ -1,12 +1,12 @@
-# Cedarline — demo home-essentials store
+# Cedarline — demo kitchen store
 
 A complete, working e-commerce front end that lives in `/shop/`, separate
 from the RankRise agency site. It uses the same stack as the rest of the
 repo: static HTML, CSS and vanilla JavaScript (ES modules). There is no
 build step, and it deploys on Netlify as-is.
 
-All products, prices and contact details are **fictional**. Every page
-carries `noindex`, so search engines stay out until it goes live.
+All products, brands, prices and contact details are **fictional**. Every
+page carries `noindex`, so search engines stay out until it goes live.
 
 ## Run it
 
@@ -21,70 +21,90 @@ python3 -m http.server 8000      # then open http://localhost:8000/shop/
 
 | Route | What it does |
 |---|---|
-| `index.html` | Home — hero, categories, bestsellers, new arrivals, promo |
-| `shop.html` | Catalog with category / price / stock / sale filters and 6 sorts. State lives in the URL (`?category=kitchen,storage&min=10&max=40&stock=1&sale=1&sort=price-asc`) |
-| `product.html?id=<slug>` | Gallery, stock state, quantity, add to cart, wishlist, specs, related products, Product JSON-LD |
+| `index.html` | Home — hero slider, category circles, "Today's Best Deals" carousel, promo banners, value strip, best sellers, top brands |
+| `shop.html` | Catalog with category / brand / price / stock / sale filters and 7 sorts. Collections: `?collection=bestsellers`, `new`, `deals`. Filter state lives in the URL |
+| `product.html?id=<slug>` | Gallery, stock, quantity, Add to Cart, Buy Now, wishlist, specs, related products, Product JSON-LD |
 | `cart.html` | Quantity steppers, remove, promo codes, free-delivery progress, totals |
-| `checkout.html` | Validated form (Lebanese phone, governorate, address), live delivery fee, order confirmation |
-| `wishlist.html` | Saved products, add-all-to-cart, clear |
-| `search.html?q=` | Ranked keyword search with sorting; the header search also shows live suggestions |
-| `about.html`, `contact.html` | Story, delivery fee table (from config), validated contact form |
-| `404.html` | Not-found page; Netlify serves it for any unknown `/shop/*` URL |
+| `checkout.html` | Contact, address (8 governorates), payment method, order confirmation |
+| `track-order.html` | Order lookup by order number + phone, with a status timeline |
+| `account.html` | Sign in / register (demo), profile, order history |
+| `wishlist.html`, `search.html?q=&cat=` | Saved items; ranked search, optionally inside one category |
+| `brands.html`, `blog.html` (`?post=<slug>`) | Brand directory; articles linked to products |
+| `about.html`, `contact.html`, `404.html` | Story, delivery fees, payment methods; validated contact form; not-found page |
 
 Demo promo codes: `WELCOME10` (10% off), `BEIRUT5` ($5 off over $40).
+
+## Payment methods (Lebanon)
+
+Configured in `js/config.js` → `payments`. With `mode: 'demo'`, every
+method runs its full flow and no money moves:
+
+| Method | Demo flow |
+|---|---|
+| Cash on delivery | Pay in USD or LBP; shows an LBP estimate from `CONFIG.lbpRate` |
+| Credit / debit card | Live formatting, Visa/Mastercard detection, Luhn and expiry checks, then a 3-D Secure code step (`123456`). Test cards: `4242 4242 4242 4242` approves, `4000 0000 0000 0002` is declined, `4000 0000 0000 9995` has insufficient funds |
+| Whish Money / OMT Pay | Sends an "approve in your app" request with a 2-minute countdown; approve, cancel or let it expire |
+
+Orders are created as `pending_payment`, then marked `confirmed` or
+`payment_failed`. The full card number and CVC are never stored; an order
+keeps only the card brand and last 4 digits.
 
 ## Architecture
 
 ```
 shop/
-  assets/products/     placeholder product images (SVG) — swap for photos
+  assets/products/     product art: -1 (white), -2 (close-up), -t (cut-out)
+  assets/hero|promo|brands/   hero scenes, banner art, brand wordmarks
   css/styles.css       the design system (tokens at the top)
-  js/config.js         ★ store settings: currency, delivery zones + fees,
-                         free-delivery threshold, promos, payment methods, API URL
-  js/data/             ★ catalog data: products.js, categories.js
+  js/config.js         ★ store settings: identity, currency, LBP rate, delivery
+                         zones, promos, payment methods, API URL
+  js/data/             ★ products, categories, brands, blog posts, home banners
   js/services/         business logic — the integration seam
-    catalog.js           products: load, filter, sort, search
-    cart.js              cart store (localStorage), stock clamping, promos
-    wishlist.js          wishlist store (localStorage)
+    catalog.js           products: load, filter, sort, search, collections
+    cart.js / wishlist.js   stores (localStorage), stock clamping, promos
     pricing.js           pure totals calculation, in integer cents
-    orders.js            create order (localStorage now, POST /orders later)
-    payments.js          payment provider registry (cash on delivery live)
-  js/lib/              storage, money, DOM and validation helpers
-  js/ui/               shared UI: layout (header/footer/search), cards, toasts
+    orders.js            create / update / track orders
+    payments.js          provider registry: cod, card, wallet
+    account.js           demo customer accounts
+  js/lib/              storage, money, DOM, form validation, card helpers
+  js/ui/               layout (header/nav/footer), product card, modal, toasts
   js/pages/            one small module per page
 ```
 
 Rules the code follows:
 
-- **UI never touches data directly.** Pages call `services/*`, and only
-  `catalog.js` knows where products come from.
+- **UI never touches data directly.** Pages call `services/*`.
 - **The cart stores `{ id, qty }` only.** Prices and stock are re-read from
   the catalog every time, so a stale browser can't check out at an old price.
-- **Money is integer cents** (`lib/money.js`), so totals never drift.
-- **One pricing function** (`computeTotals`) feeds the cart, checkout and
-  order, and it can run unchanged on a server to re-verify orders.
-- **localStorage access is guarded**, so private mode or corrupted values
-  fall back to empty and never break a page. The cart and wishlist sync
-  across tabs.
+- **Money is integer cents**, and one function (`computeTotals`) prices the
+  cart, the checkout and the order.
+- **Payment providers never touch the DOM.** 3-D Secure and wallet approval
+  are UI callbacks, so a real gateway's hosted page can replace them.
 
-## Going live — database and payments (Lebanon)
+## Going live
 
-1. **Backend + database.** Build an API with `GET /products`,
-   `GET /categories` and `POST /orders`, returning the same fields as
-   `js/data/products.js`. Then set `CONFIG.api.baseUrl` in `js/config.js`;
-   `catalog.js` and `orders.js` already switch to `fetch` when it is set.
-   The server must re-price lines with `pricing.js` logic, check stock and
-   validate promo codes. Never trust the browser's totals.
-2. **Cash on delivery** works today. The server should store the order as
-   `pending` and notify staff by email or WhatsApp. Most Lebanese orders
-   will start here.
-3. **Online payment.** Implement the `card` (and/or `wallet`) provider in
-   `js/services/payments.js` against a gateway offered by a Lebanese
-   acquiring bank or a local payment provider. The server creates the
-   payment session (gateway secrets stay on the server), the browser
-   redirects to the hosted payment page, and a webhook marks the order
-   paid. Then flip `enabled: true` for that method in `config.js`.
-4. **Content.** Replace the SVGs in `assets/products/` with real photos
-   (same paths, or update `images` in the data). Update `CONFIG.store`
-   contact details, remove the `noindex` meta tags, and add the shop to
-   `sitemap.xml`.
+1. **Backend + database.** Serve `GET /products`, `/categories`, `/brands`
+   and `POST /orders` with the same fields as `js/data/`. Then set
+   `CONFIG.api.baseUrl`; `catalog.js` and `orders.js` switch to `fetch`.
+   The server must re-price lines, check stock and validate promo codes.
+2. **Card payments.** Sign up with a gateway offered by a Lebanese
+   acquiring bank. Your server creates the payment session (secrets stay on
+   the server), the shopper pays on the gateway's hosted page, and a webhook
+   marks the order paid. Replace the `card` provider in `payments.js`.
+3. **Whish Money / OMT Pay.** Apply for each provider's merchant API.
+   Your server creates the payment request, and its callback confirms
+   approval. Replace the `wallet` provider, then set `payments.mode = 'live'`.
+   Swap the text badges in `js/ui/payment-badges.js` for each provider's
+   official artwork.
+4. **Content.** Replace the SVG art with photos, update `CONFIG.store`,
+   remove the `noindex` tags and add the shop to `sitemap.xml`.
+
+### Or run it on Shopify
+
+The same UI can sit on a Shopify store: map `catalog.js` to the Storefront
+API (products, collections, vendors as brands) and hand checkout to
+Shopify's checkout. Cash on delivery is a built-in manual payment method
+there; card payments depend on which gateways Shopify supports for
+Lebanese merchants, so confirm that before choosing this route.
+Alternatively, port the templates to a Shopify theme (Liquid). Whish and
+OMT need their own payment integration either way.

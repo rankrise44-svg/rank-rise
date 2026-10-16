@@ -11,62 +11,63 @@ export const productUrl = (p) => `product.html?id=${encodeURIComponent(p.slug)}`
 
 export function priceHtml(p, { large = false } = {}) {
   return `<span class="price${large ? ' price--lg' : ''}">
-    <span class="price__now${isOnSale(p) ? ' is-sale' : ''}">${formatPrice(p.price)}</span>
+    <span class="price__now">${formatPrice(p.price)}</span>
     ${isOnSale(p) ? `<s class="price__was"><span class="sr-only">Was </span>${formatPrice(p.compareAtPrice)}</s>` : ''}
   </span>`;
 }
 
+export function starsHtml(rating, size = 14) {
+  const pct = Math.round((rating / 5) * 100);
+  return `<span class="stars" style="--pct:${pct}%" aria-hidden="true">
+      <span class="stars__base">${icon('star', { size }).repeat(5)}</span>
+      <span class="stars__fill">${icon('star', { size }).repeat(5)}</span>
+    </span>`;
+}
+
 export function ratingHtml(p, { showCount = true } = {}) {
-  const pct = Math.round((p.rating / 5) * 100);
   return `<span class="rating" title="${p.rating} out of 5">
-    <span class="rating__stars" style="--pct:${pct}%" aria-hidden="true">
-      <span class="rating__base">${icon('star', { size: 14 }).repeat(5)}</span>
-      <span class="rating__fill">${icon('star', { size: 14 }).repeat(5)}</span>
-    </span>
-    <span class="rating__text"><span class="sr-only">Rated </span>${p.rating.toFixed(1)}${showCount ? ` <span class="muted">(${p.reviewCount})</span>` : ''}</span>
+    ${starsHtml(p.rating)}
+    <span class="rating__text"><span class="sr-only">Rated ${p.rating} out of 5</span>${showCount ? `<span aria-hidden="true">(${p.reviewCount.toLocaleString('en-US')})</span><span class="sr-only">, ${p.reviewCount} reviews</span>` : ''}</span>
   </span>`;
 }
 
 export function badgesHtml(p) {
   const out = [];
-  if (!isInStock(p)) out.push('<span class="badge badge--muted">Sold out</span>');
-  else if (isOnSale(p)) out.push(`<span class="badge badge--sale">−${discountPercent(p)}%</span>`);
-  if (p.badges.includes('new')) out.push('<span class="badge">New</span>');
-  if (p.badges.includes('bestseller')) out.push('<span class="badge">Bestseller</span>');
+  if (!isInStock(p)) out.push('<span class="badge badge--dark">Sold out</span>');
+  else if (isOnSale(p)) out.push(`<span class="badge badge--deal">${discountPercent(p)}% OFF</span>`);
+  if (p.badges.includes('new')) out.push('<span class="badge badge--light">New</span>');
+  else if (p.badges.includes('bestseller') && out.length < 2) out.push('<span class="badge badge--light">Bestseller</span>');
   return out.length ? `<div class="badges">${out.join('')}</div>` : '';
 }
 
 export function wishlistButton(p, { label = false } = {}) {
   const saved = wishlist.has(p.id);
-  return `<button type="button" class="${label ? 'btn btn--ghost btn--wish' : 'wish-btn'}" data-wishlist-toggle="${esc(p.id)}"
+  return `<button type="button" class="${label ? 'btn btn--outline btn--wish' : 'wish-btn'}" data-wishlist-toggle="${esc(p.id)}"
       aria-pressed="${saved}" aria-label="${saved ? 'Remove from' : 'Save to'} wishlist: ${esc(p.name)}">
-    ${icon('heart', { size: label ? 18 : 18 })}${label ? `<span data-wish-label>${saved ? 'Saved' : 'Save to wishlist'}</span>` : ''}
+    ${icon('heart', { size: 18 })}${label ? `<span data-wish-label>${saved ? 'Saved' : 'Save to wishlist'}</span>` : ''}
   </button>`;
 }
 
 export function productCard(p, categoryName = '') {
   const url = productUrl(p);
   const soldOut = !isInStock(p);
-  return `<article class="card" data-product-id="${esc(p.id)}">
-    <div class="card__media">
-      <a href="${url}" class="card__img-link" tabindex="-1" aria-hidden="true">
+  return `<article class="pcard" data-product-id="${esc(p.id)}">
+    <div class="pcard__media">
+      <a href="${url}" class="pcard__img" tabindex="-1" aria-hidden="true">
         <img src="${esc(p.images[0])}" alt="" loading="lazy" width="800" height="800">
-        ${p.images[1] ? `<img class="card__img-alt" src="${esc(p.images[1])}" alt="" loading="lazy" width="800" height="800">` : ''}
       </a>
       ${badgesHtml(p)}
       ${wishlistButton(p)}
     </div>
-    <div class="card__body">
-      ${categoryName ? `<p class="card__cat">${esc(categoryName)}</p>` : ''}
-      <h3 class="card__title"><a href="${url}">${esc(p.name)}</a></h3>
+    <div class="pcard__body">
+      ${categoryName ? `<p class="pcard__cat">${esc(categoryName)}</p>` : ''}
+      <h3 class="pcard__title"><a href="${url}">${esc(p.name)}</a></h3>
       ${ratingHtml(p)}
-      <div class="card__foot">
-        ${priceHtml(p)}
-        <button type="button" class="btn btn--sm ${soldOut ? 'btn--disabled' : 'btn--dark'}" data-add-to-cart="${esc(p.id)}"
-          ${soldOut ? 'disabled aria-disabled="true"' : ''} aria-label="${soldOut ? 'Sold out' : 'Add to cart'}: ${esc(p.name)}">
-          ${soldOut ? 'Sold out' : `${icon('plus', { size: 16 })}<span>Add</span>`}
-        </button>
-      </div>
+      ${priceHtml(p)}
+      <button type="button" class="btn btn--cart btn--block" data-add-to-cart="${esc(p.id)}"
+        ${soldOut ? 'disabled aria-disabled="true"' : ''} aria-label="${soldOut ? 'Sold out' : 'Add to cart'}: ${esc(p.name)}">
+        ${soldOut ? 'Sold Out' : `Add to Cart ${icon('cart', { size: 16 })}`}
+      </button>
     </div>
   </article>`;
 }
@@ -77,5 +78,5 @@ export function productGrid(list, categories = []) {
 }
 
 export function skeletonGrid(n = 4) {
-  return Array.from({ length: n }, () => `<div class="card card--skeleton" aria-hidden="true"><div class="card__media"></div><div class="card__body"><span></span><span></span><span></span></div></div>`).join('');
+  return Array.from({ length: n }, () => `<div class="pcard pcard--skeleton" aria-hidden="true"><div class="pcard__media"></div><div class="pcard__body"><span></span><span></span><span></span></div></div>`).join('');
 }

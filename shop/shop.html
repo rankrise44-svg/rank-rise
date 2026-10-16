@@ -4,26 +4,30 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Shop All Products — Cedarline</title>
-<meta name="description" content="Browse Cedarline’s home essentials: kitchen, storage, cleaning, bathroom and home accessories.">
+<meta name="description" content="Browse Cedarline kitchen essentials by category, brand and price.">
 <!-- Demo store with fictional products: keep it out of search until it goes live. -->
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#18181a">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 <script type="module" src="js/pages/shop.js"></script>
 </head>
 <body data-page="shop">
 <div id="site-header"></div>
 <main id="main" tabindex="-1">
+  <div class="page-band">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li data-crumb-current aria-current="page">Shop</li></ol></nav>
+      <header class="page-head">
+        <h1 data-shop-title>All Products</h1>
+        <p data-shop-blurb>Kitchen essentials, honest prices, delivered across Lebanon.</p>
+      </header>
+    </div>
+  </div>
   <div class="container">
-    <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li data-crumb-current aria-current="page">Shop</li></ol></nav>
-    <header class="page-head">
-      <h1 data-shop-title>All products</h1>
-      <p class="muted" data-shop-blurb>Natural materials, honest prices, delivered across Lebanon.</p>
-    </header>
     <div class="shop">
       <aside class="filters" id="filters" data-filters aria-label="Filters">
         <div class="filters__head">
@@ -34,6 +38,10 @@
           <fieldset class="fgroup">
             <legend>Category</legend>
             <div data-filter-cats></div>
+          </fieldset>
+          <fieldset class="fgroup">
+            <legend>Brand</legend>
+            <div data-filter-brands></div>
           </fieldset>
           <fieldset class="fgroup">
             <legend>Price (USD)</legend>
@@ -49,18 +57,18 @@
             <label class="check"><input type="checkbox" name="stock" value="1"> In stock only</label>
             <label class="check"><input type="checkbox" name="sale" value="1"> On sale</label>
           </fieldset>
-          <button type="button" class="btn btn--link" data-clear-filters style="margin-top:16px">Clear all filters</button>
+          <button type="button" class="btn btn--link" data-clear-filters style="margin-top:8px">Clear all filters</button>
         </form>
         <div class="filters__foot">
-          <button type="button" class="btn btn--ghost" data-clear-filters>Clear</button>
-          <button type="button" class="btn btn--dark" data-filters-close data-filters-apply>Show results</button>
+          <button type="button" class="btn btn--outline" data-clear-filters>Clear</button>
+          <button type="button" class="btn btn--gold" data-filters-close data-filters-apply>Show results</button>
         </div>
       </aside>
       <section aria-labelledby="results-label">
         <div class="toolbar">
           <p class="toolbar__count" id="results-label" data-result-count aria-live="polite">Loading products…</p>
           <div class="toolbar__right">
-            <button type="button" class="btn btn--ghost btn--sm filters-toggle" data-filters-open aria-controls="filters" aria-expanded="false"></button>
+            <button type="button" class="btn btn--outline btn--sm filters-toggle" data-filters-open aria-controls="filters" aria-expanded="false"></button>
             <label class="sr-only" for="sort">Sort by</label>
             <select class="select" id="sort" data-sort></select>
           </div>

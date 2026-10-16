@@ -3,97 +3,81 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Cedarline — Home Essentials, Delivered Across Lebanon</title>
-<meta name="description" content="Considered kitchen, storage, cleaning and bathroom essentials, delivered across Lebanon with cash on delivery.">
+<title>Cedarline — Kitchen Essentials, Delivered Across Lebanon</title>
+<meta name="description" content="Cookware, bakeware, kitchen tools, storage, tableware and appliances, delivered across Lebanon. Pay cash on delivery, by card, Whish or OMT.">
 <!-- Demo store with fictional products: keep it out of search until it goes live. -->
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#18181a">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 <script type="module" src="js/pages/home.js"></script>
 </head>
 <body data-page="home">
 <div id="site-header"></div>
 <main id="main" tabindex="-1">
-  <section class="hero">
-    <div class="container">
-      <div class="hero__inner">
-        <div class="fade-in">
-          <p class="eyebrow">New season · Home essentials</p>
-          <h1>Everyday things, made to last.</h1>
-          <p class="lead">Kitchen, storage, cleaning and bath essentials in natural materials — chosen for small Lebanese apartments and big family homes alike.</p>
-          <div class="hero__ctas">
-            <a class="btn btn--dark btn--lg" href="shop.html">Shop all products</a>
-            <a class="btn btn--light btn--lg" href="shop.html?sale=1">View offers</a>
-          </div>
-          <div class="hero__points" data-hero-points></div>
-        </div>
-        <div class="hero__art" aria-hidden="true">
-          <img src="assets/products/cedar-fig-soy-candle-1.svg" alt="" width="800" height="800">
-          <img src="assets/products/woven-seagrass-basket-1.svg" alt="" width="800" height="800">
-          <img src="assets/products/oak-edge-cutting-board-1.svg" alt="" width="800" height="800">
-        </div>
-      </div>
-    </div>
+  <section class="hero" aria-roledescription="carousel" aria-label="Featured collections" data-hero>
+    <div class="hero__track" data-hero-track></div>
+    <button class="hero__nav hero__nav--prev" type="button" data-hero-prev aria-label="Previous slide" data-icon="left"></button>
+    <button class="hero__nav hero__nav--next" type="button" data-hero-next aria-label="Next slide" data-icon="right"></button>
+    <div class="hero__dots" data-hero-dots></div>
+    <button class="hero__pause" type="button" data-hero-pause aria-label="Pause slideshow">Pause</button>
   </section>
+  <div class="features">
+    <div class="container"><ul class="features__list" data-features></ul></div>
+  </div>
 
-  <section class="section">
+  <section class="section" id="categories" aria-labelledby="cats-title">
     <div class="container">
       <div class="section__head">
-        <div>
-          <h2>Shop by category</h2>
-          <p class="muted">Five rooms, one considered edit.</p>
-        </div>
-        <a class="section__link" href="shop.html" data-arrow>All products</a>
+        <h2 id="cats-title">Shop by Category</h2>
+        <a class="section__link" href="shop.html" data-arrow>View all categories</a>
       </div>
-      <div class="cat-grid" data-home-cats></div>
+      <div class="cats" data-cats></div>
     </div>
   </section>
 
-  <section class="section section--surface">
+  <section class="section section--tight" aria-labelledby="deals-title">
     <div class="container">
       <div class="section__head">
-        <div>
-          <h2>Bestsellers &amp; favourites</h2>
-          <p class="muted">The pieces our customers reorder most.</p>
+        <h2 id="deals-title">Today’s Best Deals</h2>
+        <div class="section__tools">
+          <a class="section__link" href="shop.html?collection=deals" data-arrow>View all deals</a>
+          <button class="rail__btn" type="button" data-rail-prev aria-controls="deals-rail" aria-label="Previous deals" data-icon="left"></button>
+          <button class="rail__btn" type="button" data-rail-next aria-controls="deals-rail" aria-label="More deals" data-icon="right"></button>
         </div>
-        <a class="section__link" href="shop.html?sort=featured" data-arrow>Shop all</a>
       </div>
-      <div class="grid grid--4" data-home-featured aria-busy="true"></div>
+      <div class="rail"><div class="rail__track" id="deals-rail" data-deals aria-busy="true" tabindex="0" aria-label="Today’s best deals, scrollable"></div></div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container">
-      <div class="values" data-values></div>
-    </div>
+  <section class="section section--tight" aria-label="Featured collections">
+    <div class="container"><div class="banners" data-banners></div></div>
   </section>
 
-  <section class="section section--tight">
+  <section class="section section--tight" aria-label="Why shop with us">
+    <div class="container"><ul class="values" data-values></ul></div>
+  </section>
+
+  <section class="section section--tight" aria-labelledby="best-title">
     <div class="container">
       <div class="section__head">
-        <div>
-          <h2>New arrivals</h2>
-          <p class="muted">Just landed in the Beirut warehouse.</p>
-        </div>
-        <a class="section__link" href="shop.html?sort=newest" data-arrow>See what’s new</a>
+        <h2 id="best-title">Best Sellers</h2>
+        <a class="section__link" href="shop.html?collection=bestsellers" data-arrow>Shop best sellers</a>
       </div>
-      <div class="grid grid--4" data-home-new aria-busy="true"></div>
+      <div class="grid grid--6" data-best aria-busy="true"></div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section--tight" aria-labelledby="brands-title" style="padding-bottom:56px">
     <div class="container">
-      <div class="promo-band">
-        <div>
-          <h2>10% off your first order</h2>
-          <p>Use code <code>WELCOME10</code> at checkout. Cash on delivery, anywhere in Lebanon.</p>
-        </div>
-        <a class="btn btn--light btn--lg" href="shop.html">Start shopping</a>
+      <div class="section__head">
+        <h2 id="brands-title">Top Brands</h2>
+        <a class="section__link" href="brands.html" data-arrow>View all brands</a>
       </div>
+      <div class="brand-row" data-brands></div>
     </div>
   </section>
 </main>

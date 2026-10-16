@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Track Your Order — Cedarline</title>
+<meta name="description" content="Track a Cedarline order with your order number and phone.">
+<!-- Demo store with fictional products: keep it out of search until it goes live. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#18181a">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<script type="module" src="js/pages/track.js"></script>
+</head>
+<body data-page="track">
+<div id="site-header"></div>
+<main id="main" tabindex="-1">
+  <div class="page-band">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Home</a></li><li aria-current="page">Track order</li></ol></nav>
+      <header class="page-head">
+        <h1>Track your <em>order</em></h1>
+        <p>Enter your order number and the mobile number you used at checkout.</p>
+      </header>
+    </div>
+  </div>
+  <div class="container">
+    <div class="narrow" style="display:grid;gap:20px">
+      <form class="form-card form-grid form-grid--2" data-track-form novalidate>
+        <div class="field">
+          <label for="tr-order">Order number</label>
+          <input id="tr-order" name="order" type="text" placeholder="CL-261016-AB12" autocomplete="off" maxlength="20" style="text-transform:uppercase" aria-describedby="tr-order-err">
+          <p class="field__error" id="tr-order-err" data-error-for="order"></p>
+        </div>
+        <div class="field">
+          <label for="tr-phone">Mobile number</label>
+          <input id="tr-phone" name="phone" type="tel" inputmode="tel" placeholder="03 123 456" autocomplete="tel" maxlength="20" aria-describedby="tr-phone-err">
+          <p class="field__error" id="tr-phone-err" data-error-for="phone"></p>
+        </div>
+        <button class="btn btn--gold btn--lg span-2" type="submit">Track order</button>
+      </form>
+      <div data-track-result aria-live="polite"></div>
+    </div>
+  </div>
+</main>
+<div id="site-footer"></div>
+<noscript><p style="padding:16px;text-align:center">Please enable JavaScript to shop at Cedarline.</p></noscript>
+</body>
+</html>

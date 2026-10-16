@@ -1,10 +1,16 @@
-/* Catalog categories. `id` is used in URLs (shop.html?category=kitchen)
-   and on every product's `category` field. */
+/* Catalog categories. `id` is used in URLs (shop.html?category=cookware)
+   and on every product's `category` field. `icon` is a cut-out image
+   shown in the round category tiles. */
+
+const cut = (slug) => `assets/products/${slug}-t.svg`;
 
 export const CATEGORIES = [
-  { id: 'kitchen',  name: 'Kitchen',          blurb: 'Boards, jars and tools that earn their counter space.', image: 'assets/products/glass-spice-jar-set-1.svg' },
-  { id: 'storage',  name: 'Storage',          blurb: 'Baskets, bins and organizers for a calmer home.',      image: 'assets/products/woven-seagrass-basket-1.svg' },
-  { id: 'cleaning', name: 'Cleaning',         blurb: 'Natural-fibre brushes and refillable essentials.',      image: 'assets/products/beechwood-dish-brush-set-1.svg' },
-  { id: 'bathroom', name: 'Bathroom',         blurb: 'Soft cotton, stone and bamboo for everyday rituals.',  image: 'assets/products/terrazzo-soap-dispenser-1.svg' },
-  { id: 'home',     name: 'Home Accessories', blurb: 'Small finishing pieces that make a room feel lived in.', image: 'assets/products/ribbed-glass-vase-1.svg' },
+  { id: 'cookware',      name: 'Cookware',               blurb: 'Granite pans, pots and cast iron for everyday cooking.', icon: cut('granite-cookware-set') },
+  { id: 'bakeware',      name: 'Bakeware',               blurb: 'Trays, tins and pans for bread, cakes and kaak.',       icon: cut('nonstick-baking-tray-set') },
+  { id: 'kitchen-tools', name: 'Kitchen Tools',          blurb: 'Knives, boards and utensils that do the hard work.',    icon: cut('silicone-utensil-set') },
+  { id: 'storage',       name: 'Storage & Organization', blurb: 'Jars, racks and bins for a calm, tidy pantry.',         icon: cut('glass-spice-jar-set') },
+  { id: 'tableware',     name: 'Tableware',              blurb: 'Plates, bowls and mezze sets for the family table.',     icon: cut('stoneware-dinner-set') },
+  { id: 'drinkware',     name: 'Drinkware',              blurb: 'Mugs, bottles and coffee gear for every cup.',           icon: cut('ceramic-mug-set') },
+  { id: 'appliances',    name: 'Appliances',             blurb: 'Air fryers, kettles and blenders that save time.',       icon: cut('personal-blender') },
+  { id: 'cleaning',      name: 'Cleaning Essentials',    blurb: 'Brushes, cloths and refillable bottles.',                icon: cut('refillable-glass-spray-bottle') },
 ];

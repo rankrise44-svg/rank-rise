@@ -2,57 +2,91 @@
    ORDERS SERVICE
    ───────────────────────────────────────────────────────────────
    Demo mode: orders are saved to this browser's localStorage.
-   Live mode (CONFIG.api.baseUrl set): POST {base}/orders with the
-   payload below; the server re-prices the lines, reserves stock,
-   stores the order and returns it with its id.
+   Live mode (CONFIG.api.baseUrl set):
+     POST  {base}/orders            create (server re-prices + reserves stock)
+     PATCH {base}/orders/:id        status updates (normally webhooks do this)
+     GET   {base}/orders/track?id=&phone=   order tracking
+   Lifecycle: pending_payment → confirmed → out_for_delivery → delivered
+              (or payment_failed / cancelled)
    ═══════════════════════════════════════════════════════════════ */
 
 import { CONFIG } from '../config.js';
 import * as storage from '../lib/storage.js';
+import { normalizeLebanesePhone } from '../lib/validate.js';
 
 const KEY = CONFIG.storageKeys.orders;
+const api = CONFIG.api.baseUrl;
+
+export const STATUS = {
+  pending_payment: 'Awaiting payment',
+  payment_failed: 'Payment failed',
+  confirmed: 'Confirmed',
+  out_for_delivery: 'Out for delivery',
+  delivered: 'Delivered',
+  cancelled: 'Cancelled',
+};
 
 function makeOrderId() {
   const d = new Date();
   const ymd = `${String(d.getFullYear()).slice(2)}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
-  const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
-  return `CL-${ymd}-${rand}`;
+  return `CL-${ymd}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
 }
 
+const readAll = () => storage.read(KEY, []).filter((o) => o && o.id);
+const writeAll = (orders) => storage.write(KEY, orders.slice(0, 30));
+
 /**
- * @param {object} payload
- *   customer: { fullName, phone, email }
- *   address:  { zoneId, zoneName, city, street, building, notes }
- *   paymentMethod: 'cod' | …
- *   items:    [{ productId, name, unitPrice, qty }]   (unitPrice in cents)
- *   totals:   { subtotal, discount, delivery, total, promoCode } (cents)
+ * payload: { customer, address, paymentMethod, items, totals }
+ * (see checkout.js for the exact shape; money in cents)
  */
 export async function createOrder(payload) {
-  if (CONFIG.api.baseUrl) {
-    const res = await fetch(`${CONFIG.api.baseUrl}/orders`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
+  if (api) {
+    const res = await fetch(`${api}/orders`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     if (!res.ok) throw new Error('We couldn’t place your order. Please try again.');
     return res.json();
   }
-
-  // Demo: simulate a short network round-trip.
-  await new Promise((r) => setTimeout(r, 600));
+  await new Promise((r) => setTimeout(r, 400));
+  const now = new Date().toISOString();
   const order = {
     id: makeOrderId(),
-    createdAt: new Date().toISOString(),
-    status: 'received',
+    createdAt: now,
+    status: 'pending_payment',
+    history: [{ status: 'pending_payment', at: now }],
     currency: CONFIG.currency.code,
     ...payload,
   };
-  const orders = storage.read(KEY, []);
-  orders.unshift(order);
-  storage.write(KEY, orders.slice(0, 20));
+  writeAll([order, ...readAll()]);
   return order;
 }
 
-export function getOrder(id) {
-  return storage.read(KEY, []).find((o) => o.id === id) || null;
+export async function updateOrder(id, patch) {
+  if (api) {
+    const res = await fetch(`${api}/orders/${encodeURIComponent(id)}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(patch) });
+    if (!res.ok) throw new Error('Order update failed.');
+    return res.json();
+  }
+  const orders = readAll();
+  const o = orders.find((x) => x.id === id);
+  if (!o) return null;
+  Object.assign(o, patch);
+  if (patch.status) o.history = [...(o.history || []), { status: patch.status, at: new Date().toISOString() }];
+  writeAll(orders);
+  return o;
+}
+
+/** Orders placed from this browser, newest first. */
+export const listOrders = () => readAll();
+
+export const getOrder = (id) => readAll().find((o) => o.id === id) || null;
+
+/** Tracking lookup: order number + the phone used at checkout. */
+export async function trackOrder(id, phone) {
+  const cleanId = String(id || '').trim().toUpperCase();
+  const e164 = normalizeLebanesePhone(phone);
+  if (api) {
+    const res = await fetch(`${api}/orders/track?id=${encodeURIComponent(cleanId)}&phone=${encodeURIComponent(e164 || '')}`);
+    return res.ok ? res.json() : null;
+  }
+  const o = getOrder(cleanId);
+  return o && o.customer?.phone === e164 ? o : null;
 }

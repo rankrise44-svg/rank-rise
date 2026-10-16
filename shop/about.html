@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>About Us — Cedarline</title>
-<meta name="description" content="Cedarline is a small Beirut team selecting well-made home essentials, delivered across Lebanon.">
+<meta name="description" content="Cedarline is a Beirut team selecting kitchen essentials, delivered across Lebanon.">
 <!-- Demo store with fictional products: keep it out of search until it goes live. -->
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#18181a">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 <script type="module" src="js/pages/about.js"></script>
 </head>
@@ -21,28 +21,28 @@
   <div class="container">
     <header class="page-head">
       <p class="eyebrow">About Cedarline</p>
-      <h1>Fewer, better things for the home.</h1>
+      <h1>Better tools for Lebanese kitchens.</h1>
     </header>
   </div>
   <section class="section section--tight">
     <div class="container split">
       <div class="prose">
-        <p class="lead">Cedarline started with a simple frustration: home essentials in Lebanon were either cheap and short-lived, or beautiful and impossible to find. We wanted the middle — honest, well-made pieces at fair prices, delivered to your door.</p>
-        <p>Every product in our edit is chosen for how it performs in a real home: a cutting board that survives a family lunch, towels that dry in a humid coastal summer, storage that makes a small apartment feel bigger. We favour natural and refillable materials, and we test everything ourselves before it reaches the shop.</p>
+        <p class="lead">Cedarline started with a simple frustration: kitchenware in Lebanon was either cheap and short-lived, or beautiful and impossible to find. We wanted the middle — honest, well-made pieces at fair prices, delivered to your door.</p>
+        <p>Every product is chosen for how it performs in a real Lebanese kitchen: a pan that handles a family breakfast, a casserole for a slow Sunday stew, a mezze set for guests, storage that makes a small apartment kitchen feel bigger. We test everything ourselves before it reaches the shop.</p>
         <p>We’re a small team based in Beirut. We pack every order by hand, and we answer every message ourselves.</p>
       </div>
       <div class="split__img" aria-hidden="true">
-        <img src="assets/products/ribbed-glass-vase-1.svg" alt="" width="800" height="800">
-        <img src="assets/products/waffle-cotton-bath-towel-1.svg" alt="" width="800" height="800">
-        <img src="assets/products/stoneware-utensil-crock-1.svg" alt="" width="800" height="800">
-        <img src="assets/products/beechwood-dish-brush-set-1.svg" alt="" width="800" height="800">
+        <img src="assets/products/cast-iron-casserole-1.svg" alt="" width="800" height="800">
+        <img src="assets/products/mezze-serving-set-1.svg" alt="" width="800" height="800">
+        <img src="assets/products/revolving-spice-rack-1.svg" alt="" width="800" height="800">
+        <img src="assets/products/digital-air-fryer-1.svg" alt="" width="800" height="800">
       </div>
     </div>
   </section>
   <section class="section section--surface">
     <div class="container">
       <div class="section__head"><div><h2>What we stand for</h2></div></div>
-      <div class="values" data-about-values></div>
+      <ul class="values" data-about-values></ul>
     </div>
   </section>
   <section class="section" id="delivery">
@@ -50,7 +50,7 @@
       <div class="prose">
         <h2>Delivery &amp; returns</h2>
         <p>We deliver to all eight governorates. Orders placed before 2 pm on a working day leave our Beirut warehouse the same day. Delivery is free on orders over <strong data-free-threshold></strong>.</p>
-        <p><strong>Cash on delivery</strong> is available everywhere — pay the courier in USD, or in LBP at the day’s rate. Online card payment is coming soon.</p>
+        <p><strong>Cash on delivery</strong> is available everywhere — pay the courier in USD, or in LBP at the day’s rate. You can also pay online by card, Whish Money or OMT Pay (see below).</p>
         <p><strong>Returns:</strong> changed your mind? Return unused items in their original packaging within 14 days and we’ll refund or exchange them. Contact us to arrange a pickup.</p>
       </div>
       <div class="table-wrap">
@@ -60,6 +60,17 @@
           <tbody data-delivery-rows></tbody>
         </table>
       </div>
+    </div>
+  </section>
+
+  <section class="section section--surface" id="payment">
+    <div class="container split" style="align-items:start">
+      <div class="prose">
+        <h2>Payment methods</h2>
+        <p>Choose how you pay at checkout. Online payments are confirmed instantly; cash on delivery is collected by the courier.</p>
+        <p class="summary__note" data-pay-mode></p>
+      </div>
+      <ul class="pay-list" data-pay-list></ul>
     </div>
   </section>
 </main>

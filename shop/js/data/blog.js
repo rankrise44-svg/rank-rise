@@ -1,0 +1,61 @@
+/* Blog posts (demo content). `body` is an array of paragraphs; a
+   paragraph starting with "## " renders as a sub-heading. */
+
+export const POSTS = [
+  {
+    slug: 'cast-iron-care',
+    title: 'How to care for enamelled cast iron',
+    date: '2026-09-24',
+    readMins: 4,
+    image: 'assets/products/cast-iron-casserole-2.svg',
+    excerpt: 'A good casserole lasts decades. Five habits keep the enamel bright and the base flat.',
+    related: ['cast-iron-casserole', 'silicone-utensil-set'],
+    body: [
+      'Enamelled cast iron is the most forgiving pot in the kitchen — it holds heat, cooks gently and goes from hob to oven to table. It also lasts for decades if you treat it right.',
+      '## Heat it slowly',
+      'Start on low to medium heat for a few minutes before turning it up. Cast iron spreads heat evenly once it is warm, so high flame is rarely needed, even for searing.',
+      '## Use wood or silicone',
+      'Metal spoons and whisks can chip the enamel. Silicone utensils and wooden spoons are safe and do the job just as well.',
+      '## Let it cool before washing',
+      'Moving a hot pot into cold water can crack the enamel. Let it cool, soak it in warm soapy water, then wash with a soft sponge.',
+      '## Dry it fully',
+      'The rim is bare iron and can rust if left wet. Dry it straight away, and store it with the lid slightly open so air can move.',
+    ],
+  },
+  {
+    slug: 'small-kitchen-storage',
+    title: 'A storage plan for small Beirut kitchens',
+    date: '2026-08-30',
+    readMins: 5,
+    image: 'assets/products/revolving-spice-rack-2.svg',
+    excerpt: 'Short on cupboard space? Go vertical, group by use and make every container see-through.',
+    related: ['revolving-spice-rack', 'stackable-pantry-bins', 'glass-spice-jar-set'],
+    body: [
+      'Many apartment kitchens have one corner cupboard and a narrow counter. You can still keep everything within reach — the trick is to plan by how you cook, not by what you own.',
+      '## Spices in one place',
+      'A revolving rack turns a shelf corner into sixteen visible jars. Put the daily ones — seven-spice, cumin, sumac — on the front row.',
+      '## Decant dry goods',
+      'Rice, bulgur, lentils and pasta take less room in square stackable bins than in their bags. Clear sides show what is running low before you run out.',
+      '## Keep the counter for tools you use daily',
+      'A single utensil holder, a knife set and one board earn their counter space. Everything else lives in a cupboard.',
+    ],
+  },
+  {
+    slug: 'mezze-night',
+    title: 'Mezze night: hosting with less washing up',
+    date: '2026-07-31',
+    readMins: 3,
+    image: 'assets/products/mezze-serving-set-2.svg',
+    excerpt: 'Serve hummus, labneh, olives and tabbouleh in one trip — and clear the table in two.',
+    related: ['mezze-serving-set', 'matte-serving-bowls', 'stoneware-dinner-set'],
+    body: [
+      'A mezze spread looks generous because of variety, not size. Small dishes, a few bowls and a big basket of bread are all you need.',
+      '## Build it on a tray',
+      'Assemble dips on a tray in the kitchen, then carry the whole spread out at once. Refills go back the same way.',
+      '## Mix heights and colours',
+      'A deep bowl of fattoush next to flat plates of hummus and labneh makes the table look full. Charcoal and cream dishes make the colours of the food stand out.',
+      '## Plan the clear-up',
+      'Use dishwasher-safe dishes for dips and keep wooden boards for bread and cheese — a quick wipe and they are done.',
+    ],
+  },
+];

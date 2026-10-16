@@ -6,6 +6,8 @@ import * as catalog from '../services/catalog.js';
 
 const { categories } = await initLayout();
 const q = (params().get('q') || '').trim().slice(0, 80);
+const catId = categories.some((c) => c.id === params().get('cat')) ? params().get('cat') : '';
+const catName = categories.find((c) => c.id === catId)?.name || '';
 const root = $('[data-search-root]');
 const toolbar = $('[data-search-toolbar]');
 const sortEl = $('[data-search-sort]');
@@ -16,7 +18,7 @@ sortEl.innerHTML = [{ id: 'relevance', label: 'Most relevant' }, ...catalog.SORT
 const initialSort = params().get('sort');
 if ([...sortEl.options].some((o) => o.value === initialSort)) sortEl.value = initialSort;
 
-const results = q ? await catalog.search(q) : [];
+const results = q ? await catalog.search(q, catId) : [];
 
 async function render() {
   if (!q) {
@@ -29,16 +31,17 @@ async function render() {
   }
 
   setTitle(`Search: ${q}`);
-  $('[data-search-title]').textContent = `Results for “${q}”`;
+  $('[data-search-title]').textContent = `Results for “${q}”${catName ? ` in ${catName}` : ''}`;
 
   if (!results.length) {
     toolbar.hidden = true;
     const popular = await catalog.getFeatured(4);
+    const broaden = catId ? [{ label: `Search all categories for “${q}”`, href: `search.html?q=${encodeURIComponent(q)}` }] : [];
     root.innerHTML = emptyState({
       iconName: 'search',
       title: `No results for “${q}”`,
-      text: 'Check the spelling, or try a broader word like “glass”, “towel” or “storage”.',
-      links: categories.map((c) => ({ label: c.name, href: `shop.html?category=${c.id}` })),
+      text: 'Check the spelling, or try a broader word like “pan”, “glass” or “storage”.',
+      links: [...broaden, ...categories.map((c) => ({ label: c.name, href: `shop.html?category=${c.id}` }))],
     }) + `<h2 style="font-size:1.3rem;margin-bottom:20px">Popular right now</h2><div class="grid grid--4">${productGrid(popular, categories)}</div>`;
     return;
   }

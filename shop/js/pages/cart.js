@@ -6,6 +6,7 @@ import { productUrl } from '../ui/product-card.js';
 import { emptyState } from '../ui/empty.js';
 import { totalsHtml, shipProgressHtml, promoHtml } from '../ui/summary.js';
 import { toast } from '../ui/toast.js';
+import { paymentBadgesHtml } from '../ui/payment-badges.js';
 import * as cart from '../services/cart.js';
 
 await initLayout();
@@ -46,7 +47,7 @@ async function render() {
   if (!items.length) {
     sub.textContent = '';
     root.innerHTML = emptyState({
-      iconName: 'bag',
+      iconName: 'cart',
       title: 'Your cart is empty',
       text: 'Browse the shop and add a few essentials — they’ll wait for you here.',
       cta: { label: 'Start shopping', href: 'shop.html' },
@@ -61,7 +62,7 @@ async function render() {
       ${adjusted ? '<div class="alert alert--info" style="margin-bottom:16px">Some quantities were updated to match current stock.</div>' : ''}
       <ul class="lines">${items.map(lineHtml).join('')}</ul>
       <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:20px">
-        <a class="btn btn--light" href="shop.html">Continue shopping</a>
+        <a class="btn btn--outline" href="shop.html">Continue shopping</a>
         <button type="button" class="btn btn--link" data-clear-cart>Empty cart</button>
       </div>
     </section>
@@ -70,8 +71,10 @@ async function render() {
       ${shipProgressHtml(totals)}
       ${promoHtml(totals, pendingCode || cart.getPromo(), promoError)}
       ${totalsHtml(totals)}
-      <a class="btn btn--dark btn--lg btn--block" href="checkout.html">Checkout · ${formatCents(totals.total)}</a>
-      <p class="summary__note" style="text-align:center">Cash on delivery · No account needed</p>
+      <a class="btn btn--gold btn--lg btn--block" href="checkout.html">Proceed to Checkout · ${formatCents(totals.total)}</a>
+      <p class="secure-note">${icon('lock', { size: 14 })}Secure checkout · No account needed</p>
+      <div class="summary__pay" aria-label="Payment methods we accept">${paymentBadgesHtml()}</div>
+      <p class="summary__note" style="text-align:center">Pay cash on delivery, or <a class="link" href="checkout.html?method=card">by card</a>, <a class="link" href="checkout.html?method=whish">Whish</a> or <a class="link" href="checkout.html?method=omt">OMT</a>.</p>
     </aside>
   </div>`;
 

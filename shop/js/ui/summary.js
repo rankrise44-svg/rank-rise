@@ -39,7 +39,7 @@ export function promoHtml(t, code, error = '') {
   return `<form class="promo" data-promo-form novalidate>
       <label class="sr-only" for="promo-code">Promo code</label>
       <input id="promo-code" name="code" placeholder="Promo code" autocomplete="off" maxlength="20" value="${esc(code || '')}" aria-describedby="promo-err"${error || t.promoError ? ' aria-invalid="true"' : ''}>
-      <button type="submit" class="btn btn--light btn--sm" style="--h:44px">Apply</button>
+      <button type="submit" class="btn btn--dark btn--sm" style="--h:44px">Apply</button>
     </form>
     <p class="field__error" id="promo-err" role="alert">${esc(error || t.promoError || '')}</p>`;
 }
