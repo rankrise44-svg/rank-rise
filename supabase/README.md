@@ -3,10 +3,6 @@
 The database, security rules and image storage shared by the storefront
 (`/shop/`) and the future admin dashboard.
 
-**Nothing here changes the storefront yet.** The shop still runs on
-`shop/js/data/*.js` until it's switched over in a later, separately
-approved step.
-
 ```
 supabase/
   migrations/
@@ -14,72 +10,78 @@ supabase/
     20261016000002_security.sql        admin role, row-level security, audit log
     20261016000003_storefront_api.sql  public views + check_promo / place_order / track_order
     20261016000004_storage.sql         "product-images" bucket + admin-only upload rules
-  seed.sql                             today's catalog, generated from shop/js/data
+    20261016000005_promo_rules.sql     check_promo also returns the code's rule (for the cart)
+  seed.sql                             starting catalog, generated from shop/js/data
   tests/                               local security + behaviour tests
 scripts/supabase/
-  export-seed.mjs                      regenerates seed.sql from the storefront data
+  setup.mjs                            one-command setup of the live project (see below)
   check-connection.mjs                 read-only check of the live project (public key only)
-shop/js/supabase.config.js             public URL + anon key (empty for now; not loaded)
-shop/js/lib/supabase-rest.js           tiny storefront client (not loaded yet)
+  export-seed.mjs                      regenerates seed.sql from the storefront data
+shop/js/supabase.config.js             public URL + key; empty = demo mode
+shop/js/lib/supabase-rest.js           tiny storefront client
 ```
 
-## Set it up (about 10 minutes)
+## How the storefront uses it
 
-### 1 · Run the SQL
-In the Supabase dashboard open **SQL Editor → New query**. Paste and run
-each file **in this order**, one at a time:
+When `shop/js/supabase.config.js` has a URL and key, the shop reads its
+products, categories, brands, store details, delivery fees and LBP rate
+from the database, checks promo codes with `check_promo`, places orders
+with `place_order` (the database re-prices them and takes the stock) and
+tracks them with `track_order`. When it's empty the shop runs on the
+built-in demo data, exactly as before. If the database can't be reached
+the shop stays browsable on the built-in catalog, and ordering shows an
+error instead of saving anything.
 
-1. `migrations/20261016000001_schema.sql`
-2. `migrations/20261016000002_security.sql`
-3. `migrations/20261016000003_storefront_api.sql`
-4. `migrations/20261016000004_storage.sql`
-5. `seed.sql`
+## Set it up — one command
 
-Each should finish with "Success. No rows returned". Re-running `seed.sql`
-is safe: it never overwrites existing rows.
-
-Check: **Table Editor → products** shows 24 rows, and **Storage** shows a
-`product-images` bucket.
-
-### 2 · Lock down sign-ups
-In **Authentication → Sign In / Providers** (the label may differ
-slightly):
-- **Turn off "Allow new users to sign up".** Admins are invited, never
-  self-registered.
-- Keep the email provider on. Enable **multi-factor authentication
-  (TOTP)** if offered, and use it on every admin account.
-
-### 3 · Create the first owner
-1. **Authentication → Users → Add user** (or **Invite**). Use your own
-   email.
-2. In the SQL Editor, run (with your email):
-
-   ```sql
-   insert into public.admin_users (user_id, role)
-   select id, 'owner' from auth.users where email = 'you@example.com';
-   ```
-
-Only owners can add or remove other admins (from the dashboard, later).
-The database refuses to remove the last owner.
-
-### 4 · Share the public connection details
-From **Project Settings → API**, copy:
-- **Project URL**: `https://xxxx.supabase.co`
-- the **anon / public** key
-
-Either send them to your developer or paste them into
-`shop/js/supabase.config.js`. They are designed to be public.
-
-> **Never** share or commit the `service_role` key or the database
-> password. They bypass every rule in this folder.
-
-### 5 · Verify (optional)
 ```bash
-SUPABASE_URL=https://xxxx.supabase.co SUPABASE_ANON_KEY=eyJ... \
-  node scripts/supabase/check-connection.mjs
+node scripts/supabase/setup.mjs            # shows what it would do; changes nothing
+node scripts/supabase/setup.mjs --apply    # does it
 ```
-This uses only the public key. It confirms the catalog is readable and
-that orders, customers, promo codes and cost prices are **not**.
+
+It needs one thing: a Supabase **personal access token** in the
+`SUPABASE_ACCESS_TOKEN` environment variable (create one at
+supabase.com → Account → Access Tokens). If the account has more than
+one project, also set `SUPABASE_PROJECT_REF`. It works over HTTPS only
+(the Supabase Management API): no database password, no Docker and no
+SQL Editor.
+
+What `--apply` does, in order:
+
+1. **Migrations.** It reads Supabase's migration history (the same
+   table the Supabase CLI uses) and applies only the files that are
+   missing. Each file runs in one transaction together with its history
+   entry. If the SQL was already run by hand in the SQL Editor, it checks
+   that every table, view, function, policy, trigger and bucket the file
+   creates is there, and then only records it as applied. If a file is
+   only *partly* there, or the database has migrations this repo doesn't
+   know, it stops before changing anything.
+2. **Seed.** It loads `seed.sql` only when the products table is empty,
+   so it never brings back products the owner deleted or overwrites
+   edits.
+3. **Sign-ups.** It turns off public sign-ups (admins are invited).
+4. **Storefront.** It writes the project URL and the **public**
+   (publishable/anon) key into `shop/js/supabase.config.js`. It never
+   reads or writes a secret key.
+5. **Check.** It runs `check-connection.mjs` with the public key, the same
+   access a shopper has. That confirms the catalog is readable and that
+   orders, customers, promotions and cost prices are **not**.
+
+Running it again is safe. When everything is up to date it reports
+"already applied" and changes nothing.
+
+> **Never** commit or share the access token, a `service_role`/secret
+> key or the database password. The token is read from the environment
+> only and is never printed or saved.
+
+The Supabase CLI works with the same files and history if you prefer it:
+`supabase link --project-ref <ref>` then `supabase db push`.
+
+### Later: the first owner (with the admin dashboard)
+The storefront doesn't need any admin account. When the dashboard is
+built, the owner will be invited by email and added to `admin_users` as
+`owner`. Only owners can add or remove other admins, and the database
+refuses to remove the last owner.
 
 ## How the security works
 
@@ -132,5 +134,5 @@ added later).
 
 ## Local tests
 `tests/run.sh` applies everything to a scratch PostgreSQL database (using
-a small stand-in for Supabase's `auth` and `storage` schemas) and runs 61
+a small stand-in for Supabase's `auth` and `storage` schemas) and runs 64
 security and behaviour checks. See the comments at the top of that file.

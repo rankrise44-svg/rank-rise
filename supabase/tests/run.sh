@@ -45,6 +45,9 @@ ok "anon cannot call internal promo fn" "$(as anon '' "select public.promo_disco
 ok "check_promo WELCOME10 on \$59.00" "$(as anon '' "select check_promo('welcome10', 5900)->>'discount_cents';")" '^590$'
 ok "check_promo BEIRUT5 needs \$40" "$(as anon '' "select check_promo('BEIRUT5', 3000)->>'error';")" 'at least \$40\.00'
 ok "check_promo bad code" "$(as anon '' "select check_promo('NOPE', 3000)->>'valid';")" '^false$'
+ok "check_promo returns the percent rule" "$(as anon '' "select concat_ws(',', r->>'kind', r->>'percentOff', r->>'minSubtotal') from (select check_promo('WELCOME10', 5900) r) x;")" '^percent,10,0(\.00)?$'
+ok "check_promo handles huge subtotals" "$(as anon '' "select check_promo('WELCOME10', 2147483647)->>'discount_cents';")" '^214748365$'
+ok "check_promo returns the fixed rule" "$(as anon '' "select concat_ws(',', r->>'kind', r->>'amountOff', r->>'minSubtotal') from (select check_promo('BEIRUT5', 5000) r) x;")" '^fixed,5(\.00)?,40(\.00)?$'
 
 echo "── place_order (server re-prices) ──"
 WA=$(as anon '' "select place_order('{\"method\":\"whatsapp\",\"customer\":{\"fullName\":\"Rima Haddad\",\"phone\":\"+96171123456\"},\"items\":[{\"productId\":\"p021\",\"qty\":3,\"price\":0.01},{\"productId\":\"p019\",\"qty\":1}],\"promoCode\":\"WELCOME10\",\"totals\":{\"total\":1}}'::jsonb);")

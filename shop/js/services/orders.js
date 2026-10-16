@@ -2,7 +2,13 @@
    ORDERS SERVICE
    ───────────────────────────────────────────────────────────────
    Demo mode: orders are saved to this browser's localStorage.
-   Live mode (CONFIG.api.baseUrl set):
+   Supabase (supabase.config.js filled in):
+     place_order  creates the order; the database re-prices it, applies
+                  the promo and delivery fee, and reserves stock
+     track_order  order tracking (order number + phone)
+     A copy is kept in this browser for "My orders" and the WhatsApp
+     message, using the database's prices and totals.
+   Custom API (CONFIG.api.baseUrl set):
      POST  {base}/orders            create (server re-prices + reserves stock)
      PATCH {base}/orders/:id        status updates (normally webhooks do this)
      GET   {base}/orders/track?id=&phone=   order tracking
@@ -11,9 +17,10 @@
               (or cancelled)
    ═══════════════════════════════════════════════════════════════ */
 
-import { CONFIG } from '../config.js';
+import { CONFIG, LIVE } from '../config.js';
 import * as storage from '../lib/storage.js';
 import { normalizeLebanesePhone } from '../lib/validate.js';
+import * as sb from '../lib/supabase-rest.js';
 
 const KEY = CONFIG.storageKeys.orders;
 const api = CONFIG.api.baseUrl;
@@ -22,6 +29,7 @@ export const STATUS = {
   pending_payment: 'Not placed',
   awaiting_whatsapp: 'Awaiting WhatsApp confirmation',
   confirmed: 'Confirmed',
+  packed: 'Packed',
   out_for_delivery: 'Out for delivery',
   delivered: 'Delivered',
   cancelled: 'Cancelled',
@@ -41,6 +49,31 @@ const writeAll = (orders) => storage.write(KEY, orders.slice(0, 30));
  * (see checkout.js for the exact shape; money in cents)
  */
 export async function createOrder(payload) {
+  if (LIVE) {
+    const a = payload.address || {};
+    const placed = await sb.placeOrder({
+      method: payload.paymentMethod,
+      codCurrency: payload.codCurrency || 'USD',
+      customer: payload.customer,
+      address: { zoneId: a.zoneId || null, city: a.city || '', street: a.street || '', building: a.building || '', notes: a.notes || null },
+      items: payload.items.map((i) => ({ productId: i.productId, qty: i.qty })),
+      promoCode: payload.totals?.promoCode || null,
+    });
+    // The database's prices, totals and status are the ones that count.
+    const order = {
+      ...payload,
+      id: placed.id,
+      createdAt: placed.createdAt,
+      status: placed.status,
+      history: [{ status: placed.status, at: placed.createdAt }],
+      currency: CONFIG.currency.code,
+      address: { ...a, zoneName: placed.zoneName ?? a.zoneName ?? null },
+      items: placed.items,
+      totals: placed.totals,
+    };
+    writeAll([order, ...readAll()]);
+    return order;
+  }
   if (api) {
     const res = await fetch(`${api}/orders`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     if (!res.ok) throw new Error('We couldn’t place your order. Please try again.');
@@ -61,7 +94,9 @@ export async function createOrder(payload) {
 }
 
 export async function updateOrder(id, patch) {
-  if (api) {
+  // With Supabase the status is set by the database (and later by the
+  // store team), so only this browser's copy is updated here.
+  if (api && !LIVE) {
     const res = await fetch(`${api}/orders/${encodeURIComponent(id)}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(patch) });
     if (!res.ok) throw new Error('Order update failed.');
     return res.json();
@@ -69,8 +104,9 @@ export async function updateOrder(id, patch) {
   const orders = readAll();
   const o = orders.find((x) => x.id === id);
   if (!o) return null;
+  const statusChanged = patch.status && patch.status !== o.status;
   Object.assign(o, patch);
-  if (patch.status) o.history = [...(o.history || []), { status: patch.status, at: new Date().toISOString() }];
+  if (statusChanged) o.history = [...(o.history || []), { status: patch.status, at: new Date().toISOString() }];
   writeAll(orders);
   return o;
 }
@@ -84,6 +120,22 @@ export const getOrder = (id) => readAll().find((o) => o.id === id) || null;
 export async function trackOrder(id, phone) {
   const cleanId = String(id || '').trim().toUpperCase();
   const e164 = normalizeLebanesePhone(phone);
+  if (LIVE) {
+    const t = e164 ? await sb.trackOrder(cleanId, e164) : null;
+    if (!t) return null;
+    // The status comes from the database; item details from this browser's copy, if any.
+    const mine = getOrder(cleanId);
+    const local = mine?.customer?.phone === e164 ? mine : null;
+    return {
+      ...(local || { items: [{ qty: t.itemCount }] }),
+      id: t.id,
+      status: t.status,
+      createdAt: t.createdAt,
+      history: t.history || [],
+      address: { ...(local?.address || {}), city: t.city, zoneName: t.zoneName },
+      totals: { ...(local?.totals || {}), total: t.total },
+    };
+  }
   if (api) {
     const res = await fetch(`${api}/orders/track?id=${encodeURIComponent(cleanId)}&phone=${encodeURIComponent(e164 || '')}`);
     return res.ok ? res.json() : null;

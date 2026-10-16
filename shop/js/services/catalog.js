@@ -5,14 +5,16 @@
    these async functions and never import the data file directly,
    so moving to a database means changing this file only:
 
-     CONFIG.api.baseUrl = null   → local data in js/data/
-     CONFIG.api.baseUrl = '…'    → GET {base}/products, /categories
+     supabase.config.js filled in → the storefront_* views in Supabase
+     CONFIG.api.baseUrl = '…'      → GET {base}/products, /categories
+     neither                       → local data in js/data/
 
    The filter/sort/search helpers are pure and are reused on the
    client either way (or mirrored by the API as query params).
    ═══════════════════════════════════════════════════════════════ */
 
-import { CONFIG } from '../config.js';
+import { CONFIG, LIVE } from '../config.js';
+import { fetchCatalog } from '../lib/supabase-rest.js';
 import { PRODUCTS } from '../data/products.js';
 import { CATEGORIES } from '../data/categories.js';
 import { BRANDS } from '../data/brands.js';
@@ -21,6 +23,15 @@ let cache = null;
 
 async function load() {
   if (cache) return cache;
+  if (LIVE) {
+    try {
+      cache = await fetchCatalog();
+      return cache;
+    } catch (err) {
+      // Keep the shop browsable; orders are still priced and stock-checked by the database.
+      console.warn('[Cedarline] Showing the built-in catalog:', err.message);
+    }
+  }
   if (CONFIG.api.baseUrl) {
     const [p, c, b] = await Promise.all([
       fetch(`${CONFIG.api.baseUrl}/products`).then(okJson),

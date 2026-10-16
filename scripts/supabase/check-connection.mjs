@@ -18,11 +18,12 @@
 const url = (process.env.SUPABASE_URL || '').replace(/\/+$/, '');
 const key = process.env.SUPABASE_ANON_KEY || '';
 if (!url || !key) {
-  console.error('Set SUPABASE_URL and SUPABASE_ANON_KEY (the public anon key — never the service_role key).');
+  console.error('Set SUPABASE_URL and SUPABASE_ANON_KEY (the public anon/publishable key — never a secret or service_role key).');
   process.exit(2);
 }
 
-const h = { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' };
+// Legacy anon keys (JWTs) also go in Authorization; "sb_publishable_…" keys only in apikey.
+const h = { apikey: key, ...(key.startsWith('eyJ') ? { Authorization: `Bearer ${key}` } : {}), 'Content-Type': 'application/json' };
 const get = (path) => fetch(`${url}/rest/v1/${path}`, { headers: h });
 const rpc = (fn, args) => fetch(`${url}/rest/v1/rpc/${fn}`, { method: 'POST', headers: h, body: JSON.stringify(args) });
 
@@ -59,6 +60,7 @@ await check('check_promo works', async () => {
   const res = await rpc('check_promo', { p_code: 'WELCOME10', p_subtotal_cents: 5000 });
   const body = await json(res);
   if (!res.ok || body.valid !== true) throw new Error(JSON.stringify(body));
+  if (body.kind !== 'percent') throw new Error('promo rule missing — migration 0005 not applied?');
   return `WELCOME10 on $50.00 → −$${(body.discount_cents / 100).toFixed(2)}`;
 });
 for (const table of ['products', 'customers', 'orders', 'order_items', 'promotions', 'expenses', 'admin_users', 'audit_log', 'store_settings']) {

@@ -7,8 +7,9 @@
    server-side cart will follow.
    ═══════════════════════════════════════════════════════════════ */
 
-import { CONFIG } from '../config.js';
+import { CONFIG, LIVE } from '../config.js';
 import * as storage from '../lib/storage.js';
+import { checkPromo } from '../lib/supabase-rest.js';
 import { getProductMap } from './catalog.js';
 import { computeTotals } from './pricing.js';
 import { toCents } from '../lib/money.js';
@@ -95,18 +96,47 @@ export function setPromo(code) {
   emit();
 }
 
+/* Live mode: promo rules live in the database and are fetched one code
+   at a time into CONFIG.promos, so computeTotals works unchanged. The
+   database applies the same rule again when the order is placed.
+   Resolves to '' when the rule is loaded, or an error message.        */
+const promoLookups = new Map();
+function loadPromo(code) {
+  const key = String(code || '').trim().toUpperCase();
+  if (!LIVE || !key || CONFIG.promos[key]) return Promise.resolve('');
+  if (!promoLookups.has(key)) {
+    // Checked against a very large subtotal ($100,000) to learn the rule
+    // itself; the minimum-subtotal check then happens in computeTotals.
+    promoLookups.set(key, checkPromo(key, 10000000).then((r) => {
+      if (!r?.valid || !r.kind) return r?.error || 'That code isn’t valid.';
+      CONFIG.promos[key] = {
+        type: r.kind,
+        value: Number(r.kind === 'percent' ? r.percentOff : r.amountOff),
+        label: r.label || '',
+        ...(r.minSubtotal > 0 ? { minSubtotal: Number(r.minSubtotal) } : {}),
+      };
+      return '';
+    }, (err) => {
+      promoLookups.delete(key); // network trouble: allow a retry
+      return err.message || 'We couldn’t check that code. Please try again.';
+    }));
+  }
+  return promoLookups.get(key);
+}
+
 /**
  * Validate a promo code against the current cart and store it only
  * if it applies. Returns { ok, promo } or { ok: false, error }.
  */
 export async function tryPromo(code) {
+  const lookupError = await loadPromo(code);
   const { items } = await resolve();
   const totals = computeTotals(items.map((i) => ({ price: i.product.price, qty: i.qty })), { promoCode: code });
   if (totals.promo) {
     setPromo(totals.promo.code);
     return { ok: true, promo: totals.promo };
   }
-  return { ok: false, error: totals.promoError || 'That code isn’t valid.' };
+  return { ok: false, error: lookupError || totals.promoError || 'That code isn’t valid.' };
 }
 
 /**
@@ -114,7 +144,7 @@ export async function tryPromo(code) {
  * exist and clamps quantities to current stock.
  */
 export async function resolve({ zoneId } = {}) {
-  const map = await getProductMap();
+  const [map] = await Promise.all([getProductMap(), loadPromo(getPromo())]);
   const items = [];
   let changed = false;
   for (const l of lines) {

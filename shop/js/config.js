@@ -5,7 +5,15 @@
    store identity, WhatsApp number, currency, delivery zones, promo
    codes, ordering methods and the API endpoint. UI code reads from this file and
    never hard-codes these values.
+
+   When supabase.config.js is filled in, the store details, currency,
+   LBP rate, delivery fees and limits below are replaced at page load
+   by the values the owner manages in the database (see the bottom of
+   this file). The values here then act only as a fallback.
    ═══════════════════════════════════════════════════════════════ */
+
+import { isSupabaseConfigured } from './supabase.config.js';
+import { fetchCatalog, fetchSettings, fetchDeliveryZones } from './lib/supabase-rest.js';
 
 export const CONFIG = {
   store: {
@@ -76,3 +84,32 @@ export const CONFIG = {
     account: 'cedarline:account',
   },
 };
+
+/* ── Live store settings (Supabase) ────────────────────────────────
+   Every module imports CONFIG, so awaiting here guarantees prices,
+   fees and the WhatsApp number are the database's before anything
+   renders. If the database can't be reached in time, the defaults
+   above are used and orders are still re-checked by the server.   */
+export const LIVE = isSupabaseConfigured();
+
+if (LIVE) {
+  fetchCatalog().catch(() => {}); // start the catalog download in parallel
+  try {
+    const [s, zones] = await Promise.all([fetchSettings({ timeout: 6000 }), fetchDeliveryZones({ timeout: 6000 })]);
+    if (s) {
+      for (const k of ['name', 'tagline', 'about', 'email', 'phone', 'whatsapp', 'address', 'hours']) {
+        if (s[k]) CONFIG.store[k] = s[k];
+      }
+      if (s.currencyCode) CONFIG.currency.code = s.currencyCode;
+      if (s.lbpRate > 0) CONFIG.lbpRate = Number(s.lbpRate);
+      if (s.freeThreshold != null) CONFIG.delivery.freeThreshold = Number(s.freeThreshold);
+      if (s.etaText) CONFIG.delivery.etaText = s.etaText;
+      if (s.maxQtyPerLine > 0) CONFIG.limits.maxQtyPerLine = s.maxQtyPerLine;
+    }
+    if (zones?.length) CONFIG.delivery.zones = zones.map(({ id, name, fee, eta }) => ({ id, name, fee: Number(fee), eta }));
+  } catch (err) {
+    console.warn('[Cedarline] Using built-in store settings:', err.message);
+  }
+  // Promo codes are checked by the database (cart.js loads each code's rule on demand).
+  CONFIG.promos = {};
+}

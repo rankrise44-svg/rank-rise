@@ -1,4 +1,5 @@
 /* Track order — look up by order number + the phone used at checkout. */
+import { CONFIG } from '../config.js';
 import { $, esc, icon, params, setTitle } from '../lib/dom.js';
 import { formatCents } from '../lib/money.js';
 import { rules, bindForm } from '../lib/validate.js';
@@ -29,12 +30,17 @@ const STEPS = [
 
 function timeline(order) {
   if (order.status === 'awaiting_whatsapp') {
-    return `<div class="alert alert--warn">${icon('whatsapp', { size: 18 })}<span><strong>Waiting for confirmation on WhatsApp.</strong> If you haven’t sent your order message yet, <a class="link" href="${esc(waLink(orderMessage(order)))}" target="_blank" rel="noopener">send it now</a> — we confirm stock and delivery in the chat.</span></div>`;
+    // Full order details exist only in the browser that placed the order.
+    const msg = order.customer ? orderMessage(order) : `Hello ${CONFIG.store.name}, I'd like to confirm my order ${order.id}.`;
+    return `<div class="alert alert--warn">${icon('whatsapp', { size: 18 })}<span><strong>Waiting for confirmation on WhatsApp.</strong> If you haven’t sent your order message yet, <a class="link" href="${esc(waLink(msg))}" target="_blank" rel="noopener">send it now</a> — we confirm stock and delivery in the chat.</span></div>`;
+  }
+  if (order.status === 'cancelled') {
+    return `<div class="alert alert--err">${icon('close', { size: 18 })}<span><strong>This order was cancelled.</strong> Questions? <a class="link" href="contact.html">Contact us</a>.</span></div>`;
   }
   if (order.status === 'pending_payment') {
     return `<div class="alert alert--warn">${icon('package', { size: 18 })}<span><strong>This order wasn’t completed.</strong> You can place it again from your cart.</span></div>`;
   }
-  const reached = { confirmed: 0, out_for_delivery: 2, delivered: 3 }[order.status] ?? 0;
+  const reached = { confirmed: 0, packed: 1, out_for_delivery: 2, delivered: 3 }[order.status] ?? 0;
   return `<ol class="timeline">${STEPS.map(([, title, text, ic], i) => `
     <li class="${i <= reached ? 'is-done' : ''} ${i === reached + 1 ? 'is-current' : ''}">
       <span class="timeline__dot">${icon(i <= reached ? 'check' : ic, { size: 16 })}</span>
@@ -69,9 +75,13 @@ form.addEventListener('submit', async (e) => {
   if (!validator.validate()) return;
   const btn = form.querySelector('[type="submit"]');
   btn.classList.add('is-loading');
-  const order = await orders.trackOrder(form.order.value, form.phone.value);
-  btn.classList.remove('is-loading');
-  show(order);
+  try {
+    show(await orders.trackOrder(form.order.value, form.phone.value));
+  } catch (err) {
+    out.innerHTML = `<div class="alert alert--err" role="alert">${icon('close', { size: 18 })}<span>${esc(err.message || 'Something went wrong. Please try again.')}</span></div>`;
+  } finally {
+    btn.classList.remove('is-loading');
+  }
 });
 
 if (prefill && form.phone.value) form.requestSubmit();

@@ -249,6 +249,7 @@ function bind() {
         customer: { fullName: v.fullName.trim(), phone: normalizeLebanesePhone(v.phone), email: v.email.trim() || null },
         address: { zoneId: v.zone || null, zoneName: totals.zone?.name || null, city: v.city.trim(), street: v.street.trim(), building: v.building.trim(), notes: v.notes.trim() || null, country: 'LB' },
         paymentMethod: method,
+        codCurrency: method === 'cod' ? (v.codCurrency || 'USD') : null,
         items: items.map((i) => ({ productId: i.product.id, slug: i.product.slug, name: i.product.name, unitPrice: toCents(i.product.price), qty: i.qty })),
         totals: { subtotal: totals.subtotal, discount: totals.discount, delivery: totals.delivery ?? 0, total: totals.total, promoCode: totals.promo?.code || null },
       });
