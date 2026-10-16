@@ -21,8 +21,8 @@
    ═══════════════════════════════════════════════════════════════ */
 
 export const SUPABASE = {
-  url: '',
-  anonKey: '',
+  url: 'https://rimlseeitlsbuzeayhky.supabase.co',
+  anonKey: 'sb_publishable_xNqU-kD1IFxVUiCsH3n9MA_Wr8IEL60',
 };
 
 export const isSupabaseConfigured = () => Boolean(SUPABASE.url && SUPABASE.anonKey);
