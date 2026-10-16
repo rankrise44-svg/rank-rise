@@ -1,4 +1,4 @@
-import { $ } from '../lib/dom.js';
+import { $, confirmClick } from '../lib/dom.js';
 import { initLayout } from '../ui/layout.js';
 import { productGrid } from '../ui/product-card.js';
 import { emptyState } from '../ui/empty.js';
@@ -38,8 +38,8 @@ $('[data-wish-all]').addEventListener('click', async () => {
     { action: { label: 'View cart', href: 'cart.html' }, tone: added ? 'default' : 'error' });
 });
 
-$('[data-wish-clear]').addEventListener('click', () => {
-  if (window.confirm('Remove all items from your wishlist?')) {
+$('[data-wish-clear]').addEventListener('click', (e) => {
+  if (confirmClick(e.currentTarget, 'Tap again to clear')) {
     wishlist.clear();
     toast('Wishlist cleared');
   }

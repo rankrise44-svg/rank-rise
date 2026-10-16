@@ -1,5 +1,5 @@
 import { CONFIG } from '../config.js';
-import { $, esc, icon } from '../lib/dom.js';
+import { $, esc, icon, confirmClick } from '../lib/dom.js';
 import { formatCents, formatPrice } from '../lib/money.js';
 import { initLayout } from '../ui/layout.js';
 import { productUrl } from '../ui/product-card.js';
@@ -101,8 +101,9 @@ root.addEventListener('click', (e) => {
     if (p) toast(`Removed ${p.name} from your cart`);
     return;
   }
-  if (e.target.closest('[data-clear-cart]')) {
-    if (window.confirm('Remove all items from your cart?')) {
+  const clearBtn = e.target.closest('[data-clear-cart]');
+  if (clearBtn) {
+    if (confirmClick(clearBtn, 'Tap again to empty cart')) {
       cart.clear();
       toast('Your cart is now empty');
     }

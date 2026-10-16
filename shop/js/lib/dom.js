@@ -56,3 +56,26 @@ const ICONS = {
 export function icon(name, { size = 20, cls = '' } = {}) {
   return `<svg class="icon ${cls}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${ICONS[name] || ''}</svg>`;
 }
+
+/**
+ * Two-step confirmation on a button, for destructive actions:
+ * the first click arms it ("Tap again to confirm"), the second
+ * within 4 seconds returns true. Avoids window.confirm(), which
+ * embedded browsers and webviews often block.
+ */
+export function confirmClick(btn, prompt = 'Tap again to confirm') {
+  if (btn.dataset.armed === '1') {
+    clearTimeout(Number(btn.dataset.armTimer));
+    delete btn.dataset.armed;
+    btn.textContent = btn.dataset.label;
+    return true;
+  }
+  btn.dataset.label = btn.textContent;
+  btn.dataset.armed = '1';
+  btn.textContent = prompt;
+  btn.dataset.armTimer = String(setTimeout(() => {
+    delete btn.dataset.armed;
+    btn.textContent = btn.dataset.label;
+  }, 4000));
+  return false;
+}
