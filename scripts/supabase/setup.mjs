@@ -29,7 +29,8 @@
 
    Needs SUPABASE_ACCESS_TOKEN (supabase.com → Account → Access
    Tokens). The token is read from the environment and never printed
-   or written to disk.
+   or written to disk. Optional: STORE_URL=https://…/shop/ makes
+   password-reset emails open the admin panel at …/shop/admin/.
    ═══════════════════════════════════════════════════════════════ */
 
 import { readFile, writeFile, readdir } from 'node:fs/promises';
@@ -195,6 +196,19 @@ try { auth = await api(`/v1/projects/${REF}/config/auth`); } catch (e) { log(`Si
 const disableSignup = auth && auth.disable_signup === false;
 if (auth) log(`Sign-ups     ${disableSignup ? 'turn off public sign-ups' : 'already off'}`);
 
+// Optional: where the store is published, so password-reset links open the admin panel.
+const STORE_URL = (process.env.STORE_URL || '').trim().replace(/\/*$/, '/');
+let authUrls = null;
+if (STORE_URL !== '/') {
+  if (!/^https:\/\/[^/]+\/.*$/.test(STORE_URL)) fail('STORE_URL must be the store’s https address, e.g. https://example.com/shop/');
+  const admin = `${STORE_URL}admin/`;
+  const allow = String(auth?.uri_allow_list || '').split(',').map((x) => x.trim()).filter(Boolean);
+  if (auth && (auth.site_url !== admin || !allow.includes(`${admin}**`))) {
+    authUrls = { site_url: admin, uri_allow_list: [...new Set([...allow, `${admin}**`])].join(',') };
+  }
+  log(`Login links  ${authUrls ? `send password-reset links to ${admin}` : 'already point to the admin panel'}`);
+}
+
 // 5. Public connection details
 const keys = await api(`/v1/projects/${REF}/api-keys`);
 const publishable = keys.find((k) => k.type === 'publishable' && /^sb_publishable_[\w-]+$/.test(k.api_key || ''));
@@ -259,6 +273,15 @@ if (disableSignup) {
     log('✓ public sign-ups turned off');
   } catch (e) {
     log(`! couldn't turn off sign-ups (${e.message}) — do it in Authentication → Sign In / Providers`);
+  }
+}
+
+if (authUrls) {
+  try {
+    await api(`/v1/projects/${REF}/config/auth`, { method: 'PATCH', body: authUrls });
+    log(`✓ password-reset links now open ${authUrls.site_url}`);
+  } catch (e) {
+    log(`! couldn't set the login links (${e.message}) — set Site URL in Authentication → URL Configuration`);
   }
 }
 

@@ -11,6 +11,7 @@ supabase/
     20261016000003_storefront_api.sql  public views + check_promo / place_order / track_order
     20261016000004_storage.sql         "product-images" bucket + admin-only upload rules
     20261016000005_promo_rules.sql     check_promo also returns the code's rule (for the cart)
+    20261016000006_admin_api.sql       admin panel helpers: admins list, stock changes, reports
   seed.sql                             starting catalog, generated from shop/js/data
   tests/                               local security + behaviour tests
 scripts/supabase/
@@ -19,6 +20,7 @@ scripts/supabase/
   export-seed.mjs                      regenerates seed.sql from the storefront data
 shop/js/supabase.config.js             public URL + key; empty = demo mode
 shop/js/lib/supabase-rest.js           tiny storefront client
+shop/admin/                            the admin panel (yourstore.com/shop/admin/)
 ```
 
 ## How the storefront uses it
@@ -77,11 +79,40 @@ Running it again is safe. When everything is up to date it reports
 The Supabase CLI works with the same files and history if you prefer it:
 `supabase link --project-ref <ref>` then `supabase db push`.
 
-### Later: the first owner (with the admin dashboard)
-The storefront doesn't need any admin account. When the dashboard is
-built, the owner will be invited by email and added to `admin_users` as
-`owner`. Only owners can add or remove other admins, and the database
-refuses to remove the last owner.
+## The admin panel (`shop/admin/`)
+
+Open **/shop/admin/** on the published site and sign in with an admin
+account. It uses the same project and public key as the store, plus
+the admin's own login. Everything it does is limited by the database's
+row-level security, so an account that isn't in `admin_users` sees
+nothing. No secret key is ever used in the browser.
+
+| Page | What you do there |
+|---|---|
+| Dashboard | Orders to handle, today / this month, profit, low stock, best sellers |
+| Orders | Filter and search; move an order Confirmed → Packed → Out for delivery → Delivered, cancel (stock goes back), private notes, WhatsApp/call the customer, CSV |
+| Customers | Order history and total spent per customer, private notes, CSV |
+| Products | Add, edit, hide or delete; prices, sale price, **cost price**, stock, photos (resized automatically), details |
+| Categories & brands | Add, rename, reorder, hide, picture |
+| Inventory | Restock, set a count, remove broken items; full movement log |
+| Promo codes | Percent or fixed, minimum order, dates, usage limit |
+| Delivery | Fee and time per area, free-delivery threshold |
+| Profit & reports | Sales, product cost, expenses and profit for any period; best sellers; CSV |
+| Expenses | What the shop spends, by month |
+| Store settings | Name, WhatsApp number, contact details, LBP rate; change my password |
+| Admins | Owners add or remove admins (the last owner can't be removed) |
+| Activity log | Who changed what, and when |
+
+**Adding an admin:** create the account in Supabase → Authentication →
+Users → *Add user* (with a temporary password, "Auto confirm" ticked),
+then add the same email under **Admins**.
+
+**Password-reset emails** open the panel once the store's address is
+registered. Run the setup once with `STORE_URL=https://your-site/shop/`
+(it sets Supabase's Site URL and allowed redirect for `/shop/admin/`).
+
+The panel is excluded from search engines (`robots.txt`, `X-Robots-Tag`)
+and can't be embedded in other sites (`X-Frame-Options: DENY`).
 
 ## How the security works
 
@@ -134,5 +165,5 @@ added later).
 
 ## Local tests
 `tests/run.sh` applies everything to a scratch PostgreSQL database (using
-a small stand-in for Supabase's `auth` and `storage` schemas) and runs 64
-security and behaviour checks. See the comments at the top of that file.
+a small stand-in for Supabase's `auth` and `storage` schemas) and runs the
+security and behaviour checks (84 at the moment). See the comments at the top of that file.

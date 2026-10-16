@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="same-origin">
+  <title>Cedarline Admin</title>
+  <!-- …/admin without the final slash would load styles and scripts from the wrong folder -->
+  <script>if (!location.pathname.endsWith('/') && !location.pathname.endsWith('.html')) location.replace(location.pathname + '/' + location.search + location.hash);</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="admin.css">
+  <!-- Supabase client (vendored, unmodified). Uses only the public key + the admin's own login. -->
+  <script src="vendor/supabase.js"></script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <div id="app" class="boot" aria-busy="true"><p class="boot__msg">Loading…</p></div>
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+  <noscript><p class="boot__msg">The admin panel needs JavaScript.</p></noscript>
+</body>
+</html>

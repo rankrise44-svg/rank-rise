@@ -1,4 +1,5 @@
 User-agent: *
+Disallow: /shop/admin/
 Allow: /
 # The old standalone case pages stay reachable but the canonical
 # versions live at /case.html — keep crawlers off the duplicates.

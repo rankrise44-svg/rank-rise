@@ -107,5 +107,35 @@ echo "── Owner ──"
 ok "owner adds an admin" "$(as authenticated $OWNER "insert into public.admin_users (user_id, role) values ('$USER','admin') returning role;")" 'admin'
 ok "last owner can't be removed" "$(as authenticated $OWNER "delete from public.admin_users where user_id='$OWNER';")" 'at least one owner'
 
+
+echo "── Admin dashboard functions (0006) ──"
+NEWBIE=44444444-4444-4444-4444-444444444444
+$PSQL -c "insert into auth.users (id,email) values ('$NEWBIE','newbie@x.test');" >/dev/null
+TODAY=$($PSQL -c "select (now() at time zone 'Asia/Beirut')::date;")
+ok "anon cannot call admin_report" "$(as anon '' "select admin_report('$TODAY','$TODAY');")" 'permission denied'
+ok "non-admin gets refused by admin_report" "$(as authenticated $NEWBIE "select admin_report('$TODAY','$TODAY');")" 'Only admins'
+ok "non-admin can't list admins" "$(as authenticated $NEWBIE "select admin_list_admins();")" 'Only admins'
+ok "admin_me shows email + role" "$(as authenticated $ADMIN "select admin_me()->>'email' || '/' || (admin_me()->>'role');")" '^admin@x\.test/admin$'
+ok "admin_me for a non-admin has no role" "$(as authenticated $NEWBIE "select coalesce(admin_me()->>'role','none');")" '^none$'
+ok "admin lists admins with emails" "$(as authenticated $ADMIN "select admin_list_admins()::text;")" 'owner@x\.test'
+ok "admin (not owner) can't add admins by email" "$(as authenticated $ADMIN "select admin_add_admin('newbie@x.test');")" 'Only the store owner'
+ok "owner adds an existing account by email" "$(as authenticated $OWNER "select admin_add_admin('NEWBIE@x.test', 'admin')->>'role';")" '^admin$'
+ok "owner: unknown email is explained" "$(as authenticated $OWNER "select admin_add_admin('nobody@x.test');")" 'no account with that email'
+ok "set stock to a count" "$(as authenticated $ADMIN "select admin_set_stock('p005', 20, 'Counted shelf');")" '^20$'
+ok "stock change is logged with who + note" "$($PSQL -c "select change > 0 or change < 0, created_by, note from inventory_movements where product_id='p005' order by id desc limit 1;")" "^t\|$ADMIN\|Counted shelf$"
+ok "restock adds to stock" "$(as authenticated $ADMIN "select admin_adjust_stock('p005', 5, 'restock');")" '^25$'
+ok "stock can't go below zero" "$(as authenticated $ADMIN "select admin_adjust_stock('p005', -26);")" 'below zero'
+ok "sale/cancel reasons are reserved for orders" "$(as authenticated $ADMIN "select admin_adjust_stock('p005', -1, 'sale');")" 'Choose a reason'
+NOBODY=55555555-5555-5555-5555-555555555555
+$PSQL -c "insert into auth.users (id,email) values ('$NOBODY','nobody-here@x.test');" >/dev/null
+ok "non-admin can't change stock" "$(as authenticated $NOBODY "select admin_adjust_stock('p005', 1, 'restock');")" 'Only admins'
+REPORT=$(as authenticated $ADMIN "select admin_report('$TODAY','$TODAY');")
+EXPECT=$($PSQL -c "select count(*)||'|'||sum(total_cents) from orders where status not in ('cancelled','awaiting_whatsapp');")
+ok "report: orders + revenue match the orders table" "$(echo "$REPORT" | grep -oE '"orders": [0-9]+|"revenue": [0-9]+' | head -2 | grep -oE '[0-9]+' | paste -sd'|')" "^$(echo "$EXPECT" | cut -d'|' -f1)\|$(echo "$EXPECT" | cut -d'|' -f2)$"
+ok "report: cost of goods matches items" "$REPORT" "\"cogs\": $($PSQL -c "select coalesce(sum(coalesce(i.unit_cost_cents,0)*i.qty),0) from order_items i join orders o on o.id=i.order_id where o.status not in ('cancelled','awaiting_whatsapp');")[,}]"
+ok "report: expenses counted" "$REPORT" '"expenses": 1500'
+ok "report: awaiting WhatsApp counted separately" "$REPORT" '"awaiting": 5'
+ok "report: top products listed" "$REPORT" '"topProducts": \[\{'
+
 echo; echo "$pass passed, $fail failed"
 [ "$fail" -eq 0 ]
