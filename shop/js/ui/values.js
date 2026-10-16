@@ -7,8 +7,8 @@ export function heroFeatures() {
   return [
     ['truck', 'Free Delivery', `On orders over $${CONFIG.delivery.freeThreshold}`],
     ['return', 'Easy Returns', '14-day return policy'],
-    ['lock', 'Secure Payment', 'Card, wallet or cash'],
-    ['headset', 'Local Support', 'WhatsApp, 6 days a week'],
+    ['cash', 'Cash on Delivery', 'Pay in USD or LBP'],
+    ['whatsapp', 'Order on WhatsApp', 'Chat with us to order'],
   ];
 }
 
@@ -18,7 +18,7 @@ export function valueStrip() {
     ['award', 'Premium Quality', 'Built to last, made to love.'],
     ['tag', 'Fair Prices', 'Honest USD pricing, VAT included.'],
     ['truck', 'Fast Delivery', `All 8 governorates from $${minFee}.`],
-    ['cash', 'Cash on Delivery', 'Pay in USD or LBP at your door.'],
+    ['headset', 'Real Support', 'A Beirut team that replies.'],
   ];
 }
 

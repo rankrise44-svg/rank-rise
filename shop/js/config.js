@@ -2,8 +2,8 @@
    CEDARLINE — STORE CONFIGURATION
    ───────────────────────────────────────────────────────────────
    Everything that changes between "demo" and "live" lives here:
-   store identity, currency, delivery zones, promo codes, payment
-   methods and the API endpoint. UI code reads from this file and
+   store identity, WhatsApp number, currency, delivery zones, promo
+   codes, ordering methods and the API endpoint. UI code reads from this file and
    never hard-codes these values.
    ═══════════════════════════════════════════════════════════════ */
 
@@ -13,8 +13,10 @@ export const CONFIG = {
     tagline: 'Cook better. Live better.',
     about: 'Kitchen essentials for Lebanese homes — delivered across all eight governorates.',
     email: 'hello@cedarline.example',
-    phone: '+961 70 000 000',
-    whatsapp: '+961 70 000 000',
+    // ★ The store's WhatsApp Business number. Orders sent "via WhatsApp"
+    // and every WhatsApp button open a chat with this number.
+    phone: '+961 70 991 555',
+    whatsapp: '+961 70 991 555',
     address: 'Hamra Street, Beirut, Lebanon',
     hours: 'Mon–Sat, 9:00–18:00',
   },
@@ -53,25 +55,15 @@ export const CONFIG = {
     BEIRUT5:   { type: 'fixed',   value: 5,  label: '$5 off orders over $40', minSubtotal: 40 },
   },
 
-  /* Payment methods shown at checkout, in order.
-     mode: 'demo' → every method runs a realistic simulated flow and
-     no money moves. Set mode: 'live' once each provider in
-     js/services/payments.js is connected to a real backend; methods
-     with enabled: false are then shown as "coming soon".            */
+  /* How customers can order — shown at checkout, in this order.
+       cod       → place the order here, pay the courier on delivery.
+       whatsapp  → the order is sent to the store's WhatsApp as a message;
+                   the team confirms details and delivery in the chat.     */
   payments: {
-    mode: 'demo',
     methods: [
-      { id: 'cod',    kind: 'cod',    name: 'Cash on delivery', description: 'Pay the courier in USD or LBP when your order arrives.', enabled: true },
-      { id: 'card',   kind: 'card',   name: 'Credit / debit card', description: 'Visa or Mastercard, with 3-D Secure verification.', enabled: true },
-      { id: 'whish',  kind: 'wallet', name: 'Whish Money', description: 'Approve a payment request in your Whish app.', enabled: true },
-      { id: 'omt',    kind: 'wallet', name: 'OMT Pay', description: 'Approve a payment request in your OMT app.', enabled: true },
+      { id: 'cod',      name: 'Cash on delivery',  description: 'Place your order now and pay the courier in USD or LBP when it arrives.' },
+      { id: 'whatsapp', name: 'Order via WhatsApp', description: 'Send your order to us on WhatsApp — we confirm the details and delivery with you in the chat.' },
     ],
-    // Demo test cards (only used when mode is 'demo').
-    testCards: {
-      success: '4242 4242 4242 4242',
-      declined: '4000 0000 0000 0002',
-      insufficient: '4000 0000 0000 9995',
-    },
   },
 
   limits: { maxQtyPerLine: 10 },

@@ -17,6 +17,7 @@ import * as account from '../services/account.js';
 import { toast } from './toast.js';
 import { productUrl } from './product-card.js';
 import { paymentBadgesHtml } from './payment-badges.js';
+import { greetingLink } from '../lib/whatsapp.js';
 
 const NAV = [
   { id: 'home', label: 'Home', href: 'index.html' },
@@ -56,8 +57,8 @@ function headerHtml(page, categories) {
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="topbar">
     <div class="container topbar__inner">
-      <p class="topbar__msg">${icon('phone', { size: 15 })}<span><span class="topbar__long">Need help ordering? </span>Call or WhatsApp <strong>${esc(s.phone)}</strong></span></p>
-      <a class="btn btn--gold btn--xs topbar__cta" href="contact.html">Let’s Talk ${icon('arrow', { size: 14 })}</a>
+      <p class="topbar__msg">${icon('whatsapp', { size: 16 })}<span><span class="topbar__long">Order on WhatsApp or </span>Cash on delivery · <strong>${esc(s.whatsapp)}</strong></span></p>
+      <a class="btn btn--gold btn--xs topbar__cta" href="${esc(greetingLink())}" target="_blank" rel="noopener">Chat on WhatsApp ${icon('arrow', { size: 14 })}</a>
     </div>
   </div>
   <header class="masthead" data-header>
@@ -164,7 +165,7 @@ function footerHtml(categories) {
           <li><a href="track-order.html">Track your order</a></li>
           <li><a href="account.html">My account</a></li>
           <li><a href="about.html#delivery">Delivery &amp; returns</a></li>
-          <li><a href="about.html#payment">Payment methods</a></li>
+          <li><a href="about.html#payment">How to order</a></li>
           <li><a href="contact.html">Contact us</a></li>
         </ul>
       </div>
@@ -181,7 +182,7 @@ function footerHtml(categories) {
         <p class="footer__label">Get in touch</p>
         <ul class="footer__links footer__contact">
           <li>${icon('pin', { size: 16 })}${esc(s.address)}</li>
-          <li>${icon('phone', { size: 16 })}<span class="selectable">${esc(s.phone)}</span></li>
+          <li>${icon('whatsapp', { size: 16 })}<a href="${esc(greetingLink())}" target="_blank" rel="noopener">WhatsApp ${esc(s.whatsapp)}</a></li>
           <li>${icon('mail', { size: 16 })}<span class="selectable">${esc(s.email)}</span></li>
           <li>${icon('clock', { size: 16 })}${esc(s.hours)}</li>
         </ul>
@@ -189,9 +190,10 @@ function footerHtml(categories) {
     </div>
     <div class="container footer__bottom">
       <p>© ${year} ${esc(s.name)}. Demo store — products, prices and contact details are fictional.</p>
-      <div class="footer__pay" aria-label="Payment methods we accept">${paymentBadgesHtml()}</div>
+      <div class="footer__pay" aria-label="Ways to order">${paymentBadgesHtml()}</div>
     </div>
-  </footer>`;
+  </footer>
+  <a class="wa-float" href="${esc(greetingLink())}" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">${icon('whatsapp', { size: 28 })}<span>Chat with us</span></a>`;
 }
 
 /* ── Counters ─────────────────────────────────────────────────── */

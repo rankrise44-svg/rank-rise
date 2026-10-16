@@ -6,7 +6,6 @@ import { productUrl } from '../ui/product-card.js';
 import { emptyState } from '../ui/empty.js';
 import { totalsHtml, shipProgressHtml, promoHtml } from '../ui/summary.js';
 import { toast } from '../ui/toast.js';
-import { paymentBadgesHtml } from '../ui/payment-badges.js';
 import * as cart from '../services/cart.js';
 
 await initLayout();
@@ -71,10 +70,9 @@ async function render() {
       ${shipProgressHtml(totals)}
       ${promoHtml(totals, pendingCode || cart.getPromo(), promoError)}
       ${totalsHtml(totals)}
-      <a class="btn btn--gold btn--lg btn--block" href="checkout.html">Proceed to Checkout · ${formatCents(totals.total)}</a>
-      <p class="secure-note">${icon('lock', { size: 14 })}Secure checkout · No account needed</p>
-      <div class="summary__pay" aria-label="Payment methods we accept">${paymentBadgesHtml()}</div>
-      <p class="summary__note" style="text-align:center">Pay cash on delivery, or <a class="link" href="checkout.html?method=card">by card</a>, <a class="link" href="checkout.html?method=whish">Whish</a> or <a class="link" href="checkout.html?method=omt">OMT</a>.</p>
+      <a class="btn btn--gold btn--lg btn--block" href="checkout.html">Checkout · Cash on Delivery</a>
+      <a class="btn btn--whatsapp btn--lg btn--block" href="checkout.html?method=whatsapp">${icon('whatsapp', { size: 20 })}Order via WhatsApp</a>
+      <p class="summary__note" style="text-align:center">No account needed · Nothing to pay online</p>
     </aside>
   </div>`;
 

@@ -25,7 +25,7 @@ python3 -m http.server 8000      # then open http://localhost:8000/shop/
 | `shop.html` | Catalog with category / brand / price / stock / sale filters and 7 sorts. Collections: `?collection=bestsellers`, `new`, `deals`. Filter state lives in the URL |
 | `product.html?id=<slug>` | Gallery, stock, quantity, Add to Cart, Buy Now, wishlist, specs, related products, Product JSON-LD |
 | `cart.html` | Quantity steppers, remove, promo codes, free-delivery progress, totals |
-| `checkout.html` | Contact, address (8 governorates), payment method, order confirmation |
+| `checkout.html` | Contact, cash on delivery or WhatsApp, address (8 governorates), confirmation |
 | `track-order.html` | Order lookup by order number + phone, with a status timeline |
 | `account.html` | Sign in / register (demo), profile, order history |
 | `wishlist.html`, `search.html?q=&cat=` | Saved items; ranked search, optionally inside one category |
@@ -34,20 +34,22 @@ python3 -m http.server 8000      # then open http://localhost:8000/shop/
 
 Demo promo codes: `WELCOME10` (10% off), `BEIRUT5` ($5 off over $40).
 
-## Payment methods (Lebanon)
+## How customers order
 
-Configured in `js/config.js` → `payments`. With `mode: 'demo'`, every
-method runs its full flow and no money moves:
+There are two options, set in `js/config.js` → `payments`. Neither takes
+money online.
 
-| Method | Demo flow |
+| Option | What happens |
 |---|---|
-| Cash on delivery | Pay in USD or LBP; shows an LBP estimate from `CONFIG.lbpRate` |
-| Credit / debit card | Live formatting, Visa/Mastercard detection, Luhn and expiry checks, then a 3-D Secure code step (`123456`). Test cards: `4242 4242 4242 4242` approves, `4000 0000 0000 0002` is declined, `4000 0000 0000 9995` has insufficient funds |
-| Whish Money / OMT Pay | Sends an "approve in your app" request with a 2-minute countdown; approve, cancel or let it expire |
+| **Cash on delivery** | The order is confirmed on the site (address required). The courier collects payment in USD, or in LBP at the rate in `CONFIG.lbpRate` |
+| **Order via WhatsApp** | Only name and phone are required. The order is saved as *Awaiting WhatsApp confirmation*, then WhatsApp opens with the full order written out: number, items, totals, contact and address. The customer presses send and the team confirms in the chat |
 
-Orders are created as `pending_payment`, then marked `confirmed` or
-`payment_failed`. The full card number and CVC are never stored; an order
-keeps only the card brand and last 4 digits.
+Every page also has WhatsApp entry points: the top bar, a floating
+"Chat with us" button, "Order this on WhatsApp" on each product, the cart,
+the footer and the Contact page.
+
+**★ Set your number:** `CONFIG.store.whatsapp` in `js/config.js` (any
+format, e.g. `+961 70 991 555`). Every WhatsApp link uses it.
 
 ## Architecture
 
@@ -64,10 +66,10 @@ shop/
     cart.js / wishlist.js   stores (localStorage), stock clamping, promos
     pricing.js           pure totals calculation, in integer cents
     orders.js            create / update / track orders
-    payments.js          provider registry: cod, card, wallet
+    payments.js          ordering methods: cash on delivery, WhatsApp
     account.js           demo customer accounts
-  js/lib/              storage, money, DOM, form validation, card helpers
-  js/ui/               layout (header/nav/footer), product card, modal, toasts
+  js/lib/              storage, money, DOM, form validation, WhatsApp links
+  js/ui/               layout (header/nav/footer), product card, toasts
   js/pages/            one small module per page
 ```
 
@@ -78,8 +80,6 @@ Rules the code follows:
   the catalog every time, so a stale browser can't check out at an old price.
 - **Money is integer cents**, and one function (`computeTotals`) prices the
   cart, the checkout and the order.
-- **Payment providers never touch the DOM.** 3-D Secure and wallet approval
-  are UI callbacks, so a real gateway's hosted page can replace them.
 
 ## Going live
 
@@ -87,15 +87,11 @@ Rules the code follows:
    and `POST /orders` with the same fields as `js/data/`. Then set
    `CONFIG.api.baseUrl`; `catalog.js` and `orders.js` switch to `fetch`.
    The server must re-price lines, check stock and validate promo codes.
-2. **Card payments.** Sign up with a gateway offered by a Lebanese
-   acquiring bank. Your server creates the payment session (secrets stay on
-   the server), the shopper pays on the gateway's hosted page, and a webhook
-   marks the order paid. Replace the `card` provider in `payments.js`.
-3. **Whish Money / OMT Pay.** Apply for each provider's merchant API.
-   Your server creates the payment request, and its callback confirms
-   approval. Replace the `wallet` provider, then set `payments.mode = 'live'`.
-   Swap the text badges in `js/ui/payment-badges.js` for each provider's
-   official artwork.
+2. **Orders by WhatsApp.** Use a WhatsApp Business number in
+   `CONFIG.store.whatsapp`. With a backend, also notify staff of new
+   cash-on-delivery orders (email or WhatsApp Business API).
+3. **Online payment later (optional).** Add a method to
+   `CONFIG.payments.methods` and a matching function in `payments.js`.
 4. **Content.** Replace the SVG art with photos, update `CONFIG.store`,
    remove the `noindex` tags and add the shop to `sitemap.xml`.
 
@@ -103,8 +99,6 @@ Rules the code follows:
 
 The same UI can sit on a Shopify store: map `catalog.js` to the Storefront
 API (products, collections, vendors as brands) and hand checkout to
-Shopify's checkout. Cash on delivery is a built-in manual payment method
-there; card payments depend on which gateways Shopify supports for
-Lebanese merchants, so confirm that before choosing this route.
-Alternatively, port the templates to a Shopify theme (Liquid). Whish and
-OMT need their own payment integration either way.
+Shopify's checkout, where cash on delivery is a built-in manual payment
+method; WhatsApp buttons work the same way there. Alternatively, port the
+templates to a Shopify theme (Liquid).

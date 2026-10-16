@@ -3,13 +3,15 @@ import { $, esc, icon } from '../lib/dom.js';
 import { rules, bindForm } from '../lib/validate.js';
 import { initLayout } from '../ui/layout.js';
 import { toast } from '../ui/toast.js';
+import { greetingLink } from '../lib/whatsapp.js';
 
 await initLayout();
 
 const s = CONFIG.store;
 $('[data-contact-info]').innerHTML = [
-  ['phone', 'Call or WhatsApp', `<a href="tel:${esc(s.phone.replace(/\s/g, ''))}">${esc(s.phone)}</a>`],
-  ['mail', 'Email', `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>`],
+  ['whatsapp', 'WhatsApp (fastest)', `<a href="${esc(greetingLink())}" target="_blank" rel="noopener">${esc(s.whatsapp)}</a>`],
+  ['phone', 'Call us', `<span class="selectable">${esc(s.phone)}</span>`],
+  ['mail', 'Email', `<span class="selectable">${esc(s.email)}</span>`],
   ['pin', 'Showroom', `<span>${esc(s.address)}</span>`],
   ['clock', 'Opening hours', `<span>${esc(s.hours)}</span>`],
 ].map(([i, label, value]) => `<div class="info-item">${icon(i, { size: 20 })}<div><strong>${label}</strong>${value}</div></div>`).join('');

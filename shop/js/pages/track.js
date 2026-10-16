@@ -4,6 +4,7 @@ import { formatCents } from '../lib/money.js';
 import { rules, bindForm } from '../lib/validate.js';
 import { initLayout } from '../ui/layout.js';
 import * as orders from '../services/orders.js';
+import { waLink, orderMessage } from '../lib/whatsapp.js';
 
 await initLayout();
 const form = $('[data-track-form]');
@@ -27,8 +28,11 @@ const STEPS = [
 ];
 
 function timeline(order) {
-  if (order.status === 'payment_failed' || order.status === 'pending_payment') {
-    return `<div class="alert alert--warn">${icon('card', { size: 18 })}<span><strong>${esc(orders.STATUS[order.status])}.</strong> This order wasn’t paid, so it hasn’t been sent. You can place it again from your cart.</span></div>`;
+  if (order.status === 'awaiting_whatsapp') {
+    return `<div class="alert alert--warn">${icon('whatsapp', { size: 18 })}<span><strong>Waiting for confirmation on WhatsApp.</strong> If you haven’t sent your order message yet, <a class="link" href="${esc(waLink(orderMessage(order)))}" target="_blank" rel="noopener">send it now</a> — we confirm stock and delivery in the chat.</span></div>`;
+  }
+  if (order.status === 'pending_payment') {
+    return `<div class="alert alert--warn">${icon('package', { size: 18 })}<span><strong>This order wasn’t completed.</strong> You can place it again from your cart.</span></div>`;
   }
   const reached = { confirmed: 0, out_for_delivery: 2, delivered: 3 }[order.status] ?? 0;
   return `<ol class="timeline">${STEPS.map(([, title, text, ic], i) => `

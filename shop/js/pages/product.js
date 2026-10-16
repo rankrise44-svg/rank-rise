@@ -4,6 +4,7 @@ import { formatPrice } from '../lib/money.js';
 import { initLayout } from '../ui/layout.js';
 import { priceHtml, ratingHtml, badgesHtml, wishlistButton, productGrid } from '../ui/product-card.js';
 import { paymentBadgesHtml } from '../ui/payment-badges.js';
+import { productLink } from '../lib/whatsapp.js';
 import { emptyState } from '../ui/empty.js';
 import * as catalog from '../services/catalog.js';
 import * as cart from '../services/cart.js';
@@ -83,14 +84,16 @@ function renderProduct(p, brand) {
           ${soldOut ? '' : `<button type="button" class="btn btn--lg btn--dark" data-buy-now>Buy Now</button>`}
           ${wishlistButton(p, { label: true })}
         </div>
+        <a class="btn btn--whatsapp btn--lg btn--block" href="${esc(productLink(p))}" target="_blank" rel="noopener" data-wa-product>${icon('whatsapp', { size: 20 })}${soldOut ? 'Ask about restock on WhatsApp' : 'Order this on WhatsApp'}</a>
         <p class="summary__note" data-in-cart></p>
 
         <ul class="pdp__perks">
           <li>${icon('truck', { size: 18 })}<span><strong>Delivery in ${esc(CONFIG.delivery.etaText)}</strong> to all governorates. Free over ${formatPrice(CONFIG.delivery.freeThreshold)}.</span></li>
-          <li>${icon('cash', { size: 18 })}<span><strong>Cash on delivery</strong> in USD or LBP, or pay online by card, Whish or OMT.</span></li>
+          <li>${icon('cash', { size: 18 })}<span><strong>Cash on delivery</strong> in USD or LBP — nothing to pay online.</span></li>
+          <li>${icon('whatsapp', { size: 18 })}<span><strong>Prefer to chat?</strong> Order on WhatsApp and we confirm everything with you.</span></li>
           <li>${icon('return', { size: 18 })}<span><strong>14-day returns</strong> on unused items in original packaging.</span></li>
         </ul>
-        <div class="pdp__pay"><span>We accept</span>${paymentBadgesHtml()}</div>
+        <div class="pdp__pay"><span>Order by</span>${paymentBadgesHtml()}</div>
 
         <div class="accordion">
           <details open><summary>Description</summary><div class="accordion__body"><p>${esc(p.description)}</p></div></details>

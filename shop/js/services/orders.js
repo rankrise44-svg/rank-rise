@@ -6,8 +6,9 @@
      POST  {base}/orders            create (server re-prices + reserves stock)
      PATCH {base}/orders/:id        status updates (normally webhooks do this)
      GET   {base}/orders/track?id=&phone=   order tracking
-   Lifecycle: pending_payment → confirmed → out_for_delivery → delivered
-              (or payment_failed / cancelled)
+   Lifecycle: cash on delivery → confirmed → out_for_delivery → delivered
+              WhatsApp → awaiting_whatsapp → confirmed (by the team) → …
+              (or cancelled)
    ═══════════════════════════════════════════════════════════════ */
 
 import { CONFIG } from '../config.js';
@@ -18,8 +19,8 @@ const KEY = CONFIG.storageKeys.orders;
 const api = CONFIG.api.baseUrl;
 
 export const STATUS = {
-  pending_payment: 'Awaiting payment',
-  payment_failed: 'Payment failed',
+  pending_payment: 'Not placed',
+  awaiting_whatsapp: 'Awaiting WhatsApp confirmation',
   confirmed: 'Confirmed',
   out_for_delivery: 'Out for delivery',
   delivered: 'Delivered',
