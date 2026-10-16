@@ -49,3 +49,11 @@ through a local web server (not `file://`):
 ```bash
 python3 -m http.server 8000    # then open http://localhost:8000/
 ```
+
+## Demo store — `/shop/`
+
+A separate, self-contained e-commerce demo (fictional "Cedarline" home
+essentials store) lives in `shop/`. It shares no code with the agency site.
+See [`shop/README.md`](shop/README.md) for its pages, architecture and how
+to connect a database and payments. Run the same server as above and open
+`http://localhost:8000/shop/`.

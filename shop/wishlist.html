@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wishlist — Cedarline</title>
+<meta name="description" content="Products you have saved at Cedarline.">
+<!-- Demo store with fictional products: keep it out of search until it goes live. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<script type="module" src="js/pages/wishlist.js"></script>
+</head>
+<body data-page="wishlist">
+<div id="site-header"></div>
+<main id="main" tabindex="-1">
+  <div class="container">
+    <header class="page-head">
+      <h1>Wishlist</h1>
+      <p class="muted" data-wish-sub>Pieces you’ve saved for later.</p>
+    </header>
+    <div class="toolbar" data-wish-toolbar hidden>
+      <p class="toolbar__count" data-wish-count-text aria-live="polite"></p>
+      <div class="toolbar__right">
+        <button type="button" class="btn btn--ghost btn--sm" data-wish-clear>Clear wishlist</button>
+        <button type="button" class="btn btn--dark btn--sm" data-wish-all>Add all to cart</button>
+      </div>
+    </div>
+    <div data-wish-root aria-busy="true" style="padding-bottom:72px"></div>
+  </div>
+</main>
+<div id="site-footer"></div>
+<noscript><p style="padding:16px;text-align:center">Please enable JavaScript to shop at Cedarline.</p></noscript>
+</body>
+</html>

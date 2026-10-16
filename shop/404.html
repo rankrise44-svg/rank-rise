@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<base href="/shop/">
+<title>Page Not Found — Cedarline</title>
+<meta name="description" content="The page you are looking for could not be found.">
+<!-- Demo store with fictional products: keep it out of search until it goes live. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<script type="module" src="js/pages/page.js"></script>
+</head>
+<body data-page="notfound">
+<div id="site-header"></div>
+<main id="main" tabindex="-1">
+  <div class="container">
+    <div class="notfound">
+      <p class="notfound__code" aria-hidden="true">404</p>
+      <h1>We couldn’t find that page.</h1>
+      <p>The link may be broken, or the page may have moved. Try a search, or head back to the shop.</p>
+      <form class="search-inline" action="search.html" role="search">
+        <label class="sr-only" for="q-404">Search products</label>
+        <input id="q-404" name="q" type="search" placeholder="Search products" maxlength="80">
+        <button type="submit" aria-label="Search" data-icon="search"></button>
+      </form>
+      <div class="empty__links">
+        <a class="btn btn--dark" href="index.html">Go to home</a>
+        <a class="btn btn--light" href="shop.html">Browse the shop</a>
+      </div>
+    </div>
+  </div>
+</main>
+<div id="site-footer"></div>
+<noscript><p style="padding:16px;text-align:center">Please enable JavaScript to shop at Cedarline.</p></noscript>
+</body>
+</html>

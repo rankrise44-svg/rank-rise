@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contact Us — Cedarline</title>
+<meta name="description" content="Get in touch with Cedarline about orders, products and delivery.">
+<!-- Demo store with fictional products: keep it out of search until it goes live. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<script type="module" src="js/pages/contact.js"></script>
+</head>
+<body data-page="contact">
+<div id="site-header"></div>
+<main id="main" tabindex="-1">
+  <div class="container">
+    <header class="page-head">
+      <p class="eyebrow">Contact</p>
+      <h1>We’re here to help.</h1>
+      <p class="muted">Questions about an order, a product or a delivery? Send us a message — we reply within one working day.</p>
+    </header>
+    <div class="contact" style="margin-top:24px">
+      <div class="contact__info" data-contact-info></div>
+      <div class="form-card">
+        <div data-contact-success hidden></div>
+        <form data-contact-form novalidate>
+          <div class="form-grid form-grid--2">
+            <div class="field">
+              <label for="c-name">Full name</label>
+              <input id="c-name" name="name" type="text" autocomplete="name" maxlength="80" aria-describedby="c-name-err">
+              <p class="field__error" id="c-name-err" data-error-for="name"></p>
+            </div>
+            <div class="field">
+              <label for="c-email">Email</label>
+              <input id="c-email" name="email" type="email" autocomplete="email" maxlength="120" aria-describedby="c-email-err">
+              <p class="field__error" id="c-email-err" data-error-for="email"></p>
+            </div>
+            <div class="field">
+              <label for="c-phone">Phone <span class="opt">(optional)</span></label>
+              <input id="c-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="03 123 456" maxlength="20" aria-describedby="c-phone-err">
+              <p class="field__error" id="c-phone-err" data-error-for="phone"></p>
+            </div>
+            <div class="field">
+              <label for="c-topic">Topic</label>
+              <select id="c-topic" name="topic" aria-describedby="c-topic-err">
+                <option value="">Choose a topic</option>
+                <option>An existing order</option>
+                <option>Product question</option>
+                <option>Delivery &amp; returns</option>
+                <option>Wholesale &amp; business</option>
+                <option>Something else</option>
+              </select>
+              <p class="field__error" id="c-topic-err" data-error-for="topic"></p>
+            </div>
+            <div class="field span-2">
+              <label for="c-msg">Message</label>
+              <textarea id="c-msg" name="message" maxlength="1000" aria-describedby="c-msg-err"></textarea>
+              <p class="field__error" id="c-msg-err" data-error-for="message"></p>
+            </div>
+          </div>
+          <button class="btn btn--dark btn--lg" type="submit" style="margin-top:20px">Send message</button>
+          <p class="summary__note" style="margin-top:12px">Demo form — messages are validated but not sent anywhere.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+<div id="site-footer"></div>
+<noscript><p style="padding:16px;text-align:center">Please enable JavaScript to shop at Cedarline.</p></noscript>
+</body>
+</html>

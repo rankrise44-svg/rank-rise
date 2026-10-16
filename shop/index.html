@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cedarline — Home Essentials, Delivered Across Lebanon</title>
+<meta name="description" content="Considered kitchen, storage, cleaning and bathroom essentials, delivered across Lebanon with cash on delivery.">
+<!-- Demo store with fictional products: keep it out of search until it goes live. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<script type="module" src="js/pages/home.js"></script>
+</head>
+<body data-page="home">
+<div id="site-header"></div>
+<main id="main" tabindex="-1">
+  <section class="hero">
+    <div class="container">
+      <div class="hero__inner">
+        <div class="fade-in">
+          <p class="eyebrow">New season · Home essentials</p>
+          <h1>Everyday things, made to last.</h1>
+          <p class="lead">Kitchen, storage, cleaning and bath essentials in natural materials — chosen for small Lebanese apartments and big family homes alike.</p>
+          <div class="hero__ctas">
+            <a class="btn btn--dark btn--lg" href="shop.html">Shop all products</a>
+            <a class="btn btn--light btn--lg" href="shop.html?sale=1">View offers</a>
+          </div>
+          <div class="hero__points" data-hero-points></div>
+        </div>
+        <div class="hero__art" aria-hidden="true">
+          <img src="assets/products/cedar-fig-soy-candle-1.svg" alt="" width="800" height="800">
+          <img src="assets/products/woven-seagrass-basket-1.svg" alt="" width="800" height="800">
+          <img src="assets/products/oak-edge-cutting-board-1.svg" alt="" width="800" height="800">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section__head">
+        <div>
+          <h2>Shop by category</h2>
+          <p class="muted">Five rooms, one considered edit.</p>
+        </div>
+        <a class="section__link" href="shop.html" data-arrow>All products</a>
+      </div>
+      <div class="cat-grid" data-home-cats></div>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="container">
+      <div class="section__head">
+        <div>
+          <h2>Bestsellers &amp; favourites</h2>
+          <p class="muted">The pieces our customers reorder most.</p>
+        </div>
+        <a class="section__link" href="shop.html?sort=featured" data-arrow>Shop all</a>
+      </div>
+      <div class="grid grid--4" data-home-featured aria-busy="true"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="values" data-values></div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <div class="section__head">
+        <div>
+          <h2>New arrivals</h2>
+          <p class="muted">Just landed in the Beirut warehouse.</p>
+        </div>
+        <a class="section__link" href="shop.html?sort=newest" data-arrow>See what’s new</a>
+      </div>
+      <div class="grid grid--4" data-home-new aria-busy="true"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="promo-band">
+        <div>
+          <h2>10% off your first order</h2>
+          <p>Use code <code>WELCOME10</code> at checkout. Cash on delivery, anywhere in Lebanon.</p>
+        </div>
+        <a class="btn btn--light btn--lg" href="shop.html">Start shopping</a>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="site-footer"></div>
+<noscript><p style="padding:16px;text-align:center">Please enable JavaScript to shop at Cedarline.</p></noscript>
+</body>
+</html>
