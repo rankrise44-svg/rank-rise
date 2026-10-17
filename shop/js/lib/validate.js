@@ -91,10 +91,20 @@ export function bindForm(form, schema) {
     return msg;
   }
 
+  // Pressing the submit button blurs the current field first. Showing that
+  // field's error right then would push the button out from under the
+  // pointer and swallow the click; submit validates every field anyway.
+  let submitting = false;
+  form.addEventListener('pointerdown', (e) => {
+    if (!e.target.closest('[type="submit"]')) return;
+    submitting = true;
+    setTimeout(() => { submitting = false; }, 700);
+  });
+
   for (const name of Object.keys(schema)) {
     const el = fieldEl(name);
     if (!el || el instanceof RadioNodeList) continue;
-    el.addEventListener('blur', () => { touched.add(name); validateField(name); });
+    el.addEventListener('blur', () => { touched.add(name); if (!submitting) validateField(name); });
     el.addEventListener('input', () => { if (touched.has(name)) validateField(name); });
     el.addEventListener('change', () => { if (touched.has(name)) validateField(name); });
   }

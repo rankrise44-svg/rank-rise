@@ -18,6 +18,8 @@ import { toast } from './toast.js';
 import { productUrl } from './product-card.js';
 import { paymentBadgesHtml } from './payment-badges.js';
 import { greetingLink } from '../lib/whatsapp.js';
+import { initBackdrop } from './backdrop.js';
+import { initFlyToCart } from './fly-to-cart.js';
 
 const NAV = [
   { id: 'home', label: 'Home', href: 'index.html' },
@@ -394,6 +396,8 @@ export async function initLayout() {
   bindSearch();
   bindNewsletter();
   bindActions();
+  initFlyToCart(); // visual only; listens alongside bindActions without changing it
+  initBackdrop();
 
   updateCartIndicators();
   updateWish();
